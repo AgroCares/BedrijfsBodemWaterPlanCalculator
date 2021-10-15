@@ -30,21 +30,22 @@ bbwp_farm_score <- function(D_OPI_TOT,D_OPI_NGW,D_OPI_NSW,D_OPI_PSW,D_OPI_NUE,D_
   checkmate::assert_numeric(D_AREA, lower = 0, upper = 50000)
   
   # collect data in one data.table
-  dt <- data.table(id = 1:arg.length,
-                   D_OPI_NGW = D_OPI_NGW,
-                   D_OPI_NSW = D_OPI_NSW,
-                   D_OPI_PSW = D_OPI_PSW,
-                   D_OPI_NUE = D_OPI_NUE,
-                   D_OPI_WB = D_OPI_WB,
-                   D_OPI_TOT = D_OPI_TOT,
-                   D_AREA = D_AREA
+  dt <- data.table(
+    id = 1:arg.length,
+    D_OPI_NGW = D_OPI_NGW,
+    D_OPI_NSW = D_OPI_NSW,
+    D_OPI_PSW = D_OPI_PSW,
+    D_OPI_NUE = D_OPI_NUE,
+    D_OPI_WB = D_OPI_WB,
+    D_OPI_TOT = D_OPI_TOT,
+    D_AREA = D_AREA
   )
-
+  
   # columns with the score of the opportunity indexes
   cols <- c('D_OPI_TOT','D_OPI_NGW','D_OPI_NSW','D_OPI_PSW','D_OPI_NUE','D_OPI_WB')
   
   # calculate area weigthed sum of the field indices
-  dt <- dt[,lapply(.SD,weighted.mean,w = D_AREA),.SDcols = cols]
+  dt <- dt[,lapply(.SD ,weighted.mean, w = D_AREA), .SDcols = cols]
   
   # Round the values
   dt<- dt[, lapply(.SD, round, digits = 0)]
