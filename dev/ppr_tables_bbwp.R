@@ -45,4 +45,13 @@ require(data.table); require(readxl)
   # save measures as bbwp table
   save(d1,file='data/bbwp_measures.rda')
   
+  # load in LSW properties
+  d1 <- fread('dev/211015 oppervlaktewateropgave_202110152102.csv')
+  
+  # remove geometry
+  d1[,geom:= NULL]
+  
+  # save LSW properties (is there a necessity to take measures for surface water quality)
+  save(d1,file='data/bbwp_oow.rda')
+  
   
