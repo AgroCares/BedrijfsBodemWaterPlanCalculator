@@ -3,4 +3,4 @@ library(AgNuRe)
 library(data.table)
 
 
-test_check("AgNuRe")
+test_check("BBWPC")
