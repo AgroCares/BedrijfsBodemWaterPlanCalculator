@@ -1,5 +1,5 @@
 library(testthat)
-library(AgNuRe)
+library(BBWPC)
 library(data.table)
 
 
