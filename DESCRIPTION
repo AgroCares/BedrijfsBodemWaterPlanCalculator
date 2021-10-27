@@ -32,4 +32,4 @@ Suggests:
     covr
 VignetteBuilder: knitr
 Remotes:  
-    https://github.com/AgroCares/Open-Bodem-Index-Calculator
+    AgroCares/Open-Bodem-Index-Calculator
