@@ -6,12 +6,13 @@ test_that("estimation cdf_rank", {
     tolerance = 0.01)
 })
 
-bbwp_field_properties(B_BT_AK = 'dekzand',
-                      B_LU_BRP = 265,
-                      B_GT = 'GtIII',
-                      B_OV_WENR = 4, 
-                      B_HELP_WENR = 'AZW1AwF',
-                      A_CLAY_MI = 15,
+bbwp_field_properties(
+  B_BT_AK = 'dekzand',
+  B_LU_BRP = 265,
+  B_GT = 'GtIII',
+  B_OV_WENR = 4, 
+  B_HELP_WENR = 'AZW1AwF',
+  A_CLAY_MI = 15,
                       A_SAND_MI = 45,
                       A_SILT_MI = 40,
                       A_OS_GV = 5, 

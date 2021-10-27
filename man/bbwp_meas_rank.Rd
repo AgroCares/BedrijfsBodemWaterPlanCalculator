@@ -22,6 +22,8 @@ bbwp_meas_rank(
 )
 }
 \arguments{
+\item{B_SOILTYPE_AGR}{(character) The type of soil}
+
 \item{B_GWL_CLASS}{(character) The groundwater table class}
 
 \item{A_P_SG}{(numeric)}
@@ -47,8 +49,6 @@ bbwp_meas_rank(
 \item{available_measures}{(data.table) table with the properties of the available measures}
 
 \item{sector}{(string) a vector with the farm type given the agricultural sector (options: 'diary', 'arable', 'tree_nursery', 'bulbs')}
-
-\item{B_SOILTYPE_AAGR}{(character) The type of soil}
 }
 \description{
 Estimate the score for agronomic measures to improve soil and water management on agricultural farms. 

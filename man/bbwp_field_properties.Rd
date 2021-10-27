@@ -57,7 +57,7 @@ bbwp_field_properties(
 
 \item{A_P_WA}{(numeric) The P-content of the soil extracted with water}
 
-\item{A_P_SG}{(numeric) The P-saturation index (/%)}
+\item{A_P_SG}{(numeric) The P-saturation index (\%)}
 
 \item{D_WP}{(numeric) The fraction of the parcel that is surrounded by surface water}
 

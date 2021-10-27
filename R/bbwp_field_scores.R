@@ -35,6 +35,8 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE, B_LU
   
   cfngw = cfwb = cfnsw = cfpsw = cfnue = NULL
   D_OPI_NGW = D_OPI_NSW = D_OPI_PSW = D_OPI_NUE = D_OPI_WB = NULL
+  D_MEAS_NGW = D_MEAS_NSW = D_MEAS_PSW = D_MEAS_NUE = D_OPI_TOT = NULL 
+  D_MEAS_WB = D_MES_PSW = D_MEAS_NGW = D_MEAS_PSW = effect_Wb = NULL
   
   # check length of the inputs
   arg.length <- max(length(B_SOILTYPE_AGR),length(B_GWL_CLASS), length(A_P_SG),

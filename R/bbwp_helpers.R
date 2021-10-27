@@ -19,7 +19,7 @@ cdf_rank <- function(smean,ssd,svalue){
     range <- sort(c(seq(range.lower,range.upper,length.out = 1000),svalue))
     
     # make cumulative density function with pnorm
-    cdf <- pnorm(range, smean, ssd)
+    cdf <- stats::pnorm(range, smean, ssd)
     
     # exctract the probability that a value is below given svalue
     out <- cdf[range %in% svalue]
@@ -32,6 +32,7 @@ cdf_rank <- function(smean,ssd,svalue){
 #' Helper function to weight and correct the risk and scores
 #' 
 #' @param x The risk or score value to be weighted
+#' @param type Use the weighing function for indicators or score
 #' 
 #' @export
 wf <- function(x, type = "indicators") {

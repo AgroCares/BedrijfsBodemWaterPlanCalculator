@@ -8,6 +8,8 @@ wf(x, type = "indicators")
 }
 \arguments{
 \item{x}{The risk or score value to be weighted}
+
+\item{type}{Use the weighing function for indicators or score}
 }
 \description{
 Helper function to weight and correct the risk and scores
