@@ -16,7 +16,7 @@ Depends:
 Imports: 
     checkmate,
     data.table,
-    OBIC
+    OBIC (>= 1.0.4)
 License: GPL-3 | file LICENSE
 URL: https://github.com/AgroCares/Soil-Water-Plan-Calculator
 BugReports: https://github.com/AgroCares/Soil-Water-Plan-Calculator/issues
@@ -31,3 +31,5 @@ Suggests:
     patchwork,
     covr
 VignetteBuilder: knitr
+Remotes:  
+    https://github.com/AgroCares/Open-Bodem-Index-Calculator
