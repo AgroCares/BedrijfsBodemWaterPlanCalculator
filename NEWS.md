@@ -5,4 +5,4 @@
 * Adds unit tests
 * Adds GitHub Actions for R CMD CHECK and coverage
 * Prepare code for package
-
+* Adds README and changelog
