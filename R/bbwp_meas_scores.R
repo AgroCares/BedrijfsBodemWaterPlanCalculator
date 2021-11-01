@@ -227,7 +227,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
   arg.length <- max(length(D_OPI_NGW), length(D_OPI_NSW), length(D_OPI_PSW), length(D_OPI_NUE),
                     length(D_OPI_WB),length(B_SOILTYPE_AGR), length(B_GWL_CLASS), length(M_DRAIN),
                     length(A_P_SG), length(B_SLOPE), length(B_LU_BRP),
-                    length(D_WP), length(measures))
+                    length(D_WP))
   
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
@@ -244,7 +244,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
   checkmate::assert_numeric(D_OPI_NUE, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_OPI_WB, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_subset(sector, choices = c('diary', 'arable', 'tree_nursery', 'bulbs'))
-  checkmate::assert_list(measures, len = arg.length)
+  checkmate::assert_data_table(measures)
   
   # collect data in one data.table
   dt <- data.table(
@@ -268,7 +268,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
     D_MEAS_WB = NA_real_,
     D_MEAS_TOT = NA_real_
   )
-  dt.measures <- data.table::rbindlist(measures)
+  dt.measures <- measures
   cols.num <- c("effect_psw", "effect_nsw", "effect_ngw", "effect_nue", "effect_costs", "effect_wb")
   dt.measures[, (cols.num) := lapply(.SD, as.numeric), .SDcols = cols.num]
   dt <- merge(dt, dt.measures, by = 'id', all = TRUE)
