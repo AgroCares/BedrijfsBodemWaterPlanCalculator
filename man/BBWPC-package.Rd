@@ -11,8 +11,8 @@ This package can be used to calculate the opportunities and suitability of agron
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/AgroCares/Soil-Water-Plan-Calculator}
-  \item Report bugs at \url{https://github.com/AgroCares/Soil-Water-Plan-Calculator/issues}
+  \item \url{https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator}
+  \item Report bugs at \url{https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/issues}
 }
 
 }
