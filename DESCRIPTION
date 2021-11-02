@@ -31,5 +31,6 @@ Suggests:
     patchwork,
     covr
 VignetteBuilder: knitr
-Remotes: github::AgroCares/Open-Bodem-Index-Calculator
+Remotes: 
+    AgroCares/Open-Bodem-Index-Calculator
 Config/testthat/edition: 3
