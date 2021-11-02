@@ -84,7 +84,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   
   # copy input in one data.table
   dt <- data.table(
-    field_id = 1:arg.length,
+    id = 1:arg.length,
     B_SOILTYPE_AAGR = B_SOILTYPE_AGR,
     B_LU_BRP = B_LU_BRP,
     B_GWL_CLASS = B_GWL_CLASS,
@@ -260,7 +260,8 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   # transform wue_whc to an index between 0 and 1
   dt[,wue_whc := 1 - evaluate_logistic(wue_whc, b = 25, x0 = 0.4,v = 0.35)]
   
-  # return outputs
+  # order the fields
+  setorder(dt, id)
   
   # what are the calculated relative impact of field properties 
   scol <- colnames(dt)[grepl('^wue|^npe|^psw|^nsw|^ngw',colnames(dt))]
