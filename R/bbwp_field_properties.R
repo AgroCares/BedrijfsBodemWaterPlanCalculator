@@ -39,7 +39,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   crop_code = soiltype = leaching_to_set = soiltype.n = bodem = gewas = pnorm = NULL
   LSW.mean_n_rt = LSW.sd_n_rt = LSW.sd_ro_r = LSW.sd_wp = LSW.sd_p_cc = LSW.mean_p_sg = LSW.mean_al_ox = NULL
   LSW.mean_fe_ox = LSW.sd_fe_ox = crop_category = B_GT = LSW.mean_ro_r = LSW.mean_wp = LSW.mean_p_cc = psw_psg = LSW.sd_p_sg = NULL
-  LSW.sd_al_ox = NULL
+  LSW.sd_al_ox = id = NULL
   
   # check length inputs
   arg.length <- max(

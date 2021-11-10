@@ -40,7 +40,7 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
                                   D_NUE_WRI,D_NUE_PBI,D_NUE_WDRI,D_NUE_NLV,
                                   D_WUE_WWRI,D_WUE_WDRI,D_WUE_WHC){
   
-  D_RISK_NGW = D_RISK_NSW = D_RISK_PSW = D_RISK_NUE = D_RISK_WB = NULL
+  D_RISK_NGW = D_RISK_NSW = D_RISK_PSW = D_RISK_NUE = D_RISK_WB = id = NULL
   
   # check length inputs
   arg.length <- max(
