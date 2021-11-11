@@ -3,7 +3,7 @@
 #' Estimate the score for agronomic measures to improve soil and water management on agricultural farms. 
 #' And send an ordered list back of the most suitable measures.
 #'
-#' @param B_SOILTYPE_AAGR (character) The type of soil
+#' @param B_SOILTYPE_AGR (character) The type of soil
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param A_P_SG (numeric) 
 #' @param B_SLOPE (boolean)
@@ -27,6 +27,9 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
                            D_OPI_NGW, D_OPI_NSW, D_OPI_PSW, D_OPI_NUE, D_OPI_WB,
                            available_measures, sector){
   
+  effect_psw = psw_psg_medium = psw_psg_high = effect_nsw = nsw_drains = nsw_gwl_low = nsw_gwl_high = psw_noslope = effect_ngw = NULL
+  ngw_grassland = psw_bulbs = D_MEAS_NGW = D_MEAS_NSW = D_MEAS_NUE = effect_nue = D_MEAS_WB = effect_wb = diary = arable = tree_nursery = bulbs = NULL
+  clay = sand= peat = loess = D_MEAS_TOT = effect_costs = id = D_MEAS_PSW = NULL
   
   # check length of the inputs
   arg.length <- max(length(D_OPI_NGW), length(D_OPI_NSW), length(D_OPI_PSW), length(D_OPI_NUE),
@@ -122,44 +125,69 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
   # Loop through each field
   list.measures <- list()
   for (i in 1:arg.length) {
-    
+  
     list.field <- list()
     
     # Get the overall top measures
     this.dt.tot <- dt[id == i & D_MEAS_TOT > 0, ]
     top.tot <- this.dt.tot[order(-D_MEAS_TOT)]$bbwp_id[1:5]
-    list.field$top <- na.omit(top.tot)
+    list.field$total <- data.table(
+      top = 'total',
+      measure = top.tot,
+      rank = 1:length(top.tot)
+    )
     
     # Get the top nsw measures
     this.dt.ngw <- dt[id == i & D_MEAS_NGW > 0, ]
     top.ngw <- this.dt.ngw[order(-D_MEAS_NGW)]$bbwp_id[1:5]
-    list.field$top_ngw <- na.omit(top.ngw)
+    list.field$ngw <- data.table(
+      top = 'ngw',
+      measure = top.ngw,
+      rank = 1:length(top.ngw)
+    )
     
     # Get the top nsw measures
     this.dt.nsw <- dt[id == i & D_MEAS_NSW > 0, ]
     top.nsw <- this.dt.nsw[order(-D_MEAS_NSW)]$bbwp_id[1:5]
-    list.field$top_nsw <- na.omit(top.nsw)
+    list.field$nsw <- data.table(
+      top = 'nsw',
+      measure = top.nsw,
+      rank = 1:length(top.nsw)
+    )
     
     # Get the top psw measures
     this.dt.psw <- dt[id == i & D_MEAS_PSW > 0, ]
     top.psw <- this.dt.psw[order(-D_MEAS_PSW)]$bbwp_id[1:5]
-    list.field$top_psw <- na.omit(top.psw)
-    
+    list.field$psw <- data.table(
+      top = 'psw',
+      measure = top.psw,
+      rank = 1:length(top.psw)
+    )
+      
     # Get the top nue measures
     this.dt.nue <- dt[id == i & D_MEAS_NUE > 0, ]
     top.nue <- this.dt.nue[order(-D_MEAS_NUE)]$bbwp_id[1:5]
-    list.field$top_nue <- na.omit(top.nue)
+    list.field$nue <- data.table(
+      top = 'nue',
+      measure = top.nue,
+      rank = 1:length(top.nue)
+    )
     
     # Get the top wb measures
     this.dt.wb <- dt[id == i & D_MEAS_WB > 0, ]
     top.wb <- this.dt.psw[order(-D_MEAS_WB)]$bbwp_id[1:5]
-    list.field$top_wb <- na.omit(top.wb)
+    list.field$wb <- data.table(
+      top = 'wb',
+      measure = top.wb,
+      rank = 1:length(top.wb)
+    )
     
-    list.measures[[i]] <- list.field
+    list.measures[[i]] <- stats::na.omit(rbindlist(list.field))
   }
-  
+ 
   # return value
-  return(list.measures)
+  dt.measures <- data.table::rbindlist(list.measures)
+  return(dt.measures)
 }
 
 #' Evaluate the contribution of agronomic measures to improve soil mand water management
@@ -190,12 +218,16 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
                             D_OPI_NGW, D_OPI_NSW, D_OPI_PSW, D_OPI_NUE, D_OPI_WB,
                             measures, sector){
   
+  effect_psw = psw_psg_medium = psw_psg_high = effect_nsw = nsw_drains = nsw_gwl_low = nsw_gwl_high = psw_noslope = NULL
+  effect_ngw = ngw_grassland = psw_bulbs = D_MEAs_NGW = D_MEAS_NSW = D_MEAS_NUE = effect_nue = D_MEAS_WB = effect_Wb = diary = NULL
+  arable = tree_nursery = bulbs = clay = sand = peat = loess = D_MEAS_TOT = id = NULL
+  D_MEAS_PSW = D_MEAS_NGW = D_MEAS_PSW = effect_wb = NULL
   
   # check length of the inputs
   arg.length <- max(length(D_OPI_NGW), length(D_OPI_NSW), length(D_OPI_PSW), length(D_OPI_NUE),
                     length(D_OPI_WB),length(B_SOILTYPE_AGR), length(B_GWL_CLASS), length(M_DRAIN),
                     length(A_P_SG), length(B_SLOPE), length(B_LU_BRP),
-                    length(D_WP), length(measures))
+                    length(D_WP))
   
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
@@ -212,7 +244,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
   checkmate::assert_numeric(D_OPI_NUE, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_OPI_WB, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_subset(sector, choices = c('diary', 'arable', 'tree_nursery', 'bulbs'))
-  checkmate::assert_list(measures, len = arg.length)
+  checkmate::assert_data_table(measures)
   
   # collect data in one data.table
   dt <- data.table(
@@ -236,7 +268,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
     D_MEAS_WB = NA_real_,
     D_MEAS_TOT = NA_real_
   )
-  dt.measures <- rbindlist(measures)
+  dt.measures <- measures
   cols.num <- c("effect_psw", "effect_nsw", "effect_ngw", "effect_nue", "effect_costs", "effect_wb")
   dt.measures[, (cols.num) := lapply(.SD, as.numeric), .SDcols = cols.num]
   dt <- merge(dt, dt.measures, by = 'id', all = TRUE)

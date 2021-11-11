@@ -28,18 +28,3 @@
 #'   \item{e_kosten}{index representing the costs for implementing the measure}
 #' }
 "bbwp_measures"
-
-#' Local Surface Water database
-#' 
-#' This table contains the LSW database with desired change / reduction in N and P loss to surface water
-#' The polygons (skipped in the ppr_tables_bbwp.R) are prepared by WEnR linking catchment regions to existing KRW water bodies.
-#' 
-#' @format A data.table with 550 rows and 5 columns:
-#' \describe{
-#'   \item{oow_id}{A unique id number}
-#'   \item{oow_name}{Name of the catchment}
-#'   \item{oow_nitrogen}{The desired reduction in agricultural N load to surface water}
-#'   \item{oow_phosphate}{The desired reduction in agricultural P load to surface water}
-#'   \item{oow_source}{the original source of the estimated N and P loeads}
-#'}
-"bbwp_oow"
