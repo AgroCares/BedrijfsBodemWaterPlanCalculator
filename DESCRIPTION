@@ -8,7 +8,7 @@ Authors@R: c(
     person("Yuki", "Fujita", email = "yuki.fujita@nmi-agro.nl", role = "ctb"),
     person("Nutriënten Managment Instituut", email = "nmi@nmi-agro.nl", role = "cph"))
 Description: This package can be used to calculate the opportunities and suitability of agronomic measures (BBWP). 
-    The BedrijfsBodemWaterPlan is a tool for The Netherlands that recommends field specific agronomic measures focusing on the improvement of soil health.
+    The BedrijfsBodemWaterPlan is a tool for The Netherlands that recommends field specific agronomic measures focusing on the improvement of soil health,
     the reduction of nutrient losses to groundwater and surface water and the water retention properties.
     More information about the BedrijfsBodemWaterPlan can be found at www.bedrijfsbodemwaterplan.nl.
 Depends:

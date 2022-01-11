@@ -6,7 +6,7 @@
 \alias{BBWPC-package}
 \title{BBWPC: Calculator for BedrijfsBodemWaterPlan (BBWP)}
 \description{
-This package can be used to calculate the opportunities and suitability of agronomic measures (BBWP). The BedrijfsBodemWaterPlan is a tool for The Netherlands that recommends field specific agronomic measures focusing on the improvement of soil health. the reduction of nutrient losses to groundwater and surface water and the water retention properties. More information about the BedrijfsBodemWaterPlan can be found a bedijfsbodemwaterplan.nl.
+This package can be used to calculate the opportunities and suitability of agronomic measures (BBWP). The BedrijfsBodemWaterPlan is a tool for The Netherlands that recommends field specific agronomic measures focusing on the improvement of soil health, the reduction of nutrient losses to groundwater and surface water and the water retention properties. More information about the BedrijfsBodemWaterPlan can be found at www.bedrijfsbodemwaterplan.nl.
 }
 \seealso{
 Useful links:
