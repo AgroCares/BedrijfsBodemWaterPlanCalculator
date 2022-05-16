@@ -123,6 +123,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
   dt[, D_MEAS_TOT := (D_MEAS_NGW + D_MEAS_NSW + D_MEAS_PSW + D_MEAS_NUE + D_MEAS_WB ) /  5 - effect_costs * 0.01]
   
   # Loop through each field
+  setorder(dt, id)
   list.measures <- list()
   for (i in 1:arg.length) {
   
@@ -131,63 +132,38 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
     # Get the overall top measures
     this.dt.tot <- dt[id == i & D_MEAS_TOT > 0, ]
     top.tot <- this.dt.tot[order(-D_MEAS_TOT)]$bbwp_id[1:5]
-    list.field$total <- data.table(
-      top = 'total',
-      measure = top.tot,
-      rank = 1:length(top.tot)
-    )
+    list.field$top <- na.omit(top.tot)
     
     # Get the top nsw measures
     this.dt.ngw <- dt[id == i & D_MEAS_NGW > 0, ]
     top.ngw <- this.dt.ngw[order(-D_MEAS_NGW)]$bbwp_id[1:5]
-    list.field$ngw <- data.table(
-      top = 'ngw',
-      measure = top.ngw,
-      rank = 1:length(top.ngw)
-    )
+    list.field$top_ngw <- na.omit(top.ngw)
     
     # Get the top nsw measures
     this.dt.nsw <- dt[id == i & D_MEAS_NSW > 0, ]
     top.nsw <- this.dt.nsw[order(-D_MEAS_NSW)]$bbwp_id[1:5]
-    list.field$nsw <- data.table(
-      top = 'nsw',
-      measure = top.nsw,
-      rank = 1:length(top.nsw)
-    )
+    list.field$top_nsw <- na.omit(top.nsw)
     
     # Get the top psw measures
     this.dt.psw <- dt[id == i & D_MEAS_PSW > 0, ]
     top.psw <- this.dt.psw[order(-D_MEAS_PSW)]$bbwp_id[1:5]
-    list.field$psw <- data.table(
-      top = 'psw',
-      measure = top.psw,
-      rank = 1:length(top.psw)
-    )
+    list.field$top_psw <- na.omit(top.psw)
       
     # Get the top nue measures
     this.dt.nue <- dt[id == i & D_MEAS_NUE > 0, ]
     top.nue <- this.dt.nue[order(-D_MEAS_NUE)]$bbwp_id[1:5]
-    list.field$nue <- data.table(
-      top = 'nue',
-      measure = top.nue,
-      rank = 1:length(top.nue)
-    )
+    list.field$top_nue <- na.omit(top.nue)
     
     # Get the top wb measures
     this.dt.wb <- dt[id == i & D_MEAS_WB > 0, ]
     top.wb <- this.dt.psw[order(-D_MEAS_WB)]$bbwp_id[1:5]
-    list.field$wb <- data.table(
-      top = 'wb',
-      measure = top.wb,
-      rank = 1:length(top.wb)
-    )
+    list.field$top_wb <- na.omit(top.wb)
     
-    list.measures[[i]] <- stats::na.omit(rbindlist(list.field))
+    list.measures[[i]] <- list.field
   }
  
   # return value
-  dt.measures <- data.table::rbindlist(list.measures)
-  return(dt.measures)
+  return(list.measures)
 }
 
 #' Evaluate the contribution of agronomic measures to improve soil mand water management
