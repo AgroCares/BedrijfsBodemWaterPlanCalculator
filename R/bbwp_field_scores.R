@@ -161,7 +161,11 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE, B_LU
   dt[,D_OPI_WB :=  100 * D_OPI_WB]
   
   # calculate the integrative opportunity index (risk times impact)
-  dt[,D_OPI_TOT := (D_OPI_NGW * wf(D_OPI_NGW, type="score") + D_OPI_NSW * wf(D_OPI_NSW, type="score") + D_OPI_PSW * wf(D_OPI_PSW, type="score") + D_OPI_NUE * wf(D_OPI_NUE, type="score") + D_OPI_WB * wf(D_OPI_WB, type="score")) /
+  dt[,D_OPI_TOT := (D_OPI_NGW * wf(D_OPI_NGW, type="score") + 
+                    D_OPI_NSW * wf(D_OPI_NSW, type="score") + 
+                    D_OPI_PSW * wf(D_OPI_PSW, type="score") + 
+                    D_OPI_NUE * wf(D_OPI_NUE, type="score") + 
+                    D_OPI_WB * wf(D_OPI_WB, type="score")) /
        (wf(D_OPI_NGW, type="score") + wf(D_OPI_NSW, type="score") +  wf(D_OPI_PSW, type="score") +  wf(D_OPI_NUE, type="score") +  wf(D_OPI_WB, type="score"))]
   
   # order the fields
