@@ -11,14 +11,14 @@
 #' @param A_CLAY_MI (numeric) The clay content of the soil (\%)
 #' @param A_SAND_MI (numeric) The sand content of the soil (\%)
 #' @param A_SILT_MI (numeric) The silt content of the soil (\%)
-#' @param A_SOM_LOI (numeric) The organic matter content of the soil (\%)
+#' @param A_OS_GV (numeric) The organic matter content of the soil (\%)
 #' @param A_N_RT (numeric) The organic nitrogen content of the soil (mg N / kg)
 #' @param A_FE_OX (numeric) The aluminium content of soil (mmol+ / kg)
 #' @param A_AL_OX (numeric) The iron content of soil (mmol+ / kg)
 #' @param A_P_CC (numeric) The plant available P content, measured via 0.01M CaCl2 extraction (mg / kg)
 #' @param A_P_AL (numeric) The plant extractable P content, measured via ammonium lactate extraction (mg / kg)
 #' @param A_P_WA (numeric) The P-content of the soil extracted with water
-#' @param A_P_SG (numeric) The P-saturation index (\%)
+#' @param A_P_SG (numeric) The P-saturation index (/%)
 #' @param D_WP (numeric) The fraction of the parcel that is surrounded by surface water
 #' @param D_RO_R (numeric) The risk that surface water runs off the parcel
 #' @param LSW (data.table) The surface water polygon for catchment or polder
@@ -27,19 +27,16 @@
 #' @import OBIC
 #'
 #' @export
+# calculate the relative impact of field properties given its position in the landscape
 bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,
                                   A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,
-                                  A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
-                                  D_WP, D_RO_R, LSW) {
+                                  A_FE_OX, A_AL_OX, A_P_CC, A_P_AL ,A_P_WA, A_P_SG,
+                                  D_WP, D_RO_R, LSW){
   
   ngw_scr = croptype.nleach = nf = ngw_lea = ngw_nlv = NULL
   nsw_scr = nsw_gwt = nsw_ro = nsw_ws = nsw_nlv = NULL 
   psw_scr = psw_gwt = psw_ro = psw_ws = psw_pcc = psw_pvg = psw_pret = NULL 
   npe_wri = npe_pbi = npe_wdri = npe_nlv = wue_wwri = wue_wdri = wue_whc = NULL
-  crop_code = soiltype = leaching_to_set = soiltype.n = bodem = gewas = pnorm = NULL
-  LSW.mean_n_rt = LSW.sd_n_rt = LSW.sd_ro_r = LSW.sd_wp = LSW.sd_p_cc = LSW.mean_p_sg = LSW.mean_al_ox = NULL
-  LSW.mean_fe_ox = LSW.sd_fe_ox = crop_category = B_GT = LSW.mean_ro_r = LSW.mean_wp = LSW.mean_p_cc = psw_psg = LSW.sd_p_sg = NULL
-  LSW.sd_al_ox = id = NULL
   
   # check length inputs
   arg.length <- max(
@@ -50,10 +47,10 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   )
   
   # check inputs B parameters
-  checkmate::assert_subset(B_SOILTYPE_AGR, choices = unique(OBIC::soils.obic$soiltype))
+  checkmate::assert_subset(B_SOILTYPE_AGR, choices = unique(soils.obic$soiltype))
   checkmate::assert_subset(B_GWL_CLASS, choices = c('-', 'GtI','GtII','GtIIb','GtIII','GtIIIb','GtIV','GtV','GtVb','GtVI','GtVII','GtVIII'))
   checkmate::assert_subset(B_SC_WENR, choices = c(3, 4, 1, 401, 902, 2, 901, 5, 11, 10))
-  checkmate::assert_subset(B_HELP_WENR, choices = c(unique(OBIC::waterstress.obic$soilunit), "unknown"), empty.ok = FALSE)
+  checkmate::assert_subset(B_HELP_WENR, choices = c(unique(waterstress.obic$soilunit), "unknown"), empty.ok = FALSE)
   
   # check inputs A parameters
   checkmate::assert_numeric(A_CLAY_MI, lower = 0, upper = 100, any.missing = FALSE,len = arg.length)
@@ -64,9 +61,9 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   checkmate::assert_numeric(A_AL_OX, lower = 0, upper = 1000, any.missing = FALSE, len = arg.length)
   checkmate::assert_numeric(A_FE_OX, lower = 0, upper = 1000, any.missing = FALSE, len = arg.length)
   checkmate::assert_numeric(A_P_SG, lower = 0, upper = 100, any.missing = FALSE, len = arg.length)
-  checkmate::assert_numeric(A_P_CC, lower = 0, upper = 50, any.missing = FALSE, len = arg.length)
-  checkmate::assert_numeric(A_P_AL, lower = 0, upper = 200, any.missing = FALSE, len = arg.length)
-  checkmate::assert_numeric(A_P_WA, lower = 0, upper = 200, any.missing = FALSE, len = arg.length)
+  checkmate::assert_numeric(A_P_CC, lower = 0, upper = 100, any.missing = FALSE, len = arg.length)
+  checkmate::assert_numeric(A_P_AL, lower = 0, upper = 250, any.missing = FALSE, len = arg.length)
+  checkmate::assert_numeric(A_P_WA, lower = 0, upper = 250, any.missing = FALSE, len = arg.length)
   
   # check inputs D parameters
   checkmate::assert_numeric(D_WP, lower = 0, upper = 1, len = arg.length)
@@ -84,7 +81,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   
   # copy input in one data.table
   dt <- data.table(
-    id = 1:arg.length,
+    field_id = 1:arg.length,
     B_SOILTYPE_AAGR = B_SOILTYPE_AGR,
     B_LU_BRP = B_LU_BRP,
     B_GWL_CLASS = B_GWL_CLASS,
@@ -260,8 +257,8 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   # transform wue_whc to an index between 0 and 1
   dt[,wue_whc := 1 - evaluate_logistic(wue_whc, b = 25, x0 = 0.4,v = 0.35)]
   
-  # order the fields
-  setorder(dt, id)
+  # return outputs
+  setorder(dt, field_id)
   
   # what are the calculated relative impact of field properties 
   scol <- colnames(dt)[grepl('^wue|^npe|^psw|^nsw|^ngw',colnames(dt))]

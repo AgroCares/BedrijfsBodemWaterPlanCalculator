@@ -40,8 +40,6 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
                                   D_NUE_WRI,D_NUE_PBI,D_NUE_WDRI,D_NUE_NLV,
                                   D_WUE_WWRI,D_WUE_WDRI,D_WUE_WHC){
   
-  D_RISK_NGW = D_RISK_NSW = D_RISK_PSW = D_RISK_NUE = D_RISK_WB = id = NULL
-  
   # check length inputs
   arg.length <- max(
     length(D_NGW_SCR),length(D_NGW_LEA),length(D_NGW_NLV),
@@ -118,3 +116,25 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
   
   
 }
+
+
+#' Helper function to weight and correct the risk and scores
+#' 
+#' @param x The risk or score value to be weighted
+#' 
+#' @export
+wf <- function(x, type = "indicators") {
+  
+  if (type == "indicators") {
+    
+    y <- 1 / (1 - x + 0.2)
+    
+  } else if (type == "score") {
+    
+    y <- 1 / (x * 0.01 + 0.2)
+    
+  }
+  
+  return(y)
+}
+

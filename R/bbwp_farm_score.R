@@ -15,7 +15,7 @@
 #' @export
 # calculate the opportunities for a set of fields
 bbwp_farm_score <- function(D_OPI_TOT,D_OPI_NGW,D_OPI_NSW,D_OPI_PSW,D_OPI_NUE,D_OPI_WB, D_AREA){
-
+  
   # check length of the inputs
   arg.length <- max(length(D_OPI_TOT),length(D_OPI_NGW),length(D_OPI_NSW),length(D_OPI_PSW),
                     length(D_OPI_NUE),length(D_OPI_WB))
@@ -45,7 +45,7 @@ bbwp_farm_score <- function(D_OPI_TOT,D_OPI_NGW,D_OPI_NSW,D_OPI_PSW,D_OPI_NUE,D_
   cols <- c('D_OPI_TOT','D_OPI_NGW','D_OPI_NSW','D_OPI_PSW','D_OPI_NUE','D_OPI_WB')
   
   # calculate area weigthed sum of the field indices
-  dt <- dt[,lapply(.SD, stats::weighted.mean, w = D_AREA), .SDcols = cols]
+  dt <- dt[,lapply(.SD ,weighted.mean, w = D_AREA), .SDcols = cols]
   
   # Round the values
   dt<- dt[, lapply(.SD, round, digits = 0)]
