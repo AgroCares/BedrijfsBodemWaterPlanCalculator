@@ -11,14 +11,14 @@
 #' @param A_CLAY_MI (numeric) The clay content of the soil (\%)
 #' @param A_SAND_MI (numeric) The sand content of the soil (\%)
 #' @param A_SILT_MI (numeric) The silt content of the soil (\%)
-#' @param A_OS_GV (numeric) The organic matter content of the soil (\%)
+#' @param A_SOM_LOI (numeric) The organic matter content of the soil (\%)
 #' @param A_N_RT (numeric) The organic nitrogen content of the soil (mg N / kg)
 #' @param A_FE_OX (numeric) The aluminium content of soil (mmol+ / kg)
 #' @param A_AL_OX (numeric) The iron content of soil (mmol+ / kg)
 #' @param A_P_CC (numeric) The plant available P content, measured via 0.01M CaCl2 extraction (mg / kg)
 #' @param A_P_AL (numeric) The plant extractable P content, measured via ammonium lactate extraction (mg / kg)
 #' @param A_P_WA (numeric) The P-content of the soil extracted with water
-#' @param A_P_SG (numeric) The P-saturation index (/%)
+#' @param A_P_SG (numeric) The P-saturation index (\%)
 #' @param D_WP (numeric) The fraction of the parcel that is surrounded by surface water
 #' @param D_RO_R (numeric) The risk that surface water runs off the parcel
 #' @param LSW (data.table) The surface water polygon for catchment or polder

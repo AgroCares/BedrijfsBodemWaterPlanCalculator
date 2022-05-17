@@ -3,7 +3,7 @@
 #' Estimate the score for agronomic measures to improve soil and water management on agricultural farms. 
 #' And send an ordered list back of the most suitable measures.
 #'
-#' @param B_SOILTYPE_AAGR (character) The type of soil
+#' @param B_SOILTYPE_AGR (character) The type of soil
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param A_P_SG (numeric) 
 #' @param B_SLOPE (boolean)
