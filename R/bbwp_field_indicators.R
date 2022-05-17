@@ -118,23 +118,4 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
 }
 
 
-#' Helper function to weight and correct the risk and scores
-#' 
-#' @param x The risk or score value to be weighted
-#' 
-#' @export
-wf <- function(x, type = "indicators") {
-  
-  if (type == "indicators") {
-    
-    y <- 1 / (1 - x + 0.2)
-    
-  } else if (type == "score") {
-    
-    y <- 1 / (x * 0.01 + 0.2)
-    
-  }
-  
-  return(y)
-}
 
