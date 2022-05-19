@@ -1,0 +1,9 @@
+﻿soiltype;type;cf_soil;cf_water;cf_climate;cf_biodiversity;cf_landscape
+veen;urgency;1,25;1;1,5;1,25;1
+klei;urgency;1,5;1,25;1;1;1
+zand;urgency;1;1,5;1;1,25;1
+loess;urgency;1,5;1,25;1;1,25;1,25
+veen;aim;0,25;0;0,3;0,25;0
+klei;aim;0,3;0,25;0,1;0,15;0
+zand;aim;0,2;0,3;0,1;0,2;0
+loess;aim;0,3;0,25;0,1;0,25;0

@@ -28,3 +28,19 @@
 #'   \item{e_kosten}{index representing the costs for implementing the measure}
 #' }
 "bbwp_measures"
+
+#' The importance and scoring of environmental challenges for Ecoregelingen
+#' 
+#' This table contains the objective scoring and correction factors to estimate score for Ecoregeling
+#' 
+#' @format A data.table with 8 rows and 7 columns:
+#' \describe{
+#'   \item{soiltype}{bla bla}
+#'   \item{type}{bla bla}
+#'   \item{cf_soil}{bla bla}
+#'   \item{cf_water}{bla bla}
+#'   \item{cf_climate}{bla bla}
+#'   \item{cf_biodiversity}{bla bla}
+#'   \item{cf_landscape}{ bla bla}
+#' }
+"er_scoring"
