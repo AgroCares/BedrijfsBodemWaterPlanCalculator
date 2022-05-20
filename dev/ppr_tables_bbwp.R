@@ -32,3 +32,11 @@ require(data.table); require(readxl);library(usethis)
   # save measures as bbwp table
   use_data(er_farm_measure, overwrite = TRUE)
   
+# -- prepare crop specific tables for Ecoregelingen ---
+  
+  # load in csv
+  er_crops <- as.data.table(fread('dev/220517 er_croplists.csv',dec=','))
+  
+  # save measures as bbwp table
+  use_data(er_crops, overwrite = TRUE)
+  
