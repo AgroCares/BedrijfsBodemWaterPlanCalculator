@@ -1,4 +1,4 @@
-﻿id;indicator;measure;description;er_score
+﻿id;indicator;eco_id;description;er_score
 1;soil;EG15;kruidenrijke randen;0
 2;water;EG15;kruidenrijke randen;10
 3;biodiversity;EG15;kruidenrijke randen;0
@@ -39,3 +39,8 @@
 38;biodiversity;EB8;teelt van diepwortelend gewas;0
 39;climate;EB8;teelt van diepwortelend gewas;0
 40;landscape;EB8;teelt van diepwortelend gewas;0
+41;soil;EB9;wortelspruitgewas;4
+42;water;EB9;wortelspruitgewas;1
+43;biodiversity;EB9;wortelspruitgewas;5
+44;climate;EB9;wortelspruitgewas;0
+45;landscape;EB9;wortelspruitgewas;0

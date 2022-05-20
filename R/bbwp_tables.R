@@ -53,7 +53,7 @@
 #' \describe{
 #'   \item{id}{bla bla}
 #'   \item{indicator}{bla bla}
-#'   \item{measure}{bla bla}
+#'   \item{eco_id}{bla bla}
 #'   \item{description}{bla bla}
 #'   \item{er_score}{bla bla}
 #' }
