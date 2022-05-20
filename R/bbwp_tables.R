@@ -59,3 +59,15 @@
 #' }
 "er_farm_measure"
 
+#' An overview of crop lists used in Ecoregelingen
+#' 
+#' This table contains the crop ids (b_lu_brp) for specific Ecoregelingen measures
+#' 
+#' @format A data.table with 75 rows and 4 columns:
+#' \describe{
+#'   \item{eco_id}{bla bla}
+#'   \item{b_lu_brp}{bla bla}
+#'   \item{b_lu_name}{bla bla}
+#'   \item{er_description}{bla bla}
+#' }
+"er_crops"
