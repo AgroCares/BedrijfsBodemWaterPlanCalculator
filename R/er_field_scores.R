@@ -10,6 +10,7 @@
 #' @param B_CT_CLIMATE (numeric) the target value for climate conform Ecoregeling scoring
 #' @param B_CT_BIO (numeric) the target value for biodiversity conform Ecoregeling scoring
 #' @param B_CT_LANDSCAPE (numeric) the target value for landscape quality conform Ecoregeling scoring
+#' @param D_AREA (numeric) the area of the field (\ m2 or \ ha) 
 #' @param measures (list) the measures planned / done per fields (measurement nr)
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'melkveehouderij','akkerbouw','vollegrondsgroente','boomteelt','bollen','veehouderij','overig')
 #'    
@@ -18,6 +19,7 @@
 #' @export
 # calculate the opportunities for a set of fields
 er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
+                            D_AREA,
                             B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE, 
                             measures, sector){
   
@@ -45,6 +47,7 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
     B_SOILTYPE_AGR = B_SOILTYPE_AGR,
     B_LU_BRP = B_LU_BRP,
     B_LU_BBWP = B_LU_BBWP,
+    D_AREA = D_AREA,
     B_CT_SOIL = B_CT_SOIL, 
     B_CT_WATER = B_CT_WATER,
     B_CT_CLIMATE = B_CT_CLIMATE,
@@ -53,15 +56,96 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
   )
   
   # what is the opportunity to contribute to environmental challenges
+  # in theory is that maximum, since there are not yet measures applied
   dt[, D_OPI_SOIL := 1]
   dt[, D_OPI_WATER := 1]
   dt[, D_OPI_CLIMATE := 1]
   dt[, D_OPI_BIO := 1]
   dt[, D_OPI_LANDSCAPE := 1]
   
+  # columns with the Ecoregelingen ranks
+  cols <- c('er_fsoil','er_fwat','er_fbio','er_fclim','er_fland')
+  
   # add the generic farm score as baseline
   
-  
+    # make a local copy
+    dt.farm <- copy(dt)
+    
+    # start with zero points
+    dt.farm[, c(cols) := list(0,0,0,0,0)]
+    
+    # melt the data.table to simplify addition of basic ER points
+    dt.farm <- melt(dt.farm, 
+                    id.vars = c('id','B_SOILTYPE_AGR','B_LU_BRP','D_AREA'),
+                    measure.vars = cols,
+                    variable.name = 'indicator',
+                    value.name = 'm0')
+    
+    # add basic ER points when borders are available
+    dt.fm <- data.table(indicator = cols, 
+                        m1 = c(0,10,0,20,10), # EG15
+                        m2 = c(0,0,3,7,10), # EG22
+                        m3a = c(5,1,2,1,1), # EB1
+                        m3b = c(6,1,3,1,1), # EB1
+                        m3c = c(7,1,4,1,1), # EB1
+                        m4 = c(3,0,3,5,3), # EB2
+                        m5 = c(4,2,2,2,0), # EB3
+                        m6 = c(5,5,0,0,0) # EB8
+                        )
+    
+    # B_LU_BRP van rustgewassen
+    crops.dr <- c(235,236,1921,238,944,3512,246,3506,1922,1923,666,258,664,
+                  3807,237,3519,233,234,381,314,3523,3736,1037,247,799,3524,
+                  516,382,1022,2652,266)
+    
+    # B_LU_BRP van diepwortelende gewassen
+    crops.dw <- c(3502,3503,3504,511,428,944,3512,246,799,1922,1923,666,258,516,664,3807,3519,3736,1036,1037)
+    
+    # B_LU_BRP of eiwitgewassen
+    crops.ew <- c(242,853,854,311,308,244,241,663,258,665,2747,2751,2779,799,3524,258)
+    
+    # B_LU_BRP van meerjarige gewassen
+    crops.mj <- c(265,266,799,258,516)
+    if('dairy' %in% sector){crops.mj <- crops.mj[crops.mj != 265]}
+    
+    # B_LU_BRP van gewassen gunstige wortel-spruitverhouding
+    crops.ws <- c(516,944,3736)
+    
+    # merge dt.farm with the farm measures
+    dt.farm <- merge(dt.farm,dt.fm,by='indicator')
+    
+    # apply filters and selections
+    
+      # start value
+      dt.farm[,erscore:=0]
+    
+      # add kruidenrijke randen (EG15)
+      dt.farm[B_LU_BRP %in% c(333,334,370,337), erscore := erscore + m1]
+      
+      # add kleinschalig landschap (EG22)
+      dt.farm[D_AREA < 2, erscore := erscore + m2]
+    
+      # add filter for rustgewas
+      dt.farm[,cf := fifelse(B_LU_BRP %in% crops.dr,1,0)]
+      
+      # add percentage rustgewassen (EB1)
+      dt.farm[,D_AREA_RR := sum(D_AREA * cf) / sum(D_AREA)]
+      dt.farm[D_AREA_RR > 20 & D_AREA_RR <= 30, erscore := erscore + m3a]
+      dt.farm[D_AREA_RR > 30 & D_AREA_RR <= 40, erscore := erscore + m3b]
+      dt.farm[D_AREA_RR > 40, erscore := erscore + m3c]
+      
+      # add eiwitgewassen (EB2)
+      dt.farm[B_LU_BRP %in%crops.ew, erscore := erscore + m4]
+      
+      # add meerjarige gewassen (EB3)
+      dt.farm[B_LU_BRP %in%crops.mj, erscore := erscore + m5]
+      
+      # add diepwortelende gewassen (EB8)
+      dt.farm[B_LU_BRP %in% crops.dw, erscore := erscore + m6]
+      
+      # teelt van gewassen met een gunstige wortel-spruit (EB9)
+      dt.farm[B_LU_BRP %in% crops.ws, erscore := erscore + m7]
+      
   # add list of measures
   
   # calculate the change in opportunity indexes given the measures taken

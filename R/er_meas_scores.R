@@ -49,7 +49,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
     id = 1:arg.length,
     B_SOILTYPE_AGR = 'dekzand',
     B_GWL_CLASS = 'GtIII',
-    D_AREA = c(18,45),
+    D_AREA = c(15,0.8),
     A_P_SG = 0.15,
     B_SLOPE = 1.5,
     B_LU_BRP = c(265,2005),
