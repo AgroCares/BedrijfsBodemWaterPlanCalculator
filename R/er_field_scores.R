@@ -46,7 +46,7 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
   
   # add bbwp table for crop rotation related measures
   dt.er.farm <- as.data.table(BBWPC::er_farm_measure)
-  dt.er.farm <- dcast(dt.er.farm,indicator~measure,value.var = 'er_score')
+  dt.er.farm <- dcast(dt.er.farm,indicator~eco_id,value.var = 'er_score')
   
   # add bwwp table for crop lists relevant for ecoregeling
   dt.er.crops <- as.data.table(BBWPC::er_crops)
@@ -146,61 +146,63 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
       # dcast the table to make selection easier
       dt.farm <- dcast(dt.farm,farmid~indicator,value.var ='erscore')
       
-  # what is the opportunity to contribute to environmental challenges
-    
-    # in theory is that maximum, since there are not yet measures applied
-    # so the OPI is difference between 1 and the current farm score derived from crop rotation
-    dt[, D_OPI_SOIL := pmax(0,1 - dt.farm$soil / B_CT_SOIL)]
-    dt[, D_OPI_WATER :=  pmax(0,1 - dt.farm$water / B_CT_WATER)]
-    dt[, D_OPI_CLIMATE :=  pmax(0,1 - dt.farm$climate / B_CT_CLIMATE)]
-    dt[, D_OPI_BIO :=  pmax(0,1 - dt.farm$biodiversity / B_CT_BIO)]
-    dt[, D_OPI_LANDSCAPE :=  pmax(0,1 - dt.farm$landscape / B_CT_LANDSCAPE)]
       
-    B_CT_SOIL = B_CT_WATER = B_CT_CLIMATE = B_CT_BIO = B_CT_LANDSCAPE = 5
-    
   # calculate the change in opportunity indexes given the measures taken
   
   # column names for impact of measures on the five indexes (do not change order)
-  mcols <- c('D_MEAS_NGW', 'D_MEAS_NSW', 'D_MEAS_PSW', 'D_MEAS_NUE', 'D_MEAS_WB', 'D_MEAS_TOT')
+  # these are not yet converted to a 0-1 scale
+    
+    # set colnames for the impact of measures
+    mcols <- c('D_MEAS_BIO', 'D_MEAS_CLIM', 'D_MEAS_LAND', 'D_MEAS_SOIL', 'D_MEAS_WAT')
   
-  # # estimate these indexes
-  # nr.measures <- length(Filter(function(x) dim(x)[1] > 0, measures))
-  # if (nr.measures > 0 ) {
-  #   dt[,c(mcols) := bbwp_meas_score(
-  #     B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR,
-  #     B_GWL_CLASS = dt$B_GWL_CLASS,
-  #     A_P_SG = dt$A_P_SG,
-  #     B_SLOPE = dt$B_SLOPE,
-  #     B_LU_BRP = dt$B_LU_BRP,
-  #     M_DRAIN = dt$M_DRAIN,
-  #     D_WP = dt$D_WP,
-  #     D_OPI_NGW = dt$D_OPI_NGW,
-  #     D_OPI_NSW = dt$D_OPI_NSW,
-  #     D_OPI_PSW = dt$D_OPI_PSW,
-  #     D_OPI_NUE = dt$D_OPI_NUE,
-  #     D_OPI_WB = dt$D_OPI_WB,
-  #     measures = measures,
-  #     sector = sector
-  #   )]
-  # } else {
-  #   dt[, c('D_MEAS_NGW','D_MEAS_NSW','D_MEAS_PSW','D_MEAS_NUE','D_MEAS_WB','D_MEAS_TOT') := 0]
-  # }
-  # 
-  # 
-  # # update the field score with measures
-  # dt[,D_OPI_NGW := 1 - pmax(0, D_OPI_NGW - D_MEAS_NGW)]
-  # dt[,D_OPI_NSW := 1 - pmax(0, D_OPI_NSW - D_MEAS_NSW)]
-  # dt[,D_OPI_PSW := 1 - pmax(0, D_OPI_PSW - D_MEAS_PSW)]
-  # dt[,D_OPI_NUE := 1 - pmax(0, D_OPI_NUE - D_MEAS_NUE)]
-  # dt[,D_OPI_WB :=  1 - pmax(0, D_OPI_WB - D_MEAS_WB)]
-  # 
-  # # Convert form 0-1 to 0-100
-  # dt[,D_OPI_NGW := 100 * D_OPI_NGW]
-  # dt[,D_OPI_NSW := 100 * D_OPI_NSW]
-  # dt[,D_OPI_PSW := 100 * D_OPI_PSW]
-  # dt[,D_OPI_NUE := 100 * D_OPI_NUE]
-  # dt[,D_OPI_WB :=  100 * D_OPI_WB]
-  # 
+    # calculate the total score per indicator 
+    if(nrow(measures) > 0){
+      
+      # calculate
+      dt.meas.impact <- er_meas_score(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR, 
+                                      B_LU_BRP = dt$B_LU_BRP,
+                                      measures = measures, 
+                                      sector = sector)
+      # setnames
+      setnames(dt.meas.impact,
+               c('biodiversity', 'climate', 'landscape', 'soil','water'),
+               mcols)
+      
+      # merge with dt
+      dt <- merge(dt,dt.meas.impact,by='id')
+      
+      # set NA to zero
+      dt[,c(mcols) := lapply(.SD,function(x) fifelse(is.na(x),0,x)),.SDcols = cols]
+      
+    } else {
+      
+      # set impact of management to zero when no measures are applied
+      dt[,c(mcols) := list(0,0,0,0,0)]
+    }
+    
+    
+    # what is the opportunity to contribute to environmental challenges
+    
+    # in theory is that maximum, since there are not yet measures applied
+    # so the OPI is difference between 1 and the current farm score derived from crop rotation
+    # in addition, when measures are taken this also reduces the distance to target
+    dt[, D_OPI_SOIL := (dt.farm$soil + D_MEAS_SOIL)/ B_CT_SOIL]
+    dt[, D_OPI_WATER :=  (dt.farm$water + D_MEAS_WAT) / B_CT_WATER]
+    dt[, D_OPI_CLIMATE :=  (dt.farm$climate + D_MEAS_CLIM)/ B_CT_CLIMATE]
+    dt[, D_OPI_BIO :=  (dt.farm$biodiversity + D_MEAS_BIO) / B_CT_BIO]
+    dt[, D_OPI_LANDSCAPE :=  (dt.farm$landscape + D_MEAS_LAND) / B_CT_LANDSCAPE]
+    
+    # ensure score is between 0 and 1
+    dt[, D_OPI_SOIL := 100 * pmax(0,pmin(1,D_OPI_SOIL))]
+    dt[, D_OPI_WATER := 100 * pmax(0,pmin(1,D_OPI_WATER))]
+    dt[, D_OPI_CLIMATE := 100 * pmax(0,pmin(1,D_OPI_CLIMATE))]
+    dt[, D_OPI_BIO := 100 * pmax(0,pmin(1,D_OPI_BIO))]
+    dt[, D_OPI_LANDSCAPE := 100 * pmax(0,pmin(1,D_OPI_LANDSCAPE))]
+    
+    # estimate total 
+    #B_CT_SOIL = B_CT_WATER = B_CT_CLIMATE = B_CT_BIO = B_CT_LANDSCAPE = 5
+    
+  
   # # calculate the integrative opportunity index (risk times impact)
   # dt[,D_OPI_TOT := (D_OPI_NGW * wf(D_OPI_NGW, type="score") + D_OPI_NSW * wf(D_OPI_NSW, type="score") + D_OPI_PSW * wf(D_OPI_PSW, type="score") + D_OPI_NUE * wf(D_OPI_NUE, type="score") + D_OPI_WB * wf(D_OPI_WB, type="score")) /
   #      (wf(D_OPI_NGW, type="score") + wf(D_OPI_NSW, type="score") +  wf(D_OPI_PSW, type="score") +  wf(D_OPI_NUE, type="score") +  wf(D_OPI_WB, type="score"))]
