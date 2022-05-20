@@ -27,8 +27,8 @@ require(data.table); require(readxl);library(usethis)
 # -- prepare table for scores per farm-measure ---
   
   # load in csv
-  bbwp_farm_measure <- as.data.table(fread('dev/220517 farm measures.csv',dec=','))
+  er_farm_measure <- as.data.table(fread('dev/220517 farm measures.csv',dec=','))
   
   # save measures as bbwp table
-  use_data(bbwp_farm_measure, overwrite = TRUE)
+  use_data(er_farm_measure, overwrite = TRUE)
   

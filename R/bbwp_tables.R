@@ -57,5 +57,5 @@
 #'   \item{description}{bla bla}
 #'   \item{er_score}{bla bla}
 #' }
-"bbwp_farm_measure"
+"er_farm_measure"
 
