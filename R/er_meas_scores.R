@@ -35,9 +35,9 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
   dt.measures <- dt.measures[!is.na(eco_id)]
   
   # get internal table with importance of environmental challenges
-  er_scoring <- as.data.table(BBWP::er_scoring)
+  er_scoring <- as.data.table(BBWPC::er_scoring)
   er_urgency <- er_scoring[type=='urgency'][,type := NULL]
-  er_aim <- er_scoring[type == 'aim'][type := NULL]
+  er_aim <- er_scoring[type == 'aim'][,type := NULL]
   
   # check length of the inputs
   arg.length <- 2
@@ -49,13 +49,32 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
     id = 1:arg.length,
     B_SOILTYPE_AGR = 'dekzand',
     B_GWL_CLASS = 'GtIII',
+    D_AREA = c(18,45),
     A_P_SG = 0.15,
     B_SLOPE = 1.5,
     B_LU_BRP = c(265,2005),
     B_LU_BBWP = c(1,4),
     M_DRAIN = TRUE
   )
+
+  # add farm scores
   
+    # columns with the Ecoregelingen ranks
+    cols <- c('er_fsoil','er_fwater','er_fbiodiversity','er_fclimate','er_flandscape')
+  
+    # ID of deep rooting crops
+    crops.dr <- c(235,236,1921,238,944,3512,246,3506,1922,1923,666,258,664,
+                  3807,237,3519,233,234,381,314,3523,3736,1037,247,799,3524,
+                  516,382,1022,2652,266)
+    
+    # add estimate farm score for deep rooting crops in arable systems
+    dt[B_LU_BRP %in% crops.dr,fr_area := D_AREA / sum(D_AREA)]
+    dt[, fr_area := pmin(0,fr_area, na.rm = T)]
+    dt[fr_area <= 20, c(cols) := list(0,0,0,0,0)]
+    dt[fr_area > 20 & fr_area <= 30, c(cols) := list(5,1,2,1,1)]
+    dt[fr_area > 30 & fr_area <= 40, c(cols) := list(6,1,3,1,1)]
+    dt[fr_area > 40, c(cols) := list(7,1,4,1,1)]
+    
   # merge all measures to the given fields
   dt <- as.data.table(merge.data.frame(dt, dt.measures, all = TRUE))
   
@@ -95,10 +114,10 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
       dt[fsector == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
       
     # lower the score when the soil type limits the applicability of measures
-    dt[grepl('klei', B_SOILTYPE_AGR) & clay == FALSE , c(scols) := 0]
-    dt[grepl('zand|dal', B_SOILTYPE_AGR) & sand == FALSE , c(scols) := 0]
-    dt[grepl('veen', B_SOILTYPE_AGR) & peat == FALSE , c(scols) := 0]
-    dt[grepl('loess', B_SOILTYPE_AGR) & loess == FALSE , c(scols) := 0]
+    dt[grepl('klei', B_SOILTYPE_AGR) & clay == FALSE , c(cols) := 0]
+    dt[grepl('zand|dal', B_SOILTYPE_AGR) & sand == FALSE , c(cols) := 0]
+    dt[grepl('veen', B_SOILTYPE_AGR) & peat == FALSE , c(cols) := 0]
+    dt[grepl('loess', B_SOILTYPE_AGR) & loess == FALSE , c(cols) := 0]
   
   # multiply by urgency
     
@@ -121,6 +140,14 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
   # correct for current crop rotation related scores
   
     
+    
+    # update farm score
+    dt.farm <- if(farm.drc.area )
+    
+      
+      
+      
+    dt[eco_id == "EB1",lapply(.SD, function(x) weighted.mean(x,w = D_AREA)),.SDcols = cols]
     
     # multiply measurement score on field level with aims regarding relative contribution on farm level
     dt[]
