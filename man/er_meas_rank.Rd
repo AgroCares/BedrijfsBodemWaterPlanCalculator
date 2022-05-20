@@ -6,6 +6,7 @@
 \usage{
 er_meas_rank(
   B_SOILTYPE_AGR,
+  B_LU_BBWP,
   B_GWL_CLASS,
   A_P_SG,
   B_SLOPE,
@@ -23,6 +24,8 @@ er_meas_rank(
 }
 \arguments{
 \item{B_SOILTYPE_AGR}{(character) The type of soil}
+
+\item{B_LU_BBWP}{(numeric) The BBWP category used for allocation of measures to BBWP crop categories}
 
 \item{B_GWL_CLASS}{(character) The groundwater table class}
 

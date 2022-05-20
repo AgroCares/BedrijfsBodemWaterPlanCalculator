@@ -15,6 +15,7 @@
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'melkveehouderij','akkerbouw','vollegrondsgroente','boomteelt','bollen','veehouderij','overig')
 #'    
 #' @import data.table
+#' @import stats
 #'
 #' @export
 # calculate the opportunities for a set of fields
@@ -24,7 +25,9 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
                             measures, sector){
   
   # add visual bindings
- 
+ value = . = eco_id = b_lu_brp = type = erscore = EG15 = EG22 = cf = EB1A = EB1B = EB1C = NULL
+ D_AREA_RR = EB2 = EB3 = EB8 = EB9 = soiltype = urgency = indicator = farmid = NULL
+ D_OPI_SOIL = D_OPI_WATER = D_OPI_CLIMATE = D_OPI_BIO = D_OPI_LANDSCAPE = NULL
   
   # check length of the inputs
   arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BRP),length(B_LU_BBWP))
@@ -71,14 +74,6 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
     B_CT_BIO = B_CT_BIO,
     B_CT_LANDSCAPE = B_CT_LANDSCAPE,
   )
-  
-  # what is the opportunity to contribute to environmental challenges
-  # in theory is that maximum, since there are not yet measures applied
-  dt[, D_OPI_SOIL := 1]
-  dt[, D_OPI_WATER := 1]
-  dt[, D_OPI_CLIMATE := 1]
-  dt[, D_OPI_BIO := 1]
-  dt[, D_OPI_LANDSCAPE := 1]
   
   # columns with the Ecoregelingen ranks
   cols <- c('soil','water','biodiversity','climate','landscape')
@@ -145,62 +140,79 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
       # calculate the weighed average ER score (points/ ha) for the whole farm due to crop rotation 
       dt.farm <- dt.farm[,list(erscore = weighted.mean(erscore * urgency, D_AREA)),by = indicator]
       
+      # add a farm id
+      dt.farm[,farmid := 1]
+  
+      # dcast the table to make selection easier
+      dt.farm <- dcast(dt.farm,farmid~indicator,value.var ='erscore')
       
+  # what is the opportunity to contribute to environmental challenges
+    
+    # in theory is that maximum, since there are not yet measures applied
+    # so the OPI is difference between 1 and the current farm score derived from crop rotation
+    dt[, D_OPI_SOIL := pmax(0,1 - dt.farm$soil / B_CT_SOIL)]
+    dt[, D_OPI_WATER :=  pmax(0,1 - dt.farm$water / B_CT_WATER)]
+    dt[, D_OPI_CLIMATE :=  pmax(0,1 - dt.farm$climate / B_CT_CLIMATE)]
+    dt[, D_OPI_BIO :=  pmax(0,1 - dt.farm$biodiversity / B_CT_BIO)]
+    dt[, D_OPI_LANDSCAPE :=  pmax(0,1 - dt.farm$landscape / B_CT_LANDSCAPE)]
+      
+    B_CT_SOIL = B_CT_WATER = B_CT_CLIMATE = B_CT_BIO = B_CT_LANDSCAPE = 5
+    
   # calculate the change in opportunity indexes given the measures taken
   
   # column names for impact of measures on the five indexes (do not change order)
   mcols <- c('D_MEAS_NGW', 'D_MEAS_NSW', 'D_MEAS_PSW', 'D_MEAS_NUE', 'D_MEAS_WB', 'D_MEAS_TOT')
   
-  # estimate these indexes
-  nr.measures <- length(Filter(function(x) dim(x)[1] > 0, measures))
-  if (nr.measures > 0 ) {
-    dt[,c(mcols) := bbwp_meas_score(
-      B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR,
-      B_GWL_CLASS = dt$B_GWL_CLASS,
-      A_P_SG = dt$A_P_SG,
-      B_SLOPE = dt$B_SLOPE,
-      B_LU_BRP = dt$B_LU_BRP,
-      M_DRAIN = dt$M_DRAIN,
-      D_WP = dt$D_WP,
-      D_OPI_NGW = dt$D_OPI_NGW,
-      D_OPI_NSW = dt$D_OPI_NSW,
-      D_OPI_PSW = dt$D_OPI_PSW,
-      D_OPI_NUE = dt$D_OPI_NUE,
-      D_OPI_WB = dt$D_OPI_WB,
-      measures = measures,
-      sector = sector
-    )]
-  } else {
-    dt[, c('D_MEAS_NGW','D_MEAS_NSW','D_MEAS_PSW','D_MEAS_NUE','D_MEAS_WB','D_MEAS_TOT') := 0]
-  }
-  
-  
-  # update the field score with measures
-  dt[,D_OPI_NGW := 1 - pmax(0, D_OPI_NGW - D_MEAS_NGW)]
-  dt[,D_OPI_NSW := 1 - pmax(0, D_OPI_NSW - D_MEAS_NSW)]
-  dt[,D_OPI_PSW := 1 - pmax(0, D_OPI_PSW - D_MEAS_PSW)]
-  dt[,D_OPI_NUE := 1 - pmax(0, D_OPI_NUE - D_MEAS_NUE)]
-  dt[,D_OPI_WB :=  1 - pmax(0, D_OPI_WB - D_MEAS_WB)]
-  
-  # Convert form 0-1 to 0-100
-  dt[,D_OPI_NGW := 100 * D_OPI_NGW]
-  dt[,D_OPI_NSW := 100 * D_OPI_NSW]
-  dt[,D_OPI_PSW := 100 * D_OPI_PSW]
-  dt[,D_OPI_NUE := 100 * D_OPI_NUE]
-  dt[,D_OPI_WB :=  100 * D_OPI_WB]
-  
-  # calculate the integrative opportunity index (risk times impact)
-  dt[,D_OPI_TOT := (D_OPI_NGW * wf(D_OPI_NGW, type="score") + D_OPI_NSW * wf(D_OPI_NSW, type="score") + D_OPI_PSW * wf(D_OPI_PSW, type="score") + D_OPI_NUE * wf(D_OPI_NUE, type="score") + D_OPI_WB * wf(D_OPI_WB, type="score")) /
-       (wf(D_OPI_NGW, type="score") + wf(D_OPI_NSW, type="score") +  wf(D_OPI_PSW, type="score") +  wf(D_OPI_NUE, type="score") +  wf(D_OPI_WB, type="score"))]
-  
-  # order the fields
-  setorder(dt, id)
-  
-  # extract value
-  value <- dt[,mget(c('D_OPI_NGW','D_OPI_NSW','D_OPI_PSW','D_OPI_NUE','D_OPI_WB','D_OPI_TOT'))]
-  
-  # Round the values
-  value <- value[, lapply(.SD, round, digits = 0)]
+  # # estimate these indexes
+  # nr.measures <- length(Filter(function(x) dim(x)[1] > 0, measures))
+  # if (nr.measures > 0 ) {
+  #   dt[,c(mcols) := bbwp_meas_score(
+  #     B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR,
+  #     B_GWL_CLASS = dt$B_GWL_CLASS,
+  #     A_P_SG = dt$A_P_SG,
+  #     B_SLOPE = dt$B_SLOPE,
+  #     B_LU_BRP = dt$B_LU_BRP,
+  #     M_DRAIN = dt$M_DRAIN,
+  #     D_WP = dt$D_WP,
+  #     D_OPI_NGW = dt$D_OPI_NGW,
+  #     D_OPI_NSW = dt$D_OPI_NSW,
+  #     D_OPI_PSW = dt$D_OPI_PSW,
+  #     D_OPI_NUE = dt$D_OPI_NUE,
+  #     D_OPI_WB = dt$D_OPI_WB,
+  #     measures = measures,
+  #     sector = sector
+  #   )]
+  # } else {
+  #   dt[, c('D_MEAS_NGW','D_MEAS_NSW','D_MEAS_PSW','D_MEAS_NUE','D_MEAS_WB','D_MEAS_TOT') := 0]
+  # }
+  # 
+  # 
+  # # update the field score with measures
+  # dt[,D_OPI_NGW := 1 - pmax(0, D_OPI_NGW - D_MEAS_NGW)]
+  # dt[,D_OPI_NSW := 1 - pmax(0, D_OPI_NSW - D_MEAS_NSW)]
+  # dt[,D_OPI_PSW := 1 - pmax(0, D_OPI_PSW - D_MEAS_PSW)]
+  # dt[,D_OPI_NUE := 1 - pmax(0, D_OPI_NUE - D_MEAS_NUE)]
+  # dt[,D_OPI_WB :=  1 - pmax(0, D_OPI_WB - D_MEAS_WB)]
+  # 
+  # # Convert form 0-1 to 0-100
+  # dt[,D_OPI_NGW := 100 * D_OPI_NGW]
+  # dt[,D_OPI_NSW := 100 * D_OPI_NSW]
+  # dt[,D_OPI_PSW := 100 * D_OPI_PSW]
+  # dt[,D_OPI_NUE := 100 * D_OPI_NUE]
+  # dt[,D_OPI_WB :=  100 * D_OPI_WB]
+  # 
+  # # calculate the integrative opportunity index (risk times impact)
+  # dt[,D_OPI_TOT := (D_OPI_NGW * wf(D_OPI_NGW, type="score") + D_OPI_NSW * wf(D_OPI_NSW, type="score") + D_OPI_PSW * wf(D_OPI_PSW, type="score") + D_OPI_NUE * wf(D_OPI_NUE, type="score") + D_OPI_WB * wf(D_OPI_WB, type="score")) /
+  #      (wf(D_OPI_NGW, type="score") + wf(D_OPI_NSW, type="score") +  wf(D_OPI_PSW, type="score") +  wf(D_OPI_NUE, type="score") +  wf(D_OPI_WB, type="score"))]
+  # 
+  # # order the fields
+  # setorder(dt, id)
+  # 
+  # # extract value
+  # value <- dt[,mget(c('D_OPI_NGW','D_OPI_NSW','D_OPI_PSW','D_OPI_NUE','D_OPI_WB','D_OPI_TOT'))]
+  # 
+  # # Round the values
+  # value <- value[, lapply(.SD, round, digits = 0)]
   
   # return value
   return(value)

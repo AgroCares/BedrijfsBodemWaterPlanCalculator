@@ -13,11 +13,11 @@ er_meas_score(
   B_LU_BBWP,
   M_DRAIN,
   D_WP,
-  D_OPI_NGW,
-  D_OPI_NSW,
-  D_OPI_PSW,
-  D_OPI_NUE,
-  D_OPI_WB,
+  D_OPI_SOIL,
+  D_OPI_WATER,
+  D_OPI_CLIMATE,
+  D_OPI_BIO,
+  D_OPI_LANDSCAPE,
   measures,
   sector
 )
@@ -39,15 +39,15 @@ er_meas_score(
 
 \item{D_WP}{(numeric) The fraction of the parcel that is surrounded by surface water}
 
-\item{D_OPI_NGW}{(numeric) the opportunity index (risk x impact) for nitrate leaching to groundwater given field properties}
+\item{D_OPI_SOIL}{(numeric) the opportunity index}
 
-\item{D_OPI_NSW}{(numeric) the opportunity index (risk x impact) for nitrate leaching and runoff to surface water given field properties}
+\item{D_OPI_WATER}{(numeric) the opportunity index}
 
-\item{D_OPI_PSW}{(numeric) the opportunity index (risk x impact) for phosphorus leaching and runoff to surface water given field properties}
+\item{D_OPI_CLIMATE}{(numeric) the opportunity index}
 
-\item{D_OPI_NUE}{(numeric) the opportunity index (risk x impact) to improve the efficiency of nitrogen and phosphorus fertilizer use given field properties}
+\item{D_OPI_BIO}{(numeric) the opportunity index}
 
-\item{D_OPI_WB}{(numeric) the opportunity index (risk x impact) to improve the potential to buffer and store water and efficiently use water for plant growth given field properties}
+\item{D_OPI_LANDSCAPE}{(numeric) the opportunity index}
 
 \item{measures}{(list) the measures planned / done per fields}
 
