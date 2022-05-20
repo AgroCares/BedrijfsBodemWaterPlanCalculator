@@ -51,10 +51,10 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   )
   
   # check inputs B parameters
-  checkmate::assert_subset(B_SOILTYPE_AGR, choices = unique(soils.obic$soiltype))
+  checkmate::assert_subset(B_SOILTYPE_AGR, choices = unique(OBIC::soils.obic$soiltype))
   checkmate::assert_subset(B_GWL_CLASS, choices = c('-', 'GtI','GtII','GtIIb','GtIII','GtIIIb','GtIV','GtV','GtVb','GtVI','GtVII','GtVIII'))
   checkmate::assert_subset(B_SC_WENR, choices = c(3, 4, 1, 401, 902, 2, 901, 5, 11, 10))
-  checkmate::assert_subset(B_HELP_WENR, choices = c(unique(waterstress.obic$soilunit), "unknown"), empty.ok = FALSE)
+  checkmate::assert_subset(B_HELP_WENR, choices = c(unique(OBIC::waterstress.obic$soilunit), "unknown"), empty.ok = FALSE)
   
   # check inputs A parameters
   checkmate::assert_numeric(A_CLAY_MI, lower = 0, upper = 100, any.missing = FALSE,len = arg.length)
