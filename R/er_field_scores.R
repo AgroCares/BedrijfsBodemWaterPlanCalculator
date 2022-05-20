@@ -41,6 +41,23 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
   checkmate::assert_numeric(B_CT_LANDSCAPE, lower = 0, upper = 1000,min.len = 1)
   checkmate::assert_list(measures)
   
+  # add bbwp table for crop rotation related measures
+  dt.er.farm <- as.data.table(BBWPC::er_farm_measure)
+  dt.er.farm <- dcast(dt.er.farm,indicator~measure,value.var = 'er_score')
+  
+  # add bwwp table for crop lists relevant for ecoregeling
+  dt.er.crops <- as.data.table(BBWPC::er_crops)
+  dt.er.crops <- dt.er.crops[,.(eco_id,b_lu_brp)]
+  
+  # get internal table with importance of environmental challenges
+  dt.er.scoring <- as.data.table(BBWPC::er_scoring)
+  setnames(dt.er.scoring,gsub('cf_','',colnames(dt.er.scoring)))
+  dt.er.urgency <- melt(dt.er.scoring[type=='urgency'],
+                        id.vars='soiltype',
+                        measure.vars = c('soil', 'water', 'climate',  'biodiversity', 'landscape'),
+                        variable.name = 'indicator',
+                        value.name = 'urgency')
+  
   # collect data in one data.table
   dt <- data.table(
     id = 1:arg.length,
@@ -64,7 +81,7 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
   dt[, D_OPI_LANDSCAPE := 1]
   
   # columns with the Ecoregelingen ranks
-  cols <- c('er_fsoil','er_fwat','er_fbio','er_fclim','er_fland')
+  cols <- c('soil','water','biodiversity','climate','landscape')
   
   # add the generic farm score as baseline
   
@@ -81,38 +98,8 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
                     variable.name = 'indicator',
                     value.name = 'm0')
     
-    # add basic ER points when borders are available
-    dt.fm <- data.table(indicator = cols, 
-                        m1 = c(0,10,0,20,10), # EG15
-                        m2 = c(0,0,3,7,10), # EG22
-                        m3a = c(5,1,2,1,1), # EB1
-                        m3b = c(6,1,3,1,1), # EB1
-                        m3c = c(7,1,4,1,1), # EB1
-                        m4 = c(3,0,3,5,3), # EB2
-                        m5 = c(4,2,2,2,0), # EB3
-                        m6 = c(5,5,0,0,0) # EB8
-                        )
-    
-    # B_LU_BRP van rustgewassen
-    crops.dr <- c(235,236,1921,238,944,3512,246,3506,1922,1923,666,258,664,
-                  3807,237,3519,233,234,381,314,3523,3736,1037,247,799,3524,
-                  516,382,1022,2652,266)
-    
-    # B_LU_BRP van diepwortelende gewassen
-    crops.dw <- c(3502,3503,3504,511,428,944,3512,246,799,1922,1923,666,258,516,664,3807,3519,3736,1036,1037)
-    
-    # B_LU_BRP of eiwitgewassen
-    crops.ew <- c(242,853,854,311,308,244,241,663,258,665,2747,2751,2779,799,3524,258)
-    
-    # B_LU_BRP van meerjarige gewassen
-    crops.mj <- c(265,266,799,258,516)
-    if('dairy' %in% sector){crops.mj <- crops.mj[crops.mj != 265]}
-    
-    # B_LU_BRP van gewassen gunstige wortel-spruitverhouding
-    crops.ws <- c(516,944,3736)
-    
     # merge dt.farm with the farm measures
-    dt.farm <- merge(dt.farm,dt.fm,by='indicator')
+    dt.farm <- merge(dt.farm,dt.er.farm,by='indicator')
     
     # apply filters and selections
     
@@ -120,34 +107,45 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
       dt.farm[,erscore:=0]
     
       # add kruidenrijke randen (EG15)
-      dt.farm[B_LU_BRP %in% c(333,334,370,337), erscore := erscore + m1]
+      dt.farm[B_LU_BRP %in% dt.er.crops[eco_id=='EG15',b_lu_brp], erscore := erscore + EG15]
       
       # add kleinschalig landschap (EG22)
-      dt.farm[D_AREA < 2, erscore := erscore + m2]
+      dt.farm[D_AREA < 2, erscore := erscore + EG22]
     
-      # add filter for rustgewas
-      dt.farm[,cf := fifelse(B_LU_BRP %in% crops.dr,1,0)]
+      # add filter for rustgewas (EB1)
+      dt.farm[,cf := fifelse(B_LU_BRP %in% dt.er.crops[eco_id=='EB1',b_lu_brp],1,0)]
       
       # add percentage rustgewassen (EB1)
       dt.farm[,D_AREA_RR := sum(D_AREA * cf) / sum(D_AREA)]
-      dt.farm[D_AREA_RR > 20 & D_AREA_RR <= 30, erscore := erscore + m3a]
-      dt.farm[D_AREA_RR > 30 & D_AREA_RR <= 40, erscore := erscore + m3b]
-      dt.farm[D_AREA_RR > 40, erscore := erscore + m3c]
+      dt.farm[D_AREA_RR > 20 & D_AREA_RR <= 30, erscore := erscore + EB1A]
+      dt.farm[D_AREA_RR > 30 & D_AREA_RR <= 40, erscore := erscore + EB1B]
+      dt.farm[D_AREA_RR > 40, erscore := erscore + EB1C]
       
       # add eiwitgewassen (EB2)
-      dt.farm[B_LU_BRP %in%crops.ew, erscore := erscore + m4]
+      dt.farm[B_LU_BRP %in% dt.er.crops[eco_id=='EB2',b_lu_brp], erscore := erscore + EB2]
       
       # add meerjarige gewassen (EB3)
-      dt.farm[B_LU_BRP %in%crops.mj, erscore := erscore + m5]
+      dt.farm[B_LU_BRP %in% dt.er.crops[eco_id=='EB3',b_lu_brp], erscore := erscore + EB3]
       
       # add diepwortelende gewassen (EB8)
-      dt.farm[B_LU_BRP %in% crops.dw, erscore := erscore + m6]
+      dt.farm[B_LU_BRP %in% dt.er.crops[eco_id=='EB8',b_lu_brp], erscore := erscore + EB8]
       
       # teelt van gewassen met een gunstige wortel-spruit (EB9)
-      dt.farm[B_LU_BRP %in% crops.ws, erscore := erscore + m7]
+      dt.farm[B_LU_BRP %in% dt.er.crops[eco_id=='EB9',b_lu_brp], erscore := erscore + EB9]
       
-  # add list of measures
-  
+      # add soil type for political and environmental urgency
+      dt.farm[grepl('klei', B_SOILTYPE_AGR) , soiltype := 'klei']
+      dt.farm[grepl('zand|dal', B_SOILTYPE_AGR), soiltype := 'zand']
+      dt.farm[grepl('veen', B_SOILTYPE_AGR), soiltype := 'veen']
+      dt.farm[grepl('loess', B_SOILTYPE_AGR), soiltype := 'loess']
+ 
+      # merge with soil specific urgency table
+      dt.farm <- merge(dt.farm,dt.er.urgency, by= c('indicator','soiltype'))
+      
+      # calculate the weighed average ER score (points/ ha) for the whole farm due to crop rotation 
+      dt.farm <- dt.farm[,list(erscore = weighted.mean(erscore * urgency, D_AREA)),by = indicator]
+      
+      
   # calculate the change in opportunity indexes given the measures taken
   
   # column names for impact of measures on the five indexes (do not change order)
