@@ -44,3 +44,18 @@
 #'   \item{cf_landscape}{ bla bla}
 #' }
 "er_scoring"
+
+#' The impact score of farm based measures
+#' 
+#' This table contains the scores of crop rotation related farm measures for Ecoregeling
+#' 
+#' @format A data.table with 40 rows and 5 columns:
+#' \describe{
+#'   \item{id}{bla bla}
+#'   \item{indicator}{bla bla}
+#'   \item{measure}{bla bla}
+#'   \item{description}{bla bla}
+#'   \item{er_score}{bla bla}
+#' }
+"bbwp_farm_measure"
+

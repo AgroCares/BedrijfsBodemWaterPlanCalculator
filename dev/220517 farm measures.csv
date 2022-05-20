@@ -1,0 +1,41 @@
+﻿id;indicator;measure;description;er_score
+1;soil;EG15;kruidenrijke randen;0
+2;water;EG15;kruidenrijke randen;10
+3;biodiversity;EG15;kruidenrijke randen;0
+4;climate;EG15;kruidenrijke randen;20
+5;landscape;EG15;kruidenrijke randen;10
+6;soil;EG22;kleinschalig landschap;0
+7;water;EG22;kleinschalig landschap;0
+8;biodiversity;EG22;kleinschalig landschap;3
+9;climate;EG22;kleinschalig landschap;7
+10;landscape;EG22;kleinschalig landschap;10
+11;soil;EB1A;percentage rustgewassen (21-35%);5
+12;water;EB1A;percentage rustgewassen (21-35%);1
+13;biodiversity;EB1A;percentage rustgewassen (21-35%);2
+14;climate;EB1A;percentage rustgewassen (21-35%);1
+15;landscape;EB1A;percentage rustgewassen (21-35%);1
+16;soil;EB1B;percentage rustgewassen (36-50%);6
+17;water;EB1B;percentage rustgewassen (36-50%);1
+18;biodiversity;EB1B;percentage rustgewassen (36-50%);3
+19;climate;EB1B;percentage rustgewassen (36-50%);1
+20;landscape;EB1B;percentage rustgewassen (36-50%);1
+21;soil;EB1C;percentage rustgewassen (>50%);7
+22;water;EB1C;percentage rustgewassen (>50%);1
+23;biodiversity;EB1C;percentage rustgewassen (>50%);4
+24;climate;EB1C;percentage rustgewassen (>50%);1
+25;landscape;EB1C;percentage rustgewassen (>50%);1
+26;soil;EB2;teelt van eiwithoudend gewas;3
+27;water;EB2;teelt van eiwithoudend gewas;0
+28;biodiversity;EB2;teelt van eiwithoudend gewas;3
+29;climate;EB2;teelt van eiwithoudend gewas;5
+30;landscape;EB2;teelt van eiwithoudend gewas;3
+31;soil;EB3;teelt van meerjarige  gewas;4
+32;water;EB3;teelt van meerjarige  gewas;2
+33;biodiversity;EB3;teelt van meerjarige  gewas;2
+34;climate;EB3;teelt van meerjarige  gewas;2
+35;landscape;EB3;teelt van meerjarige  gewas;0
+36;soil;EB8;teelt van diepwortelend gewas;5
+37;water;EB8;teelt van diepwortelend gewas;5
+38;biodiversity;EB8;teelt van diepwortelend gewas;0
+39;climate;EB8;teelt van diepwortelend gewas;0
+40;landscape;EB8;teelt van diepwortelend gewas;0
