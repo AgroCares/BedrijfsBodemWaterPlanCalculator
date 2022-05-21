@@ -4,50 +4,14 @@
 \alias{er_meas_score}
 \title{Evaluate the contribution of agronomic measures to improve soil mand water management}
 \usage{
-er_meas_score(
-  B_SOILTYPE_AGR,
-  B_GWL_CLASS,
-  A_P_SG,
-  B_SLOPE,
-  B_LU_BRP,
-  B_LU_BBWP,
-  M_DRAIN,
-  D_WP,
-  D_OPI_SOIL,
-  D_OPI_WATER,
-  D_OPI_CLIMATE,
-  D_OPI_BIO,
-  D_OPI_LANDSCAPE,
-  measures,
-  sector
-)
+er_meas_score(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP, measures, sector)
 }
 \arguments{
 \item{B_SOILTYPE_AGR}{(character) The type of soil}
 
-\item{B_GWL_CLASS}{(character) The groundwater table class}
-
-\item{A_P_SG}{(numeric)}
-
-\item{B_SLOPE}{(boolean)}
-
-\item{B_LU_BRP}{(integer)}
+\item{B_LU_BRP}{(numeric) The crop type (conform BRP coding, preferable the most frequent crop on the field)}
 
 \item{B_LU_BBWP}{(numeric) The BBWP category used for allocation of measures to BBWP crop categories}
-
-\item{M_DRAIN}{(boolean) is there tube drainage present in the field}
-
-\item{D_WP}{(numeric) The fraction of the parcel that is surrounded by surface water}
-
-\item{D_OPI_SOIL}{(numeric) the opportunity index}
-
-\item{D_OPI_WATER}{(numeric) the opportunity index}
-
-\item{D_OPI_CLIMATE}{(numeric) the opportunity index}
-
-\item{D_OPI_BIO}{(numeric) the opportunity index}
-
-\item{D_OPI_LANDSCAPE}{(numeric) the opportunity index}
 
 \item{measures}{(list) the measures planned / done per fields}
 

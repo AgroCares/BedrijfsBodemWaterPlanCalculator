@@ -70,9 +70,13 @@ wf <- function(x, type = "indicators") {
 #' @export
 # calculate the opportunities for a set of fields
 er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,D_AREA,
-                            B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE, 
-                            sector){
-  
+                            B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE){
+
+  # add visual bindings
+  . = eco_id = farmid = b_lu_brp = type = erscore = D_AREA_RR = indicator = NULL
+  EG15 = EG22 = cf = EB1A = EB1B = EB1C = EB2 = EB3 = EB8 = EB9 = NULL
+  urgency = soiltype = NULL
+ 
   # check length of the inputs
   arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BRP),length(B_LU_BBWP))
   
@@ -186,7 +190,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,D_AREA,
   dt[,farmid := 1]
   
   # dcast the table to make selection easier
-  dt <- dcast(dt.farm,farmid~indicator,value.var ='erscore')
+  dt <- dcast(dt,farmid~indicator,value.var ='erscore')
 
   # return the Ecoregelingen Score based on Crop Rotation Only
   return(dt)
@@ -200,6 +204,9 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,D_AREA,
 #' 
 #' @export
 bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
+  
+  # add visual bindings
+  eco_id = bbwp_id = NULL
   
   # get internal table with measures
   dt.measures <- as.data.table(BBWPC::bbwp_measures)

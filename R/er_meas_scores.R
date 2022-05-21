@@ -35,9 +35,21 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
   soiltype = peat = clay = sand = silt = loess = NULL
   er_water = cf_water = er_soil = cf_soil = er_climate = cf_climate = er_biodiversity = cf_biodiversity = er_landscape = cf_landscape = NULL
   
-  # get internal table with measures and select only the Ecoregeling measures
-  dt.measures <- as.data.table(BBWPC::bbwp_measures)
-  dt.measures <- dt.measures[!is.na(eco_id)]
+  # derive a table with all possible measurements
+  
+    # what is list of measures send as input
+    dt.meas.av <- copy(available_measures)
+  
+    # get internal table with measures and select only the Ecoregeling measures
+    dt.measures <- as.data.table(BBWPC::bbwp_measures)
+    dt.measures <- dt.measures[!is.na(eco_id)]
+  
+    # which columns are not in the input
+    cols.miss <- c('bbwp_id',colnames(dt.measures)[!colnames(dt.measures) %in% colnames(dt.meas.av)])
+    cols.miss <- cols.miss[!grepl('summary|descripti|url',cols.miss)]
+    
+    # merge measurement properties with the input list of available measures
+    dt.meas.av <- merge(dt.meas.av, dt.measures[,mget(cols.miss)],by='bbwp_id')
   
   # get internal table with importance of environmental challenges
   er_scoring <- as.data.table(BBWPC::er_scoring)
@@ -64,22 +76,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
 
   # add farm scores
   
-    # columns with the Ecoregelingen ranks
-    cols <- c('er_fsoil','er_fwater','er_fbiodiversity','er_fclimate','er_flandscape')
   
-    # ID of deep rooting crops
-    crops.dr <- c(235,236,1921,238,944,3512,246,3506,1922,1923,666,258,664,
-                  3807,237,3519,233,234,381,314,3523,3736,1037,247,799,3524,
-                  516,382,1022,2652,266)
-    
-    # add estimate farm score for deep rooting crops in arable systems
-    dt[B_LU_BRP %in% crops.dr,fr_area := D_AREA / sum(D_AREA)]
-    dt[, fr_area := pmin(0,fr_area, na.rm = T)]
-    dt[fr_area <= 20, c(cols) := list(0,0,0,0,0)]
-    dt[fr_area > 20 & fr_area <= 30, c(cols) := list(5,1,2,1,1)]
-    dt[fr_area > 30 & fr_area <= 40, c(cols) := list(6,1,3,1,1)]
-    dt[fr_area > 40, c(cols) := list(7,1,4,1,1)]
-    
   # merge all measures to the given fields
   dt <- as.data.table(merge.data.frame(dt, dt.measures, all = TRUE))
   
@@ -145,7 +142,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
   # correct for current crop rotation related scores
   
     
-    
+    # add here something to stimulate where biggest distance is...
    
   # add farm related scores (see document)
     
@@ -227,6 +224,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil
 #' @param B_LU_BRP (numeric) The crop type (conform BRP coding, preferable the most frequent crop on the field)
+#' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'diary', 'arable', 'tree_nursery', 'bulbs')
 #' @param measures (list) the measures planned / done per fields
 #'   
@@ -234,23 +232,47 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
 #'
 #' @export
 # calculate the score for a list of measures for one or multiple fields
-er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,measures, sector){
+er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP, measures, sector){
   
   # add visual bindings
   eco_id = type = fr_area = D_AREA = id = er_urgency = NULL
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = fbulbs = bulbs = NULL
   crop_cat1 = crop_cat2 = crop_cat3 = crop_cat4 = crop_cat5 = crop_cat6 = crop_cat7 = crop_cat8 = crop_cat9 = NULL
   soiltype = peat = clay = sand = silt = loess = NULL
+  patterns = indicator = erscore = urgency = NULL
   
-  # check length of the inputs
-  arg.length <- 2
-  
-  # check inputs
+  # check on the inputs
+  arg.length <- max(length(B_SOILTYPE_AGR), length(B_LU_BRP),length(B_LU_BBWP))
+  checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
+                                                       'dalgrond','moerige_klei','veen','loess'))
+  checkmate::assert_integerish(B_LU_BRP, lower = 0, len = arg.length)
+  checkmate::assert_integerish(B_LU_BBWP, lower = 0, upper = 9,len = arg.length)
+  checkmate::assert_character(B_SOILTYPE_AGR,len = arg.length)
+  checkmate::assert_data_table(measures)
+  checkmate::assert_true('bbwp_id' %in% colnames(measures))
+  checkmate::assert_true('id' %in% colnames(measures))
   
   # get internal table with measures and select only the Ecoregeling measures
   dt.measures <- as.data.table(BBWPC::bbwp_measures)
   dt.measures <- dt.measures[!is.na(eco_id)]
   
+  # extend the measurement table with those from BBWP package if none is given
+  
+    # make local copy of the input
+    dt.meas.taken <- copy(measures)
+  
+    # which columns are not in the input
+    cols.miss <- c('bbwp_id',colnames(dt.measures)[!colnames(dt.measures) %in% colnames(dt.meas.taken)])
+    
+    # merge measrument properties with the input list of measures taken
+    dt.meas.taken <- merge(dt.meas.taken, dt.measures[,mget(cols.miss)],by='bbwp_id')
+    
+    # what are relevant properties
+    scols <- colnames(dt.meas.taken)[grepl('^id$|bbwp_id|crop_|er_|sand|loe|clay|peat|cate|dairy|arab|vege|^bulbs$|tree|level',colnames(dt.meas.taken))]
+    
+    # subset the table with measurements taken
+    dt.meas.taken <- dt.meas.taken[,mget(scols)]
+      
   # get internal table with importance of environmental challenges
   dt.er.scoring <- as.data.table(BBWPC::er_scoring)
   setnames(dt.er.scoring,gsub('cf_','',colnames(dt.er.scoring)))
@@ -263,40 +285,26 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,measures, sector){
   # collect data in one data.table
   dt <- data.table(
     id = 1:arg.length,
-    B_SOILTYPE_AGR = 'dekzand',
-    B_GWL_CLASS = 'GtIII',
-    D_AREA = c(15,0.8),
-    A_P_SG = 0.15,
-    B_SLOPE = 1.5,
-    B_LU_BRP = c(265,2005),
-    B_LU_BBWP = c(1,4),
-    M_DRAIN = TRUE
+    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
+    B_LU_BRP = B_LU_BRP,
+    B_LU_BBWP = B_LU_BBWP,
+    D_AREA = D_AREA
   )
-  
-  # measures actually taken
-  dt.meas.taken <- data.table(id = rep(1:2,each = 10), 
-                              bbwp_id = sample(dt.measures$bbwp_id,20))
   
   # merge all measures to the given fields
   dt <- merge(dt,dt.meas.taken,by = 'id',all=TRUE)
   
-  # add the relevant properties of all measurements
-  
-    # what are relevant properties
-    scols <- colnames(dt.measures)[grepl('bbwp_id|crop_|er_|sand|loe|clay|peat|cate|dairy|arab|vege|^bulbs$|tree|level',colnames(dt.measures))]
-  
-    # merge both tables
-    dt <- merge(dt,dt.measures[,mget(scols)],by = 'bbwp_id')
-    
-  # rank is zero when measures are not applicable given the crop type
+  # set scores to zero when measures are not applicable given the crop type
   
     # columns with the Ecoregelingen ranks
     cols <- c('er_soil','er_water','er_biodiversity','er_climate','er_landscape')
     
-    # set all missing data impacts to 0
+    # set first all missing data impacts to 0
     dt[,c(cols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = cols]
     
     # set the score to zero when not applicable for given crop category
+    # this includes also the measures that are taken on farm level
+    # ACTION NEEDED 
     dt[B_LU_BBWP == 1 & crop_cat1 <= 0, c(cols) := 0]
     dt[B_LU_BBWP == 2 & crop_cat2 <= 0, c(cols) := 0]
     dt[B_LU_BBWP == 3 & crop_cat3 <= 0, c(cols) := 0]
@@ -307,22 +315,22 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,measures, sector){
     dt[B_LU_BBWP == 8 & crop_cat8 <= 0, c(cols) := 0]
     dt[B_LU_BBWP == 9 & crop_cat9 <= 0, c(cols) := 0]
   
+  # set the score to zero when the measure is not applicable
+  
     # add columns for the sector to which the farms belong
     fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
     fs1 <- paste0('f',sector)
     fs2 <- fs0[!fs0 %in% fs1]
     dt[,c(fs1) := 1]
     dt[,c(fs2) := 0]
-  
-  # set the score to zero when the measure is not applicable
-  
+    
     # estimate whether sector allows applicability
     dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs]
     
-    # lower the score when measure is not applicable
+    # adapt the score when measure is not applicable
     dt[fsector == 0, c(cols) := 0]
     
-    # lower the score when the soil type limits the applicability of measures
+    # adapt the score when the soil type limits the applicability of measures
     dt[grepl('klei', B_SOILTYPE_AGR) & clay == FALSE , c(cols) := 0]
     dt[grepl('zand|dal', B_SOILTYPE_AGR) & sand == FALSE , c(cols) := 0]
     dt[grepl('veen', B_SOILTYPE_AGR) & peat == FALSE , c(cols) := 0]
@@ -330,7 +338,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,measures, sector){
   
   # multiply by (political) urgency
   
-    # add soil type for political and environmental urgency
+    # first add soil type for political and environmental urgency
     dt[grepl('klei', B_SOILTYPE_AGR) , soiltype := 'klei']
     dt[grepl('zand|dal', B_SOILTYPE_AGR), soiltype := 'zand']
     dt[grepl('veen', B_SOILTYPE_AGR), soiltype := 'veen']
@@ -348,12 +356,12 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,measures, sector){
     dt <- merge(dt,dt.er.urgency, by= c('soiltype','indicator'))
     
   # calculate the weighed average ER score (points/ ha) for the whole farm due to measures taken
-  dt.field <- dt[,list(erscore = sum(erscore)),by = c('id', 'indicator','D_AREA')]
+  dt.field <- dt[,list(erscore = sum(erscore * urgency)),by = c('id', 'indicator')]
   
   # dcast the output
   dt.field <- dcast(dt.field,id~indicator,value.var = "erscore")
   
-  # order
+  # order to ensure field order
   setorder(dt.field, id)
   
   # return value
