@@ -239,21 +239,18 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
     # check if bbwp-id is present (unique per measure)
     checkmate::assert_true('bbwp_id' %in% colnames(dt))
     
-    # check if farm-id is present
-    checkmate::assert_true('id' %in% colnames(dt))
-  
     # which columns are missing in dt
     cols.miss <- c('bbwp_id',colnames(dt.measures)[!colnames(dt.measures) %in% colnames(dt)])
     
     # merge measurement properties with the input list of available measures
     dt <- merge(dt, dt.measures[,mget(cols.miss)],by='bbwp_id')
     
-    # select only relevant columns
-    cols.use <- colnames(dt)[!grepl('summary|descr|url|mok|boot',colnames(dt))]
-    dt <- dt[,mget(cols.use)]
     
     # add also missing measures when function requires full list
     if(score == TRUE){
+    
+      # check if farm-id is present
+      checkmate::assert_true('id' %in% colnames(dt))
       
       # perform check
       dt.miss <- dt.measures[!bbwp_id %in% dt$bbwp_id]
@@ -267,11 +264,17 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
   
   # set all scoring, applicabilility and effects to zero when data is missing
     
-    # get relevant coloms
-    scols <- colnames(dt)[grepl('^nsw|^ngw|^psw|^p_|^n_|^effect|^er')]
+    # get relevant colums to be converted
+    scols <- colnames(dt)[grepl('^nsw|^ngw|^psw|^p_|^n_|^effect|^er',colnames(dt))]
     
     # update the columns
     dt[,c(scols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = scols]
+    
+    # select only relevant columns as output
+    cols.use <- colnames(dt)[!grepl('summary|descr|url|mok|boot',colnames(dt))]
+    
+    # select these columns
+    dt <- dt[,mget(cols.use)]
     
   # return output
   return(dt)
