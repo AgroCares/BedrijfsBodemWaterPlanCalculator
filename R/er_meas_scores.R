@@ -36,20 +36,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
   er_water = cf_water = er_soil = cf_soil = er_climate = cf_climate = er_biodiversity = cf_biodiversity = er_landscape = cf_landscape = NULL
   
   # derive a table with all possible measurements
-  
-    # what is list of measures send as input
-    dt.meas.av <- copy(available_measures)
-  
-    # get internal table with measures and select only the Ecoregeling measures
-    dt.measures <- as.data.table(BBWPC::bbwp_measures)
-    dt.measures <- dt.measures[!is.na(eco_id)]
-  
-    # which columns are not in the input
-    cols.miss <- c('bbwp_id',colnames(dt.measures)[!colnames(dt.measures) %in% colnames(dt.meas.av)])
-    cols.miss <- cols.miss[!grepl('summary|descripti|url',cols.miss)]
-    
-    # merge measurement properties with the input list of available measures
-    dt.meas.av <- merge(dt.meas.av, dt.measures[,mget(cols.miss)],by='bbwp_id')
+  dt.meas.av <- bbwp_check_meas(available_measures,eco = TRUE, score = FALSE)
   
   # get internal table with importance of environmental challenges
   er_scoring <- as.data.table(BBWPC::er_scoring)
@@ -252,26 +239,8 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP, measures, sector){
   checkmate::assert_true('bbwp_id' %in% colnames(measures))
   checkmate::assert_true('id' %in% colnames(measures))
   
-  # get internal table with measures and select only the Ecoregeling measures
-  dt.measures <- as.data.table(BBWPC::bbwp_measures)
-  dt.measures <- dt.measures[!is.na(eco_id)]
-  
-  # extend the measurement table with those from BBWP package if none is given
-  
-    # make local copy of the input
-    dt.meas.taken <- copy(measures)
-  
-    # which columns are not in the input
-    cols.miss <- c('bbwp_id',colnames(dt.measures)[!colnames(dt.measures) %in% colnames(dt.meas.taken)])
-    
-    # merge measrument properties with the input list of measures taken
-    dt.meas.taken <- merge(dt.meas.taken, dt.measures[,mget(cols.miss)],by='bbwp_id')
-    
-    # what are relevant properties
-    scols <- colnames(dt.meas.taken)[grepl('^id$|bbwp_id|crop_|er_|sand|loe|clay|peat|cate|dairy|arab|vege|^bulbs$|tree|level',colnames(dt.meas.taken))]
-    
-    # subset the table with measurements taken
-    dt.meas.taken <- dt.meas.taken[,mget(scols)]
+  # get the measurement data.table
+  dt.meas.taken <- bbwp_check_meas(dt = measures, eco = TRUE, score = TRUE)
       
   # get internal table with importance of environmental challenges
   dt.er.scoring <- as.data.table(BBWPC::er_scoring)
