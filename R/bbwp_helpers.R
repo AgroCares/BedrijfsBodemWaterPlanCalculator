@@ -225,29 +225,33 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
   # select from internal table only the Ecoregeling measures
   if(eco == TRUE){dt.measures <- dt.measures[!is.na(eco_id)]}
   
+  # select the relevant columns as output
+  cols.use <- colnames(dt.measures)[!grepl('summary|descr|url|mok|boot',colnames(dt.measures))]
+    
   # adapt measurements table when input is given
-  if(is.null(dt)){
     
-    # select the internal BBWP table
-    dt <- dt.measures
+    # select the internal BBWP table when dt is missing and required output is list of measures
+    if(is.null(dt) & score == FALSE){dt <- dt.measures}
     
-  } else {
-  
-    # make internal copy of input given
-    dt <- copy(dt)
+    # set score to zero when no measures are given as input
+    if(is.null(dt) & score == TRUE){dt <- data.table(id = 1, bbwp_id = 'NONE')}
     
-    # check if bbwp-id is present (unique per measure)
-    checkmate::assert_true('bbwp_id' %in% colnames(dt))
+    # do checks on table with measures
+    if(nrow(dt) > 0){
+      
+      # check if bbwp-id is present (unique per measure)
+      checkmate::assert_true('bbwp_id' %in% colnames(dt))
+      
+      # which columns are missing in dt
+      cols.miss <- unique(c('bbwp_id',colnames(dt.measures)[!colnames(dt.measures) %in% colnames(dt)]))
+      
+      # merge measurement properties with the input list of available measures
+      dt <- merge(dt, dt.measures[,mget(cols.miss)],by='bbwp_id')
+      
+    }
     
-    # which columns are missing in dt
-    cols.miss <- c('bbwp_id',colnames(dt.measures)[!colnames(dt.measures) %in% colnames(dt)])
-    
-    # merge measurement properties with the input list of available measures
-    dt <- merge(dt, dt.measures[,mget(cols.miss)],by='bbwp_id')
-    
-    
-    # add also missing measures when function requires full list
-    if(score == TRUE){
+  # add also missing measures when function requires full list
+  if(score == FALSE){
     
       # check if farm-id is present
       checkmate::assert_true('id' %in% colnames(dt))
@@ -259,8 +263,6 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
       dt <- rbind(dt,dt.miss,fill = TRUE)
       
     }
-    
-  }
   
   # set all scoring, applicabilility and effects to zero when data is missing
     
@@ -269,9 +271,6 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
     
     # update the columns
     dt[,c(scols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = scols]
-    
-    # select only relevant columns as output
-    cols.use <- colnames(dt)[!grepl('summary|descr|url|mok|boot',colnames(dt))]
     
     # select these columns
     dt <- dt[,mget(cols.use)]
