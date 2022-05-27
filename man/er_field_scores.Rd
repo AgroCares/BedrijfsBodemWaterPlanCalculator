@@ -14,7 +14,7 @@ er_field_scores(
   B_CT_CLIMATE,
   B_CT_BIO,
   B_CT_LANDSCAPE,
-  measures,
+  measures = NULL,
   sector
 )
 }
