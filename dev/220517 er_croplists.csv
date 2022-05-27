@@ -1,0 +1,80 @@
+﻿eco_id;b_lu_brp;b_lu_name;er_description
+EB1;235;Wintergerst;rustgewas
+EB1;236;Zomergerst;rustgewas
+EB1;1921;Graszaad;rustgewas
+EB1;238;Haver;rustgewas
+EB1;944;Hennepvezel;rustgewas
+EB1;3512;Italiaans raaigras;rustgewas
+EB1;246;Karwijzaad;rustgewas
+EB1;3506;Engels raaigras;rustgewas
+EB1;1922;Winterkoolzaad;rustgewas
+EB1;1923;Zomerkoolzaad;rustgewas
+EB1;666;Lijnzaad;rustgewas
+EB1;258;Luzerne;rustgewas
+EB1;664;Raapzaad;rustgewas
+EB1;3807;Rietzwenkgras;rustgewas
+EB1;237;Rogge;rustgewas
+EB1;3519;Sorghum;rustgewas
+EB1;233;Wintertarwe;rustgewas
+EB1;234;Zomertarwe;rustgewas
+EB1;381;Teff;rustgewas
+EB1;314;Triticale;rustgewas
+EB1;3523;Veldbeemdgras;rustgewas
+EB1;3736;Vezelvlas;rustgewas
+EB1;1037;Peterselie;rustgewas
+EB1;247;Blauwmaanzaad;rustgewas
+EB1;799;Rode klaver;rustgewas
+EB1;3524;Witte klaver;rustgewas
+EB1;516;Miscanthus;rustgewas
+EB1;382;Spelt;rustgewas
+EB1;1022;Quinoa;rustgewas
+EB1;2652;Overige granen;rustgewas
+EB1;266;Grasland, tijdelijk;rustgewas
+EB2;242;Bruine bonen;eiwitgewas
+EB2;853;Tuinbonen;eiwitgewas
+EB2;854;Bonen, tuin- (groen te oogsten) ;eiwitgewas
+EB2;311;Bonen, veld- ;eiwitgewas
+EB2;308;Erwten (droog);eiwitgewas
+EB2;244;Erwten geel/groen;eiwitgewas
+EB2;241;Kapucijners;eiwitgewas
+EB2;663;Lupinen;eiwitgewas
+EB2;258;Luzerne (eenjarig);eiwitgewas
+EB2;665;Sojabonen;eiwitgewas
+EB2;2747;Peulen;eiwitgewas
+EB2;2751;Pronkbonen;eiwitgewas
+EB2;2779;Stamslabonen;eiwitgewas
+EB2;799;Rode klaver;eiwitgewas
+EB2;3524;Witte klaver;eiwitgewas
+EB2;258;Luzerne (meerjarig);eiwitgewas
+EB3;265;Grasland, blijvend blijvend;meerjarig gewas
+EB3;266;Grasland, tijdelijk;meerjarig gewas
+EB3;799;Rode klaver;meerjarig gewas
+EB3;258;Luzerne;meerjarig gewas
+EB3;516;Miscanthus;meerjarig gewas
+EB8;3502;Bladkool;diepwortelend
+EB8;3503;Bladraap;diepwortelend
+EB8;3504;Bladrammenas;diepwortelend
+EB8;511;Cichorei;diepwortelend
+EB8;428;Gele mosterd;diepwortelend
+EB8;944;Hennepvezel;diepwortelend
+EB8;3512;Italiaans raaigras;diepwortelend
+EB8;246;Karwijzaad;diepwortelend
+EB8;799;Rode klaver;diepwortelend
+EB8;1922;Winter koolzaad;diepwortelend
+EB8;1923;Zomer koolzaad;diepwortelend
+EB8;666;Lijnzaad;diepwortelend
+EB8;258;Luzerne;diepwortelend
+EB8;516;Miscanthus;diepwortelend
+EB8;664;Raapzaad;diepwortelend
+EB8;3807;Rietzwenkgras;diepwortelend
+EB8;3519;Sorghum;diepwortelend
+EB8;3736;Vezelvlas;diepwortelend
+EB8;1036;Wortelpeterselie;diepwortelend
+EB8;1037;Peterselie;diepwortelend
+EB9;516;Miscanthus;wortelspruitgewas
+EB9;944;Hennepvezel;wortelspruitgewas
+EB9;3736;Vezelvlas;wortelspruitgewas
+EG15;333;Rand, grenzend aan blijvend grasland of een blijvende teelt, hoofdzakelijk bestaand uit blijvend gras ;kruidenrijke rand
+EG15;334;Rand, grenzend aan blijvend grasland of een blijvende teelt, hoofdzakelijk bestaand uit een ander gewas dan gras ;kruidenrijke rand
+EG15;370;Rand, grenzend aan blijvend grasland of een blijvende teelt, hoofdzakelijk bestaand uit tijdelijk grasland ;kruidenrijke rand
+EG15;337;Bufferstrook, rand (inclusief eventuele oevervegetatie);kruidenrijke rand
