@@ -25,13 +25,15 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
                             measures = NULL, sector){
   
   # add visual bindings
- value = . = eco_id = b_lu_brp = type = erscore = EG15 = EG22 = cf = EB1A = EB1B = EB1C = NULL
- D_AREA_RR = EB2 = EB3 = EB8 = EB9 = soiltype = urgency = indicator = farmid = NULL
- D_OPI_SOIL = D_OPI_WATER = D_OPI_CLIMATE = D_OPI_BIO = D_OPI_LANDSCAPE = NULL
- D_MEAS_BIO = D_MEAS_CLIM = D_MEAS_LAND = D_MEAS_SOIL = D_MEAS_WAT = NULL
+  value = . = eco_id = b_lu_brp = type = erscore = EG15 = EG22 = cf = EB1A = EB1B = EB1C = NULL
+  D_AREA_RR = EB2 = EB3 = EB8 = EB9 = soiltype = urgency = indicator = farmid = NULL
+  D_OPI_SOIL = D_OPI_WATER = D_OPI_CLIMATE = D_OPI_BIO = D_OPI_LANDSCAPE = NULL
+  D_MEAS_BIO = D_MEAS_CLIM = D_MEAS_LAND = D_MEAS_SOIL = D_MEAS_WAT = NULL
+  cfSOIL = cfWAT = cfCLIM = cfBIO = cfLAND = D_OPI_TOT = id = NULL
  
   # check length of the inputs
-  arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BRP),length(B_LU_BBWP))
+  arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BRP),length(B_LU_BBWP),
+                    length(D_AREA))
   
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
@@ -107,18 +109,15 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
       # calculate
       dt.meas.impact <- er_meas_score(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR, 
                                       B_LU_BRP = dt$B_LU_BRP,
+                                      B_LU_BBWP = B_LU_BBWP,
                                       measures = measures, 
                                       sector = sector)
-      # setnames
-      setnames(dt.meas.impact,
-               c('biodiversity', 'climate', 'landscape', 'soil','water'),
-               mcols,skip_absent = TRUE)
-      
+
       # merge with dt
       dt <- merge(dt,dt.meas.impact,by='id')
       
       # set NA to zero
-      dt[,c(mcols) := lapply(.SD,function(x) fifelse(is.na(x),0,x)),.SDcols = cols]
+      dt[,c(mcols) := lapply(.SD,function(x) fifelse(is.na(x),0,x)),.SDcols = mcols]
       
     } else {
       
@@ -161,12 +160,13 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
   # order the fields
   setorder(dt, id)
   
-  # extract value
-  value <- dt[,mget(c('D_OPI_SOIL','D_OPI_WATER','D_OPI_CLIMATE','D_OPI_BIO','D_OPI_LANDSCAPE','D_OPI_TOT'))]
-   
-  # Round the values
-  value <- value[, lapply(.SD, round, digits = 0)]
+  # round the values
+  cols <- c('D_OPI_SOIL','D_OPI_WATER','D_OPI_CLIMATE','D_OPI_BIO','D_OPI_LANDSCAPE','D_OPI_TOT')
+  dt <- dt[, c(cols) := lapply(.SD, round, digits = 0),.SDcols = cols]
   
+  # extract value
+  value <- dt[,mget(c('id',cols))]
+   
   # return value
   return(value)
 }
