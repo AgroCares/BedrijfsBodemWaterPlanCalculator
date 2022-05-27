@@ -342,3 +342,6 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
   # return value
   return(out)
 }
+
+
+

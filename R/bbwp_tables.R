@@ -28,3 +28,46 @@
 #'   \item{e_kosten}{index representing the costs for implementing the measure}
 #' }
 "bbwp_measures"
+
+#' The importance and scoring of environmental challenges for Ecoregelingen
+#' 
+#' This table contains the objective scoring and correction factors to estimate score for Ecoregeling
+#' 
+#' @format A data.table with 8 rows and 7 columns:
+#' \describe{
+#'   \item{soiltype}{bla bla}
+#'   \item{type}{bla bla}
+#'   \item{cf_soil}{bla bla}
+#'   \item{cf_water}{bla bla}
+#'   \item{cf_climate}{bla bla}
+#'   \item{cf_biodiversity}{bla bla}
+#'   \item{cf_landscape}{ bla bla}
+#' }
+"er_scoring"
+
+#' The impact score of farm based measures
+#' 
+#' This table contains the scores of crop rotation related farm measures for Ecoregeling
+#' 
+#' @format A data.table with 40 rows and 5 columns:
+#' \describe{
+#'   \item{id}{bla bla}
+#'   \item{indicator}{bla bla}
+#'   \item{eco_id}{bla bla}
+#'   \item{description}{bla bla}
+#'   \item{er_score}{bla bla}
+#' }
+"er_farm_measure"
+
+#' An overview of crop lists used in Ecoregelingen
+#' 
+#' This table contains the crop ids (b_lu_brp) for specific Ecoregelingen measures
+#' 
+#' @format A data.table with 75 rows and 4 columns:
+#' \describe{
+#'   \item{eco_id}{bla bla}
+#'   \item{b_lu_brp}{bla bla}
+#'   \item{b_lu_name}{bla bla}
+#'   \item{er_description}{bla bla}
+#' }
+"er_crops"
