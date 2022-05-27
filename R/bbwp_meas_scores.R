@@ -24,7 +24,7 @@
 # calculate the score for a list of measures for one or multiple fields
 bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_BRP, M_DRAIN, D_WP,
                             D_OPI_NGW, D_OPI_NSW, D_OPI_PSW, D_OPI_NUE, D_OPI_WB,
-                            measures, sector){
+                            measures = NULL, sector){
   
   effect_psw = psw_psg_medium = psw_psg_high = effect_nsw = nsw_drains = nsw_gwl_low = nsw_gwl_high = psw_noslope = NULL
   effect_ngw = ngw_grassland = psw_bulbs = D_MEAs_NGW = D_MEAS_NSW = D_MEAS_NUE = effect_nue = D_MEAS_WB = effect_Wb = diary = NULL
@@ -52,8 +52,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
   checkmate::assert_numeric(D_OPI_NUE, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_OPI_WB, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_subset(sector, choices = c('diary', 'arable', 'tree_nursery', 'bulbs'))
-  checkmate::assert_data_table(measures)
-  
+
   # collect data in one data.table
   dt <- data.table(
     id = 1:arg.length,
@@ -76,9 +75,11 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
     D_MEAS_WB = NA_real_,
     D_MEAS_TOT = NA_real_
   )
-  dt.measures <- measures
-  cols.num <- c("effect_psw", "effect_nsw", "effect_ngw", "effect_nue", "effect_costs", "effect_wb")
-  dt.measures[, (cols.num) := lapply(.SD, as.numeric), .SDcols = cols.num]
+  
+  # load, check and update the measures database
+  dt.measures <- bbwp_check_meas(measures,eco = FALSE,score = TRUE)
+  
+  # merge with input
   dt <- merge(dt, dt.measures, by = 'id', all = TRUE)
   
   # Add bonus points
@@ -96,6 +97,47 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
                      1006, 1007, 1012, 1015, 1027,
                      1051, 1052), effect_psw := effect_psw + psw_bulbs]
   
+  # set scores to zero when measures are not applicable given the crop type
+  
+    # columns with the Ecoregelingen ranks
+    cols <- c('effect_psw','effect_nsw', 'effect_ngw','effect_wb','effect_nue')
+  
+    # set first all missing data impacts to 0
+    dt[,c(cols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = cols]
+  
+    # set the score to zero when not applicable for given crop category
+    dt[B_LU_BBWP == 1 & crop_cat1 <= 0, c(cols) := 0]
+    dt[B_LU_BBWP == 2 & crop_cat2 <= 0, c(cols) := 0]
+    dt[B_LU_BBWP == 3 & crop_cat3 <= 0, c(cols) := 0]
+    dt[B_LU_BBWP == 4 & crop_cat4 <= 0, c(cols) := 0]
+    dt[B_LU_BBWP == 5 & crop_cat5 <= 0, c(cols) := 0]
+    dt[B_LU_BBWP == 6 & crop_cat6 <= 0, c(cols) := 0]
+    dt[B_LU_BBWP == 7 & crop_cat7 <= 0, c(cols) := 0]
+    dt[B_LU_BBWP == 8 & crop_cat8 <= 0, c(cols) := 0]
+    dt[B_LU_BBWP == 9 & crop_cat9 <= 0, c(cols) := 0]
+  
+    # set the score to zero when the measure is not applicable
+  
+      # add columns for the sector to which the farms belong
+      fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
+      fs1 <- paste0('f',sector)
+      fs2 <- fs0[!fs0 %in% fs1]
+      dt[,c(fs1) := 1]
+      dt[,c(fs2) := 0]
+  
+      # estimate whether sector allows applicability
+      dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs]
+  
+      # adapt the score when measure is not applicable
+      dt[fsector == 0, c(cols) := 0]
+  
+      # adapt the score when the soil type limits the applicability of measures
+      dt[grepl('klei', B_SOILTYPE_AGR) & clay == FALSE , c(cols) := 0]
+      dt[grepl('zand|dal', B_SOILTYPE_AGR) & sand == FALSE , c(cols) := 0]
+      dt[grepl('veen', B_SOILTYPE_AGR) & peat == FALSE , c(cols) := 0]
+      dt[grepl('loess', B_SOILTYPE_AGR) & loess == FALSE , c(cols) := 0]
+  
+  
   # add impact score for measure per opportunity index
   dt[, D_MEAS_NGW := D_OPI_NGW * effect_ngw]
   dt[, D_MEAS_NSW := D_OPI_NSW * effect_nsw]
@@ -105,27 +147,6 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
   
   # columns to be adapted given applicability
   scols <- c('D_MEAS_NGW','D_MEAS_NSW','D_MEAS_PSW','D_MEAS_NUE','D_MEAS_WB','D_MEAS_TOT')
-  
-  # rank is zero when measures are not applicable given the farm type
-  if('diary' %in% sector) {
-    dt[diary == FALSE, c(scols) := lapply(.SD,function(x) x * 0.1), .SDcols = scols]
-  }
-  if('arable' %in% sector) {
-    dt[arable == FALSE, c(scols) := lapply(.SD,function(x) x * 0.1), .SDcols = scols]
-  }
-  #if('vollegrondsgroente' %in% sector){dt[tp_vgg == 0,c(scols) := lapply(.SD,function(x) x * 0.1),.SDcols = scols]}
-  if('tree_nursery' %in% sector) {
-    dt[tree_nursery == FALSE, c(scols) := lapply(.SD,function(x) x * 0.1), .SDcols = scols]
-  }
-  if('bulbs' %in% sector) {
-    dt[bulbs == FALSE, c(scols) := lapply(.SD,function(x) x * 0.1), .SDcols = scols]
-  }
-  
-  # rank is zero when measure is not applicable depending on soil type
-  dt[grepl('klei', B_SOILTYPE_AGR) & clay == FALSE , c(scols) := 0]
-  dt[grepl('zand|dal', B_SOILTYPE_AGR) & sand == FALSE , c(scols) := 0]
-  dt[grepl('veen', B_SOILTYPE_AGR) & peat == FALSE , c(scols) := 0]
-  dt[grepl('loess', B_SOILTYPE_AGR) & loess == FALSE , c(scols) := 0]
   
   # Calculate total measure score
   dt[, D_MEAS_TOT := (D_MEAS_NGW + D_MEAS_NSW + D_MEAS_PSW + D_MEAS_NUE + D_MEAS_WB ) /  5]
