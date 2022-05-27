@@ -8,6 +8,7 @@
 #' @param A_P_SG (numeric) 
 #' @param B_SLOPE (numeric)
 #' @param B_LU_BRP (integer)
+#' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param D_WP (numeric) The fraction of the parcel that is surrounded by surface water
 #' @param D_OPI_NGW (numeric) the opportunity index (risk x impact) for nitrate leaching to groundwater given field properties
 #' @param D_OPI_NSW (numeric) the opportunity index (risk x impact) for nitrate leaching and runoff to surface water given field properties
@@ -22,7 +23,7 @@
 #'
 #' @export
 # calculate the score for a list of measures for one or multiple fields
-bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_BRP, M_DRAIN, D_WP,
+bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_BRP, B_LU_BBWP, M_DRAIN, D_WP,
                             D_OPI_NGW, D_OPI_NSW, D_OPI_PSW, D_OPI_NUE, D_OPI_WB,
                             measures = NULL, sector){
   
@@ -34,7 +35,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
   # check length of the inputs
   arg.length <- max(length(D_OPI_NGW), length(D_OPI_NSW), length(D_OPI_PSW), length(D_OPI_NUE),
                     length(D_OPI_WB),length(B_SOILTYPE_AGR), length(B_GWL_CLASS), length(M_DRAIN),
-                    length(A_P_SG), length(B_SLOPE), length(B_LU_BRP),
+                    length(A_P_SG), length(B_SLOPE), length(B_LU_BRP),length(B_LU_BBWP),
                     length(D_WP))
   
   # check inputs
@@ -45,6 +46,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
   checkmate::assert_numeric(A_P_SG, lower = 0, upper = 120, len = arg.length)
   checkmate::assert_numeric(B_SLOPE, len = arg.length)
   checkmate::assert_integerish(B_LU_BRP, lower = 0, len = arg.length)
+  checkmate::assert_integerish(B_LU_BBWP, lower = 0, upper = 9,len = arg.length)
   checkmate::assert_numeric(D_WP, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_OPI_NGW, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_OPI_NSW, lower = 0, upper = 1, len = arg.length)
@@ -82,21 +84,25 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
   # merge with input
   dt <- merge(dt, dt.measures, by = 'id', all = TRUE)
   
-  # Add bonus points
-  dt[A_P_SG >= 50 & A_P_SG < 75, effect_psw := effect_psw + psw_psg_medium]
-  dt[A_P_SG >= 75, effect_psw := effect_psw + psw_psg_high]
-  dt[M_DRAIN == TRUE, effect_nsw := effect_nsw + nsw_drains]
-  dt[B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_low]
-  dt[! B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_high]
-  dt[B_SLOPE <= 2, effect_psw := effect_psw + psw_noslope]
-  dt[B_LU_BRP %in% c(265, 266, 331, 332, 336,383), effect_ngw := effect_ngw + ngw_grassland]
-  dt[B_LU_BRP %in% c(176, 964, 965, 967, 968, 970,
-                     971, 973, 976, 979, 982, 983,
-                     985, 986, 997, 998, 999, 1000,
-                     1001, 1002, 1003, 1004, 1005,
-                     1006, 1007, 1012, 1015, 1027,
-                     1051, 1052), effect_psw := effect_psw + psw_bulbs]
-  
+    # Add bonus points for psw
+    dt[A_P_SG >= 50 & A_P_SG < 75, effect_psw := effect_psw + psw_psg_medium]
+    dt[A_P_SG >= 75, effect_psw := effect_psw + psw_psg_high]
+    dt[B_SLOPE <= 2, effect_psw := effect_psw + psw_noslope]
+    dt[B_LU_BRP %in% c(176, 964, 965, 967, 968, 970,
+                       971, 973, 976, 979, 982, 983,
+                       985, 986, 997, 998, 999, 1000,
+                       1001, 1002, 1003, 1004, 1005,
+                       1006, 1007, 1012, 1015, 1027,
+                       1051, 1052), effect_psw := effect_psw + psw_bulbs]
+    
+    # Add bonus points for nsw
+    dt[M_DRAIN == TRUE, effect_nsw := effect_nsw + nsw_drains]
+    dt[B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_low]
+    dt[! B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_high]
+    
+    # Add bonus points for grassland
+    dt[B_LU_BRP %in% c(265, 266, 331, 332, 336,383), effect_ngw := effect_ngw + ngw_grassland]
+ 
   # set scores to zero when measures are not applicable given the crop type
   
     # columns with the Ecoregelingen ranks
