@@ -62,10 +62,10 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
   )
 
   # add farm scores
-  
+  #dt.farm <- er_croprotation()
   
   # merge all measures to the given fields
-  dt <- as.data.table(merge.data.frame(dt, dt.measures, all = TRUE))
+  dt <- as.data.table(merge.data.frame(dt, dt.meas.av, all = TRUE))
   
   # rank is zero when measures are not applicable given the crop type
   
@@ -85,17 +85,15 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
     dt[B_LU_BBWP == 8 & crop_cat8 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     dt[B_LU_BBWP == 9 & crop_cat9 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
   
-    # add columns for the farm sector
-    fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
-    fs1 <- paste0('f',sector)
-    fs2 <- fs0[!fs0 %in% fs1]
-    dt[,c(fs1) := 1]
-    dt[,c(fs2) := 0]
-    
-    setnames(dt,'diary','dairy')
-    
     # lower the score when the sector limits the applicability of measures
-    
+
+      # add columns for the farm sector
+      fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
+      fs1 <- paste0('f',sector)
+      fs2 <- fs0[!fs0 %in% fs1]
+      dt[,c(fs1) := 1]
+      dt[,c(fs2) := 0]
+      
       # estimate whether sector allows applicability
       dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs]
     
@@ -128,28 +126,26 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
   
   # correct for current crop rotation related scores
   
+  # correct for other deviations from the general score
     
-    # add here something to stimulate where biggest distance is...
+  # add here something to stimulate where biggest distance is...
    
-  # add farm related scores (see document)
-    
     
   # Loop through each field
   
     # define an empty list
     list.measures <- list()
-  
-      
+
     # select for each field the top5 measures per objective
     for (i in 1:arg.length) {
     
-      # # list to store output
-      # list.field <- list()
-      # 
-      # # Get the overall top measures
-      # this.dt.tot <- dt[id == i & D_MEAS_TOT > 0, ]
-      # top.tot <- this.dt.tot[order(-D_MEAS_TOT)]$bbwp_id[1:5]
-      # list.field$top <- na.omit(top.tot)
+       # list to store output
+       list.field <- list()
+       
+       # Get the overall top measures
+       this.dt.tot <- dt[id == i & D_MEAS_TOT > 0, ]
+       top.tot <- this.dt.tot[order(-D_MEAS_TOT)]$bbwp_id[1:5]
+       list.field$top <- na.omit(top.tot)
       # 
   
   #   # Get the top nsw measures
@@ -235,9 +231,6 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP, measures, sector){
   checkmate::assert_integerish(B_LU_BRP, lower = 0, len = arg.length)
   checkmate::assert_integerish(B_LU_BBWP, lower = 0, upper = 9,len = arg.length)
   checkmate::assert_character(B_SOILTYPE_AGR,len = arg.length)
-  checkmate::assert_data_table(measures)
-  checkmate::assert_true('bbwp_id' %in% colnames(measures))
-  checkmate::assert_true('id' %in% colnames(measures))
   
   # get the measurement data.table
   dt.meas.taken <- bbwp_check_meas(dt = measures, eco = TRUE, score = TRUE)
@@ -315,7 +308,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP, measures, sector){
     
     # melt dt
     dt <- melt(dt,
-               id.vars = c('id','bbwp_id','soiltype','D_AREA'),
+               id.vars = c('id','bbwp_id','soiltype'),
                measure = patterns(erscore = "^er_"),
                variable.name = 'indicator',
                value.name = 'erscore')
@@ -329,6 +322,11 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP, measures, sector){
   
   # dcast the output
   dt.field <- dcast(dt.field,id~indicator,value.var = "erscore")
+  
+  # setnames
+  setnames(dt.field,
+           c('biodiversity', 'climate', 'landscape', 'soil','water'),
+           c('D_MEAS_BIO', 'D_MEAS_CLIM', 'D_MEAS_LAND', 'D_MEAS_SOIL', 'D_MEAS_WAT'))
   
   # order to ensure field order
   setorder(dt.field, id)

@@ -112,7 +112,7 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
       # setnames
       setnames(dt.meas.impact,
                c('biodiversity', 'climate', 'landscape', 'soil','water'),
-               mcols)
+               mcols,skip_absent = TRUE)
       
       # merge with dt
       dt <- merge(dt,dt.meas.impact,by='id')

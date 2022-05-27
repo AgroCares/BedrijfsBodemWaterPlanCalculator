@@ -253,16 +253,20 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
   # add also missing measures when function requires full list
   if(score == FALSE){
     
-      # check if farm-id is present
-      checkmate::assert_true('id' %in% colnames(dt))
-      
       # perform check
       dt.miss <- dt.measures[!bbwp_id %in% dt$bbwp_id]
       
       # add missing ones to dt
       dt <- rbind(dt,dt.miss,fill = TRUE)
       
-    }
+  } else {
+      
+    # check if farm-id is present
+    checkmate::assert_true('id' %in% colnames(dt))
+    
+    # add 'id' to cols.use
+    cols.use <- unique(c('id',cols.use))
+  }
   
   # set all scoring, applicabilility and effects to zero when data is missing
     
