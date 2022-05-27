@@ -11,11 +11,11 @@
 #' @param B_SLOPE (boolean)
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param D_WP (numeric) The fraction of the parcel that is surrounded by surface water
-#' @param D_OPI_NGW (numeric) the opportunity index (risk x impact) for nitrate leaching to groundwater given field properties
-#' @param D_OPI_NSW (numeric) the opportunity index (risk x impact) for nitrate leaching and runoff to surface water given field properties
-#' @param D_OPI_PSW (numeric) the opportunity index (risk x impact) for phosphorus leaching and runoff to surface water given field properties
-#' @param D_OPI_NUE (numeric) the opportunity index (risk x impact) to improve the efficiency of nitrogen and phosphorus fertilizer use given field properties
-#' @param D_OPI_WB (numeric) the opportunity index (risk x impact) to improve the potential to buffer and store water and efficiently use water for plant growth given field properties
+#' @param B_CT_SOIL (numeric) the target value for soil quality conform Ecoregeling scoring
+#' @param B_CT_WATER (numeric) the target value for water quality conform Ecoregeling scoring
+#' @param B_CT_CLIMATE (numeric) the target value for climate conform Ecoregeling scoring
+#' @param B_CT_BIO (numeric) the target value for biodiversity conform Ecoregeling scoring
+#' @param B_CT_LANDSCAPE (numeric) the target value for landscape quality conform Ecoregeling scoring
 #' @param available_measures (data.table) table with the properties of the available measures
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'diary', 'arable', 'tree_nursery', 'bulbs')
 #' 
@@ -24,9 +24,9 @@
 #'
 #' @export
 # rank the measures given their effectiveness to improve the sustainability of the farm
-er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_BRP, M_DRAIN, D_WP,
-                           D_OPI_NGW, D_OPI_NSW, D_OPI_PSW, D_OPI_NUE, D_OPI_WB,
-                           available_measures, sector){
+er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE, B_LU_BRP, M_DRAIN, D_WP,
+                         B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE, 
+                         available_measures, sector){
   
   # add visual bindings
   eco_id = type = fr_area = D_AREA = id = NULL
@@ -44,25 +44,46 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
   er_aim <- er_scoring[type == 'aim'][,type := NULL]
   
   # check length of the inputs
-  arg.length <- 2
+  arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BRP),length(B_LU_BBWP),length(A_P_SG),length(B_SLOPE),
+                    length(M_DRAIN),length(D_WP),length(B_CT_SOIL),length(B_CT_WATER),length(B_CT_CLIMATE),
+                    length(B_CT_BIO),length(B_CT_LANDSCAPE))
   
   # check inputs
+  checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
+                                                       'dalgrond','moerige_klei','veen','loess'))
+  checkmate::assert_integerish(B_LU_BRP, lower = 0, len = arg.length)
+  checkmate::assert_integerish(B_LU_BBWP, lower = 0, upper = 9,len = arg.length)
+  checkmate::assert_character(B_SOILTYPE_AGR,len = arg.length)
   
   # collect data in one data.table
   dt <- data.table(
     id = 1:arg.length,
-    B_SOILTYPE_AGR = 'dekzand',
-    B_GWL_CLASS = 'GtIII',
-    D_AREA = c(15,0.8),
-    A_P_SG = 0.15,
-    B_SLOPE = 1.5,
-    B_LU_BRP = c(265,2005),
-    B_LU_BBWP = c(1,4),
-    M_DRAIN = TRUE
+    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
+    B_GWL_CLASS = B_GWL_CLASS,
+    D_AREA = D_AREA,
+    A_P_SG = A_P_SG,
+    B_SLOPE = B_SLOPE,
+    B_LU_BRP = B_LU_BRP,
+    B_LU_BBWP = B_LU_BBWP,
+    M_DRAIN = M_DRAIN,
+    B_CT_SOIL = B_CT_SOIL, 
+    B_CT_WATER = B_CT_WATER,
+    B_CT_CLIMATE = B_CT_CLIMATE,
+    B_CT_BIO = B_CT_BIO,
+    B_CT_LANDSCAPE = B_CT_LANDSCAPE
   )
 
-  # add farm scores
-  #dt.farm <- er_croprotation()
+  # add the generic farm score as baseline
+  # this gives the averaged ER score based on the crops in crop rotation plan
+  dt.farm <- er_croprotation(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR,
+                             B_LU_BRP = dt$B_LU_BRP,
+                             B_LU_BBWP = dt$B_LU_BBWP,
+                             D_AREA = dt$D_AREA,
+                             B_CT_SOIL = dt$B_CT_SOIL,
+                             B_CT_WATER = dt$B_CT_WATER,
+                             B_CT_CLIMATE = dt$B_CT_CLIMATE,
+                             B_CT_BIO = dt$B_CT_BIO,
+                             B_CT_LANDSCAPE = dt$B_CT_LANDSCAPE)
   
   # merge all measures to the given fields
   dt <- as.data.table(merge.data.frame(dt, dt.meas.av, all = TRUE))
@@ -124,17 +145,22 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
     dt[, er_biodiversity := er_biodiversity * cf_biodiversity]
     dt[, er_landscape := er_landscape * cf_landscape]
   
-  # correct for current crop rotation related scores
-  
-  # correct for other deviations from the general score
+    # multiply measurement score by distance to target
+    dt[, er_water := er_water * (1 - dt.farm$water)]
+    dt[, er_soil := er_soil * (1 - dt.farm$soil)]
+    dt[, er_climate := er_climate * (1 - dt.farm$climate)]
+    dt[, er_biodiversity := er_biodiversity * (1 - dt.farm$biodiversity)]
+    dt[, er_landscape := er_landscape * (1 - dt.farm$landscape)]
     
-  # add here something to stimulate where biggest distance is...
-   
+    # Calculate total measurement score given the distance to target
+    dt[, er_total := (er_water + er_soil + er_climate + er_biodiversity + er_landscape) / 5]
+    
+    # correct total measurement score given minimum scores
     
   # Loop through each field
   
     # define an empty list
-    list.measures <- list()
+    list.meas <- list()
 
     # select for each field the top5 measures per objective
     for (i in 1:arg.length) {
@@ -143,62 +169,38 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS,  A_P_SG, B_SLOPE
        list.field <- list()
        
        # Get the overall top measures
-       this.dt.tot <- dt[id == i & D_MEAS_TOT > 0, ]
-       top.tot <- this.dt.tot[order(-D_MEAS_TOT)]$bbwp_id[1:5]
-       list.field$top <- na.omit(top.tot)
-      # 
+       top.tot <- dt[id == i & er_total > 0, ][order(-er_total)][1:5,bbwp_id]
   
-  #   # Get the top nsw measures
-  #   this.dt.ngw <- dt[id == i & D_MEAS_NGW > 0, ]
-  #   top.ngw <- this.dt.ngw[order(-D_MEAS_NGW)]$bbwp_id[1:5]
-  #   list.field$ngw <- data.table(
-  #     top = 'ngw',
-  #     measure = top.ngw,
-  #     rank = 1:length(top.ngw)
-  #   )
-  #   
-  #   # Get the top nsw measures
-  #   this.dt.nsw <- dt[id == i & D_MEAS_NSW > 0, ]
-  #   top.nsw <- this.dt.nsw[order(-D_MEAS_NSW)]$bbwp_id[1:5]
-  #   list.field$nsw <- data.table(
-  #     top = 'nsw',
-  #     measure = top.nsw,
-  #     rank = 1:length(top.nsw)
-  #   )
-  #   
-  #   # Get the top psw measures
-  #   this.dt.psw <- dt[id == i & D_MEAS_PSW > 0, ]
-  #   top.psw <- this.dt.psw[order(-D_MEAS_PSW)]$bbwp_id[1:5]
-  #   list.field$psw <- data.table(
-  #     top = 'psw',
-  #     measure = top.psw,
-  #     rank = 1:length(top.psw)
-  #   )
-  #   
-  #   # Get the top nue measures
-  #   this.dt.nue <- dt[id == i & D_MEAS_NUE > 0, ]
-  #   top.nue <- this.dt.nue[order(-D_MEAS_NUE)]$bbwp_id[1:5]
-  #   list.field$nue <- data.table(
-  #     top = 'nue',
-  #     measure = top.nue,
-  #     rank = 1:length(top.nue)
-  #   )
-  #   
-  #   # Get the top wb measures
-  #   this.dt.wb <- dt[id == i & D_MEAS_WB > 0, ]
-  #   top.wb <- this.dt.psw[order(-D_MEAS_WB)]$bbwp_id[1:5]
-  #   list.field$wb <- data.table(
-  #     top = 'wb',
-  #     measure = top.wb,
-  #     rank = 1:length(top.wb)
-  #   )
-  #   
-  #   list.measures[[i]] <- stats::na.omit(rbindlist(list.field))
+       # Get the top measures for soil quality
+       top.soil <- dt[id == i & er_soil > 0, ][order(-er_soil)][1:5,bbwp_id]
+       
+       # Get the top measures for water quality
+       top.water <- dt[id == i & er_water > 0, ][order(-er_water)][1:5,bbwp_id]
+       
+       # Get the top measures for climate
+       top.climate <- dt[id == i & er_climate > 0, ][order(-er_climate)][1:5,bbwp_id]
+       
+       # Get the top measures for biodiversity
+       top.biodiversity <- dt[id == i & er_biodiversity > 0, ][order(-er_biodiversity)][1:5,bbwp_id]
+       
+       # Get the top measures for landscape
+       top.landscape <- dt[id == i & er_landscape > 0, ][order(-er_landscape)][1:5,bbwp_id]
+
+       # add them to list
+       list.meas[[i]] <- data.table(id = i,
+                                    top.tot = top.tot,
+                                    top.soil = top.soil,
+                                    top.water = top.water,
+                                    top.climate = top.climate,
+                                    top.biodiversity = top.biodiversity,
+                                    top.landscape = top.landscape)
    }
-  # 
-  # # return value
-   dt.measures <- data.table::rbindlist(list.measures)
-   return(dt.measures)
+  
+  # return value
+  out <- data.table::rbindlist(list.meas)
+   
+  # return value
+  return(out)
 }
 
 #' Evaluate the contribution of agronomic measures to improve soil mand water management
