@@ -29,7 +29,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE,
                          available_measures, sector){
   
   # add visual bindings
-  eco_id = type = fr_area = D_AREA = id = NULL
+  eco_id = type = fr_area = id = NULL
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = fbulbs = bulbs = NULL
   crop_cat1 = crop_cat2 = crop_cat3 = crop_cat4 = crop_cat5 = crop_cat6 = crop_cat7 = crop_cat8 = crop_cat9 = NULL
   soiltype = peat = clay = sand = silt = loess = NULL
@@ -154,8 +154,6 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE,
     
     # Calculate total measurement score given the distance to target
     dt[, er_total := (er_water + er_soil + er_climate + er_biodiversity + er_landscape) / 5]
-    
-    # correct total measurement score given minimum scores
     
   # Loop through each field
   
