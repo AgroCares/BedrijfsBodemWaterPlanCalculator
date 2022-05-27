@@ -6,7 +6,7 @@
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param A_P_SG (numeric) 
-#' @param B_SLOPE (boolean)
+#' @param B_SLOPE (numeric)
 #' @param B_LU_BRP (integer)
 #' @param D_WP (numeric) The fraction of the parcel that is surrounded by surface water
 #' @param D_OPI_NGW (numeric) the opportunity index (risk x impact) for nitrate leaching to groundwater given field properties
@@ -43,7 +43,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
   checkmate::assert_subset(B_GWL_CLASS, choices = c('-', 'GtI','GtII','GtII','GtIII','GtIII','GtIV','GtV','GtV','GtVI','GtVII','GtVIII'))
   checkmate::assert_logical(M_DRAIN,len = arg.length)
   checkmate::assert_numeric(A_P_SG, lower = 0, upper = 120, len = arg.length)
-  checkmate::assert_logical(B_SLOPE, len = arg.length)
+  checkmate::assert_numeric(B_SLOPE, len = arg.length)
   checkmate::assert_integerish(B_LU_BRP, lower = 0, len = arg.length)
   checkmate::assert_numeric(D_WP, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_OPI_NGW, lower = 0, upper = 1, len = arg.length)
@@ -88,7 +88,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
   dt[M_DRAIN == TRUE, effect_nsw := effect_nsw + nsw_drains]
   dt[B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_low]
   dt[! B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_high]
-  dt[B_SLOPE == FALSE, effect_psw := effect_psw + psw_noslope]
+  dt[B_SLOPE <= 2, effect_psw := effect_psw + psw_noslope]
   dt[B_LU_BRP %in% c(265, 266, 331, 332, 336,383), effect_ngw := effect_ngw + ngw_grassland]
   dt[B_LU_BRP %in% c(176, 964, 965, 967, 968, 970,
                      971, 973, 976, 979, 982, 983,
