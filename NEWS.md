@@ -1,5 +1,14 @@
 # Changelog BBWPC
 
+## 0.3.1
+### Added
+- er_farm_score, estimate farm averaged score for Ecoregeling method
+- test function for `er_farm_score`
+
+### Updated
+- add check for D_AREA length to bbwp_farm_score
+- update test function for `bbwp_farm_score`
+
 ## 0.3.0
 ### Added
 * er_farm_aim, estimate the Ecoregelingen (ER) score on farm level
@@ -15,7 +24,7 @@
 * test functions for `er_farm_aim`, `er_meas_rank`, `er_meas_score`, `er_field_scores`, `er_croprotation` and `bbwp_check_meas`
 
 ### Updated
-* ppr_tables_bbwp in `dev` along with associated csv files for tables `bbwp_measures`, `er_Scoring`, `er_farm_measure` and `er_crops`
+* ppr_tables_bbwp in `dev` along with associated csv files for tables `bbwp_measures`, `er_scoring`, `er_farm_measure` and `er_crops`
 
 ## 0.2.0 2021-11-01
 ### Added
