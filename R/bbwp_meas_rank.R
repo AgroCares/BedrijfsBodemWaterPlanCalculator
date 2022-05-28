@@ -43,21 +43,23 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
                     length(D_WP))
   
   # check inputs
-  checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
-                                                       'dalgrond','moerige_klei','veen','loess'))
-  checkmate::assert_subset(B_GWL_CLASS, choices = c('-', 'GtI','GtII','GtII','GtIII','GtIII','GtIV', 'GtV','GtVI','GtVII','GtVIII'))
+  checkmate::assert_subset(B_SOILTYPE_AGR, 
+                           choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
+                                        'dalgrond','moerige_klei','veen','loess'))
+  checkmate::assert_subset(B_GWL_CLASS, 
+                           choices = c('-', 'GtI','GtII','GtII','GtIII','GtIII','GtIV', 'GtV','GtVI','GtVII','GtVIII'))
   checkmate::assert_logical(M_DRAIN)
-  checkmate::assert_numeric(A_P_SG, lower = 0, upper = 120)
-  checkmate::assert_logical(B_SLOPE)
+  checkmate::assert_numeric(A_P_SG, lower = 0, upper = 120,len = arg.length)
+  checkmate::assert_numeric(B_SLOPE,lower = 0, upper = 20,len = arg.length)
   checkmate::assert_integerish(B_LU_BRP, lower = 0)
   checkmate::assert_integerish(B_LU_BBWP, lower = 0, upper = 9,len = arg.length)
-  checkmate::assert_numeric(D_WP, lower = 0, upper = 100)
-  checkmate::assert_numeric(D_OPI_NGW, lower = 0, upper = 100)
-  checkmate::assert_numeric(D_OPI_NSW, lower = 0, upper = 100)
-  checkmate::assert_numeric(D_OPI_PSW, lower = 0, upper = 100)
-  checkmate::assert_numeric(D_OPI_NUE, lower = 0, upper = 100)
-  checkmate::assert_numeric(D_OPI_WB, lower = 0, upper = 100)
-  checkmate::assert_subset(sector, choices = c('diary', 'arable', 'tree_nursery', 'bulbs'))
+  checkmate::assert_numeric(D_WP, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(D_OPI_NGW, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(D_OPI_NSW, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(D_OPI_PSW, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(D_OPI_NUE, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(D_OPI_WB, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_subset(sector, choices = c('dairy', 'arable', 'tree_nursery', 'bulbs'))
   
   # load, check and update the measures database
   dt.measures <- bbwp_check_meas(measures,eco = FALSE,score = FALSE)
@@ -70,6 +72,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
     A_P_SG = A_P_SG,
     B_SLOPE = B_SLOPE,
     B_LU_BRP = B_LU_BRP,
+    B_LU_BBWP = B_LU_BBWP,
     M_DRAIN = M_DRAIN,
     D_WP = D_WP,
     D_OPI_NGW = D_OPI_NGW,
@@ -81,7 +84,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
   )
   
   # merge inputs with data.table measures
-  dt <- as.data.table(merge.data.frame(dt, available_measures, all = TRUE))
+  dt <- as.data.table(merge.data.frame(dt, dt.measures, all = TRUE))
   
     # Add bonus points for psw
     dt[A_P_SG >= 50 & A_P_SG < 75, effect_psw := effect_psw + psw_psg_medium]
@@ -134,7 +137,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
     dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs]
     
     # adapt the score when measure is not applicable
-    dt[fsector == 0, c(cols) := lapply(.SD,function(x) x * 0), .SDcols = cols]
+    dt[fsector == 0, c(cols) := 0]
     
     # adapt the score when the soil type limits the applicability of measures
     dt[grepl('klei', B_SOILTYPE_AGR) & clay == FALSE , c(cols) := 0]
@@ -187,7 +190,12 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
                                  top.nue = top.nue)
   }
   
-  # return value
+  # prepare output
   out <- data.table::rbindlist(list.meas)
   
+  # remove NA for cases that no measures are needed at all
+  out <- unique(out)
+  
+  # return output
+  return(out)
 }

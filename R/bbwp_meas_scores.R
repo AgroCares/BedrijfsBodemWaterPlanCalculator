@@ -55,7 +55,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
   checkmate::assert_numeric(D_OPI_PSW, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_OPI_NUE, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_OPI_WB, lower = 0, upper = 1, len = arg.length)
-  checkmate::assert_subset(sector, choices = c('diary', 'arable', 'tree_nursery', 'bulbs'))
+  checkmate::assert_subset(sector, choices = c('dairy', 'arable', 'tree_nursery', 'bulbs'))
 
   # collect data in one data.table
   dt <- data.table(
@@ -174,7 +174,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
   setorder(dt.meas, id)
   
   # extract value
-  out <- dt.meas[, mget(scols)]
+  out <- dt.meas[, mget(c('id',scols))]
   
   # return value
   return(out)
