@@ -10,6 +10,7 @@ bbwp_field_properties(
   B_GWL_CLASS,
   B_SC_WENR,
   B_HELP_WENR,
+  B_SLOPE,
   A_CLAY_MI,
   A_SAND_MI,
   A_SILT_MI,
@@ -36,6 +37,8 @@ bbwp_field_properties(
 \item{B_SC_WENR}{(character) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006)}
 
 \item{B_HELP_WENR}{(character) The soil type abbreviation, derived from 1:50.000 soil map}
+
+\item{B_SLOPE}{(numeric) The slope of the field (degrees)}
 
 \item{A_CLAY_MI}{(numeric) The clay content of the soil (\%)}
 

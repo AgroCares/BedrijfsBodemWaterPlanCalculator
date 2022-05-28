@@ -11,11 +11,13 @@ bbwp_field_indicators(
   D_NSW_SCR,
   D_NSW_GWT,
   D_NSW_RO,
+  D_NSW_SLOPE,
   D_NSW_WS,
   D_NSW_NLV,
   D_PSW_SCR,
   D_PSW_GWT,
   D_PSW_RO,
+  D_PSW_SLOPE,
   D_PSW_WS,
   D_PSW_PCC,
   D_PSW_PSG,
@@ -42,6 +44,8 @@ bbwp_field_indicators(
 
 \item{D_NSW_RO}{(numeric) The relative score of runoff risks for N loss to surface water}
 
+\item{D_NSW_SLOPE}{(numeric) The relative score of runoff risks for N loss to surface water given slope}
+
 \item{D_NSW_WS}{(numeric) The relative score of wet surrounding for N loss to surface water}
 
 \item{D_NSW_NLV}{(numeric) The relative score of N mineralization for N loss to surface water}
@@ -51,6 +55,8 @@ bbwp_field_indicators(
 \item{D_PSW_GWT}{(numeric) The relative score of soil wetness for P loss to surface water}
 
 \item{D_PSW_RO}{(numeric) The relative score of runoff risks for P loss to surface water}
+
+\item{D_PSW_SLOPE}{(numeric) The relative score of runoff risks for P loss to surface water given slope}
 
 \item{D_PSW_WS}{(numeric) The relative score of wet surrounding for P loss to surface water}
 

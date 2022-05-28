@@ -10,6 +10,7 @@ bbwp_meas_score(
   A_P_SG,
   B_SLOPE,
   B_LU_BRP,
+  B_LU_BBWP,
   M_DRAIN,
   D_WP,
   D_OPI_NGW,
@@ -17,7 +18,7 @@ bbwp_meas_score(
   D_OPI_PSW,
   D_OPI_NUE,
   D_OPI_WB,
-  measures,
+  measures = NULL,
   sector
 )
 }
@@ -28,9 +29,11 @@ bbwp_meas_score(
 
 \item{A_P_SG}{(numeric)}
 
-\item{B_SLOPE}{(boolean)}
+\item{B_SLOPE}{(numeric)}
 
 \item{B_LU_BRP}{(integer)}
+
+\item{B_LU_BBWP}{(numeric) The BBWP category used for allocation of measures to BBWP crop categories}
 
 \item{M_DRAIN}{(boolean) is there tube drainage present in the field}
 
