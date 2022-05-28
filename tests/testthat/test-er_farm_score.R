@@ -18,7 +18,7 @@ test_that("check er_farm_score", {
       D_OPI_CLIMATE = seq(0, 10, 2.5),
       D_OPI_BIO = seq(0, 10, 2.5),
       D_OPI_LANDSCAPE = seq(0, 10, 2.5),
-      D_AREA = 1
+      D_AREA = rep(1,5)
     ),
     expected = data.table(
       D_OPI_TOT = 5,
