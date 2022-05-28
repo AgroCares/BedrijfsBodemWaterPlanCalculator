@@ -11,6 +11,7 @@
 - update test functions for `bbwp_field_properties`,`bbwp_field_indicators`,
 - selection top-5 measures in `bbwp_meas_rank` in data.table format
 - remove duplicated NA outputs in `bbwp_meas_rank` when D_OPI is zero
+- add pmax on D_OPI in `bbwp_field_scores`
 
 ## 0.3.1
 ### Added
