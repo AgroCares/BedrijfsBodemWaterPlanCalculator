@@ -65,6 +65,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
     A_P_SG = A_P_SG,
     B_SLOPE = B_SLOPE,
     B_LU_BRP = B_LU_BRP,
+    B_LU_BBWP = B_LU_BBWP,
     M_DRAIN = M_DRAIN,
     D_WP = D_WP,
     D_OPI_NGW = D_OPI_NGW,
