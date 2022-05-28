@@ -28,7 +28,7 @@ er_farm_score <- function(D_OPI_TOT,D_OPI_SOIL,D_OPI_WATER,D_OPI_CLIMATE,D_OPI_B
   checkmate::assert_numeric(D_OPI_CLIMATE, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(D_OPI_BIO, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(D_OPI_LANDSCAPE, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(D_AREA, lower = 0, upper = 50000)
+  checkmate::assert_numeric(D_AREA, lower = 0, upper = 50000, len = arg.length)
   
   # collect data in one data.table
   dt <- data.table(

@@ -27,7 +27,7 @@ bbwp_farm_score <- function(D_OPI_TOT,D_OPI_NGW,D_OPI_NSW,D_OPI_PSW,D_OPI_NUE,D_
   checkmate::assert_numeric(D_OPI_PSW, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(D_OPI_NUE, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(D_OPI_WB, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(D_AREA, lower = 0, upper = 50000)
+  checkmate::assert_numeric(D_AREA, lower = 0, upper = 50000, len = arg.length)
   
   # collect data in one data.table
   dt <- data.table(
