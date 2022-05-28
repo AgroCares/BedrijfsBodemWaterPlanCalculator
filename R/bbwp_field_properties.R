@@ -8,6 +8,7 @@
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param B_SC_WENR (character) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006)
 #' @param B_HELP_WENR (character) The soil type abbreviation, derived from 1:50.000 soil map
+#' @param B_SLOPE (numeric) The slope of the field (degrees)
 #' @param A_CLAY_MI (numeric) The clay content of the soil (\%)
 #' @param A_SAND_MI (numeric) The sand content of the soil (\%)
 #' @param A_SILT_MI (numeric) The silt content of the soil (\%)
@@ -27,16 +28,17 @@
 #' @import OBIC
 #'
 #' @export
-bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,
+bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE,
                                   A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,
                                   A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
                                   D_WP, D_RO_R, LSW) {
   
   ngw_scr = croptype.nleach = nf = ngw_lea = ngw_nlv = NULL
-  nsw_scr = nsw_gwt = nsw_ro = nsw_ws = nsw_nlv = NULL 
-  psw_scr = psw_gwt = psw_ro = psw_ws = psw_pcc = psw_pvg = psw_pret = NULL 
+  nsw_scr = nsw_gwt = nsw_ro = nsw_ws = nsw_nlv = nsw_slope = NULL 
+  psw_scr = psw_gwt = psw_ro = psw_ws = psw_pcc = psw_pvg = psw_pret = psw_slope = NULL 
   npe_wri = npe_pbi = npe_wdri = npe_nlv = wue_wwri = wue_wdri = wue_whc = NULL
   crop_code = soiltype = leaching_to_set = soiltype.n = bodem = gewas = pnorm = NULL
+  
   LSW.mean_n_rt = LSW.sd_n_rt = LSW.sd_ro_r = LSW.sd_wp = LSW.sd_p_cc = LSW.mean_p_sg = LSW.mean_al_ox = NULL
   LSW.mean_fe_ox = LSW.sd_fe_ox = crop_category = B_GT = LSW.mean_ro_r = LSW.mean_wp = LSW.mean_p_cc = psw_psg = LSW.sd_p_sg = NULL
   LSW.sd_al_ox = id = NULL
@@ -90,6 +92,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
     B_GWL_CLASS = B_GWL_CLASS,
     B_SC_WENR = B_SC_WENR, 
     B_HELP_WENR = B_HELP_WENR,
+    B_SLOPE = B_SLOPE,
     A_CLAY_MI = A_CLAY_MI,
     A_SAND_MI = A_SAND_MI,
     A_SILT_MI = A_SILT_MI,
@@ -160,6 +163,10 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   # higher risk is associated to increased risks for N runoff
   dt[,nsw_ro := pnorm(q = D_RO_R, mean = LSW.mean_ro_r, sd = LSW.sd_ro_r)]
   
+  # classify fields with a high slope as extra vulnerable for surface runoff
+  # with fields with slope > 2% being vulnerabile (Groenendijk, 2020)
+  dt[,nsw_slope := pmax(0.2,pmin(1,B_SLOPE/2))]
+  
   # rank the risk for wet surroundings (Van Gerven, 2018)
   # higher risk is associated to increased risks for N runoff
   dt[,nsw_ws := pnorm(q = D_WP, mean = LSW.mean_wp, sd = LSW.sd_wp)]
@@ -180,6 +187,10 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   
   # rank the risk for surface runoff (van Hattum, 2011)
   dt[,psw_ro := nsw_ro]
+  
+  # classify fields with a high slope as extra vulnerable for surface runoff
+  # with fields with slope > 2% being vulnerabile (Groenendijk, 2020)
+  dt[,psw_slope := nsw_slope]
   
   # rank the risk for wet surroundings (Van Gerven, 2018)
   dt[,psw_ws := nsw_ws]

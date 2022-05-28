@@ -1,5 +1,19 @@
 # Changelog BBWPC
 
+## 0.3.2
+### Added
+- add argument `B_SLOPE` to `bbwp_field_properties`,`bbwp_field_indicators`, issue #4
+- add argument `B_LU_BBWP` to `bbwp_meas_score`
+- add `id` to output `bbwp_meas_score`
+- add hierarchy in runoff index for N and P, issue #2
+
+### Updated
+- update test functions for `bbwp_field_properties`,`bbwp_field_indicators`,
+- selection top-5 measures in `bbwp_meas_rank` in data.table format
+- remove duplicated NA outputs in `bbwp_meas_rank` when D_OPI is zero
+- add pmax on D_OPI in `bbwp_field_scores`
+- include `bbwp_check_meas` in all bbwp_functions to load, check and update the measures input data.table
+
 ## 0.3.1
 ### Added
 - er_farm_score, estimate farm averaged score for Ecoregeling method

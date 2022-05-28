@@ -10,6 +10,7 @@ bbwp_field_scores(
   A_P_SG,
   B_SLOPE,
   B_LU_BRP,
+  B_LU_BBWP,
   M_DRAIN,
   D_WP,
   D_RISK_NGW,
@@ -38,6 +39,8 @@ bbwp_field_scores(
 
 \item{B_LU_BRP}{(integer)}
 
+\item{B_LU_BBWP}{(numeric) The BBWP category used for allocation of measures to BBWP crop categories}
+
 \item{M_DRAIN}{(boolean) is there tube drainage present in the field}
 
 \item{D_WP}{(numeric) The fraction of the parcel that is surrounded by surface water}
@@ -64,7 +67,7 @@ bbwp_field_scores(
 
 \item{B_CT_NSW_MAX}{(numeric) the max critical target for N reduction loss (kg N / ha)}
 
-\item{measures}{(list) the measures planned / done per fields (measurement nr)}
+\item{measures}{(data.table) the measures planned / done per fields}
 
 \item{sector}{(string) a vector with the farm type given the agricultural sector (options: 'melkveehouderij','akkerbouw','vollegrondsgroente','boomteelt','bollen','veehouderij','overig')}
 }
