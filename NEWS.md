@@ -12,6 +12,7 @@
 - selection top-5 measures in `bbwp_meas_rank` in data.table format
 - remove duplicated NA outputs in `bbwp_meas_rank` when D_OPI is zero
 - add pmax on D_OPI in `bbwp_field_scores`
+- include `bbwp_check_meas` in all bbwp_functions to load, check and update the measures input data.table
 
 ## 0.3.1
 ### Added
