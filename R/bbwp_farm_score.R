@@ -18,7 +18,7 @@ bbwp_farm_score <- function(D_OPI_TOT,D_OPI_NGW,D_OPI_NSW,D_OPI_PSW,D_OPI_NUE,D_
 
   # check length of the inputs
   arg.length <- max(length(D_OPI_TOT),length(D_OPI_NGW),length(D_OPI_NSW),length(D_OPI_PSW),
-                    length(D_OPI_NUE),length(D_OPI_WB))
+                    length(D_OPI_NUE),length(D_OPI_WB),length(D_AREA))
   
   # check inputs
   checkmate::assert_numeric(D_OPI_TOT, lower = 0, upper = 100, len = arg.length)
@@ -27,7 +27,7 @@ bbwp_farm_score <- function(D_OPI_TOT,D_OPI_NGW,D_OPI_NSW,D_OPI_PSW,D_OPI_NUE,D_
   checkmate::assert_numeric(D_OPI_PSW, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(D_OPI_NUE, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(D_OPI_WB, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(D_AREA, lower = 0, upper = 50000)
+  checkmate::assert_numeric(D_AREA, lower = 0, upper = 50000, len = arg.length)
   
   # collect data in one data.table
   dt <- data.table(
@@ -50,7 +50,7 @@ bbwp_farm_score <- function(D_OPI_TOT,D_OPI_NGW,D_OPI_NSW,D_OPI_PSW,D_OPI_NUE,D_
   # Round the values
   dt<- dt[, lapply(.SD, round, digits = 0)]
   
-  # add scores from measures taken???
+  # add scores from farm measures taken???
   
   
   # return output
