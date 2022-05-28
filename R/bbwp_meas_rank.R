@@ -131,7 +131,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
     dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs]
     
     # adapt the score when measure is not applicable
-    dt[fsector == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[fsector == 0, c(cols) := lapply(.SD,function(x) x * 0), .SDcols = cols]
     
     # adapt the score when the soil type limits the applicability of measures
     dt[grepl('klei', B_SOILTYPE_AGR) & clay == FALSE , c(cols) := 0]
@@ -156,9 +156,6 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
   # select for each field the top5 measures per objective
   for (i in 1:arg.length) {
     
-    # list to store output
-    list.field <- list()
-    
     # Get the overall top measures
     top.tot <- dt[id == i & D_MEAS_TOT > 0, ][order(-D_MEAS_TOT)][1:5,bbwp_id]
     
@@ -172,7 +169,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
     top.psw <- dt[id == i & D_MEAS_PSW > 0, ][order(-D_MEAS_PSW)][1:5,bbwp_id]
     
     # Get the top measures for water retention and availability
-    top.wb<- dt[id == i & D_MEAS_WB > 0, ][order(-D_MEAS_WB)][1:5,bbwp_id]
+    top.wb <- dt[id == i & D_MEAS_WB > 0, ][order(-D_MEAS_WB)][1:5,bbwp_id]
     
     # Get the top measures for nutrient use efficiency
     top.nue <- dt[id == i & D_MEAS_NUE > 0, ][order(-D_MEAS_NUE)][1:5,bbwp_id]
