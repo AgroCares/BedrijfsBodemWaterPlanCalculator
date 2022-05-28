@@ -49,7 +49,7 @@ bbwp_meas_score(
 
 \item{D_OPI_WB}{(numeric) the opportunity index (risk x impact) to improve the potential to buffer and store water and efficiently use water for plant growth given field properties}
 
-\item{measures}{(list) the measures planned / done per fields}
+\item{measures}{(data.table) the measures planned / done per fields}
 
 \item{sector}{(string) a vector with the farm type given the agricultural sector (options: 'diary', 'arable', 'tree_nursery', 'bulbs')}
 }

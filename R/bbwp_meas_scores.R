@@ -16,7 +16,7 @@
 #' @param D_OPI_NUE (numeric) the opportunity index (risk x impact) to improve the efficiency of nitrogen and phosphorus fertilizer use given field properties
 #' @param D_OPI_WB (numeric) the opportunity index (risk x impact) to improve the potential to buffer and store water and efficiently use water for plant growth given field properties
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'diary', 'arable', 'tree_nursery', 'bulbs')
-#' @param measures (list) the measures planned / done per fields
+#' @param measures (data.table) the measures planned / done per fields
 #' 
 #'   
 #' @import data.table
