@@ -196,8 +196,11 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE,
                                  top.landscape = top.landscape)
   }
   
-  # return value
+  # retrieve output object
   out <- data.table::rbindlist(list.meas)
+  
+  # remove NA for cases that no measures are needed at all
+  out <- unique(out)
   
   # return value
   return(out)
