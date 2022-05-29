@@ -33,7 +33,7 @@
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param LSW (data.table) The surface water polygon for catchment or polder
 #' @param measures (data.table) the measures planned / done per fields
-#' @param sector (string) a vector with the farm type given the agricultural sector (options: 'melkveehouderij','akkerbouw','vollegrondsgroente','boomteelt','bollen','veehouderij','overig')
+#' @param sector (string) a vector with the farm type given the agricultural sector (options: options: 'diary', 'arable', 'tree_nursery', 'bulbs')
 #' @param output (string) a vector specifying the output type of the function. Options: scores, measures 
 #'  
 #' @import data.table
