@@ -3,7 +3,8 @@
 ## 0.4.0
 ### Added
 - add wrapper function `bbwp` to run BBWP for a series of fields
-- add associated test functions for `bbwp`
+- add wrapper function `ecoregeling` to run Ecoregeling for a series of fields
+- add associated test functions for `bbwp` and `ecoregeling`
 
 ## 0.3.2
 ### Added
