@@ -36,7 +36,7 @@ bbwp(
   LSW,
   measures,
   sector,
-  output = "all"
+  output = "scores"
 )
 }
 \arguments{

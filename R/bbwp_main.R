@@ -45,7 +45,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                  B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW,B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, 
                  D_WP, D_RO_R, D_AREA, 
                  M_DRAIN, LSW, 
-                 measures, sector,output = 'all'){
+                 measures, sector,output = 'scores'){
   
   # add visual binding
   field_id = NULL
@@ -173,7 +173,8 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
     out <- lapply(out,function(x) as.list(na.omit(x)))
     
     # set output object
-    out <- data.table(field_id = 1:nrow(dt),measures = out)
+    out <- data.table(field_id = sort(unique(dt.meas$id)),
+                      measures = out)
     
   }
   
