@@ -22,7 +22,9 @@
 #' @param A_P_SG (numeric) The P-saturation index (\%)
 #' @param D_WP (numeric) The fraction of the parcel that is surrounded by surface water
 #' @param D_RO_R (numeric) The risk that surface water runs off the parcel
-#' @param LSW (data.table) The surface water polygon for catchment or polder
+#' @param LSW (data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)
+#' @param lat (numeric) Latitude of the field (required if no LSW is submitted)
+#' @param lon (numeric) Longitude of the field (required if no LSW is submitted)
 #'  
 #' @import data.table
 #' @import OBIC
@@ -31,7 +33,7 @@
 bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE,
                                   A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,
                                   A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
-                                  D_WP, D_RO_R, LSW) {
+                                  D_WP, D_RO_R, LSW, lat = NULL, lon = NULL) {
   
   ngw_scr = croptype.nleach = nf = ngw_lea = ngw_nlv = NULL
   nsw_scr = nsw_gwt = nsw_ro = nsw_ws = nsw_nlv = nsw_slope = NULL 
@@ -75,6 +77,9 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   checkmate::assert_numeric(D_RO_R, lower = 0, upper = 1, len = arg.length)
   
   checkmate::assert_data_table(LSW, nrows = arg.length)
+  
+  # check lsw and replace based on location if lsw is not provided
+  bbwp_check_lsw(LSW = LSW, lat = lat, lon = lon)
   
   # load in the datasets for soil and crop types and N leaching fractions
   crops.obic <- as.data.table(OBIC::crops.obic)
