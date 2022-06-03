@@ -66,6 +66,9 @@ require(data.table); require(readxl);library(usethis)
   # make lsw as sf object
   lsw <- st_as_sf(lsw)
   
+  # cast to polygon (otherwise later errors due to multipolygon)
+  lsw <- st_cast(lsw, 'POLYGON')
+  
   # save lsw data
   use_data(lsw, overwrite = T)
   
