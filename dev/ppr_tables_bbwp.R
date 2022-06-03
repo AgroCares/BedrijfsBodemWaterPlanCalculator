@@ -40,3 +40,32 @@ require(data.table); require(readxl);library(usethis)
   # save measures as bbwp table
   use_data(er_crops, overwrite = TRUE)
   
+
+# -- prepare LSW table
+  
+  
+  # library(sf); library(DBI); library(RPostgres)
+  
+  # Connect to DB
+  con <- dbConnect(
+    RPostgres::Postgres(),
+    host = '127.0.0.1',
+    user = rstudioapi::askForPassword("user"),
+    dbname = 'nmi'
+  )
+  
+  # read latest lsw polygones with opgaves
+  st_lsw <- st_read(con,  Id(schema = "lookup", table = "oppervlaktewateropgave")) |> setDT()
+  
+  # read mean and sd for lsw (should use fread, but didn't work)
+  prop_lsw <- st_read(con,  Id(schema = "lookup", table = "oppervlaktewateropgave_distribution_properties")) |> setDT()
+
+  # merge both tables
+  lsw <- merge(st_lsw, prop_lsw, by = 'oow_id')
+  
+  # make lsw as sf object
+  lsw <- st_as_sf(lsw)
+  
+  # save lsw data
+  use_data(lsw, overwrite = T)
+  
