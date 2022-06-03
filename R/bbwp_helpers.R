@@ -140,6 +140,43 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
 }
 
 
-
+#' Helper function to check the LSW table 
+#' 
+#' If there is no input LSW, the lon/lat are used to select values of the internal lws table
+#' 
+#' @param LSW (data.table) The input LSW table
+#' @param lon (numeric) Longitude of the field (required if no LSW is submitted)
+#' @param lat (numeric) Latitude of the field (required if no LSW is submitted)
+#' 
+#' @export
+bbwp_check_lsw <- function(LSW, lat, lon){
+  
+  if(is.null(LSW)){
+    
+    # if null lon of lat raise error
+    checkmate::assert_numeric(lat, lower = 3.3, upper = 7.3)
+    checkmate::assert_numeric(lon, lower = 50.5, upper = 53.5)
+      
+    # make sf object of field location
+    loc <- st_sf(geom = st_sfc(st_point(c(lat, lon))), crs = 4326)
+    
+    # intersect with the package lsw object
+    dt <- st_intersection(lsw, loc) |> setDT()
+    
+    
+    # if no output, take first lsw  (or should we use a general one?)
+    if(nrow(dt) == 0){
+      dt <- lsw[1, ] |> setDT()
+    }
+    
+  } else{
+    
+    # return input LSW as output LSW
+    dt <- LSW
+  }
+  
+  return(dt)
+  
+}
 
 
