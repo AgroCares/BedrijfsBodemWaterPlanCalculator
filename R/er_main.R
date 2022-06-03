@@ -59,27 +59,28 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
                            D_OPI_LANDSCAPE = dt.fields$D_OPI_LANDSCAPE,
                            D_AREA = D_AREA)
  
-  # Retreive the best measures to improve
-  dt.meas <- er_meas_rank(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
-                          B_GWL_CLASS = B_GWL_CLASS,
-                          A_P_SG = A_P_SG,
-                          B_SLOPE = B_SLOPE,
-                          B_LU_BRP = B_LU_BRP,
-                          B_LU_BBWP = B_LU_BBWP,
-                          M_DRAIN = M_DRAIN,
-                          D_WP = D_WP,
-                          D_AREA = D_AREA,
-                          B_CT_SOIL = dt.farm.aim$B_CT_SOIL, 
-                          B_CT_WATER = dt.farm.aim$B_CT_WATER,
-                          B_CT_CLIMATE = dt.farm.aim$B_CT_CLIMATE,
-                          B_CT_BIO = dt.farm.aim$B_CT_BIO,
-                          B_CT_LANDSCAPE = dt.farm.aim$B_CT_LANDSCAPE,
-                          measures = measures,
-                          sector = sector
-                          )
-  
+ 
   # return output when preferred measures are requested
   if(output == 'measures'){
+    
+    # Retreive the best measures to improve
+    dt.meas <- er_meas_rank(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
+                            B_GWL_CLASS = B_GWL_CLASS,
+                            A_P_SG = A_P_SG,
+                            B_SLOPE = B_SLOPE,
+                            B_LU_BRP = B_LU_BRP,
+                            B_LU_BBWP = B_LU_BBWP,
+                            M_DRAIN = M_DRAIN,
+                            D_WP = D_WP,
+                            D_AREA = D_AREA,
+                            B_CT_SOIL = dt.farm.aim$B_CT_SOIL, 
+                            B_CT_WATER = dt.farm.aim$B_CT_WATER,
+                            B_CT_CLIMATE = dt.farm.aim$B_CT_CLIMATE,
+                            B_CT_BIO = dt.farm.aim$B_CT_BIO,
+                            B_CT_LANDSCAPE = dt.farm.aim$B_CT_LANDSCAPE,
+                            measures = measures,
+                            sector = sector
+                            )
     
     # convert names of dt.meas
     setnames(dt.meas,gsub('\\.','_',colnames(dt.meas)))

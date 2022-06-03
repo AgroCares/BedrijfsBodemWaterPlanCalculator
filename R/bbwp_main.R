@@ -142,26 +142,28 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                              D_AREA = D_AREA)
                               
   
-  # Retreive the best measures to improve
-  dt.meas <- bbwp_meas_rank(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
-                            B_GWL_CLASS = B_GWL_CLASS,
-                            A_P_SG = A_P_SG,
-                            B_SLOPE = B_SLOPE,
-                            B_LU_BRP = B_LU_BRP,
-                            B_LU_BBWP = B_LU_BBWP,
-                            M_DRAIN = M_DRAIN,
-                            D_WP = D_WP,
-                            D_OPI_NGW = dt.fields$D_OPI_NGW,
-                            D_OPI_NSW = dt.fields$D_OPI_NSW,
-                            D_OPI_PSW = dt.fields$D_OPI_PSW,
-                            D_OPI_NUE = dt.fields$D_OPI_NUE,
-                            D_OPI_WB = dt.fields$D_OPI_WB,
-                            measures = NULL,
-                            sector = sector
-                          )
+  
   
   # return output when preferred measures are requested
   if(output == 'measures'){
+    
+    # Retreive the best measures to improve
+    dt.meas <- bbwp_meas_rank(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
+                              B_GWL_CLASS = B_GWL_CLASS,
+                              A_P_SG = A_P_SG,
+                              B_SLOPE = B_SLOPE,
+                              B_LU_BRP = B_LU_BRP,
+                              B_LU_BBWP = B_LU_BBWP,
+                              M_DRAIN = M_DRAIN,
+                              D_WP = D_WP,
+                              D_OPI_NGW = dt.fields$D_OPI_NGW,
+                              D_OPI_NSW = dt.fields$D_OPI_NSW,
+                              D_OPI_PSW = dt.fields$D_OPI_PSW,
+                              D_OPI_NUE = dt.fields$D_OPI_NUE,
+                              D_OPI_WB = dt.fields$D_OPI_WB,
+                              measures = NULL,
+                              sector = sector
+                              )
     
     # convert names of dt.meas
     setnames(dt.meas,gsub('\\.','_',colnames(dt.meas)))
