@@ -165,9 +165,6 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                               sector = sector
                               )
     
-    # convert names of dt.meas
-    setnames(dt.meas,gsub('\\.','_',colnames(dt.meas)))
-    
     # convert dt.meas to a splitted list
     out <- split(dt.meas,by='id',keep.by = FALSE)
     

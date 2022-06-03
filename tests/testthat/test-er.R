@@ -41,12 +41,12 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check ecoregeling", {
     expect_equal(
       object = colnames(test$fields),
-      expected = c("field_id","d_opi_soil","d_opi_water","d_opi_climate","d_opi_bio","d_opi_landscape","d_opi_tot"))
+      expected = c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity","s_er_landscape","s_er_tot"))
   })
   
   test_that("check ecoregeling", {
     expect_equal(
-      object = test$fields$d_opi_tot,
+      object = test$fields$s_er_tot,
       expected = c(6,6,6),
       tolerance = 0.01)
   })
@@ -87,7 +87,7 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   # run tests on format and output values
   test_that("check ecoregeling", {
     expect_equal(
-      object = test$fields$d_opi_tot,
+      object = test$fields$s_er_tot,
       expected = c(42,6,42),
       tolerance = 0.01)
   })
@@ -119,12 +119,12 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check ecoregeling", {
     expect_equal(
       object = names(test$measures[[1]]),
-      expected = c("top_tot","top_soil","top_water","top_climate","top_biodiversity", "top_landscape"))
+      expected = c("top_er_tot","top_er_soil","top_er_water","top_er_climate","top_er_biodiversity", "top_er_landscape"))
   })
   
   test_that("check ecoregeling", {
     expect_equal(
-      object = test$measures[[1]]$top_tot,
+      object = test$measures[[1]]$top_er_tot,
       expected = c('B156','B133','G50'))
   })
   

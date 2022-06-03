@@ -45,13 +45,13 @@ test_that("check bbwp_meas_rank", {
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = colnames(test),
-    expected = c('id',"top.tot","top.ngw","top.nsw","top.psw","top.wb","top.nue"),
+    expected = c('id',"top_bbwp_tot","top_bbwp_ngw","top_bbwp_nsw","top_bbwp_psw","top_bbwp_wb","top_bbwp_nue"),
     tolerance = 0.01)
 })
 
 test_that("check bbwp_meas_rank", {
   expect_equal(
-    object = test$top.tot[c(1,2,7,12,15)],
+    object = test$top_bbwp_tot[c(1,2,7,12,15)],
     expected = c(NA,"G21","G20","G66","G54"),
     tolerance = 0.01)
 })
@@ -93,13 +93,13 @@ test_that("check bbwp_meas_rank", {
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = colnames(test),
-    expected = c('id',"top.tot","top.ngw","top.nsw","top.psw","top.wb","top.nue"),
+    expected = c('id',"top_bbwp_tot","top_bbwp_ngw","top_bbwp_nsw","top_bbwp_psw","top_bbwp_wb","top_bbwp_nue"),
     tolerance = 0.01)
 })
 
 test_that("check bbwp_meas_rank", {
   expect_equal(
-    object = test$top.tot[c(1,2,5,9,16)],
+    object = test$top_bbwp_tot[c(1,2,5,9,16)],
     expected = c("G68","G27","B131","BWP7","G66"),
     tolerance = 0.01)
 })

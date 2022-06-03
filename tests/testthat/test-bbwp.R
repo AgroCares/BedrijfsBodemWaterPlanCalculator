@@ -162,12 +162,12 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
     test_that("check bbwp", {
       expect_equal(
         object = names(test$measures[[1]]),
-        expected = c("top_tot","top_ngw","top_nsw","top_psw","top_wb", "top_nue"))
+        expected = c("top_bbwp_tot","top_bbwp_ngw","top_bbwp_nsw","top_bbwp_psw","top_bbwp_wb", "top_bbwp_nue"))
     })
     
     test_that("check bbwp", {
       expect_equal(
-        object = test$measures[[1]]$top_tot,
+        object = test$measures[[1]]$top_bbwp_tot,
         expected = c("G17","G16", "G18", "G19", "G88"))
     })
 

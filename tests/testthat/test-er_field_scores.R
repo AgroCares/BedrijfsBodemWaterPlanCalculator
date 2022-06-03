@@ -33,12 +33,12 @@ test_that("check er_field_scores", {
     object = test,
     expected = data.table(
       id = 1:4,
-      D_OPI_SOIL = rep(13,4),
-      D_OPI_WATER = rep(13,4),
-      D_OPI_CLIMATE = rep(17,4),
-      D_OPI_BIO = rep(7,4),
-      D_OPI_LANDSCAPE = rep(1,4),
-      D_OPI_TOT = rep(9,4)
+      S_ER_SOIL = rep(13,4),
+      S_ER_WATER = rep(13,4),
+      S_ER_CLIMATE = rep(17,4),
+      S_ER_BIODIVERSITY = rep(7,4),
+      S_ER_LANDSCAPE = rep(1,4),
+      S_ER_TOT = rep(9,4)
     ),
     tolerance = 0.01)
 })
@@ -71,12 +71,12 @@ test_that("check er_field_scores", {
     object = test,
     expected = data.table(
       id = 1:4,
-      D_OPI_SOIL = c(78,23,23,23),
-      D_OPI_WATER = c(99,19,94,19),
-      D_OPI_CLIMATE = c(100,27,100,27),
-      D_OPI_BIO = c(26,11,56,11),
-      D_OPI_LANDSCAPE = c(21,1,61,1),
-      D_OPI_TOT = c(48,13,56,13)
+      S_ER_SOIL = c(78,23,23,23),
+      S_ER_WATER = c(99,19,94,19),
+      S_ER_CLIMATE = c(100,27,100,27),
+      S_ER_BIODIVERSITY = c(26,11,56,11),
+      S_ER_LANDSCAPE = c(21,1,61,1),
+      S_ER_TOT = c(48,13,56,13)
     ),
     tolerance = 1,
     ignore_attr = TRUE)

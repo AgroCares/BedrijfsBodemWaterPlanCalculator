@@ -169,31 +169,31 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE,
     list.field <- list()
     
     # Get the overall top measures
-    top.tot <- dt[id == i & er_total > 0, ][order(-er_total)][1:5,bbwp_id]
+    top_er_tot <- dt[id == i & er_total > 0, ][order(-er_total)][1:5,bbwp_id]
     
     # Get the top measures for soil quality
-    top.soil <- dt[id == i & er_soil > 0, ][order(-er_soil)][1:5,bbwp_id]
+    top_er_soil <- dt[id == i & er_soil > 0, ][order(-er_soil)][1:5,bbwp_id]
     
     # Get the top measures for water quality
-    top.water <- dt[id == i & er_water > 0, ][order(-er_water)][1:5,bbwp_id]
+    top_er_water <- dt[id == i & er_water > 0, ][order(-er_water)][1:5,bbwp_id]
     
     # Get the top measures for climate
-    top.climate <- dt[id == i & er_climate > 0, ][order(-er_climate)][1:5,bbwp_id]
+    top_er_climate <- dt[id == i & er_climate > 0, ][order(-er_climate)][1:5,bbwp_id]
     
     # Get the top measures for biodiversity
-    top.biodiversity <- dt[id == i & er_biodiversity > 0, ][order(-er_biodiversity)][1:5,bbwp_id]
+    top_er_biodiversity <- dt[id == i & er_biodiversity > 0, ][order(-er_biodiversity)][1:5,bbwp_id]
     
     # Get the top measures for landscape
-    top.landscape <- dt[id == i & er_landscape > 0, ][order(-er_landscape)][1:5,bbwp_id]
+    top_er_landscape <- dt[id == i & er_landscape > 0, ][order(-er_landscape)][1:5,bbwp_id]
     
     # add them to list
     list.meas[[i]] <- data.table(id = i,
-                                 top.tot = top.tot,
-                                 top.soil = top.soil,
-                                 top.water = top.water,
-                                 top.climate = top.climate,
-                                 top.biodiversity = top.biodiversity,
-                                 top.landscape = top.landscape)
+                                 top_er_tot = top_er_tot,
+                                 top_er_soil = top_er_soil,
+                                 top_er_water = top_er_water,
+                                 top_er_climate = top_er_climate,
+                                 top_er_biodiversity = top_er_biodiversity,
+                                 top_er_landscape = top_er_landscape)
   }
   
   # retrieve output object

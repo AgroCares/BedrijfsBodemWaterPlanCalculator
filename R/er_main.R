@@ -51,12 +51,12 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
                                 sector)
   
   # Calculate the ER farm score
-  dt.farm <- er_farm_score(D_OPI_TOT = dt.fields$D_OPI_TOT,
-                           D_OPI_SOIL = dt.fields$D_OPI_SOIL,
-                           D_OPI_WATER = dt.fields$D_OPI_WATER,
-                           D_OPI_CLIMATE = dt.fields$D_OPI_CLIMATE,
-                           D_OPI_BIO = dt.fields$D_OPI_BIO,
-                           D_OPI_LANDSCAPE = dt.fields$D_OPI_LANDSCAPE,
+  dt.farm <- er_farm_score(S_ER_TOT = dt.fields$S_ER_TOT,
+                           S_ER_SOIL = dt.fields$S_ER_SOIL,
+                           S_ER_WATER = dt.fields$S_ER_WATER,
+                           S_ER_CLIMATE = dt.fields$S_ER_CLIMATE,
+                           S_ER_BIODIVERSITY = dt.fields$S_ER_BIODIVERSITY,
+                           S_ER_LANDSCAPE = dt.fields$S_ER_LANDSCAPE,
                            D_AREA = D_AREA)
  
  
@@ -81,9 +81,6 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
                             measures = measures,
                             sector = sector
                             )
-    
-    # convert names of dt.meas
-    setnames(dt.meas,gsub('\\.','_',colnames(dt.meas)))
     
     # convert dt.meas to a splitted list
     out <- split(dt.meas,by='id',keep.by = FALSE)
