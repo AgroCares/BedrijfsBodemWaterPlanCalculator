@@ -5,27 +5,27 @@
 \title{Calculate the total score of five opportunity indicators for all fields in the Netherlands}
 \usage{
 bbwp_farm_score(
-  D_OPI_TOT,
-  D_OPI_NGW,
-  D_OPI_NSW,
-  D_OPI_PSW,
-  D_OPI_NUE,
-  D_OPI_WB,
+  S_BBWP_TOT,
+  S_BBWP_NGW,
+  S_BBWP_NSW,
+  S_BBWP_PSW,
+  S_BBWP_NUE,
+  S_BBWP_WB,
   D_AREA
 )
 }
 \arguments{
-\item{D_OPI_TOT}{(numeric) the score for the integrative opportunity index (risk times impact) for each field}
+\item{S_BBWP_TOT}{(numeric) the score for the integrative opportunity index (risk times impact) for each field}
 
-\item{D_OPI_NGW}{(numeric) the scoring index for lowering N emission to ground water (risk times impact) for each field}
+\item{S_BBWP_NGW}{(numeric) the scoring index for lowering N emission to ground water (risk times impact) for each field}
 
-\item{D_OPI_NSW}{(numeric) the scoring index for lowering N emission to surface water (risk times impact) for each field}
+\item{S_BBWP_NSW}{(numeric) the scoring index for lowering N emission to surface water (risk times impact) for each field}
 
-\item{D_OPI_PSW}{(numeric) the scoring index for lowering P emission to surface water (risk times impact) for each field}
+\item{S_BBWP_PSW}{(numeric) the scoring index for lowering P emission to surface water (risk times impact) for each field}
 
-\item{D_OPI_NUE}{(numeric) the scoring index to use N and P inputs efficiently for each field}
+\item{S_BBWP_NUE}{(numeric) the scoring index to use N and P inputs efficiently for each field}
 
-\item{D_OPI_WB}{(numeric) the scoring index to buffer and store water and efficiently use water for plant growth for each field}
+\item{S_BBWP_WB}{(numeric) the scoring index to buffer and store water and efficiently use water for plant growth for each field}
 
 \item{D_AREA}{(numeric) the area of the field (\ m2 or \ ha)}
 }

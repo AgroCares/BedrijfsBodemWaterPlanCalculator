@@ -133,12 +133,12 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                                   )
   
   # Calculate the BBWP farm score
-  dt.farm <- bbwp_farm_score(D_OPI_TOT = dt.fields$D_OPI_TOT,
-                             D_OPI_NGW = dt.fields$D_OPI_NGW,
-                             D_OPI_NSW = dt.fields$D_OPI_NSW,
-                             D_OPI_PSW = dt.fields$D_OPI_PSW,
-                             D_OPI_NUE = dt.fields$D_OPI_NUE,
-                             D_OPI_WB = dt.fields$D_OPI_WB,
+  dt.farm <- bbwp_farm_score(S_BBWP_TOT = dt.fields$S_BBWP_TOT,
+                             S_BBWP_NGW = dt.fields$S_BBWP_NGW,
+                             S_BBWP_NSW = dt.fields$S_BBWP_NSW,
+                             S_BBWP_PSW = dt.fields$S_BBWP_PSW,
+                             S_BBWP_NUE = dt.fields$S_BBWP_NUE,
+                             S_BBWP_WB = dt.fields$S_BBWP_WB,
                              D_AREA = D_AREA)
                               
   
@@ -156,11 +156,11 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                               B_LU_BBWP = B_LU_BBWP,
                               M_DRAIN = M_DRAIN,
                               D_WP = D_WP,
-                              D_OPI_NGW = dt.fields$D_OPI_NGW,
-                              D_OPI_NSW = dt.fields$D_OPI_NSW,
-                              D_OPI_PSW = dt.fields$D_OPI_PSW,
-                              D_OPI_NUE = dt.fields$D_OPI_NUE,
-                              D_OPI_WB = dt.fields$D_OPI_WB,
+                              D_OPI_NGW = dt.fields$S_BBWP_NGW,
+                              D_OPI_NSW = dt.fields$S_BBWP_NSW,
+                              D_OPI_PSW = dt.fields$S_BBWP_PSW,
+                              D_OPI_NUE = dt.fields$S_BBWP_NUE,
+                              D_OPI_WB = dt.fields$S_BBWP_WB,
                               measures = NULL,
                               sector = sector
                               )

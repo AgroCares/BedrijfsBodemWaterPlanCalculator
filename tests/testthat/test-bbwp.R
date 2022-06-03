@@ -105,12 +105,12 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
     test_that("check bbwp", {
       expect_equal(
         object = colnames(test$fields),
-        expected = c("d_opi_ngw", "d_opi_nsw", "d_opi_psw", "d_opi_nue", "d_opi_wb" , "d_opi_tot", "field_id"))
+        expected = c("s_bbwp_ngw", "s_bbwp_nsw", "s_bbwp_psw", "s_bbwp_nue", "s_bbwp_wb" , "s_bbwp_tot", "field_id"))
     })
     
     test_that("check bbwp", {
       expect_equal(
-        object = test$fields$d_opi_tot,
+        object = test$fields$s_bbwp_tot,
         expected = c(35,17,8),
         tolerance = 0.01)
     })
@@ -219,7 +219,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   # run tests on format and output values
   test_that("check bbwp", {
     expect_equal(
-      object = test$fields$d_opi_tot,
+      object = test$fields$s_bbwp_tot,
       expected = c(100,17,8),
       tolerance = 0.01)
   })

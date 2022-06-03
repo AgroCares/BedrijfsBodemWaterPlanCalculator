@@ -181,8 +181,12 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE, B_LU
   # order the fields
   setorder(dt, id)
   
+  # rename the opportunity indexes to the final score
+  setnames(dt,c('D_OPI_NGW','D_OPI_NSW','D_OPI_PSW','D_OPI_NUE','D_OPI_WB','D_OPI_TOT'),
+           c('S_BBWP_NGW','S_BBWP_NSW','S_BBWP_PSW','S_BBWP_NUE','S_BBWP_WB','S_BBWP_TOT'))
+  
   # extract value
-  value <- dt[,mget(c('D_OPI_NGW','D_OPI_NSW','D_OPI_PSW','D_OPI_NUE','D_OPI_WB','D_OPI_TOT'))]
+  value <- dt[,mget(c('S_BBWP_NGW','S_BBWP_NSW','S_BBWP_PSW','S_BBWP_NUE','S_BBWP_WB','S_BBWP_TOT'))]
   
   # Round the values
   value <- value[, lapply(.SD, round, digits = 0)]
