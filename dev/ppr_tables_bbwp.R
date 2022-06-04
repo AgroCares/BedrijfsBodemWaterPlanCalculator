@@ -69,6 +69,9 @@ require(data.table); require(readxl);library(usethis)
   # cast to polygon (otherwise later errors due to multipolygon)
   lsw <- st_cast(lsw, 'MULTIPOLYGON')
   
+  # convert to data.table
+  lsw <- as.data.table(lsw)
+  
   # save lsw data
-  use_data(lsw, overwrite = T)
+  use_data(lsw, overwrite = T,compress='xz')
   
