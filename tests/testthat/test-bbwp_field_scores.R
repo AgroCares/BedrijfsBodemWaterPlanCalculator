@@ -3,7 +3,7 @@
   # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei') 
   # B_GWL_CLASS = c('-', 'GtI', 'GtV')
   # A_P_SG = c(0.4, 0.8, 1)
-  # B_SLOPE = c(1.5,4,1.5)
+  # B_SLOPE_DEGREE = c(1.5,4,1.5)
   # B_LU_BRP = c(265, 1932, 266)
   # B_LU_BBWP = c(1,4,1)
   # M_DRAIN = c(TRUE, FALSE, TRUE)
@@ -27,7 +27,7 @@
 test <- bbwp_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'), 
                           B_GWL_CLASS = c('-', 'GtI', 'GtV'), 
                           A_P_SG = c(0.4, 0.8, 1), 
-                          B_SLOPE =  c(1.5,4,1.5),
+                          B_SLOPE_DEGREE =  c(1.5,4,1.5),
                           B_LU_BRP = c(265, 1932, 266), 
                           B_LU_BBWP = c(1,4,1),
                           M_DRAIN = c(TRUE, FALSE, TRUE), 
@@ -75,7 +75,7 @@ measures <- rbind(data.table(id = 1, dt.measures[c(2,5,18,28,32,3,38,43,62)]),
 test <- bbwp_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'), 
                           B_GWL_CLASS = c('-', 'GtI', 'GtV'), 
                           A_P_SG = c(0.4, 0.8, 1), 
-                          B_SLOPE =  c(1.5,4,1.5),
+                          B_SLOPE_DEGREE =  c(1.5,4,1.5),
                           B_LU_BRP = c(265, 1932, 266), 
                           B_LU_BBWP = c(1,4,1),
                           M_DRAIN = c(TRUE, FALSE, TRUE), 
