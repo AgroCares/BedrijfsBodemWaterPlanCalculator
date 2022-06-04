@@ -159,15 +159,18 @@ bbwp_check_lsw <- function(LSW, lat, lon){
   
   if(is.null(LSW)){
     
-    # if null lon of lat raise error
-    checkmate::assert_numeric(lat, lower = 3.3, upper = 7.3)
-    checkmate::assert_numeric(lon, lower = 50.5, upper = 53.5)
+    # length of inputs
+    arg.length <- max(length(lat),length(lon))
+    
+    # check inputs lon and lat
+    checkmate::assert_numeric(lon, lower = 3.3, upper = 7.3, len = arg.length)
+    checkmate::assert_numeric(lat, lower = 50.5, upper = 53.5, len = arg.length)
       
     # load internal LSW
     lsw.sf <- st_as_sf(as.data.table(BBWPC::lsw))
     
-    # make sf object of field location
-    loc <- sf::st_sf(geom = st_sfc(st_point(c(lon, lat))), crs = 4326)
+    # make sf object of field location(s)
+    loc <- sf::st_sf(geom = st_sfc(st_multipoint(matrix(c(lon,lat),ncol=2))), crs = 4326)
     
     # crop lsw.sf by an extend slightly bigger than the points
     lsw.crop <- st_crop(lsw.sf,st_bbox(loc) + c(-0.005,-0.0025,0.005,0.0025))
@@ -182,8 +185,15 @@ bbwp_check_lsw <- function(LSW, lat, lon){
     
   } else{
     
-    # check of relevant columns are included
-    # to be added
+    # relevant columns that need to be present
+    cols <- c('n_rt','p_cc','p_al','p_wa','p_vg','fe_ox','al_ox','clay_mi','sand_mi','silt_mi',
+              'os_gv','ro_r','sa_w')
+    cols <- c(paste0('mean_',cols),paste0('sd_',cols))
+    cols <- c('oow_nitrogen','oow_phosphate','oow_id','oow_name','oow_source','geom',cols)
+    
+    # check format
+    checkmate::assert_data_table(LSW, min.cols = 26)
+    checkmate::assert_subset(colnames(LSW),choices = cols)
     
     # return input LSW as output LSW
     dt <- LSW
