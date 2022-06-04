@@ -148,8 +148,14 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
 #' @param lon (numeric) Longitude of the field (required if no LSW is submitted)
 #' @param lat (numeric) Latitude of the field (required if no LSW is submitted)
 #' 
+#' @import data.table
+#' @import sf
+#' 
 #' @export
 bbwp_check_lsw <- function(LSW, lat, lon){
+  
+  # check inputs
+  checkmate::assert_data_table(LSW, null.ok = TRUE)
   
   if(is.null(LSW)){
     
@@ -157,24 +163,33 @@ bbwp_check_lsw <- function(LSW, lat, lon){
     checkmate::assert_numeric(lat, lower = 3.3, upper = 7.3)
     checkmate::assert_numeric(lon, lower = 50.5, upper = 53.5)
       
+    # load internal LSW
+    lsw.sf <- st_as_sf(as.data.table(BBWPC::lsw))
+    
     # make sf object of field location
-    loc <- st_sf(geom = st_sfc(st_point(c(lat, lon))), crs = 4326)
+    loc <- sf::st_sf(geom = st_sfc(st_point(c(lon, lat))), crs = 4326)
     
+    # crop lsw.sf by an extend slightly bigger than the points
+    lsw.crop <- st_crop(lsw.sf,st_bbox(loc) + c(-0.005,-0.0025,0.005,0.0025))
+      
     # intersect with the package lsw object
-    dt <- st_intersection(lsw, loc) |> setDT()
-    
-    
+    dt <- st_intersection(loc, lsw.crop) |> setDT()
+
     # if no output, take first lsw  (or should we use a general one?)
     if(nrow(dt) == 0){
-      dt <- lsw[1, ] |> setDT()
+      dt <- lsw.sf[1, ] |> setDT()
     }
     
   } else{
+    
+    # check of relevant columns are included
+    # to be added
     
     # return input LSW as output LSW
     dt <- LSW
   }
   
+  # return output
   return(dt)
   
 }
