@@ -75,11 +75,9 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   # check inputs D parameters
   checkmate::assert_numeric(D_WP, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_RO_R, lower = 0, upper = 1, len = arg.length)
-  
-  checkmate::assert_data_table(LSW, nrows = arg.length)
-  
+
   # check lsw and replace based on location if lsw is not provided
-  bbwp_check_lsw(LSW = LSW, lat = lat, lon = lon)
+  LSW = bbwp_check_lsw(LSW = LSW, lat = lat, lon = lon)
   
   # load in the datasets for soil and crop types and N leaching fractions
   crops.obic <- as.data.table(OBIC::crops.obic)
