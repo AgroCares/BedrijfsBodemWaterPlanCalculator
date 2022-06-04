@@ -34,6 +34,8 @@ bbwp(
   D_AREA,
   M_DRAIN,
   LSW,
+  lat = NULL,
+  lon = NULL,
   measures,
   sector,
   output = "scores"
@@ -96,7 +98,11 @@ bbwp(
 
 \item{M_DRAIN}{(boolean) is there tube drainage present in the field}
 
-\item{LSW}{(data.table) The surface water polygon for catchment or polder}
+\item{LSW}{(data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)}
+
+\item{lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
+
+\item{lon}{(numeric) Longitude of the field (required if no LSW is submitted)}
 
 \item{measures}{(data.table) the measures planned / done per fields}
 
