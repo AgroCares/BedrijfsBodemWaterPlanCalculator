@@ -178,9 +178,17 @@ bbwp_check_lsw <- function(LSW, lat, lon){
     # intersect with the package lsw object
     dt <- st_intersection(loc, lsw.crop) |> setDT()
 
-    # if no output, take first lsw  (or should we use a general one?)
+    # if no output, take the averaged one
     if(nrow(dt) == 0){
-      dt <- lsw.sf[1, ] |> setDT()
+      
+      # which columns
+      cols <- c('n_rt','p_cc','p_al','p_wa','p_vg','fe_ox','al_ox','clay_mi','sand_mi','silt_mi',
+                'os_gv','ro_r','sa_w')
+      cols <- c(paste0('mean_',cols),paste0('sd_',cols))
+      
+      # take the median mean and SD value of all LSW properties
+      dt <- LSW[,c(cols) := lapply(.SD,median),.SDcols = cols]
+      
     }
     
   } else{
