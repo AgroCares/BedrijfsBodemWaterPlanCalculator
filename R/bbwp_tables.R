@@ -71,3 +71,16 @@
 #'   \item{er_description}{bla bla}
 #' }
 "er_crops"
+
+#' A national dataset describing statistics of soil properties per Local Surface Water
+#' 
+#' This table contains mean and standard deviation of soil properties per Local Surface Water Polygon in the Netherlands
+#' 
+#' @format A data.table with 546 rows and 32 columns:
+#' \describe{
+#'   \item{c1}{bla bla}
+#'   \item{c2}{bla bla}
+#'   \item{c3}{bla bla}
+#'   \item{c4}{bla bla}
+#' }
+"lsw"
