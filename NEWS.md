@@ -1,5 +1,18 @@
 # Changelog BBWPC
 
+## 0.4.1
+
+### Added
+- B_SLOPE and B_SLOPE_DEGREE as input in wrapper function `bbwp`
+
+### Changed
+- change output of `er_meas_rank` from `top.x` to `top_er_x` with x being the targets
+- change output of `bbwp_meas_rank` from `top.x` to `top_bbwp_x` with x being the targets
+- replace `x_meas_rank` to inside the if-function in wrapper funs to speed up the code
+- change output scores of `bbwp_field_score` and input for `bbwp_farm_score` from `D_OPI_x` to `S_BBWP_x`
+- change output scores of `er_field_score` and input for `er_farm_score` from `D_OPI_x` to `S_ER_x`
+- change B_SLOPE to B_SLOPE_DEGREE in all functions
+
 ## 0.4.0
 ### Added
 - add wrapper function `bbwp` to run BBWP for a series of fields

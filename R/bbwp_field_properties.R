@@ -3,12 +3,12 @@
 #' Estimate the relative ranking of field properties given their contribution to nutrient losses to aquatic ecosystems as well as nutrient and water efficiency.
 #' A high rank is indicative for the number of opportunities to improve soil quality and land use.
 #'
-#' @param B_SOILTYPE_AGR (character) The type of soil
+#' @param B_SOILTYPE_AGR (character) The type of soil, using agronomic classification
 #' @param B_LU_BRP (numeric) The crop type (conform BRP coding, preferable the most frequent crop on the field)
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param B_SC_WENR (character) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006)
 #' @param B_HELP_WENR (character) The soil type abbreviation, derived from 1:50.000 soil map
-#' @param B_SLOPE (numeric) The slope of the field (degrees)
+#' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param A_CLAY_MI (numeric) The clay content of the soil (\%)
 #' @param A_SAND_MI (numeric) The sand content of the soil (\%)
 #' @param A_SILT_MI (numeric) The silt content of the soil (\%)
@@ -18,7 +18,7 @@
 #' @param A_AL_OX (numeric) The iron content of soil (mmol+ / kg)
 #' @param A_P_CC (numeric) The plant available P content, measured via 0.01M CaCl2 extraction (mg / kg)
 #' @param A_P_AL (numeric) The plant extractable P content, measured via ammonium lactate extraction (mg / kg)
-#' @param A_P_WA (numeric) The P-content of the soil extracted with water
+#' @param A_P_WA (numeric) The P-content of the soil extracted with water (mg P2O5 / L)
 #' @param A_P_SG (numeric) The P-saturation index (\%)
 #' @param D_WP (numeric) The fraction of the parcel that is surrounded by surface water
 #' @param D_RO_R (numeric) The risk that surface water runs off the parcel
@@ -28,7 +28,7 @@
 #' @import OBIC
 #'
 #' @export
-bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE,
+bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE_DEGREE,
                                   A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,
                                   A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
                                   D_WP, D_RO_R, LSW) {
@@ -46,7 +46,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   # check length inputs
   arg.length <- max(
     length(B_SOILTYPE_AGR), length(B_LU_BRP), length(B_GWL_CLASS), length(B_SC_WENR), length(B_HELP_WENR),
-    length(A_CLAY_MI), length(A_SAND_MI), length(A_SILT_MI), length(A_SOM_LOI), length(A_N_RT),
+    length(A_CLAY_MI), length(A_SAND_MI), length(A_SILT_MI), length(A_SOM_LOI), length(A_N_RT), length(B_SLOPE_DEGREE),
     length(A_FE_OX), length(A_AL_OX), length(A_P_CC), length(A_P_AL),length(A_P_WA), length(A_P_SG),
     length(D_WP), length(D_RO_R)
   )
@@ -56,6 +56,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   checkmate::assert_subset(B_GWL_CLASS, choices = c('-', 'GtI','GtII','GtIIb','GtIII','GtIIIb','GtIV','GtV','GtVb','GtVI','GtVII','GtVIII'))
   checkmate::assert_subset(B_SC_WENR, choices = c(3, 4, 1, 401, 902, 2, 901, 5, 11, 10))
   checkmate::assert_subset(B_HELP_WENR, choices = c(unique(OBIC::waterstress.obic$soilunit), "unknown"), empty.ok = FALSE)
+  checkmate::assert_numeric(B_SLOPE_DEGREE, lower = 0, upper = 30, any.missing = FALSE, len = arg.length)
   
   # check inputs A parameters
   checkmate::assert_numeric(A_CLAY_MI, lower = 0, upper = 100, any.missing = FALSE,len = arg.length)
@@ -92,7 +93,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
     B_GWL_CLASS = B_GWL_CLASS,
     B_SC_WENR = B_SC_WENR, 
     B_HELP_WENR = B_HELP_WENR,
-    B_SLOPE = B_SLOPE,
+    B_SLOPE_DEGREE = B_SLOPE_DEGREE,
     A_CLAY_MI = A_CLAY_MI,
     A_SAND_MI = A_SAND_MI,
     A_SILT_MI = A_SILT_MI,
@@ -165,7 +166,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   
   # classify fields with a high slope as extra vulnerable for surface runoff
   # with fields with slope > 2% being vulnerabile (Groenendijk, 2020)
-  dt[,nsw_slope := pmax(0.2,pmin(1,B_SLOPE/2))]
+  dt[,nsw_slope := pmax(0.2,pmin(1,B_SLOPE_DEGREE/2))]
   
   # rank the risk for wet surroundings (Van Gerven, 2018)
   # higher risk is associated to increased risks for N runoff

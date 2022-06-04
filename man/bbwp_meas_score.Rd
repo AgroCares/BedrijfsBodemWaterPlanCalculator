@@ -8,7 +8,7 @@ bbwp_meas_score(
   B_SOILTYPE_AGR,
   B_GWL_CLASS,
   A_P_SG,
-  B_SLOPE,
+  B_SLOPE_DEGREE,
   B_LU_BRP,
   B_LU_BBWP,
   M_DRAIN,
@@ -29,7 +29,7 @@ bbwp_meas_score(
 
 \item{A_P_SG}{(numeric)}
 
-\item{B_SLOPE}{(numeric)}
+\item{B_SLOPE_DEGREE}{(numeric) The slope of the field (degrees)}
 
 \item{B_LU_BRP}{(integer)}
 

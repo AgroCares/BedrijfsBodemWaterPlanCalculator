@@ -9,7 +9,7 @@ ecoregeling(
   B_LU_BRP,
   B_LU_BBWP,
   B_GWL_CLASS,
-  B_SLOPE,
+  B_SLOPE_DEGREE,
   A_P_SG,
   D_WP,
   D_AREA,
@@ -29,7 +29,7 @@ ecoregeling(
 
 \item{B_GWL_CLASS}{(character) The groundwater table class}
 
-\item{B_SLOPE}{(numeric) The slope of the field (degrees)}
+\item{B_SLOPE_DEGREE}{(numeric) The slope of the field (degrees)}
 
 \item{A_P_SG}{(numeric) The P-saturation index (\%)}
 

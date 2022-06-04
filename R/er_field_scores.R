@@ -160,8 +160,12 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
   # order the fields
   setorder(dt, id)
   
-  # round the values
-  cols <- c('D_OPI_SOIL','D_OPI_WATER','D_OPI_CLIMATE','D_OPI_BIO','D_OPI_LANDSCAPE','D_OPI_TOT')
+  # rename the opportunity indexes to the final score
+  setnames(dt,c('D_OPI_SOIL','D_OPI_WATER','D_OPI_CLIMATE','D_OPI_BIO','D_OPI_LANDSCAPE','D_OPI_TOT'),
+              c('S_ER_SOIL','S_ER_WATER','S_ER_CLIMATE','S_ER_BIODIVERSITY','S_ER_LANDSCAPE','S_ER_TOT'))
+  
+  # round the values and get the field scores
+  cols <- c('S_ER_SOIL','S_ER_WATER','S_ER_CLIMATE','S_ER_BIODIVERSITY','S_ER_LANDSCAPE','S_ER_TOT')
   dt <- dt[, c(cols) := lapply(.SD, round, digits = 0),.SDcols = cols]
   
   # extract value
