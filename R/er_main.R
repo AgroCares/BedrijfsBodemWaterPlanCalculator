@@ -7,7 +7,7 @@
 #' @param B_LU_BRP (numeric) The crop type (conform BRP coding, preferable the most frequent crop on the field)
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_GWL_CLASS (character) The groundwater table class
-#' @param B_SLOPE (numeric) The slope of the field (degrees)
+#' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param A_P_SG (numeric) The P-saturation index (\%)
 #' @param D_WP (numeric) The fraction of the parcel that is surrounded by surface water
 #' @param D_AREA (numeric) the area of the field (\ m2 or \ ha) 
@@ -21,7 +21,7 @@
 #' @import OBIC
 #'
 #' @export
-ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE,
+ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE_DEGREE,
                         A_P_SG,D_WP, D_AREA,M_DRAIN, farmscore, 
                         measures, sector,output = 'scores'){
   
@@ -67,7 +67,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
     dt.meas <- er_meas_rank(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                             B_GWL_CLASS = B_GWL_CLASS,
                             A_P_SG = A_P_SG,
-                            B_SLOPE = B_SLOPE,
+                            B_SLOPE_DEGREE = B_SLOPE_DEGREE,
                             B_LU_BRP = B_LU_BRP,
                             B_LU_BBWP = B_LU_BBWP,
                             M_DRAIN = M_DRAIN,

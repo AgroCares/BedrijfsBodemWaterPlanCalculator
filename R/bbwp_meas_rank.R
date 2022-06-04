@@ -6,7 +6,7 @@
 #' @param B_SOILTYPE_AGR (character) The type of soil
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param A_P_SG (numeric) 
-#' @param B_SLOPE (boolean)
+#' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param B_LU_BRP (integer)
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
@@ -24,7 +24,7 @@
 #'
 #' @export
 # rank the measures given their effectiveness to improve the sustainability of the farm
-bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_BRP, B_LU_BBWP,
+bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, B_LU_BBWP,
                            M_DRAIN, D_WP,
                            D_OPI_NGW, D_OPI_NSW, D_OPI_PSW, D_OPI_NUE, D_OPI_WB,
                            measures, sector){
@@ -39,7 +39,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
   # check length of the inputs
   arg.length <- max(length(D_OPI_NGW), length(D_OPI_NSW), length(D_OPI_PSW), length(D_OPI_NUE),
                     length(D_OPI_WB), length(B_SOILTYPE_AGR), length(B_GWL_CLASS), length(M_DRAIN),
-                    length(A_P_SG), length(B_SLOPE), length(B_LU_BRP),length(B_LU_BBWP),
+                    length(A_P_SG), length(B_SLOPE_DEGREE), length(B_LU_BRP),length(B_LU_BBWP),
                     length(D_WP))
   
   # check inputs
@@ -50,7 +50,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
                            choices = c('-', 'GtI','GtII','GtII','GtIII','GtIII','GtIV', 'GtV','GtVI','GtVII','GtVIII'))
   checkmate::assert_logical(M_DRAIN)
   checkmate::assert_numeric(A_P_SG, lower = 0, upper = 120,len = arg.length)
-  checkmate::assert_numeric(B_SLOPE,lower = 0, upper = 20,len = arg.length)
+  checkmate::assert_numeric(B_SLOPE_DEGREE,lower = 0, upper = 30,len = arg.length)
   checkmate::assert_integerish(B_LU_BRP, lower = 0)
   checkmate::assert_integerish(B_LU_BBWP, lower = 0, upper = 9,len = arg.length)
   checkmate::assert_numeric(D_WP, lower = 0, upper = 100,len = arg.length)
@@ -70,7 +70,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
     B_SOILTYPE_AGR = B_SOILTYPE_AGR,
     B_GWL_CLASS = B_GWL_CLASS,
     A_P_SG = A_P_SG,
-    B_SLOPE = B_SLOPE,
+    B_SLOPE_DEGREE = B_SLOPE_DEGREE,
     B_LU_BRP = B_LU_BRP,
     B_LU_BBWP = B_LU_BBWP,
     M_DRAIN = M_DRAIN,
@@ -89,7 +89,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_B
     # Add bonus points for psw
     dt[A_P_SG >= 50 & A_P_SG < 75, effect_psw := effect_psw + psw_psg_medium]
     dt[A_P_SG >= 75, effect_psw := effect_psw + psw_psg_high]
-    dt[B_SLOPE <= 2, effect_psw := effect_psw + psw_noslope]
+    dt[B_SLOPE_DEGREE <= 2, effect_psw := effect_psw + psw_noslope]
     dt[B_LU_BRP %in% c(176, 964, 965, 967, 968, 970,
                        971, 973, 976, 979, 982, 983,
                        985, 986, 997, 998, 999, 1000,
