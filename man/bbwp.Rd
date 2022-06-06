@@ -11,7 +11,8 @@ bbwp(
   B_GWL_CLASS,
   B_SC_WENR,
   B_HELP_WENR,
-  B_SLOPE,
+  B_SLOPE = NULL,
+  B_SLOPE_DEGREE = NULL,
   A_CLAY_MI,
   A_SAND_MI,
   A_SILT_MI,
@@ -42,7 +43,7 @@ bbwp(
 )
 }
 \arguments{
-\item{B_SOILTYPE_AGR}{(character) The type of soil}
+\item{B_SOILTYPE_AGR}{(character) The type of soil, using agronomic classification}
 
 \item{B_LU_BRP}{(numeric) The crop type (conform BRP coding, preferable the most frequent crop on the field)}
 
@@ -54,7 +55,9 @@ bbwp(
 
 \item{B_HELP_WENR}{(character) The soil type abbreviation, derived from 1:50.000 soil map}
 
-\item{B_SLOPE}{(numeric) The slope of the field (degrees)}
+\item{B_SLOPE}{(boolean) The slope of the field, steeper than 2\%}
+
+\item{B_SLOPE_DEGREE}{(numeric) The slope of the field (degrees)}
 
 \item{A_CLAY_MI}{(numeric) The clay content of the soil (\%)}
 
@@ -66,15 +69,15 @@ bbwp(
 
 \item{A_N_RT}{(numeric) The organic nitrogen content of the soil (mg N / kg)}
 
-\item{A_FE_OX}{(numeric) The aluminium content of soil (mmol+ / kg)}
+\item{A_FE_OX}{(numeric) The aluminium content of soil (mmol / kg)}
 
-\item{A_AL_OX}{(numeric) The iron content of soil (mmol+ / kg)}
+\item{A_AL_OX}{(numeric) The iron content of soil (mmol / kg)}
 
 \item{A_P_CC}{(numeric) The plant available P content, measured via 0.01M CaCl2 extraction (mg / kg)}
 
 \item{A_P_AL}{(numeric) The plant extractable P content, measured via ammonium lactate extraction (mg / kg)}
 
-\item{A_P_WA}{(numeric) The P-content of the soil extracted with water}
+\item{A_P_WA}{(numeric) The P-content of the soil extracted with water (mg P2O5 / L)}
 
 \item{A_P_SG}{(numeric) The P-saturation index (\%)}
 
@@ -113,4 +116,7 @@ bbwp(
 \description{
 Estimate the potential to contribute to agronomic and environmental challenges in a region for a farm and assess the impact of farm measures taken.
 A high BBWP score is indicative for the number of opportunities to improve soil quality and land use.
+}
+\details{
+B_SLOPE respresents the slope of the field as a boolean variable (is the slope bigger than 2\% or not) and was used in previous versions of BBWP. This has been replaced by B_SLOPE_DEGREE.
 }

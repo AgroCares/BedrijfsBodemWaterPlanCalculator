@@ -10,7 +10,7 @@ bbwp_field_properties(
   B_GWL_CLASS,
   B_SC_WENR,
   B_HELP_WENR,
-  B_SLOPE,
+  B_SLOPE_DEGREE,
   A_CLAY_MI,
   A_SAND_MI,
   A_SILT_MI,
@@ -30,7 +30,7 @@ bbwp_field_properties(
 )
 }
 \arguments{
-\item{B_SOILTYPE_AGR}{(character) The type of soil}
+\item{B_SOILTYPE_AGR}{(character) The type of soil, using agronomic classification}
 
 \item{B_LU_BRP}{(numeric) The crop type (conform BRP coding, preferable the most frequent crop on the field)}
 
@@ -40,7 +40,7 @@ bbwp_field_properties(
 
 \item{B_HELP_WENR}{(character) The soil type abbreviation, derived from 1:50.000 soil map}
 
-\item{B_SLOPE}{(numeric) The slope of the field (degrees)}
+\item{B_SLOPE_DEGREE}{(numeric) The slope of the field (degrees)}
 
 \item{A_CLAY_MI}{(numeric) The clay content of the soil (\%)}
 
@@ -60,7 +60,7 @@ bbwp_field_properties(
 
 \item{A_P_AL}{(numeric) The plant extractable P content, measured via ammonium lactate extraction (mg / kg)}
 
-\item{A_P_WA}{(numeric) The P-content of the soil extracted with water}
+\item{A_P_WA}{(numeric) The P-content of the soil extracted with water (mg P2O5 / L)}
 
 \item{A_P_SG}{(numeric) The P-saturation index (\%)}
 

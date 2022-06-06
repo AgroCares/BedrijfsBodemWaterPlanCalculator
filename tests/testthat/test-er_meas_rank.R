@@ -20,7 +20,7 @@ test <- er_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
                       B_LU_BBWP = c(1,4,4,9),
                       B_GWL_CLASS = 'GtIII', 
                       A_P_SG = 25, 
-                      B_SLOPE = 2.5,
+                     B_SLOPE_DEGREE = rep(2.5,4),
                       M_DRAIN = TRUE,
                       D_WP = 0.5,
                       D_AREA = c(45,18,0.8,6),
@@ -43,13 +43,13 @@ test_that("check er_meas_rank", {
 test_that("check er_meas_rank", {
   expect_equal(
     object = colnames(test),
-    expected = c('id',"top.tot","top.soil","top.water","top.climate","top.biodiversity","top.landscape"),
+    expected = c('id',"top_er_tot","top_er_soil","top_er_water","top_er_climate","top_er_biodiversity","top_er_landscape"),
     tolerance = 0.01)
 })
 
 test_that("check er_meas_rank", {
   expect_equal(
-    object = test$top.tot[c(1,4,9,15)],
+    object = test$top_er_tot[c(1,4,9,15)],
     expected = c("B156",'G60','G60','B156'),
     tolerance = 0.01)
 })
@@ -68,7 +68,7 @@ test <- er_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
                      B_LU_BBWP = c(1,4,4,9),
                      B_GWL_CLASS = 'GtIII', 
                      A_P_SG = 25, 
-                     B_SLOPE = 2.5,
+                     B_SLOPE_DEGREE = rep(2.5,4),
                      M_DRAIN = TRUE,
                      D_WP = 0.5,
                      D_AREA = c(45,18,0.8,6),
@@ -91,13 +91,13 @@ test_that("check er_meas_rank", {
 test_that("check er_meas_rank", {
   expect_equal(
     object = colnames(test),
-    expected = c('id',"top.tot","top.soil","top.water","top.climate","top.biodiversity","top.landscape"),
+    expected = c('id',"top_er_tot","top_er_soil","top_er_water","top_er_climate","top_er_biodiversity","top_er_landscape"),
     tolerance = 0.01)
 })
 
 test_that("check er_meas_rank", {
   expect_equal(
-    object = test$top.tot[c(1,4,9,15)],
+    object = test$top_er_tot[c(1,4,9,15)],
     expected = c("B156",'G60','G60','B156'),
     tolerance = 0.01)
 })

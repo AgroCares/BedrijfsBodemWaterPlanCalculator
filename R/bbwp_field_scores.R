@@ -6,7 +6,7 @@
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param A_P_SG (numeric) 
-#' @param B_SLOPE (boolean)
+#' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param B_LU_BRP (integer)
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
@@ -31,6 +31,8 @@
 # calculate the opportunities for a set of fields
 bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE, B_LU_BRP, B_LU_BBWP,
                               M_DRAIN, D_SA_W, D_RISK_NGW, D_RISK_NSW, D_RISK_PSW, D_RISK_NUE, D_RISK_WB,
+bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, B_LU_BBWP,
+                              M_DRAIN, D_WP, D_RISK_NGW, D_RISK_NSW, D_RISK_PSW, D_RISK_NUE, D_RISK_WB,
                               B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW, 
                               B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, measures, sector){
   
@@ -42,6 +44,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE, B_LU
   # check length of the inputs
   arg.length <- max(length(B_SOILTYPE_AGR),length(B_GWL_CLASS), length(A_P_SG),
                     length(B_SLOPE), length(B_LU_BRP), length(B_LU_BBWP),length(M_DRAIN),length(D_SA_W),
+                    length(B_SLOPE_DEGREE), length(B_LU_BRP), length(B_LU_BBWP),length(M_DRAIN),length(D_WP),
                     length(D_RISK_NGW),length(D_RISK_NSW),length(D_RISK_PSW),length(D_RISK_NUE),
                     length(D_RISK_WB),length(B_GWP),length(B_AREA_DROUGHT),length(B_CT_PSW),
                     length(B_CT_NSW))
@@ -50,7 +53,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE, B_LU
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
                                                        'dalgrond','moerige_klei','veen','loess'))
   checkmate::assert_numeric(A_P_SG, lower = 0, upper = 120, len = arg.length)
-  checkmate::assert_numeric(B_SLOPE, len = arg.length)
+  checkmate::assert_numeric(B_SLOPE_DEGREE, lower = 0, upper = 30,len = arg.length)
   checkmate::assert_integerish(B_LU_BRP, lower = 0, len = arg.length)
   checkmate::assert_integerish(B_LU_BBWP, lower = 0, upper = 9,len = arg.length)
   checkmate::assert_logical(M_DRAIN,len = arg.length)
@@ -73,7 +76,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE, B_LU
                     B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                     B_GWL_CLASS = B_GWL_CLASS,
                     A_P_SG = A_P_SG,
-                    B_SLOPE = B_SLOPE,
+                    B_SLOPE_DEGREE = B_SLOPE_DEGREE,
                     B_LU_BRP = B_LU_BRP,
                     B_LU_BBWP = B_LU_BBWP,
                     M_DRAIN = M_DRAIN,
@@ -133,7 +136,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE, B_LU
                                         B_LU_BBWP = dt$B_LU_BBWP,
                                         B_GWL_CLASS = dt$B_GWL_CLASS,
                                         A_P_SG = dt$A_P_SG,
-                                        B_SLOPE = dt$B_SLOPE,
+                                        B_SLOPE_DEGREE = dt$B_SLOPE_DEGREE,
                                         M_DRAIN = dt$M_DRAIN,
                                         D_SA_W = dt$D_SA_W,
                                         D_OPI_NGW = dt$D_OPI_NGW,
@@ -181,8 +184,12 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE, B_LU
   # order the fields
   setorder(dt, id)
   
+  # rename the opportunity indexes to the final score
+  setnames(dt,c('D_OPI_NGW','D_OPI_NSW','D_OPI_PSW','D_OPI_NUE','D_OPI_WB','D_OPI_TOT'),
+           c('S_BBWP_NGW','S_BBWP_NSW','S_BBWP_PSW','S_BBWP_NUE','S_BBWP_WB','S_BBWP_TOT'))
+  
   # extract value
-  value <- dt[,mget(c('D_OPI_NGW','D_OPI_NSW','D_OPI_PSW','D_OPI_NUE','D_OPI_WB','D_OPI_TOT'))]
+  value <- dt[,mget(c('S_BBWP_NGW','S_BBWP_NSW','S_BBWP_PSW','S_BBWP_NUE','S_BBWP_WB','S_BBWP_TOT'))]
   
   # Round the values
   value <- value[, lapply(.SD, round, digits = 0)]
