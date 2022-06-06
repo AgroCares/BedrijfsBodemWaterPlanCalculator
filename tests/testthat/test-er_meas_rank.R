@@ -16,22 +16,22 @@ require(testthat)
 
 # run example 1 without any measures taken
 test <- er_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                      B_LU_BRP = c(265,2005,256,259),
-                      B_LU_BBWP = c(1,4,4,9),
-                      B_GWL_CLASS = 'GtIII', 
-                      A_P_SG = 25, 
+                     B_LU_BRP = c(265,2005,256,259),
+                     B_LU_BBWP = c(1,4,4,9),
+                     B_GWL_CLASS = 'GtIII', 
+                     A_P_SG = 25, 
                      B_SLOPE_DEGREE = rep(2.5,4),
-                      M_DRAIN = TRUE,
-                      D_WP = 0.5,
-                      D_AREA = c(45,18,0.8,6),
-                      B_CT_SOIL = 15, 
-                      B_CT_WATER = 5,
-                      B_CT_CLIMATE = 8,
-                      B_CT_BIO = 24,
-                      B_CT_LANDSCAPE = 11, 
-                      measures = NULL,
-                      sector = 'dairy'
-                        )
+                     M_DRAIN = TRUE,
+                     D_SA_W = 0.5,
+                     D_AREA = c(45,18,0.8,6),
+                     B_CT_SOIL = 15, 
+                     B_CT_WATER = 5,
+                     B_CT_CLIMATE = 8,
+                     B_CT_BIO = 24,
+                     B_CT_LANDSCAPE = 11, 
+                     measures = NULL,
+                     sector = 'dairy'
+                    )
 
 test_that("check er_meas_rank", {
   expect_equal(
@@ -70,7 +70,7 @@ test <- er_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
                      A_P_SG = 25, 
                      B_SLOPE_DEGREE = rep(2.5,4),
                      M_DRAIN = TRUE,
-                     D_WP = 0.5,
+                     D_SA_W = 0.5,
                      D_AREA = c(45,18,0.8,6),
                      B_CT_SOIL = 15, 
                      B_CT_WATER = 5,

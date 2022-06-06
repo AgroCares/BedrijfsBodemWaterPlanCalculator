@@ -23,7 +23,7 @@
 #'
 #' @export
 # calculate the score for a list of measures for one or multiple fields
-bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, B_LU_BBWP, M_DRAIN, D_WP,
+bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, B_LU_BBWP, M_DRAIN, D_SA_W,
                             D_OPI_NGW, D_OPI_NSW, D_OPI_PSW, D_OPI_NUE, D_OPI_WB,
                             measures = NULL, sector){
   

@@ -29,7 +29,7 @@
 #'
 #' @export
 # calculate the opportunities for a set of fields
-bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE, B_LU_BRP, B_LU_BBWP,
+bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, B_LU_BBWP,
                               M_DRAIN, D_SA_W, D_RISK_NGW, D_RISK_NSW, D_RISK_PSW, D_RISK_NUE, D_RISK_WB,
                               B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW, 
                               B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, measures, sector){

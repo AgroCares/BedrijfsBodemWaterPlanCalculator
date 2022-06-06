@@ -9,7 +9,7 @@
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param A_P_SG (numeric) The P-saturation index (\%)
-#' @param D_WP (numeric) The fraction of the parcel that is surrounded by surface water
+#' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
 #' @param D_AREA (numeric) the area of the field (\ m2 or \ ha) 
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param farmscore (numeric) The desired total ER score on farm level
@@ -22,7 +22,7 @@
 #'
 #' @export
 ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE_DEGREE,
-                        A_P_SG,D_WP, D_AREA,M_DRAIN, farmscore, 
+                        A_P_SG,D_SA_W, D_AREA,M_DRAIN, farmscore, 
                         measures, sector,output = 'scores'){
   
   # check wrapper inputs that are not checked in the bbwp functions
@@ -71,7 +71,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
                             B_LU_BRP = B_LU_BRP,
                             B_LU_BBWP = B_LU_BBWP,
                             M_DRAIN = M_DRAIN,
-                            D_WP = D_WP,
+                            D_SA_W = D_SA_W,
                             D_AREA = D_AREA,
                             B_CT_SOIL = dt.farm.aim$B_CT_SOIL, 
                             B_CT_WATER = dt.farm.aim$B_CT_WATER,

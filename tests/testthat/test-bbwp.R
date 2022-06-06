@@ -248,7 +248,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                A_P_CC = c(5, 1,6),
                A_P_AL = c(65, 5,40),
                A_P_WA = c(52, 5,45),
-               B_SLOPE = c(1.5,4,1.5),
+               B_SLOPE_DEGREE = c(1.5,4,1.5),
                B_LU_BRP = c(265, 1932, 266),
                B_LU_BBWP = c(1,4,1),
                M_DRAIN = c(TRUE, FALSE, TRUE),
@@ -277,12 +277,12 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check bbwp", {
     expect_equal(
       object = colnames(test$fields),
-      expected = c("d_opi_ngw", "d_opi_nsw", "d_opi_psw", "d_opi_nue", "d_opi_wb" , "d_opi_tot", "field_id"))
+      expected =c("s_bbwp_ngw", "s_bbwp_nsw", "s_bbwp_psw", "s_bbwp_nue", "s_bbwp_wb" , "s_bbwp_tot", "field_id"))
   })
   
   test_that("check bbwp", {
     expect_equal(
-      object = test$fields$d_opi_tot,
+      object = test$fields$s_bbwp_tot,
       expected = c(35,17,8),
       tolerance = 0.01)
   })
