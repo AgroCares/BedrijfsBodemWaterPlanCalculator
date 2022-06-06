@@ -72,6 +72,12 @@ require(data.table); require(readxl);library(usethis)
   # convert to data.table
   lsw <- as.data.table(lsw)
   
+  # convert old element names for the case that they are present
+  setnames(lsw, 
+           old = c('mean_p_vg','sd_p_vg','mean_os_gv','sd_os_gv'),
+           new = c('mean_p_sg','sd_p_sg','mean_som_loi','sd_som_loi'),
+           skip_absent = TRUE)
+  
   # save lsw data
   use_data(lsw, overwrite = T,compress='xz')
   

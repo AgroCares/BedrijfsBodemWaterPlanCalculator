@@ -41,9 +41,9 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   npe_wri = npe_pbi = npe_wdri = npe_nlv = wue_wwri = wue_wdri = wue_whc = NULL
   crop_code = soiltype = leaching_to_set = soiltype.n = bodem = gewas = pnorm = NULL
   
-  LSW.mean_n_rt = LSW.sd_n_rt = LSW.sd_ro_r = LSW.sd_wp = LSW.sd_p_cc = LSW.mean_p_sg = LSW.mean_al_ox = NULL
-  LSW.mean_fe_ox = LSW.sd_fe_ox = crop_category = B_GT = LSW.mean_ro_r = LSW.mean_wp = LSW.mean_p_cc = psw_psg = LSW.sd_p_sg = NULL
-  LSW.sd_al_ox = id = NULL
+  mean_n_rt = sd_n_rt = sd_ro_r = sd_wp = sd_p_cc = mean_p_sg = mean_al_ox = NULL
+  mean_fe_ox = sd_fe_ox = crop_category = B_GT = mean_ro_r = mean_wp = mean_p_cc = psw_psg = sd_p_sg = NULL
+  sd_al_ox = id = NULL
   
   # check length inputs
   arg.length <- max(
@@ -88,29 +88,28 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   nleach_table <- nleach_table[leaching_to_set == 'gw']
   
   # copy input in one data.table
-  dt <- data.table(
-    id = 1:arg.length,
-    B_SOILTYPE_AAGR = B_SOILTYPE_AGR,
-    B_LU_BRP = B_LU_BRP,
-    B_GWL_CLASS = B_GWL_CLASS,
-    B_SC_WENR = B_SC_WENR, 
-    B_HELP_WENR = B_HELP_WENR,
-    B_SLOPE = B_SLOPE,
-    A_CLAY_MI = A_CLAY_MI,
-    A_SAND_MI = A_SAND_MI,
-    A_SILT_MI = A_SILT_MI,
-    A_SOM_LOI = A_SOM_LOI, 
-    A_N_RT = A_N_RT,
-    A_FE_OX = A_FE_OX, 
-    A_AL_OX = A_AL_OX, 
-    A_P_CC = A_P_CC, 
-    A_P_AL = A_P_AL,
-    A_P_WA = A_P_WA, 
-    A_P_SG = A_P_SG,
-    D_WP = D_WP, 
-    D_RO_R = D_RO_R,
-    LSW = LSW
-  )
+  dt <- data.table(id = 1:arg.length,
+                   B_SOILTYPE_AAGR = B_SOILTYPE_AGR,
+                   B_LU_BRP = B_LU_BRP,
+                   B_GWL_CLASS = B_GWL_CLASS,
+                   B_SC_WENR = B_SC_WENR, 
+                   B_HELP_WENR = B_HELP_WENR,
+                   B_SLOPE = B_SLOPE,
+                   A_CLAY_MI = A_CLAY_MI,
+                   A_SAND_MI = A_SAND_MI,
+                   A_SILT_MI = A_SILT_MI,
+                   A_SOM_LOI = A_SOM_LOI, 
+                   A_N_RT = A_N_RT,
+                   A_FE_OX = A_FE_OX, 
+                   A_AL_OX = A_AL_OX, 
+                   A_P_CC = A_P_CC, 
+                   A_P_AL = A_P_AL,
+                   A_P_WA = A_P_WA, 
+                   A_P_SG = A_P_SG,
+                   D_WP = D_WP, 
+                   D_RO_R = D_RO_R,
+                   LSW = LSW
+                  )
   
   # add crop names and categories
   dt <- merge(dt, crops.obic[, list(crop_code, crop_category)], by.x = "B_LU_BRP", by.y = "crop_code")
@@ -146,7 +145,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   dt[,ngw_lea := nf / max(nleach_table$nf)]
   
   # rank the nitrogen content as an estimate of total N content: a high value means high risk for N leaching
-  dt[,ngw_nlv := pnorm(q = A_N_RT, mean = LSW.mean_n_rt, sd = LSW.sd_n_rt)]
+  dt[,ngw_nlv := pnorm(q = A_N_RT, mean = mean_n_rt, sd = sd_n_rt)]
   
   # estimate field properties that contribute to the risk to N losses to surface water -------
   
@@ -164,7 +163,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   
   # rank the risk for surface runoff (van Hattum, 2011)
   # higher risk is associated to increased risks for N runoff
-  dt[,nsw_ro := pnorm(q = D_RO_R, mean = LSW.mean_ro_r, sd = LSW.sd_ro_r)]
+  dt[,nsw_ro := pnorm(q = D_RO_R, mean = mean_ro_r, sd = sd_ro_r)]
   
   # classify fields with a high slope as extra vulnerable for surface runoff
   # with fields with slope > 2% being vulnerabile (Groenendijk, 2020)
@@ -172,7 +171,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   
   # rank the risk for wet surroundings (Van Gerven, 2018)
   # higher risk is associated to increased risks for N runoff
-  dt[,nsw_ws := pnorm(q = D_WP, mean = LSW.mean_wp, sd = LSW.sd_wp)]
+  dt[,nsw_ws := pnorm(q = D_WP, mean = mean_wp, sd = sd_wp)]
   
   # rank the risk for N pool in soil: higher NLV is associated to increased risks for N runoff
   dt[,nsw_nlv := ngw_nlv]
@@ -199,11 +198,11 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   dt[,psw_ws := nsw_ws]
   
   # rank the risk for P pools in soil
-  dt[,psw_pcc := pnorm(q = A_P_CC, mean = LSW.mean_p_cc, sd = LSW.sd_p_cc)]
-  dt[,psw_psg := pnorm(q = A_P_SG, mean = LSW.mean_p_sg, sd = LSW.sd_p_sg)]
+  dt[,psw_pcc := pnorm(q = A_P_CC, mean = mean_p_cc, sd = sd_p_cc)]
+  dt[,psw_psg := pnorm(q = A_P_SG, mean = mean_p_sg, sd = sd_p_sg)]
   dt[,psw_pret := 1- pnorm(q =  A_AL_OX + A_FE_OX, 
-                           mean = LSW.mean_al_ox + LSW.mean_fe_ox, 
-                           sd =  sqrt(LSW.sd_al_ox^2 + LSW.sd_fe_ox^2))]
+                           mean = mean_al_ox + mean_fe_ox, 
+                           sd =  sqrt(sd_al_ox^2 + sd_fe_ox^2))]
   
   # estimate field properties that contribute to the N and P efficiency of P inputs -------
   

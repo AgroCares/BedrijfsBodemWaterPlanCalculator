@@ -157,6 +157,11 @@ bbwp_check_lsw <- function(LSW, lat, lon){
   # check inputs
   checkmate::assert_data_table(LSW, null.ok = TRUE)
   
+  # which columns need to be present in LSW
+  cols <- c('n_rt','p_cc','p_al','p_wa','p_sg','fe_ox','al_ox','clay_mi','sand_mi','silt_mi',
+            'som_loi','ro_r','sa_w')
+  cols <- c(paste0('mean_',cols),paste0('sd_',cols))
+  
   if(is.null(LSW)){
     
     # length of inputs
@@ -173,18 +178,13 @@ bbwp_check_lsw <- function(LSW, lat, lon){
     loc <- sf::st_sf(geom = st_sfc(st_multipoint(matrix(c(lon,lat),ncol=2))), crs = 4326)
     
     # crop lsw.sf by an extend slightly bigger than the points
-    lsw.crop <- st_crop(lsw.sf,st_bbox(loc) + c(-0.005,-0.0025,0.005,0.0025))
+    suppressWarnings(lsw.crop <- st_crop(lsw.sf,st_bbox(loc) + c(-0.005,-0.0025,0.005,0.0025)))
       
     # intersect with the package lsw object
-    dt <- st_intersection(loc, lsw.crop) |> setDT()
+    suppressWarnings(dt <- st_intersection(loc, lsw.crop) |> setDT())
 
     # if no output, take the averaged one
     if(nrow(dt) == 0){
-      
-      # which columns
-      cols <- c('n_rt','p_cc','p_al','p_wa','p_vg','fe_ox','al_ox','clay_mi','sand_mi','silt_mi',
-                'os_gv','ro_r','sa_w')
-      cols <- c(paste0('mean_',cols),paste0('sd_',cols))
       
       # take the median mean and SD value of all LSW properties
       dt <- LSW[,c(cols) := lapply(.SD,median),.SDcols = cols]
@@ -193,14 +193,22 @@ bbwp_check_lsw <- function(LSW, lat, lon){
     
   } else{
     
-    # relevant columns that need to be present
-    cols <- c('n_rt','p_cc','p_al','p_wa','p_vg','fe_ox','al_ox','clay_mi','sand_mi','silt_mi',
-              'os_gv','ro_r','sa_w')
-    cols <- c(paste0('mean_',cols),paste0('sd_',cols))
-    cols <- c('oow_nitrogen','oow_phosphate','oow_id','oow_name','oow_source','geom',cols)
-    
     # check format
     checkmate::assert_data_table(LSW, min.cols = 26)
+    
+    # remove database prefix (for case that input originates from NMI-API)
+    setnames(LSW,gsub('LSW\\.','',colnames(LSW)))
+    
+    # convert old element names for the case that they are present
+    setnames(lsw, 
+             old = c('mean_p_vg','sd_p_vg','mean_os_gv','sd_os_gv'),
+             new = c('mean_p_sg','sd_p_sg','mean_som_loi','sd_som_loi'),
+             skip_absent = TRUE)
+    
+    # relevant columns that need to be present
+    cols <- c('oow_nitrogen','oow_phosphate','oow_id','oow_name','oow_source','geom',cols)
+    
+    # check colnames
     checkmate::assert_subset(colnames(LSW),choices = cols)
     
     # return input LSW as output LSW
