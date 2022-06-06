@@ -28,11 +28,13 @@
 #' @param A_P_AL (numeric) The plant extractable P content, measured via ammonium lactate extraction (mg / kg)
 #' @param A_P_WA (numeric) The P-content of the soil extracted with water (mg P2O5 / L)
 #' @param A_P_SG (numeric) The P-saturation index (\%)
-#' @param D_WP (numeric) The fraction of the parcel that is surrounded by surface water
+#' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
 #' @param D_RO_R (numeric) The risk that surface water runs off the parcel
 #' @param D_AREA (numeric) the area of the field (\ m2 or \ ha) 
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
-#' @param LSW (data.table) The surface water polygon for catchment or polder
+#' @param LSW (data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)
+#' @param lat (numeric) Latitude of the field (required if no LSW is submitted)
+#' @param lon (numeric) Longitude of the field (required if no LSW is submitted)
 #' @param measures (data.table) the measures planned / done per fields
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: options: 'diary', 'arable', 'tree_nursery', 'bulbs')
 #' @param output (string) a vector specifying the output type of the function. Options: scores, measures 
@@ -47,8 +49,8 @@
 bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE = NULL,B_SLOPE_DEGREE = NULL,
                  A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
                  B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW,B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, 
-                 D_WP, D_RO_R, D_AREA, 
-                 M_DRAIN, LSW, 
+                 D_SA_W, D_RO_R, D_AREA, 
+                 M_DRAIN, LSW, lat = NULL, lon = NULL,
                  measures, sector,output = 'scores'){
   
   # add visual binding
@@ -86,9 +88,11 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                               A_P_AL = A_P_AL, 
                               A_P_WA = A_P_WA, 
                               A_P_SG = A_P_SG,
-                              D_WP = D_WP, 
+                              D_SA_W = D_SA_W, 
                               D_RO_R =  D_RO_R, 
-                              LSW = LSW)
+                              LSW = LSW, 
+                              lat = lat, 
+                              lon = lon)
   
   # Aggregate BBWP risk indicators into five indicators
   dt.ind <- bbwp_field_indicators(D_NGW_SCR = dt$ngw_scr,
@@ -130,7 +134,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                                     B_LU_BRP = B_LU_BRP,
                                     B_LU_BBWP = B_LU_BBWP,
                                     M_DRAIN = M_DRAIN,
-                                    D_WP = D_WP,
+                                    D_SA_W = D_SA_W,
                                     D_RISK_NGW = dt.ind$D_RISK_NGW,
                                     D_RISK_NSW = dt.ind$D_RISK_NSW,
                                     D_RISK_PSW = dt.ind$D_RISK_PSW,
@@ -155,9 +159,6 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                              S_BBWP_WB = dt.fields$S_BBWP_WB,
                              D_AREA = D_AREA)
                               
-  
-  
-  
   # return output when preferred measures are requested
   if(output == 'measures'){
     
@@ -169,7 +170,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                               B_LU_BRP = B_LU_BRP,
                               B_LU_BBWP = B_LU_BBWP,
                               M_DRAIN = M_DRAIN,
-                              D_WP = D_WP,
+                              D_SA_W = D_SA_W,
                               D_OPI_NGW = dt.fields$S_BBWP_NGW,
                               D_OPI_NSW = dt.fields$S_BBWP_NSW,
                               D_OPI_PSW = dt.fields$S_BBWP_PSW,

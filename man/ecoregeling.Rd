@@ -11,7 +11,7 @@ ecoregeling(
   B_GWL_CLASS,
   B_SLOPE_DEGREE,
   A_P_SG,
-  D_WP,
+  D_SA_W,
   D_AREA,
   M_DRAIN,
   farmscore,
@@ -33,7 +33,7 @@ ecoregeling(
 
 \item{A_P_SG}{(numeric) The P-saturation index (\%)}
 
-\item{D_WP}{(numeric) The fraction of the parcel that is surrounded by surface water}
+\item{D_SA_W}{(numeric) The wet perimeter index of the field, fraction that field is surrounded by water}
 
 \item{D_AREA}{(numeric) the area of the field (\ m2 or \ ha)}
 

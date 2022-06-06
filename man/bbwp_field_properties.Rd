@@ -22,9 +22,11 @@ bbwp_field_properties(
   A_P_AL,
   A_P_WA,
   A_P_SG,
-  D_WP,
+  D_SA_W,
   D_RO_R,
-  LSW
+  LSW,
+  lat = NULL,
+  lon = NULL
 )
 }
 \arguments{
@@ -62,11 +64,15 @@ bbwp_field_properties(
 
 \item{A_P_SG}{(numeric) The P-saturation index (\%)}
 
-\item{D_WP}{(numeric) The fraction of the parcel that is surrounded by surface water}
+\item{D_SA_W}{(numeric) The wet perimeter index of the field, fraction that field is surrounded by water}
 
 \item{D_RO_R}{(numeric) The risk that surface water runs off the parcel}
 
-\item{LSW}{(data.table) The surface water polygon for catchment or polder}
+\item{LSW}{(data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)}
+
+\item{lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
+
+\item{lon}{(numeric) Longitude of the field (required if no LSW is submitted)}
 }
 \description{
 Estimate the relative ranking of field properties given their contribution to nutrient losses to aquatic ecosystems as well as nutrient and water efficiency.

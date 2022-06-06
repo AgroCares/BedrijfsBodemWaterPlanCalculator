@@ -11,7 +11,7 @@
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param D_AREA (numeric) the area of the field (\ m2 or \ ha) 
-#' @param D_WP (numeric) The fraction of the parcel that is surrounded by surface water
+#' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
 #' @param B_CT_SOIL (numeric) the target value for soil quality conform Ecoregeling scoring
 #' @param B_CT_WATER (numeric) the target value for water quality conform Ecoregeling scoring
 #' @param B_CT_CLIMATE (numeric) the target value for climate conform Ecoregeling scoring
@@ -25,7 +25,7 @@
 #'
 #' @export
 # rank the measures given their effectiveness to improve the sustainability of the farm
-er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, M_DRAIN, D_WP,
+er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, M_DRAIN, D_SA_W,
                          D_AREA,
                          B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE, 
                          measures, sector){
@@ -48,7 +48,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
   
   # check length of the inputs
   arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BRP),length(B_LU_BBWP),length(A_P_SG),length(B_SLOPE_DEGREE),
-                    length(M_DRAIN),length(D_WP),length(B_CT_SOIL),length(B_CT_WATER),length(B_CT_CLIMATE),
+                    length(M_DRAIN),length(D_SA_W),length(B_CT_SOIL),length(B_CT_WATER),length(B_CT_CLIMATE),
                     length(B_CT_BIO),length(B_CT_LANDSCAPE))
   
   # check inputs

@@ -20,9 +20,11 @@
 #' @param A_P_AL (numeric) The plant extractable P content, measured via ammonium lactate extraction (mg / kg)
 #' @param A_P_WA (numeric) The P-content of the soil extracted with water (mg P2O5 / L)
 #' @param A_P_SG (numeric) The P-saturation index (\%)
-#' @param D_WP (numeric) The fraction of the parcel that is surrounded by surface water
+#' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
 #' @param D_RO_R (numeric) The risk that surface water runs off the parcel
-#' @param LSW (data.table) The surface water polygon for catchment or polder
+#' @param LSW (data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)
+#' @param lat (numeric) Latitude of the field (required if no LSW is submitted)
+#' @param lon (numeric) Longitude of the field (required if no LSW is submitted)
 #'  
 #' @import data.table
 #' @import OBIC
@@ -31,7 +33,7 @@
 bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE_DEGREE,
                                   A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,
                                   A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
-                                  D_WP, D_RO_R, LSW) {
+                                  D_SA_W, D_RO_R, LSW, lat = NULL, lon = NULL) {
   
   ngw_scr = croptype.nleach = nf = ngw_lea = ngw_nlv = NULL
   nsw_scr = nsw_gwt = nsw_ro = nsw_ws = nsw_nlv = nsw_slope = NULL 
@@ -39,16 +41,16 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   npe_wri = npe_pbi = npe_wdri = npe_nlv = wue_wwri = wue_wdri = wue_whc = NULL
   crop_code = soiltype = leaching_to_set = soiltype.n = bodem = gewas = pnorm = NULL
   
-  LSW.mean_n_rt = LSW.sd_n_rt = LSW.sd_ro_r = LSW.sd_wp = LSW.sd_p_cc = LSW.mean_p_sg = LSW.mean_al_ox = NULL
-  LSW.mean_fe_ox = LSW.sd_fe_ox = crop_category = B_GT = LSW.mean_ro_r = LSW.mean_wp = LSW.mean_p_cc = psw_psg = LSW.sd_p_sg = NULL
-  LSW.sd_al_ox = id = NULL
+  mean_n_rt = sd_n_rt = sd_ro_r = sd_sa_w = sd_p_cc = mean_p_sg = mean_al_ox = NULL
+  mean_fe_ox = sd_fe_ox = crop_category = B_GT = mean_ro_r = mean_sa_w = mean_p_cc = psw_psg = sd_p_sg = NULL
+  sd_al_ox = id = NULL
   
   # check length inputs
   arg.length <- max(
     length(B_SOILTYPE_AGR), length(B_LU_BRP), length(B_GWL_CLASS), length(B_SC_WENR), length(B_HELP_WENR),
     length(A_CLAY_MI), length(A_SAND_MI), length(A_SILT_MI), length(A_SOM_LOI), length(A_N_RT), length(B_SLOPE_DEGREE),
     length(A_FE_OX), length(A_AL_OX), length(A_P_CC), length(A_P_AL),length(A_P_WA), length(A_P_SG),
-    length(D_WP), length(D_RO_R)
+    length(D_SA_W), length(D_RO_R)
   )
   
   # check inputs B parameters
@@ -72,10 +74,11 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   checkmate::assert_numeric(A_P_WA, lower = 0, upper = 200, any.missing = FALSE, len = arg.length)
   
   # check inputs D parameters
-  checkmate::assert_numeric(D_WP, lower = 0, upper = 1, len = arg.length)
+  checkmate::assert_numeric(D_SA_W, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_RO_R, lower = 0, upper = 1, len = arg.length)
-  
-  checkmate::assert_data_table(LSW, nrows = arg.length)
+
+  # check lsw and replace based on location if lsw is not provided
+  LSW.dt = bbwp_check_lsw(LSW = LSW, lat = lat, lon = lon)
   
   # load in the datasets for soil and crop types and N leaching fractions
   crops.obic <- as.data.table(OBIC::crops.obic)
@@ -86,34 +89,32 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   nleach_table <- nleach_table[leaching_to_set == 'gw']
   
   # copy input in one data.table
-  dt <- data.table(
-    id = 1:arg.length,
-    B_SOILTYPE_AAGR = B_SOILTYPE_AGR,
-    B_LU_BRP = B_LU_BRP,
-    B_GWL_CLASS = B_GWL_CLASS,
-    B_SC_WENR = B_SC_WENR, 
-    B_HELP_WENR = B_HELP_WENR,
-    B_SLOPE_DEGREE = B_SLOPE_DEGREE,
-    A_CLAY_MI = A_CLAY_MI,
-    A_SAND_MI = A_SAND_MI,
-    A_SILT_MI = A_SILT_MI,
-    A_SOM_LOI = A_SOM_LOI, 
-    A_N_RT = A_N_RT,
-    A_FE_OX = A_FE_OX, 
-    A_AL_OX = A_AL_OX, 
-    A_P_CC = A_P_CC, 
-    A_P_AL = A_P_AL,
-    A_P_WA = A_P_WA, 
-    A_P_SG = A_P_SG,
-    D_WP = D_WP, 
-    D_RO_R = D_RO_R,
-    LSW = LSW
-  )
+  dt <- data.table(id = 1:arg.length,
+                   B_SOILTYPE_AAGR = B_SOILTYPE_AGR,
+                   B_LU_BRP = B_LU_BRP,
+                   B_GWL_CLASS = B_GWL_CLASS,
+                   B_SC_WENR = B_SC_WENR, 
+                   B_HELP_WENR = B_HELP_WENR,
+                   B_SLOPE_DEGREE = B_SLOPE_DEGREE,
+                   A_CLAY_MI = A_CLAY_MI,
+                   A_SAND_MI = A_SAND_MI,
+                   A_SILT_MI = A_SILT_MI,
+                   A_SOM_LOI = A_SOM_LOI, 
+                   A_N_RT = A_N_RT,
+                   A_FE_OX = A_FE_OX, 
+                   A_AL_OX = A_AL_OX, 
+                   A_P_CC = A_P_CC, 
+                   A_P_AL = A_P_AL,
+                   A_P_WA = A_P_WA, 
+                   A_P_SG = A_P_SG,
+                   D_SA_W = D_SA_W, 
+                   D_RO_R = D_RO_R)
+                   
   
   # add crop names and categories
+  dt <- merge(dt, LSW.dt, by = 'id')
   dt <- merge(dt, crops.obic[, list(crop_code, crop_category)], by.x = "B_LU_BRP", by.y = "crop_code")
   dt <- merge(dt, soils.obic[, list(soiltype, soiltype.n)], by.x = "B_SOILTYPE_AAGR", by.y = "soiltype")
-  
   
   # estimate field properties that contribute to the risk to N losses to groundwater -------
   
@@ -144,7 +145,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   dt[,ngw_lea := nf / max(nleach_table$nf)]
   
   # rank the nitrogen content as an estimate of total N content: a high value means high risk for N leaching
-  dt[,ngw_nlv := pnorm(q = A_N_RT, mean = LSW.mean_n_rt, sd = LSW.sd_n_rt)]
+  dt[,ngw_nlv := pnorm(q = A_N_RT, mean = mean_n_rt, sd = sd_n_rt)]
   
   # estimate field properties that contribute to the risk to N losses to surface water -------
   
@@ -162,7 +163,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   
   # rank the risk for surface runoff (van Hattum, 2011)
   # higher risk is associated to increased risks for N runoff
-  dt[,nsw_ro := pnorm(q = D_RO_R, mean = LSW.mean_ro_r, sd = LSW.sd_ro_r)]
+  dt[,nsw_ro := pnorm(q = D_RO_R, mean = mean_ro_r, sd = sd_ro_r)]
   
   # classify fields with a high slope as extra vulnerable for surface runoff
   # with fields with slope > 2% being vulnerabile (Groenendijk, 2020)
@@ -170,7 +171,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   
   # rank the risk for wet surroundings (Van Gerven, 2018)
   # higher risk is associated to increased risks for N runoff
-  dt[,nsw_ws := pnorm(q = D_WP, mean = LSW.mean_wp, sd = LSW.sd_wp)]
+  dt[,nsw_ws := pnorm(q = D_SA_W, mean = mean_sa_w, sd = sd_sa_w)]
   
   # rank the risk for N pool in soil: higher NLV is associated to increased risks for N runoff
   dt[,nsw_nlv := ngw_nlv]
@@ -197,11 +198,11 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   dt[,psw_ws := nsw_ws]
   
   # rank the risk for P pools in soil
-  dt[,psw_pcc := pnorm(q = A_P_CC, mean = LSW.mean_p_cc, sd = LSW.sd_p_cc)]
-  dt[,psw_psg := pnorm(q = A_P_SG, mean = LSW.mean_p_sg, sd = LSW.sd_p_sg)]
+  dt[,psw_pcc := pnorm(q = A_P_CC, mean = mean_p_cc, sd = sd_p_cc)]
+  dt[,psw_psg := pnorm(q = A_P_SG, mean = mean_p_sg, sd = sd_p_sg)]
   dt[,psw_pret := 1- pnorm(q =  A_AL_OX + A_FE_OX, 
-                           mean = LSW.mean_al_ox + LSW.mean_fe_ox, 
-                           sd =  sqrt(LSW.sd_al_ox^2 + LSW.sd_fe_ox^2))]
+                           mean = mean_al_ox + mean_fe_ox, 
+                           sd =  sqrt(sd_al_ox^2 + sd_fe_ox^2))]
   
   # estimate field properties that contribute to the N and P efficiency of P inputs -------
   
