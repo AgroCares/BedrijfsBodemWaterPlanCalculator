@@ -12,7 +12,7 @@ bbwp_field_scores(
   B_LU_BRP,
   B_LU_BBWP,
   M_DRAIN,
-  D_WP,
+  D_SA_W,
   D_RISK_NGW,
   D_RISK_NSW,
   D_RISK_PSW,
@@ -43,7 +43,7 @@ bbwp_field_scores(
 
 \item{M_DRAIN}{(boolean) is there tube drainage present in the field}
 
-\item{D_WP}{(numeric) The fraction of the parcel that is surrounded by surface water}
+\item{D_SA_W}{(numeric) The wet perimeter index of the field, fraction that field is surrounded by water}
 
 \item{D_RISK_NGW}{(numeric) the risk for nitrate leaching to groundwater given field properties}
 

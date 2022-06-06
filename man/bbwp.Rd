@@ -29,7 +29,7 @@ bbwp(
   B_CT_NSW,
   B_CT_PSW_MAX = 0.5,
   B_CT_NSW_MAX = 5,
-  D_WP,
+  D_SA_W,
   D_RO_R,
   D_AREA,
   M_DRAIN,
@@ -90,7 +90,7 @@ bbwp(
 
 \item{B_CT_NSW_MAX}{(numeric) the max critical target for N reduction loss (kg N / ha)}
 
-\item{D_WP}{(numeric) The fraction of the parcel that is surrounded by surface water}
+\item{D_SA_W}{(numeric) The wet perimeter index of the field, fraction that field is surrounded by water}
 
 \item{D_RO_R}{(numeric) The risk that surface water runs off the parcel}
 

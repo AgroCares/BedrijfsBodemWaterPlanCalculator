@@ -22,7 +22,7 @@ bbwp_field_properties(
   A_P_AL,
   A_P_WA,
   A_P_SG,
-  D_WP,
+  D_SA_W,
   D_RO_R,
   LSW,
   lat = NULL,
@@ -64,7 +64,7 @@ bbwp_field_properties(
 
 \item{A_P_SG}{(numeric) The P-saturation index (\%)}
 
-\item{D_WP}{(numeric) The fraction of the parcel that is surrounded by surface water}
+\item{D_SA_W}{(numeric) The wet perimeter index of the field, fraction that field is surrounded by water}
 
 \item{D_RO_R}{(numeric) The risk that surface water runs off the parcel}
 

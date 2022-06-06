@@ -9,7 +9,7 @@
 #' @param B_SLOPE (numeric)
 #' @param B_LU_BRP (integer)
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
-#' @param D_WP (numeric) The fraction of the parcel that is surrounded by surface water
+#' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
 #' @param D_OPI_NGW (numeric) the opportunity index (risk x impact) for nitrate leaching to groundwater given field properties
 #' @param D_OPI_NSW (numeric) the opportunity index (risk x impact) for nitrate leaching and runoff to surface water given field properties
 #' @param D_OPI_PSW (numeric) the opportunity index (risk x impact) for phosphorus leaching and runoff to surface water given field properties
@@ -23,7 +23,7 @@
 #'
 #' @export
 # calculate the score for a list of measures for one or multiple fields
-bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_BRP, B_LU_BBWP, M_DRAIN, D_WP,
+bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_BRP, B_LU_BBWP, M_DRAIN, D_SA_W,
                             D_OPI_NGW, D_OPI_NSW, D_OPI_PSW, D_OPI_NUE, D_OPI_WB,
                             measures = NULL, sector){
   
@@ -38,7 +38,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
   arg.length <- max(length(D_OPI_NGW), length(D_OPI_NSW), length(D_OPI_PSW), length(D_OPI_NUE),
                     length(D_OPI_WB),length(B_SOILTYPE_AGR), length(B_GWL_CLASS), length(M_DRAIN),
                     length(A_P_SG), length(B_SLOPE), length(B_LU_BRP),length(B_LU_BBWP),
-                    length(D_WP))
+                    length(D_SA_W))
   
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
@@ -49,7 +49,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
   checkmate::assert_numeric(B_SLOPE, len = arg.length)
   checkmate::assert_integerish(B_LU_BRP, lower = 0, len = arg.length)
   checkmate::assert_integerish(B_LU_BBWP, lower = 0, upper = 9,len = arg.length)
-  checkmate::assert_numeric(D_WP, lower = 0, upper = 1, len = arg.length)
+  checkmate::assert_numeric(D_SA_W, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_OPI_NGW, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_OPI_NSW, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_OPI_PSW, lower = 0, upper = 1, len = arg.length)
@@ -67,7 +67,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE, B_LU_
     B_LU_BRP = B_LU_BRP,
     B_LU_BBWP = B_LU_BBWP,
     M_DRAIN = M_DRAIN,
-    D_WP = D_WP,
+    D_SA_W = D_SA_W,
     D_OPI_NGW = D_OPI_NGW,
     D_OPI_NSW = D_OPI_NSW,
     D_OPI_PSW = D_OPI_PSW,
