@@ -89,14 +89,13 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   nleach_table <- nleach_table[leaching_to_set == 'gw']
   
   # copy input in one data.table
-    B_SLOPE_DEGREE = B_SLOPE_DEGREE,
   dt <- data.table(id = 1:arg.length,
                    B_SOILTYPE_AAGR = B_SOILTYPE_AGR,
                    B_LU_BRP = B_LU_BRP,
                    B_GWL_CLASS = B_GWL_CLASS,
                    B_SC_WENR = B_SC_WENR, 
                    B_HELP_WENR = B_HELP_WENR,
-                   B_SLOPE = B_SLOPE,
+                   B_SLOPE_DEGREE = B_SLOPE_DEGREE,
                    A_CLAY_MI = A_CLAY_MI,
                    A_SAND_MI = A_SAND_MI,
                    A_SILT_MI = A_SILT_MI,
@@ -116,7 +115,6 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   dt <- merge(dt, LSW.dt, by = 'id')
   dt <- merge(dt, crops.obic[, list(crop_code, crop_category)], by.x = "B_LU_BRP", by.y = "crop_code")
   dt <- merge(dt, soils.obic[, list(soiltype, soiltype.n)], by.x = "B_SOILTYPE_AAGR", by.y = "soiltype")
-  
   
   # estimate field properties that contribute to the risk to N losses to groundwater -------
   

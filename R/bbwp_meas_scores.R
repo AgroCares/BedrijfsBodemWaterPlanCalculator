@@ -27,6 +27,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
                             D_OPI_NGW, D_OPI_NSW, D_OPI_PSW, D_OPI_NUE, D_OPI_WB,
                             measures = NULL, sector){
   
+  # add visual bindings
   effect_psw = psw_psg_medium = psw_psg_high = effect_nsw = nsw_drains = nsw_gwl_low = nsw_gwl_high = psw_noslope = NULL
   effect_ngw = ngw_grassland = psw_bulbs = D_MEAs_NGW = D_MEAS_NSW = D_MEAS_NUE = effect_nue = D_MEAS_WB = effect_Wb = diary = NULL
   arable = tree_nursery = bulbs = clay = sand = peat = loess = D_MEAS_TOT = id = NULL
@@ -38,8 +39,6 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   arg.length <- max(length(D_OPI_NGW), length(D_OPI_NSW), length(D_OPI_PSW), length(D_OPI_NUE),
                     length(D_OPI_WB),length(B_SOILTYPE_AGR), length(B_GWL_CLASS), length(M_DRAIN),
                     length(A_P_SG), length(B_SLOPE_DEGREE), length(B_LU_BRP),length(B_LU_BBWP),
-                    length(D_WP))
-                    length(A_P_SG), length(B_SLOPE), length(B_LU_BRP),length(B_LU_BBWP),
                     length(D_SA_W))
   
   # check inputs
@@ -60,28 +59,27 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   checkmate::assert_subset(sector, choices = c('dairy', 'arable', 'tree_nursery', 'bulbs'))
 
   # collect data in one data.table
-  dt <- data.table(
-    id = 1:arg.length,
-    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
-    B_GWL_CLASS = B_GWL_CLASS,
-    A_P_SG = A_P_SG,
-    B_SLOPE_DEGREE = B_SLOPE_DEGREE,
-    B_LU_BRP = B_LU_BRP,
-    B_LU_BBWP = B_LU_BBWP,
-    M_DRAIN = M_DRAIN,
-    D_SA_W = D_SA_W,
-    D_OPI_NGW = D_OPI_NGW,
-    D_OPI_NSW = D_OPI_NSW,
-    D_OPI_PSW = D_OPI_PSW,
-    D_OPI_NUE = D_OPI_NUE,
-    D_OPI_WB = D_OPI_WB,
-    D_MEAS_NGW = NA_real_,
-    D_MEAS_NSW = NA_real_,
-    D_MEAS_PSE = NA_real_,
-    D_MEAS_NUE = NA_real_,
-    D_MEAS_WB = NA_real_,
-    D_MEAS_TOT = NA_real_
-  )
+  dt <- data.table(id = 1:arg.length,
+                   B_SOILTYPE_AGR = B_SOILTYPE_AGR,
+                   B_GWL_CLASS = B_GWL_CLASS,
+                   A_P_SG = A_P_SG,
+                   B_SLOPE_DEGREE = B_SLOPE_DEGREE,
+                   B_LU_BRP = B_LU_BRP,
+                   B_LU_BBWP = B_LU_BBWP,
+                   M_DRAIN = M_DRAIN,
+                   D_SA_W = D_SA_W,
+                   D_OPI_NGW = D_OPI_NGW,
+                   D_OPI_NSW = D_OPI_NSW,
+                   D_OPI_PSW = D_OPI_PSW,
+                   D_OPI_NUE = D_OPI_NUE,
+                   D_OPI_WB = D_OPI_WB,
+                   D_MEAS_NGW = NA_real_,
+                   D_MEAS_NSW = NA_real_,
+                   D_MEAS_PSE = NA_real_,
+                   D_MEAS_NUE = NA_real_,
+                   D_MEAS_WB = NA_real_,
+                   D_MEAS_TOT = NA_real_
+                  )
   
   # load, check and update the measures database
   dt.measures <- bbwp_check_meas(measures,eco = FALSE,score = TRUE)

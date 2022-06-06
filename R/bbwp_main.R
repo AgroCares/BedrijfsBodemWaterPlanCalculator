@@ -159,10 +159,6 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                              S_BBWP_WB = dt.fields$S_BBWP_WB,
                              D_AREA = D_AREA)
                               
-  
-                            D_SA_W = D_SA_W,
-  
-  
   # return output when preferred measures are requested
   if(output == 'measures'){
     
@@ -174,7 +170,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                               B_LU_BRP = B_LU_BRP,
                               B_LU_BBWP = B_LU_BBWP,
                               M_DRAIN = M_DRAIN,
-                              D_WP = D_WP,
+                              D_SA_W = D_SA_W,
                               D_OPI_NGW = dt.fields$S_BBWP_NGW,
                               D_OPI_NSW = dt.fields$S_BBWP_NSW,
                               D_OPI_PSW = dt.fields$S_BBWP_PSW,

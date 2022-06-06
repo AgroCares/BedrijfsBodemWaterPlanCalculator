@@ -67,18 +67,17 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,
                         value.name = 'urgency')
   
   # collect data in one data.table
-  dt <- data.table(
-    id = 1:arg.length,
-    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
-    B_LU_BRP = B_LU_BRP,
-    B_LU_BBWP = B_LU_BBWP,
-    D_AREA = D_AREA,
-    B_CT_SOIL = B_CT_SOIL, 
-    B_CT_WATER = B_CT_WATER,
-    B_CT_CLIMATE = B_CT_CLIMATE,
-    B_CT_BIO = B_CT_BIO,
-    B_CT_LANDSCAPE = B_CT_LANDSCAPE
-  )
+  dt <- data.table(id = 1:arg.length,
+                   B_SOILTYPE_AGR = B_SOILTYPE_AGR,
+                   B_LU_BRP = B_LU_BRP,
+                   B_LU_BBWP = B_LU_BBWP,
+                   D_AREA = D_AREA,
+                   B_CT_SOIL = B_CT_SOIL, 
+                   B_CT_WATER = B_CT_WATER,
+                   B_CT_CLIMATE = B_CT_CLIMATE,
+                   B_CT_BIO = B_CT_BIO,
+                   B_CT_LANDSCAPE = B_CT_LANDSCAPE
+                  )
   
   # columns with the Ecoregelingen ranks
   cols <- c('soil','water','biodiversity','climate','landscape')

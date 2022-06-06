@@ -1,7 +1,16 @@
 # Changelog BBWPC
 
-## 0.4.1
+## 0.4.2
+### Added
+- add LSW data as geopackage to dev
+- add `bbwp_check_lsw` to check, update the LSW data, with option for spatial intersection when geopackage is available
+- add internal package table `lsw` with the properties per local surface water (LSW)
 
+### Changed
+- argument `D_WP` changed into `D_SA_W` for all BBWP functions
+
+
+## 0.4.1
 ### Added
 - B_SLOPE and B_SLOPE_DEGREE as input in wrapper function `bbwp`
 
@@ -12,15 +21,6 @@
 - change output scores of `bbwp_field_score` and input for `bbwp_farm_score` from `D_OPI_x` to `S_BBWP_x`
 - change output scores of `er_field_score` and input for `er_farm_score` from `D_OPI_x` to `S_ER_x`
 - change B_SLOPE to B_SLOPE_DEGREE in all functions
-
-## 0.4.x
-### Added
-- add LSW data as geopackage to dev
-- add `bbwp_check_lsw` to check, update the LSW data, with option for spatial intersection when geopackage is available
-- add internal package table `lsw` with the properties per local surface water (LSW)
-
-### Changed
-- argument `D_WP` changed into `D_SA_W` for all BBWP functions
 
 ## 0.4.0
 ### Added

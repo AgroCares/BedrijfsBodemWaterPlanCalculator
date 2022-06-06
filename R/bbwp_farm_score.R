@@ -30,16 +30,15 @@ bbwp_farm_score <- function(S_BBWP_TOT,S_BBWP_NGW,S_BBWP_NSW,S_BBWP_PSW,S_BBWP_N
   checkmate::assert_numeric(D_AREA, lower = 0, upper = 50000, len = arg.length)
   
   # collect data in one data.table
-  dt <- data.table(
-    id = 1:arg.length,
-    S_BBWP_NGW = S_BBWP_NGW,
-    S_BBWP_NSW = S_BBWP_NSW,
-    S_BBWP_PSW = S_BBWP_PSW,
-    S_BBWP_NUE = S_BBWP_NUE,
-    S_BBWP_WB = S_BBWP_WB,
-    S_BBWP_TOT = S_BBWP_TOT,
-    D_AREA = D_AREA
-  )
+  dt <- data.table(id = 1:arg.length,
+                   S_BBWP_NGW = S_BBWP_NGW,
+                   S_BBWP_NSW = S_BBWP_NSW,
+                   S_BBWP_PSW = S_BBWP_PSW,
+                   S_BBWP_NUE = S_BBWP_NUE,
+                   S_BBWP_WB = S_BBWP_WB,
+                   S_BBWP_TOT = S_BBWP_TOT,
+                   D_AREA = D_AREA
+                  )
   
   # columns with the score of the opportunity indexes
   cols <- c('S_BBWP_TOT','S_BBWP_NGW','S_BBWP_NSW','S_BBWP_PSW','S_BBWP_NUE','S_BBWP_WB')

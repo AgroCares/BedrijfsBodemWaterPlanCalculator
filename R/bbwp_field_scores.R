@@ -31,11 +31,10 @@
 # calculate the opportunities for a set of fields
 bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE, B_LU_BRP, B_LU_BBWP,
                               M_DRAIN, D_SA_W, D_RISK_NGW, D_RISK_NSW, D_RISK_PSW, D_RISK_NUE, D_RISK_WB,
-bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, B_LU_BBWP,
-                              M_DRAIN, D_WP, D_RISK_NGW, D_RISK_NSW, D_RISK_PSW, D_RISK_NUE, D_RISK_WB,
                               B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW, 
                               B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, measures, sector){
   
+  # add visual bindings
   cfngw = cfwb = cfnsw = cfpsw = cfnue = NULL
   D_OPI_NGW = D_OPI_NSW = D_OPI_PSW = D_OPI_NUE = D_OPI_WB = NULL
   D_MEAS_NGW = D_MEAS_NSW = D_MEAS_PSW = D_MEAS_NUE = D_OPI_TOT = NULL 
@@ -43,8 +42,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   
   # check length of the inputs
   arg.length <- max(length(B_SOILTYPE_AGR),length(B_GWL_CLASS), length(A_P_SG),
-                    length(B_SLOPE), length(B_LU_BRP), length(B_LU_BBWP),length(M_DRAIN),length(D_SA_W),
-                    length(B_SLOPE_DEGREE), length(B_LU_BRP), length(B_LU_BBWP),length(M_DRAIN),length(D_WP),
+                    length(B_SLOPE_DEGREE), length(B_LU_BRP), length(B_LU_BBWP),length(M_DRAIN),length(D_SA_W),
                     length(D_RISK_NGW),length(D_RISK_NSW),length(D_RISK_PSW),length(D_RISK_NUE),
                     length(D_RISK_WB),length(B_GWP),length(B_AREA_DROUGHT),length(B_CT_PSW),
                     length(B_CT_NSW))
