@@ -20,7 +20,7 @@
 #' @param A_P_AL (numeric) The plant extractable P content, measured via ammonium lactate extraction (mg / kg)
 #' @param A_P_WA (numeric) The P-content of the soil extracted with water
 #' @param A_P_SG (numeric) The P-saturation index (\%)
-#' @param D_WP (numeric) The fraction of the parcel that is surrounded by surface water
+#' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
 #' @param D_RO_R (numeric) The risk that surface water runs off the parcel
 #' @param LSW (data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)
 #' @param lat (numeric) Latitude of the field (required if no LSW is submitted)
@@ -33,7 +33,7 @@
 bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE,
                                   A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,
                                   A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
-                                  D_WP, D_RO_R, LSW, lat = NULL, lon = NULL) {
+                                  D_SA_W, D_RO_R, LSW, lat = NULL, lon = NULL) {
   
   ngw_scr = croptype.nleach = nf = ngw_lea = ngw_nlv = NULL
   nsw_scr = nsw_gwt = nsw_ro = nsw_ws = nsw_nlv = nsw_slope = NULL 
@@ -41,7 +41,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   npe_wri = npe_pbi = npe_wdri = npe_nlv = wue_wwri = wue_wdri = wue_whc = NULL
   crop_code = soiltype = leaching_to_set = soiltype.n = bodem = gewas = pnorm = NULL
   
-  mean_n_rt = sd_n_rt = sd_ro_r = sd_wp = sd_p_cc = mean_p_sg = mean_al_ox = NULL
+  mean_n_rt = sd_n_rt = sd_ro_r = sd_sa_w = sd_p_cc = mean_p_sg = mean_al_ox = NULL
   mean_fe_ox = sd_fe_ox = crop_category = B_GT = mean_ro_r = mean_wp = mean_p_cc = psw_psg = sd_p_sg = NULL
   sd_al_ox = id = NULL
   
@@ -50,7 +50,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
     length(B_SOILTYPE_AGR), length(B_LU_BRP), length(B_GWL_CLASS), length(B_SC_WENR), length(B_HELP_WENR),
     length(A_CLAY_MI), length(A_SAND_MI), length(A_SILT_MI), length(A_SOM_LOI), length(A_N_RT),
     length(A_FE_OX), length(A_AL_OX), length(A_P_CC), length(A_P_AL),length(A_P_WA), length(A_P_SG),
-    length(D_WP), length(D_RO_R)
+    length(D_SA_W), length(D_RO_R)
   )
   
   # check inputs B parameters
@@ -73,7 +73,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   checkmate::assert_numeric(A_P_WA, lower = 0, upper = 200, any.missing = FALSE, len = arg.length)
   
   # check inputs D parameters
-  checkmate::assert_numeric(D_WP, lower = 0, upper = 1, len = arg.length)
+  checkmate::assert_numeric(D_SA_W, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_RO_R, lower = 0, upper = 1, len = arg.length)
 
   # check lsw and replace based on location if lsw is not provided
@@ -106,7 +106,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
                    A_P_AL = A_P_AL,
                    A_P_WA = A_P_WA, 
                    A_P_SG = A_P_SG,
-                   D_WP = D_WP, 
+                   D_SA_W = D_SA_W, 
                    D_RO_R = D_RO_R,
                    LSW = LSW
                   )
@@ -171,7 +171,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   
   # rank the risk for wet surroundings (Van Gerven, 2018)
   # higher risk is associated to increased risks for N runoff
-  dt[,nsw_ws := pnorm(q = D_WP, mean = mean_wp, sd = sd_wp)]
+  dt[,nsw_ws := pnorm(q = D_SA_W, mean = mean_sa_w, sd = sd_sa_w)]
   
   # rank the risk for N pool in soil: higher NLV is associated to increased risks for N runoff
   dt[,nsw_nlv := ngw_nlv]

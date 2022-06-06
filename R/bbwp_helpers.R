@@ -200,9 +200,9 @@ bbwp_check_lsw <- function(LSW, lat, lon){
     setnames(LSW,gsub('LSW\\.','',colnames(LSW)))
     
     # convert old element names for the case that they are present
-    setnames(lsw, 
-             old = c('mean_p_vg','sd_p_vg','mean_os_gv','sd_os_gv'),
-             new = c('mean_p_sg','sd_p_sg','mean_som_loi','sd_som_loi'),
+    setnames(LSW, 
+             old = c('mean_p_vg','sd_p_vg','mean_os_gv','sd_os_gv','mean_wp','sd_wp'),
+             new = c('mean_p_sg','sd_p_sg','mean_som_loi','sd_som_loi','mean_sa_w','sd_sa_w'),
              skip_absent = TRUE)
     
     # relevant columns that need to be present

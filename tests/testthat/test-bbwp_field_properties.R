@@ -43,7 +43,7 @@ test <- bbwp_field_properties(B_SOILTYPE_AGR = c('dekzand', 'loess'),
                               A_P_AL = c(65, 5),
                               A_P_WA = c(52, 5), 
                               A_P_SG = c(38, 78),
-                              D_WP = c(0.5, 1), 
+                              D_SA_W = c(0.5, 1), 
                               D_RO_R = c(0.5, 0),
                               LSW = LSW
                             )
