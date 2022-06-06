@@ -142,40 +142,53 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
 
 #' Helper function to check the LSW table 
 #' 
-#' If there is no input LSW, the lon/lat are used to select values of the internal lws table
+#' If there is no input LSW, the LSW properties are derived form the oow_id given 
+#' IF available as geopackage, the lon/lat can be used to select LSW properties
 #' 
-#' @param LSW (data.table) The input LSW table
+#' @param LSW (data.table) The input LSW table with `oow_id` as identifier
+#' @param lsw.sf (sf object) a geopackage with the LSW properties, crs 4326
 #' @param lon (numeric) Longitude of the field (required if no LSW is submitted)
 #' @param lat (numeric) Latitude of the field (required if no LSW is submitted)
 #' 
 #' @import data.table
 #' @import sf
 #' 
+#' @details 
+#' Due to high memory use, the spatial LSW gpkg is moved to "dev" directory of the package.
+#' 
 #' @export
-bbwp_check_lsw <- function(LSW, lat, lon){
+bbwp_check_lsw <- function(LSW, lat = NULL, lon = NULL,lsw.sf = NULL){
   
   # add visual bindings
   id = NULL
   
   # check inputs
-  checkmate::assert_data_table(LSW, null.ok = TRUE)
+  checkmate::assert_data_table(LSW)
   
   # which columns need to be present in LSW
   cols <- c('n_rt','p_cc','p_al','p_wa','p_sg','fe_ox','al_ox','clay_mi','sand_mi','silt_mi',
             'som_loi','ro_r','sa_w')
   cols <- c(paste0('mean_',cols),paste0('sd_',cols))
   
-  if(is.null(LSW)){
+  # retrieve properties when geopackage and lon-lat of fields are given
+  if(!is.null(lsw.sf)){
     
     # length of inputs
     arg.length <- max(length(lat),length(lon))
+    
+    # check properties of the spatial object
+    checkmate::assert_choice(st_crs(lsw.sf)$input,choices = c('EPSG:4326'))
+    checkmate::assert_class(lsw.sf,classes = c('sf'))
+    checkmate::assertDataFrame(lsw.sf, nrows = arg.length)
+    checkmate::assert_logical('oow_id' %in% colnames(lsw.sf))
+    checkmate::assert_logical('geom|geometry' %in% colnames(lsw.sf))
     
     # check inputs lon and lat
     checkmate::assert_numeric(lon, lower = 3.3, upper = 7.3, len = arg.length)
     checkmate::assert_numeric(lat, lower = 50.5, upper = 53.5, len = arg.length)
       
     # load internal LSW
-    lsw.sf <- st_as_sf(as.data.table(BBWPC::lsw))
+    lsw.sf <- st_as_sf(lsw.sf)
     
     # make sf object of field location(s)
     loc <- sf::st_sf(geom = st_sfc(st_multipoint(matrix(c(lon,lat),ncol=2))), crs = 4326)
@@ -184,17 +197,37 @@ bbwp_check_lsw <- function(LSW, lat, lon){
     suppressWarnings(lsw.crop <- st_crop(lsw.sf,st_bbox(loc) + c(-0.005,-0.0025,0.005,0.0025)))
       
     # intersect with the package lsw object
-    suppressWarnings(dt <- st_intersection(loc, lsw.crop) |> setDT())
-
-    # if no output, take the averaged one
-    if(nrow(dt) == 0){
-      
-      # take the median mean and SD value of all LSW properties
-      dt <- LSW[,c(cols) := lapply(.SD,median),.SDcols = cols]
-      
-    }
+    suppressWarnings(dt <- as.data.table(st_intersection(loc, lsw.crop)))
     
-  } else{
+    # add id in the same order as the input
+    dt[,id := 1:arg.length]
+    
+  }
+  
+  # retrieve properties when only LSW_id is given
+  if(ncol(LSW) <= 2 & 'oow_id' %in% colnames(LSW)){ 
+    
+    # load internal table
+    lsw <- as.data.table(BBWPC::lsw)
+    
+    # check subset of LSW_id
+    checkmate::assert_numeric(LSW$oow_id)
+    checkmate::assert_subset(LSW$oow_id, choices = lsw$oow_id)
+    
+    # make internal data.table
+    dt <- data.table(id = 1: nrow(LSW),
+                     oow_id = LSW$oow_id)
+    
+    # merge with properties
+    dt <- merge(dt, lsw, by = 'oow_id')
+    
+    # sort the data.table given the input order of lsw_id
+    setorder(dt,id)
+    
+    }
+  
+  # check and update the LSW properties send in as table
+  if(ncol(LSW) > 25){
     
     # make internal copy
     dt <- copy(LSW)
@@ -217,11 +250,23 @@ bbwp_check_lsw <- function(LSW, lat, lon){
     # check colnames
     checkmate::assert_subset(colnames(dt),choices = cols)
     
+    # add id in the same order as the input
+    dt[,id := 1:.N]
   }
   
-  # add id
-  dt[,id := 1:.N]
-  
+  # if no output, take the averaged one of internal LSW table
+  if(nrow(dt) == 0){
+      
+    # load internal table
+    lsw <- as.data.table(BBWPC::lsw)
+    
+    # take the median mean and SD value of all LSW properties
+    dt <- lsw[,c(cols) := lapply(.SD,median),.SDcols = cols]
+      
+    # add id in the same order as the input
+    dt[,id := 1:.N]
+  }
+    
   # return output
   return(dt)
   

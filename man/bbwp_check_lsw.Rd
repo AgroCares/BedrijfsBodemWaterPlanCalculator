@@ -4,15 +4,21 @@
 \alias{bbwp_check_lsw}
 \title{Helper function to check the LSW table}
 \usage{
-bbwp_check_lsw(LSW, lat, lon)
+bbwp_check_lsw(LSW, lat = NULL, lon = NULL, lsw.sf = NULL)
 }
 \arguments{
-\item{LSW}{(data.table) The input LSW table}
+\item{LSW}{(data.table) The input LSW table with `oow_id` as identifier}
 
 \item{lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
 
 \item{lon}{(numeric) Longitude of the field (required if no LSW is submitted)}
+
+\item{lsw.sf}{(sf object) a geopackage with the LSW properties, crs 4326}
 }
 \description{
-If there is no input LSW, the lon/lat are used to select values of the internal lws table
+If there is no input LSW, the LSW properties are derived form the oow_id given 
+IF available as geopackage, the lon/lat can be used to select LSW properties
+}
+\details{
+Due to high memory use, the spatial LSW gpkg is moved to "dev" directory of the package.
 }

@@ -78,6 +78,14 @@ require(data.table); require(readxl);library(usethis)
            new = c('mean_p_sg','sd_p_sg','mean_som_loi','sd_som_loi'),
            skip_absent = TRUE)
   
+  # convert to sf object again and save in dev
+  lsw <- st_as_sf(lsw)
+  st_write(lsw,'dev/lswproperties.gpkg')
+  
+  # convert to data.table and remove geometry
+  lsw <- as.data.table(lsw)
+  lsw[,geom := NULL]
+  
   # save lsw data
   use_data(lsw, overwrite = T,compress='xz')
   

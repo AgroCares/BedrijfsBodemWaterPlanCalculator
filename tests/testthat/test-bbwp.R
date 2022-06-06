@@ -230,3 +230,67 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
       expected = c(62,92,55,55,72,96),
       tolerance = 0.01)
   })
+
+  
+  # run example 3 without any measures taken and LSW id
+  test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
+               B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
+               B_SC_WENR = c(4, 2,2),
+               B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
+               A_P_SG = c(0.4, 0.8, 1),
+               A_CLAY_MI = c(15, 5,8),
+               A_SAND_MI = c(45, 65,15),
+               A_SILT_MI = c(40, 30,45),
+               A_SOM_LOI = c(5, 15,3) ,
+               A_N_RT = c(4200, 1000,3000),
+               A_FE_OX = c(500, 500,800),
+               A_AL_OX = c(150, 150,145),
+               A_P_CC = c(5, 1,6),
+               A_P_AL = c(65, 5,40),
+               A_P_WA = c(52, 5,45),
+               B_SLOPE = c(1.5,4,1.5),
+               B_LU_BRP = c(265, 1932, 266),
+               B_LU_BBWP = c(1,4,1),
+               M_DRAIN = c(TRUE, FALSE, TRUE),
+               D_SA_W = c(0, 0.5, 1),
+               D_RO_R = c(0.5, 0,0.9),
+               D_AREA = c(100,80,2.5),
+               B_GWP = c(TRUE, FALSE, TRUE),
+               B_AREA_DROUGHT = c(TRUE, FALSE, TRUE),
+               B_CT_PSW = c(0, 25, 50),
+               B_CT_NSW = c(0, 50, 100),
+               B_CT_PSW_MAX = 0.5,
+               B_CT_NSW_MAX = 5.0,
+               measures = NULL,
+               sector = c('dairy', 'arable'),
+               output = 'scores',
+               LSW = data.table(oow_id = c(1,1295,84))
+  )
+  
+  # run tests on format and output values
+  test_that("check bbwp", {
+    expect_equal(
+      object = names(test),
+      expected = c('farm','fields'))
+  })
+  
+  test_that("check bbwp", {
+    expect_equal(
+      object = colnames(test$fields),
+      expected = c("d_opi_ngw", "d_opi_nsw", "d_opi_psw", "d_opi_nue", "d_opi_wb" , "d_opi_tot", "field_id"))
+  })
+  
+  test_that("check bbwp", {
+    expect_equal(
+      object = test$fields$d_opi_tot,
+      expected = c(35,17,8),
+      tolerance = 0.01)
+  })
+  
+  test_that("check bbwp", {
+    expect_equal(
+      object = as.numeric(unlist(test$farm)),
+      expected = c(27,42,54,54,22,92),
+      tolerance = 0.01)
+  })
+  
