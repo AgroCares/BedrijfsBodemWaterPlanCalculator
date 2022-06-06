@@ -42,7 +42,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   crop_code = soiltype = leaching_to_set = soiltype.n = bodem = gewas = pnorm = NULL
   
   mean_n_rt = sd_n_rt = sd_ro_r = sd_sa_w = sd_p_cc = mean_p_sg = mean_al_ox = NULL
-  mean_fe_ox = sd_fe_ox = crop_category = B_GT = mean_ro_r = mean_wp = mean_p_cc = psw_psg = sd_p_sg = NULL
+  mean_fe_ox = sd_fe_ox = crop_category = B_GT = mean_ro_r = mean_sa_w = mean_p_cc = psw_psg = sd_p_sg = NULL
   sd_al_ox = id = NULL
   
   # check length inputs
@@ -77,7 +77,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   checkmate::assert_numeric(D_RO_R, lower = 0, upper = 1, len = arg.length)
 
   # check lsw and replace based on location if lsw is not provided
-  LSW = bbwp_check_lsw(LSW = LSW, lat = lat, lon = lon)
+  LSW.dt = bbwp_check_lsw(LSW = LSW, lat = lat, lon = lon)
   
   # load in the datasets for soil and crop types and N leaching fractions
   crops.obic <- as.data.table(OBIC::crops.obic)
@@ -107,11 +107,11 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
                    A_P_WA = A_P_WA, 
                    A_P_SG = A_P_SG,
                    D_SA_W = D_SA_W, 
-                   D_RO_R = D_RO_R,
-                   LSW = LSW
-                  )
+                   D_RO_R = D_RO_R)
+                   
   
   # add crop names and categories
+  dt <- merge(dt, LSW.dt, by = 'id')
   dt <- merge(dt, crops.obic[, list(crop_code, crop_category)], by.x = "B_LU_BRP", by.y = "crop_code")
   dt <- merge(dt, soils.obic[, list(soiltype, soiltype.n)], by.x = "B_SOILTYPE_AAGR", by.y = "soiltype")
   
