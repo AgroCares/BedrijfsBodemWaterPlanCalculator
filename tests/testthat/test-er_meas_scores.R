@@ -5,6 +5,7 @@ require(testthat)
   # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
   # B_LU_BRP = c(265,265,265,265)
   # B_LU_BBWP = c(1,1,1,1)
+  # B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland")
   # D_AREA = c(45,18,0.8,6)
   # B_CT_SOIL = 20
   # B_CT_WATER = 15
@@ -16,11 +17,12 @@ require(testthat)
 
 # run example 1 without any measures taken
 test <- er_meas_score(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                        B_LU_BRP = c(265,2005,256,259),
-                        B_LU_BBWP = c(1,4,4,9),
-                        measures = NULL,
-                        sector = 'dairy'
-                        )
+                      B_LU_BRP = c(265,2005,256,259),
+                      B_LU_BBWP = c(1,4,4,9),
+                      B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland"),
+                      measures = NULL,
+                      sector = 'dairy'
+                      )
 
 test_that("check er_meas_scores", {
   expect_equal(
@@ -31,7 +33,8 @@ test_that("check er_meas_scores", {
       D_MEAS_CLIM = rep(0,4),
       D_MEAS_LAND = rep(0,4),
       D_MEAS_SOIL = rep(0,4),
-      D_MEAS_WAT = rep(0,4)
+      D_MEAS_WAT = rep(0,4),
+      reward = rep(0,4)
     ),
     tolerance = 0.01,
     ignore_attr = TRUE)
@@ -47,11 +50,12 @@ measures <- rbind(data.table(id = 1, dt.measures[c(2,5,18,28,32,3,38,43,62)]),
 
 # run example 2 without any measures taken
 test <- er_meas_score(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                        B_LU_BRP = c(265,265,265,265),
-                        B_LU_BBWP = c(1,1,1,1),
-                        measures = measures,
-                        sector = c('dairy','arable')
-)
+                      B_LU_BRP = c(265,265,265,265),
+                      B_LU_BBWP = c(1,1,1,1),
+                      B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland"),
+                      measures = measures,
+                      sector = c('dairy','arable')
+                      )
 
 
 test_that("check er_meas_scores", {
@@ -59,11 +63,12 @@ test_that("check er_meas_scores", {
     object = test,
     expected = data.table(
       id = 1:4,
-      D_MEAS_BIO = c(3.75,0,11,0),
-      D_MEAS_CLIM = c(11,0,11,0),
-      D_MEAS_LAND = c(14,0,12,0),
-      D_MEAS_SOIL = c(11,0,0,0),
-      D_MEAS_WAT = c(12,0,11.25,0)
+      D_MEAS_BIO = c(15,0,3,0),
+      D_MEAS_CLIM = c(7,0,42,0),
+      D_MEAS_LAND = c(4,0,15,0),
+      D_MEAS_SOIL = c(2,0,7.5,0),
+      D_MEAS_WAT = c(10.5,0,6.25,0),
+      reward = c(600,0,200,0)
     ),
     tolerance = 1,
     ignore_attr = TRUE)
