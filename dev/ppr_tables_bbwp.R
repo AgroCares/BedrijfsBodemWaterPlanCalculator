@@ -40,7 +40,15 @@ require(data.table); require(readxl);library(usethis)
   # save measures as bbwp table
   use_data(er_crops, overwrite = TRUE)
   
-
+# -- prepare correction factors for financial reward per Agricultural Economic Region for Ecoregelingen ---
+  
+  # load in csv
+  er_aer_reward <- as.data.table(fread('dev/220519 ecoregeling reward weging.csv',dec=','))
+  
+  # save measures as bbwp table
+  use_data(er_aer_reward, overwrite = TRUE)
+  
+  
 # -- prepare LSW table
   
   
