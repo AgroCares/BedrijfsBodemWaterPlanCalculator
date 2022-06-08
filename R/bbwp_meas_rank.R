@@ -84,6 +84,9 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     value = NA_real_
   )
   
+  # do check op Gt
+  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS)]
+  
   # merge inputs with data.table measures
   dt <- as.data.table(merge.data.frame(dt, dt.measures, all = TRUE))
   

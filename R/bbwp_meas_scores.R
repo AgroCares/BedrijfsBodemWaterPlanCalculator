@@ -81,6 +81,9 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
                    D_MEAS_TOT = NA_real_
                   )
   
+  # do check op Gt
+  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS)]
+  
   # load, check and update the measures database
   dt.measures <- bbwp_check_meas(measures,eco = FALSE,score = TRUE)
   

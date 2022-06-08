@@ -110,6 +110,8 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
                    D_SA_W = D_SA_W, 
                    D_RO_R = D_RO_R)
                    
+  # do check op Gt
+  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS)]
   
   # add crop names and categories
   dt <- merge(dt, LSW.dt, by = 'id')

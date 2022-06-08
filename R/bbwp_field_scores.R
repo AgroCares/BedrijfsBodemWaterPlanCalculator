@@ -92,6 +92,9 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
                     B_CT_NSW_MAX = B_CT_NSW_MAX
                   )
   
+  # do check op Gt
+  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS)]
+  
   # calculate correction factors, depending on regional targets
   
     # correction when field is in a ground water protection zone

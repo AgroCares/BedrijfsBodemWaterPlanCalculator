@@ -76,6 +76,9 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
                    B_CT_LANDSCAPE = B_CT_LANDSCAPE
                   )
   
+  # do check op Gt
+  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS)]
+  
   # add the generic farm score as baseline
   # this gives the averaged ER score based on the crops in crop rotation plan
   dt.farm <- er_croprotation(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR,

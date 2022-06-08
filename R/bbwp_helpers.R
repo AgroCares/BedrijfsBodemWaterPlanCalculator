@@ -272,4 +272,46 @@ bbwp_check_lsw <- function(LSW, lat = NULL, lon = NULL,lsw.sf = NULL){
   
 }
 
+#' Helper function to check and update the groundwater class
+#' 
+#' @param B_GWL_CLASS (character) The groundwater table class
+#' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
+#' 
+#' @export
+bbwp_check_gt <- function(B_GWL_CLASS,B_AER_CBS){
 
+  # check length of inputs
+  arg.length <- max(length(B_GWL_CLASS),length(B_AER_CBS))
+  
+  # check inputs
+  checkmate::assert_character(B_GWL_CLASS,len = arg.length)
+  checkmate::assert_character(B_AER_CBS,len = arg.length)
+  
+  # make internal table
+  dt <- data.table(B_GWL_CLASS = B_GWL_CLASS,
+                   B_AER_CBS = B_AER_CBS)
+  
+  # remove suffixes
+  dt[, B_GWL_CLASS := gsub("b|a|u|s", "", B_GWL_CLASS)]
+  
+  # replace unknowns 
+  dt[B_GWL_CLASS == 'unknown', B_GWL_CLASS := '-']
+  
+  # change unknown to dry for Limburg
+  dt[B_GWL_CLASS == "-" & grepl('lg14|limburg',tolower(B_AER_CBS)), B_GWL_CLASS := "VIII"]
+  
+  # change unknown to Gt II in other provinces
+  dt[, B_GWL_CLASS := gsub("-", "II", B_GWL_CLASS)] 
+  
+  # add Gt to the class
+  dt[!grepl('^Gt|^-',B_GWL_CLASS), B_GWL_CLASS := paste0("Gt", B_GWL_CLASS)]
+  
+  # checkmate test for the allowed values for B_GWL_CLASS
+  checkmate::assert_subset(dt$B_GWL_CLASS, 
+                           choices = c('-', 'GtI','GtII','GtII','GtIII','GtIII','GtIV','GtV','GtV','GtVI','GtVII','GtVIII'))
+  # get output
+  out <- dt[,B_GWL_CLASS]
+  
+  # return output
+  return(out)
+  }
