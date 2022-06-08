@@ -316,4 +316,53 @@ bbwp_check_gt <- function(B_GWL_CLASS,B_AER_CBS){
   return(out)
 }
 
-
+#' Convert possible B_AER_CBS values to standardized values
+#' 
+#' This function formats information of Agricultural Economic Region so it can be understood by other functions
+#' 
+#' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
+#' 
+#' @import data.table
+#' 
+#' @examples 
+#' format_aer(c("LG13","LG12"))
+#' format_aer(c("LG13","LG12",'Rivierengebied'))
+#' 
+#' @return 
+#' A standardized B_AER_CBS value as required for the BBWP functions. A character string.
+#' 
+#' @export
+bbwp_format_aer <- function(B_AER_CBS) {
+  
+  # convert UTF-8 encoded strings to latin1 if required
+  if('UTF-8' %in% Encoding(B_AER_CBS)) {
+    B_AER_CBS <- iconv(B_AER_CBS, from = '', to = 'latin1')
+  }
+  
+  # options for B_AER_CBS
+  aer.text <- c('Zuid-Limburg','Zuidelijk Veehouderijgebied','Zuidwest-Brabant',
+                'Zuidwestelijk Akkerbouwgebied','Rivierengebied','Hollands/Utrechts Weidegebied',
+                'Waterland en Droogmakerijen','Westelijk Holland','IJsselmeerpolders',
+                'Centraal Veehouderijgebied','Oostelijk Veehouderijgebied','Noordelijk Weidegebied',
+                'Veenkoloni\xEBn en Oldambt', "Veenkolonien en Oldambt",
+                'Bouwhoek en Hogeland')
+  
+  # options for B_AER_CBS
+  aer.code <- c("LG14","LG13","LG12","LG11","LG10","LG09","LG08","LG07","LG06","LG05","LG04","LG03","LG02","LG02","LG01")
+  
+  # all input options
+  aer.all <- c(aer.text,aer.code)
+  
+  # Check if B_GT values are appropriate
+  checkmate::assert_subset(B_AER_CBS, empty.ok = FALSE, choices = aer.all)
+  
+  # which of the input values are database codes
+  var.sel <- match(B_AER_CBS,aer.text,nomatch = 0)
+  
+  # replace numeric values with strings
+  B_AER_CBS[B_AER_CBS %in% aer.text] <- aer.code[var.sel]
+  
+  # Return B_AER_CBS
+  return(B_AER_CBS)
+}
+  
