@@ -35,13 +35,13 @@
 #' 
 #' @format A data.table with 8 rows and 7 columns:
 #' \describe{
-#'   \item{soiltype}{bla bla}
-#'   \item{type}{bla bla}
-#'   \item{cf_soil}{bla bla}
-#'   \item{cf_water}{bla bla}
-#'   \item{cf_climate}{bla bla}
-#'   \item{cf_biodiversity}{bla bla}
-#'   \item{cf_landscape}{ bla bla}
+#'   \item{soiltype}{The type of soil}
+#'   \item{type}{The type of driving factor (either political urgency (urgency) or contribution to an environmental theme (aim))}
+#'   \item{cf_soil}{Correction factor to estimate soil score for Ecoregeling}
+#'   \item{cf_water}{Correction factor to estimate water score for Ecoregeling}
+#'   \item{cf_climate}{Correction factor to estimate climate score for Ecoregeling}
+#'   \item{cf_biodiversity}{Correction factor to estimate biodiversity score for Ecoregeling}
+#'   \item{cf_landscape}{Correction factor to estimate landscape score for Ecoregeling}
 #' }
 "er_scoring"
 
@@ -51,11 +51,11 @@
 #' 
 #' @format A data.table with 40 rows and 5 columns:
 #' \describe{
-#'   \item{id}{bla bla}
-#'   \item{indicator}{bla bla}
-#'   \item{eco_id}{bla bla}
-#'   \item{description}{bla bla}
-#'   \item{er_score}{bla bla}
+#'   \item{id}{A unique ID number}
+#'   \item{indicator}{The environmental theme to which the measure applies}
+#'   \item{eco_id}{The unique ID corresponding with a specific Ecoregelingen measure}
+#'   \item{description}{Short decription of the measure} 
+#'   \item{er_score}{The score of the measure on the environmental theme}
 #' }
 "er_farm_measure"
 
@@ -65,9 +65,9 @@
 #' 
 #' @format A data.table with 75 rows and 4 columns:
 #' \describe{
-#'   \item{eco_id}{bla bla}
-#'   \item{b_lu_brp}{bla bla}
-#'   \item{b_lu_name}{bla bla}
-#'   \item{er_description}{bla bla}
+#'   \item{eco_id}{The unique ID corresponding with a specific Ecoregelingen measure}
+#'   \item{b_lu_brp}{The crop type (conform BRP coding, preferable the most frequent crop on the field)}
+#'   \item{b_lu_name}{The crop name of the most frequent crop on the field}
+#'   \item{er_description}{The description of the crop related measure}
 #' }
 "er_crops"
