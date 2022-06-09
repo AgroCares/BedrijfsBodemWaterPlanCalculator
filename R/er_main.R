@@ -30,8 +30,9 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
   checkmate::assert_character(output)
   checkmate::assert_subset(output,choices = c('scores','measures'))
   
-  # reformat B_AER_CBS
+  # reformat B_AER_CBS and B_LU_BBWP
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
+  B_LU_BBWP <- as.numeric(gsub('cat_','',B_LU_BBWP))
   
   # Calculate the minimum required ER scores on Farm level
   dt.farm.aim <- er_farm_aim(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 

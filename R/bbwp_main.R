@@ -72,6 +72,9 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
     if(B_SLOPE){B_SLOPE_DEGREE = 3} else {B_SLOPE_DEGREE = 0.1}
   }
     
+  # check and update B_LU_BBWP
+  B_LU_BBWP <- as.numeric(gsub('cat_','',B_LU_BBWP))
+  
   # convert soil properties to a BBWP risk indicator
   dt <- bbwp_field_properties(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
                               B_LU_BRP = B_LU_BRP, 
