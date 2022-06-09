@@ -9,6 +9,7 @@
 #' @param B_SC_WENR (character) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006)
 #' @param B_HELP_WENR (character) The soil type abbreviation, derived from 1:50.000 soil map
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
+#' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param A_CLAY_MI (numeric) The clay content of the soil (\%)
 #' @param A_SAND_MI (numeric) The sand content of the soil (\%)
 #' @param A_SILT_MI (numeric) The silt content of the soil (\%)
@@ -30,7 +31,7 @@
 #' @import OBIC
 #'
 #' @export
-bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE_DEGREE,
+bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE_DEGREE,B_AER_CBS,
                                   A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,
                                   A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
                                   D_SA_W, D_RO_R, LSW, lat = NULL, lon = NULL) {
@@ -47,11 +48,14 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   
   # check length inputs
   arg.length <- max(
-    length(B_SOILTYPE_AGR), length(B_LU_BRP), length(B_GWL_CLASS), length(B_SC_WENR), length(B_HELP_WENR),
+    length(B_SOILTYPE_AGR), length(B_LU_BRP), length(B_GWL_CLASS), length(B_SC_WENR), length(B_HELP_WENR),length(B_AER_CBS),
     length(A_CLAY_MI), length(A_SAND_MI), length(A_SILT_MI), length(A_SOM_LOI), length(A_N_RT), length(B_SLOPE_DEGREE),
     length(A_FE_OX), length(A_AL_OX), length(A_P_CC), length(A_P_AL),length(A_P_WA), length(A_P_SG),
     length(D_SA_W), length(D_RO_R)
   )
+  
+  # reformat B_AER_CBS
+  B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
   
   # check inputs B parameters
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = unique(OBIC::soils.obic$soiltype))
@@ -96,6 +100,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
                    B_SC_WENR = B_SC_WENR, 
                    B_HELP_WENR = B_HELP_WENR,
                    B_SLOPE_DEGREE = B_SLOPE_DEGREE,
+                   B_AER_CBS = B_AER_CBS,
                    A_CLAY_MI = A_CLAY_MI,
                    A_SAND_MI = A_SAND_MI,
                    A_SILT_MI = A_SILT_MI,
@@ -111,7 +116,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
                    D_RO_R = D_RO_R)
                    
   # do check op Gt
-  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS)]
+  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS,B_AER_CBS = B_AER_CBS)]
   
   # add crop names and categories
   dt <- merge(dt, LSW.dt, by = 'id')

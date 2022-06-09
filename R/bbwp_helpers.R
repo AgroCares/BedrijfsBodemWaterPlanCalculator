@@ -325,8 +325,8 @@ bbwp_check_gt <- function(B_GWL_CLASS,B_AER_CBS){
 #' @import data.table
 #' 
 #' @examples 
-#' format_aer(c("LG13","LG12"))
-#' format_aer(c("LG13","LG12",'Rivierengebied'))
+#' bbwp_format_aer(c("LG13","LG12"))
+#' bbwp_format_aer(c("LG13","LG12",'Rivierengebied'))
 #' 
 #' @return 
 #' A standardized B_AER_CBS value as required for the BBWP functions. A character string.

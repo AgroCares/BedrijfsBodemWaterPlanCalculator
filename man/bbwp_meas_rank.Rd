@@ -11,6 +11,7 @@ bbwp_meas_rank(
   B_SLOPE_DEGREE,
   B_LU_BRP,
   B_LU_BBWP,
+  B_AER_CBS,
   M_DRAIN,
   D_SA_W,
   D_OPI_NGW,
@@ -34,6 +35,8 @@ bbwp_meas_rank(
 \item{B_LU_BRP}{(integer)}
 
 \item{B_LU_BBWP}{(numeric) The BBWP category used for allocation of measures to BBWP crop categories}
+
+\item{B_AER_CBS}{(character) The agricultural economic region in the Netherlands (CBS, 2016)}
 
 \item{M_DRAIN}{(boolean) is there tube drainage present in the field}
 

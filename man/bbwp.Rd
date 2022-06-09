@@ -13,6 +13,7 @@ bbwp(
   B_HELP_WENR,
   B_SLOPE = NULL,
   B_SLOPE_DEGREE = NULL,
+  B_AER_CBS,
   A_CLAY_MI,
   A_SAND_MI,
   A_SILT_MI,
@@ -58,6 +59,8 @@ bbwp(
 \item{B_SLOPE}{(boolean) The slope of the field, steeper than 2\%}
 
 \item{B_SLOPE_DEGREE}{(numeric) The slope of the field (degrees)}
+
+\item{B_AER_CBS}{(character) The agricultural economic region in the Netherlands (CBS, 2016)}
 
 \item{A_CLAY_MI}{(numeric) The clay content of the soil (\%)}
 

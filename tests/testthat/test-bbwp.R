@@ -5,6 +5,7 @@ require(testthat)
   # B_GWL_CLASS = c('GtIII', 'GtI', 'GtV')
   # B_SC_WENR = c(4, 2,2)
   # B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF')
+  # B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12")
   # A_P_SG = c(0.4, 0.8, 1)
   # A_CLAY_MI = c(15, 5,8)
   # A_SAND_MI = c(45, 65,15)
@@ -65,6 +66,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
               B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
               B_SC_WENR = c(4, 2,2),
               B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
+             B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
               A_P_SG = c(0.4, 0.8, 1),
               A_CLAY_MI = c(15, 5,8),
               A_SAND_MI = c(45, 65,15),
@@ -128,6 +130,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
              B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
              B_SC_WENR = c(4, 2,2),
              B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
+             B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
              A_P_SG = c(0.4, 0.8, 1),
              A_CLAY_MI = c(15, 5,8),
              A_SAND_MI = c(45, 65,15),
@@ -186,6 +189,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
              B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
              B_SC_WENR = c(4, 2,2),
              B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
+             B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
              A_P_SG = c(0.4, 0.8, 1),
              A_CLAY_MI = c(15, 5,8),
              A_SAND_MI = c(45, 65,15),
@@ -220,14 +224,14 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check bbwp", {
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(100,17,8),
+      expected = c(81,17,55),
       tolerance = 0.01)
   })
   
   test_that("check bbwp", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(62,92,55,55,72,96),
+      expected = c(53,73,56,56,50,96),
       tolerance = 0.01)
   })
 
@@ -237,6 +241,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
                B_SC_WENR = c(4, 2,2),
                B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
+               B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
                A_P_SG = c(0.4, 0.8, 1),
                A_CLAY_MI = c(15, 5,8),
                A_SAND_MI = c(45, 65,15),

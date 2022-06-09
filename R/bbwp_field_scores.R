@@ -9,6 +9,7 @@
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param B_LU_BRP (integer)
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
+#' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
 #' @param D_RISK_NGW (numeric) the risk for nitrate leaching to groundwater given field properties
 #' @param D_RISK_NSW (numeric) the risk for nitrate leaching and runoff to surface water given field properties
@@ -29,7 +30,7 @@
 #'
 #' @export
 # calculate the opportunities for a set of fields
-bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, B_LU_BBWP,
+bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
                               M_DRAIN, D_SA_W, D_RISK_NGW, D_RISK_NSW, D_RISK_PSW, D_RISK_NUE, D_RISK_WB,
                               B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW, 
                               B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, measures, sector){
@@ -41,7 +42,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   D_MEAS_WB = D_MES_PSW = D_MEAS_NGW = D_MEAS_PSW = effect_Wb = id = NULL
   
   # check length of the inputs
-  arg.length <- max(length(B_SOILTYPE_AGR),length(B_GWL_CLASS), length(A_P_SG),
+  arg.length <- max(length(B_SOILTYPE_AGR),length(B_GWL_CLASS), length(A_P_SG),length(B_AER_CBS),
                     length(B_SLOPE_DEGREE), length(B_LU_BRP), length(B_LU_BBWP),length(M_DRAIN),length(D_SA_W),
                     length(D_RISK_NGW),length(D_RISK_NSW),length(D_RISK_PSW),length(D_RISK_NUE),
                     length(D_RISK_WB),length(B_GWP),length(B_AREA_DROUGHT),length(B_CT_PSW),
@@ -77,6 +78,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
                     B_SLOPE_DEGREE = B_SLOPE_DEGREE,
                     B_LU_BRP = B_LU_BRP,
                     B_LU_BBWP = B_LU_BBWP,
+                    B_AER_CBS = B_AER_CBS,
                     M_DRAIN = M_DRAIN,
                     D_SA_W = D_SA_W,
                     D_RISK_NGW = D_RISK_NGW,
@@ -93,7 +95,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
                   )
   
   # do check op Gt
-  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS)]
+  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS,B_AER_CBS = B_AER_CBS)]
   
   # calculate correction factors, depending on regional targets
   
@@ -136,6 +138,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
                                         B_LU_BRP = dt$B_LU_BRP,
                                         B_LU_BBWP = dt$B_LU_BBWP,
                                         B_GWL_CLASS = dt$B_GWL_CLASS,
+                                        B_AER_CBS = dt$B_AER_CBS,
                                         A_P_SG = dt$A_P_SG,
                                         B_SLOPE_DEGREE = dt$B_SLOPE_DEGREE,
                                         M_DRAIN = dt$M_DRAIN,
