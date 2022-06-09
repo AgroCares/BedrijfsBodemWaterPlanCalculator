@@ -6,7 +6,8 @@
 - check and automatic update `B_GWL_CLASS` via function `bbwp_format_aer`, included in all relevant bbwp and er functions
 - add `B_AER_CBS` as argument to all bbwp and er functions
 - output `reward` added to `er_meas_score`, `er_field_scores` and `er_farm_score`
-- wrapper `er_main` adds `reward` as output in objects farm and field
+- function `ecoregeling` adds `reward` as output in objects farm and field
+- argument `B_LU_BBWP` is converted from string to integerish by removing `cat_` in wrapper funs `ecoregeling` and `bbwp`
 
 ## 0.4.2
 ### Added
