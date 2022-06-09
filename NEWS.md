@@ -1,5 +1,13 @@
 # Changelog BBWPC
 
+### 0.5.0
+### Added
+- internal table `er_aer_reward`, prepared in dev
+- check and automatic update `B_GWL_CLASS` via function `bbwp_format_aer`, included in all relevant bbwp and er functions
+- add `B_AER_CBS` as argument to all bbwp and er functions
+- output `reward` added to `er_meas_score`, `er_field_scores` and `er_farm_score`
+- wrapper `er_main` adds `reward` as output in objects farm and field
+
 ## 0.4.2
 ### Added
 - add LSW data as geopackage to dev
