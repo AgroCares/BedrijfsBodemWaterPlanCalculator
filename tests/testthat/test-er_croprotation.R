@@ -2,24 +2,24 @@
 require(testthat)
 
 # default input for testing
-  B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
-  B_LU_BRP = c(265,265,265,265)
-  B_LU_BBWP = c(1,1,1,1)
-  B_AER_CBS = c('Bouwhoek en Hogeland','LG14','LG12','Westelijk Holland')
-  D_AREA = c(45,18,0.8,6)
-  B_CT_SOIL = 20
-  B_CT_WATER = 15
-  B_CT_CLIMATE = 8
-  B_CT_BIO = 24
-  B_CT_LANDSCAPE = 20
-  measures = NULL
-  sector = 'dairy'
+  # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
+  # B_LU_BRP = c(265,265,265,265)
+  # B_LU_BBWP = c(1,1,1,1)
+  # B_AER_CBS = c('Bouwhoek en Hogeland','LG14','LG12','Westelijk Holland')
+  # D_AREA = c(45,18,0.8,6)
+  # B_CT_SOIL = 20
+  # B_CT_WATER = 15
+  # B_CT_CLIMATE = 8
+  # B_CT_BIO = 24
+  # B_CT_LANDSCAPE = 20
+  # measures = NULL
+  # sector = 'dairy'
 
 # run example 1 without any measures taken
 test <- er_croprotation(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                         B_LU_BRP = c(265,2005,256,259),
                         B_LU_BBWP = c(1,4,4,9),
-                        B_AER_CBS = B_AER_CBS,
+                        B_AER_CBS = c('Bouwhoek en Hogeland','LG14','LG12','Westelijk Holland'),
                         D_AREA = c(45,18,0.8,6),
                         B_CT_SOIL = 15, 
                         B_CT_WATER = 5,

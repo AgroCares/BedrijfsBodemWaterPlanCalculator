@@ -30,7 +30,7 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
   D_AREA_RR = EB2 = EB3 = EB8 = EB9 = soiltype = urgency = indicator = farmid = NULL
   D_OPI_SOIL = D_OPI_WATER = D_OPI_CLIMATE = D_OPI_BIO = D_OPI_LANDSCAPE = NULL
   D_MEAS_BIO = D_MEAS_CLIM = D_MEAS_LAND = D_MEAS_SOIL = D_MEAS_WAT = NULL
-  cfSOIL = cfWAT = cfCLIM = cfBIO = cfLAND = D_OPI_TOT = id = NULL
+  cfSOIL = cfWAT = cfCLIM = cfBIO = cfLAND = D_OPI_TOT = id = reward = NULL
  
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)

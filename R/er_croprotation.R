@@ -25,6 +25,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,D_AREA
   . = eco_id = farmid = b_lu_brp = type = erscore = D_AREA_RR = indicator = NULL
   EG15 = EG22 = cf = EB1A = EB1B = EB1C = EB2 = EB3 = EB8 = EB9 = NULL
   urgency = soiltype = NULL
+  er_profit = statcode = er_cf = id = value = reward = NULL
   
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)

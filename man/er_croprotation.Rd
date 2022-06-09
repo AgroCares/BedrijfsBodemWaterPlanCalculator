@@ -8,6 +8,7 @@ er_croprotation(
   B_SOILTYPE_AGR,
   B_LU_BRP,
   B_LU_BBWP,
+  B_AER_CBS,
   D_AREA,
   B_CT_SOIL,
   B_CT_WATER,
@@ -22,6 +23,8 @@ er_croprotation(
 \item{B_LU_BRP}{(integer)}
 
 \item{B_LU_BBWP}{(numeric) The BBWP category used for allocation of measures to BBWP crop categories}
+
+\item{B_AER_CBS}{(character) The agricultural economic region in the Netherlands (CBS, 2016)}
 
 \item{D_AREA}{(numeric) the area of the field (\ m2 or \ ha)}
 

@@ -8,6 +8,7 @@
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
+#' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param A_P_SG (numeric) The P-saturation index (\%)
 #' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
 #' @param D_AREA (numeric) the area of the field (\ m2 or \ ha) 
@@ -21,13 +22,16 @@
 #' @import OBIC
 #'
 #' @export
-ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE_DEGREE,
+ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
                         A_P_SG,D_SA_W, D_AREA,M_DRAIN, farmscore, 
                         measures, sector,output = 'scores'){
   
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
   checkmate::assert_subset(output,choices = c('scores','measures'))
+  
+  # reformat B_AER_CBS
+  B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
   
   # Calculate the minimum required ER scores on Farm level
   dt.farm.aim <- er_farm_aim(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
@@ -39,16 +43,17 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
   
   # Calculate the aggregated ER scores per field
   dt.fields <- er_field_scores(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
-                                B_LU_BRP = B_LU_BRP, 
-                                B_LU_BBWP = B_LU_BBWP,
-                                D_AREA = D_AREA,
-                                B_CT_SOIL = dt.farm.aim$B_CT_SOIL, 
-                                B_CT_WATER = dt.farm.aim$B_CT_WATER,
-                                B_CT_CLIMATE = dt.farm.aim$B_CT_CLIMATE,
-                                B_CT_BIO = dt.farm.aim$B_CT_BIO,
-                                B_CT_LANDSCAPE = dt.farm.aim$B_CT_LANDSCAPE,
-                                measures = measures, 
-                                sector)
+                               B_LU_BRP = B_LU_BRP, 
+                               B_LU_BBWP = B_LU_BBWP,
+                               D_AREA = D_AREA,
+                               B_AER_CBS = B_AER_CBS,
+                               B_CT_SOIL = dt.farm.aim$B_CT_SOIL, 
+                               B_CT_WATER = dt.farm.aim$B_CT_WATER,
+                               B_CT_CLIMATE = dt.farm.aim$B_CT_CLIMATE,
+                               B_CT_BIO = dt.farm.aim$B_CT_BIO,
+                               B_CT_LANDSCAPE = dt.farm.aim$B_CT_LANDSCAPE,
+                               measures = measures, 
+                               sector = sector)
   
   # Calculate the ER farm score
   dt.farm <- er_farm_score(S_ER_TOT = dt.fields$S_ER_TOT,
@@ -57,6 +62,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
                            S_ER_CLIMATE = dt.fields$S_ER_CLIMATE,
                            S_ER_BIODIVERSITY = dt.fields$S_ER_BIODIVERSITY,
                            S_ER_LANDSCAPE = dt.fields$S_ER_LANDSCAPE,
+                           reward = dt.fields$reward,
                            D_AREA = D_AREA)
  
  
@@ -70,6 +76,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
                             B_SLOPE_DEGREE = B_SLOPE_DEGREE,
                             B_LU_BRP = B_LU_BRP,
                             B_LU_BBWP = B_LU_BBWP,
+                            B_AER_CBS = B_AER_CBS,
                             M_DRAIN = M_DRAIN,
                             D_SA_W = D_SA_W,
                             D_AREA = D_AREA,
