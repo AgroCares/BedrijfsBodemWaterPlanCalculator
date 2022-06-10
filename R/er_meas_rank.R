@@ -9,6 +9,7 @@
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param A_P_SG (numeric) 
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
+#' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param D_AREA (numeric) the area of the field (\ m2 or \ ha) 
 #' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
@@ -26,7 +27,7 @@
 #' @export
 # rank the measures given their effectiveness to improve the sustainability of the farm
 er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, M_DRAIN, D_SA_W,
-                         D_AREA,
+                         D_AREA,B_AER_CBS,
                          B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE, 
                          measures, sector){
   
@@ -48,7 +49,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
   
   # check length of the inputs
   arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BRP),length(B_LU_BBWP),length(A_P_SG),length(B_SLOPE_DEGREE),
-                    length(M_DRAIN),length(D_SA_W),length(B_CT_SOIL),length(B_CT_WATER),length(B_CT_CLIMATE),
+                    length(M_DRAIN),length(D_SA_W),length(B_CT_SOIL),length(B_CT_WATER),length(B_CT_CLIMATE),length(B_AER_CBS),
                     length(B_CT_BIO),length(B_CT_LANDSCAPE))
   
   # check inputs
@@ -68,6 +69,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
                    B_SLOPE_DEGREE = B_SLOPE_DEGREE,
                    B_LU_BRP = B_LU_BRP,
                    B_LU_BBWP = B_LU_BBWP,
+                   B_AER_CBS = B_AER_CBS,
                    M_DRAIN = M_DRAIN,
                    B_CT_SOIL = B_CT_SOIL, 
                    B_CT_WATER = B_CT_WATER,
@@ -76,11 +78,15 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
                    B_CT_LANDSCAPE = B_CT_LANDSCAPE
                   )
   
+  # do check op Gt
+  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS, B_AER_CBS = B_AER_CBS)]
+  
   # add the generic farm score as baseline
   # this gives the averaged ER score based on the crops in crop rotation plan
   dt.farm <- er_croprotation(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR,
                              B_LU_BRP = dt$B_LU_BRP,
                              B_LU_BBWP = dt$B_LU_BBWP,
+                             B_AER_CBS= dt$B_AER_CBS,
                              D_AREA = dt$D_AREA,
                              B_CT_SOIL = dt$B_CT_SOIL,
                              B_CT_WATER = dt$B_CT_WATER,

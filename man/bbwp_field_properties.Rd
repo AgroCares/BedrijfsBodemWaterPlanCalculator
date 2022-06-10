@@ -11,6 +11,7 @@ bbwp_field_properties(
   B_SC_WENR,
   B_HELP_WENR,
   B_SLOPE_DEGREE,
+  B_AER_CBS,
   A_CLAY_MI,
   A_SAND_MI,
   A_SILT_MI,
@@ -41,6 +42,8 @@ bbwp_field_properties(
 \item{B_HELP_WENR}{(character) The soil type abbreviation, derived from 1:50.000 soil map}
 
 \item{B_SLOPE_DEGREE}{(numeric) The slope of the field (degrees)}
+
+\item{B_AER_CBS}{(character) The agricultural economic region in the Netherlands (CBS, 2016)}
 
 \item{A_CLAY_MI}{(numeric) The clay content of the soil (\%)}
 

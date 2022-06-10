@@ -24,6 +24,7 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen
                        B_GWL_CLASS = 'GtIII', 
                        A_P_SG = rep(25,4) ,
                        B_SLOPE_DEGREE = rep(2.5,4),
+                       B_AER_CBS = c('LG05','LG14','LG03','LG02'),
                        M_DRAIN = rep(TRUE,4),
                        D_SA_W = rep(0.5,4),
                        D_OPI_NGW = c(0,0.1, 0.5, 1), 
@@ -72,6 +73,7 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen
                        B_GWL_CLASS = c('GtIII', 'GtVII','GtII','GtIV'),
                        A_P_SG = rep(25,4) ,
                        B_SLOPE_DEGREE = rep(2.5,4),
+                       B_AER_CBS = c('LG05','LG14','LG03','LG02'),
                        M_DRAIN = rep(TRUE,4),
                        D_SA_W = rep(0.5,4),
                        D_OPI_NGW = c(0.8,0.1, 0.5, 1), 
@@ -100,7 +102,7 @@ test_that("check bbwp_meas_rank", {
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_tot[c(1,2,5,9,16)],
-    expected = c("G68","G27","B131","BWP7","G66"),
+    expected = c("G68","G27","B132","BWP7","G66"),
     tolerance = 0.01)
 })
 

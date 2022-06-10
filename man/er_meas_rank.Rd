@@ -14,6 +14,7 @@ er_meas_rank(
   M_DRAIN,
   D_SA_W,
   D_AREA,
+  B_AER_CBS,
   B_CT_SOIL,
   B_CT_WATER,
   B_CT_CLIMATE,
@@ -41,6 +42,8 @@ er_meas_rank(
 \item{D_SA_W}{(numeric) The wet perimeter index of the field, fraction that field is surrounded by water}
 
 \item{D_AREA}{(numeric) the area of the field (\ m2 or \ ha)}
+
+\item{B_AER_CBS}{(character) The agricultural economic region in the Netherlands (CBS, 2016)}
 
 \item{B_CT_SOIL}{(numeric) the target value for soil quality conform Ecoregeling scoring}
 

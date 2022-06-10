@@ -11,6 +11,7 @@
 #' @param B_HELP_WENR (character) The soil type abbreviation, derived from 1:50.000 soil map
 #' @param B_SLOPE (boolean) The slope of the field, steeper than 2\%
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
+#' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param B_GWP (boolean) is the field located in a groundwater protected area (options: TRUE or FALSE)
 #' @param B_AREA_DROUGHT (boolean) is the field located in an area with high risks for water deficiencies (options: TRUE or FALSE)
 #' @param B_CT_PSW (numeric) the critical target for required reduction in P loss from agriculture (kg P / ha) to reach targets of KRW
@@ -47,6 +48,7 @@
 #'  
 #' @export
 bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE = NULL,B_SLOPE_DEGREE = NULL,
+                 B_AER_CBS,
                  A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
                  B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW,B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, 
                  D_SA_W, D_RO_R, D_AREA, 
@@ -70,6 +72,9 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
     if(B_SLOPE){B_SLOPE_DEGREE = 3} else {B_SLOPE_DEGREE = 0.1}
   }
     
+  # check and update B_LU_BBWP
+  B_LU_BBWP <- as.numeric(gsub('cat_','',B_LU_BBWP))
+  
   # convert soil properties to a BBWP risk indicator
   dt <- bbwp_field_properties(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
                               B_LU_BRP = B_LU_BRP, 
@@ -77,6 +82,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                               B_SC_WENR = B_SC_WENR, 
                               B_HELP_WENR = B_HELP_WENR,
                               B_SLOPE_DEGREE = B_SLOPE_DEGREE,
+                              B_AER_CBS = B_AER_CBS,
                               A_CLAY_MI = A_CLAY_MI, 
                               A_SAND_MI = A_SAND_MI, 
                               A_SILT_MI = A_SILT_MI, 
@@ -133,6 +139,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                                     B_SLOPE_DEGREE = B_SLOPE_DEGREE,
                                     B_LU_BRP = B_LU_BRP,
                                     B_LU_BBWP = B_LU_BBWP,
+                                    B_AER_CBS = B_AER_CBS,
                                     M_DRAIN = M_DRAIN,
                                     D_SA_W = D_SA_W,
                                     D_RISK_NGW = dt.ind$D_RISK_NGW,
@@ -169,6 +176,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                               B_SLOPE_DEGREE = B_SLOPE_DEGREE,
                               B_LU_BRP = B_LU_BRP,
                               B_LU_BBWP = B_LU_BBWP,
+                              B_AER_CBS = B_AER_CBS,
                               M_DRAIN = M_DRAIN,
                               D_SA_W = D_SA_W,
                               D_OPI_NGW = dt.fields$S_BBWP_NGW,

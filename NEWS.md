@@ -1,5 +1,14 @@
 # Changelog BBWPC
 
+### 0.5.0
+### Added
+- internal table `er_aer_reward`, prepared in dev
+- check and automatic update `B_GWL_CLASS` via function `bbwp_format_aer`, included in all relevant bbwp and er functions, issue #18
+- add `B_AER_CBS` as argument to all bbwp and er functions
+- output `reward` added to `er_meas_score`, `er_field_scores` and `er_farm_score`, issue #17
+- function `ecoregeling` adds `reward` as output in objects farm and field, issue #17
+- argument `B_LU_BBWP` is converted from string to integerish by removing `cat_` in wrapper funs `ecoregeling` and `bbwp`
+
 ## 0.4.2
 ### Added
 - add LSW data as geopackage to dev
@@ -8,7 +17,6 @@
 
 ### Changed
 - argument `D_WP` changed into `D_SA_W` for all BBWP functions
-
 
 ## 0.4.1
 ### Added

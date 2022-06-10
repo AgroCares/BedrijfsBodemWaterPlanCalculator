@@ -84,3 +84,15 @@
 #'   \item{c4}{bla bla}
 #' }
 "lsw"
+
+#' An overview of correction factors per economic agricultural area
+#' 
+#' This table contains the correction factor for the financial reward differentiated per Agricultural Economic Region
+#' 
+#' @format A data.table with 14 rows and 3 columns:
+#' \describe{
+#'   \item{statcode}{bla bla}
+#'   \item{statname}{bla bla}
+#'   \item{er_cf}{bla bla}
+#' }
+"er_aer_reward"

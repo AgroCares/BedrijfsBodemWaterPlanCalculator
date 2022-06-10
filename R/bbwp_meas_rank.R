@@ -9,6 +9,7 @@
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param B_LU_BRP (integer)
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
+#' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
 #' @param D_OPI_NGW (numeric) the opportunity index (risk x impact) for nitrate leaching to groundwater given field properties
@@ -24,7 +25,7 @@
 #'
 #' @export
 # rank the measures given their effectiveness to improve the sustainability of the farm
-bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, B_LU_BBWP,
+bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
                            M_DRAIN, D_SA_W,
                            D_OPI_NGW, D_OPI_NSW, D_OPI_PSW, D_OPI_NUE, D_OPI_WB,
                            measures, sector){
@@ -40,8 +41,11 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
   # check length of the inputs
   arg.length <- max(length(D_OPI_NGW), length(D_OPI_NSW), length(D_OPI_PSW), length(D_OPI_NUE),
                     length(D_OPI_WB), length(B_SOILTYPE_AGR), length(B_GWL_CLASS), length(M_DRAIN),
-                    length(A_P_SG), length(B_SLOPE_DEGREE), length(B_LU_BRP),length(B_LU_BBWP),
+                    length(A_P_SG), length(B_SLOPE_DEGREE), length(B_LU_BRP),length(B_LU_BBWP),length(B_AER_CBS),
                     length(D_SA_W))
+  
+  # reformat B_AER_CBS
+  B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
   
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, 
@@ -74,6 +78,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     B_SLOPE_DEGREE = B_SLOPE_DEGREE,
     B_LU_BRP = B_LU_BRP,
     B_LU_BBWP = B_LU_BBWP,
+    B_AER_CBS = B_AER_CBS,
     M_DRAIN = M_DRAIN,
     D_SA_W = D_SA_W,
     D_OPI_NGW = D_OPI_NGW,
@@ -83,6 +88,9 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     D_OPI_WB = D_OPI_WB,
     value = NA_real_
   )
+  
+  # do check op Gt
+  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS, B_AER_CBS = B_AER_CBS)]
   
   # merge inputs with data.table measures
   dt <- as.data.table(merge.data.frame(dt, dt.measures, all = TRUE))
