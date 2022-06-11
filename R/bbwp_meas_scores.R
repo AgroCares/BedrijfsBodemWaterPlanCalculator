@@ -81,7 +81,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
                    D_OPI_WB = D_OPI_WB,
                    D_MEAS_NGW = NA_real_,
                    D_MEAS_NSW = NA_real_,
-                   D_MEAS_PSE = NA_real_,
+                   D_MEAS_PSW = NA_real_,
                    D_MEAS_NUE = NA_real_,
                    D_MEAS_WB = NA_real_,
                    D_MEAS_TOT = NA_real_
@@ -155,7 +155,6 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
       dt[grepl('veen', B_SOILTYPE_AGR) & peat == FALSE , c(cols) := 0]
       dt[grepl('loess', B_SOILTYPE_AGR) & loess == FALSE , c(cols) := 0]
   
-  
   # add impact score for measure per opportunity index
   dt[, D_MEAS_NGW := D_OPI_NGW * effect_ngw]
   dt[, D_MEAS_NSW := D_OPI_NSW * effect_nsw]
@@ -168,6 +167,14 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   
   # Calculate total measure score
   dt[, D_MEAS_TOT := (D_MEAS_NGW + D_MEAS_NSW + D_MEAS_PSW + D_MEAS_NUE + D_MEAS_WB ) /  5]
+  
+  # set impact of conflict measures to the highest score of those that are selected
+  
+    # sort conflicting measures based on total integrative impact
+    dt[, oid := frank(-D_MEAS_TOT, ties.method = 'first',na.last = 'keep'), by = c('id','bbwp_conflict')]
+  
+    # remove the measures that are duplicated
+    dt <- dt[oid==1 | is.na(oid)]
   
   # calculate the total impact of measures on the five opportunity indexes (in units of effectiveness, from -2 to +2 per measure)
   dt.meas <- dt[ ,lapply(.SD, sum), .SDcols = scols, by = 'id']
