@@ -165,6 +165,12 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
   # Calculate total measure score
   dt[, D_MEAS_TOT := (D_MEAS_NGW + D_MEAS_NSW + D_MEAS_PSW + D_MEAS_NUE + D_MEAS_WB ) /  5 - effect_costs * 0.01]
   
+  # set impact of conflict measures to the highest score of those that are selected
+  
+  # add sort-id conflicting measures based on total integrative impact
+  dt[, oid := frank(-D_MEAS_TOT, ties.method = 'first',na.last = 'keep'), by = c('id','bbwp_conflict')]
+    
+  
   # define an empty list
   list.meas <- list()
   
@@ -172,22 +178,22 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
   for (i in 1:arg.length) {
     
     # Get the overall top measures
-    top_bbwp_tot <- dt[id == i & D_MEAS_TOT > 0, ][order(-D_MEAS_TOT)][1:5,bbwp_id]
+    top_bbwp_tot <- dt[id == i & D_MEAS_TOT > 0, ][order(oid,-D_MEAS_TOT)][1:5,bbwp_id]
     
     # Get the top measures for nitrate losses groundwater
-    top_bbwp_ngw <- dt[id == i & D_MEAS_NGW > 0, ][order(-D_MEAS_NGW)][1:5,bbwp_id]
+    top_bbwp_ngw <- dt[id == i & D_MEAS_NGW > 0, ][order(oid,-D_MEAS_NGW)][1:5,bbwp_id]
     
     # Get the top measures for nitrogen loss surface water
-    top_bbwp_nsw <- dt[id == i & D_MEAS_NSW > 0, ][order(-D_MEAS_NSW)][1:5,bbwp_id]
+    top_bbwp_nsw <- dt[id == i & D_MEAS_NSW > 0, ][order(oid,-D_MEAS_NSW)][1:5,bbwp_id]
     
     # Get the top measures for phosphorus loss surface water
-    top_bbwp_psw <- dt[id == i & D_MEAS_PSW > 0, ][order(-D_MEAS_PSW)][1:5,bbwp_id]
+    top_bbwp_psw <- dt[id == i & D_MEAS_PSW > 0, ][order(oid,-D_MEAS_PSW)][1:5,bbwp_id]
     
     # Get the top measures for water retention and availability
-    top_bbwp_wb <- dt[id == i & D_MEAS_WB > 0, ][order(-D_MEAS_WB)][1:5,bbwp_id]
+    top_bbwp_wb <- dt[id == i & D_MEAS_WB > 0, ][order(oid,-D_MEAS_WB)][1:5,bbwp_id]
     
     # Get the top measures for nutrient use efficiency
-    top_bbwp_nue <- dt[id == i & D_MEAS_NUE > 0, ][order(-D_MEAS_NUE)][1:5,bbwp_id]
+    top_bbwp_nue <- dt[id == i & D_MEAS_NUE > 0, ][order(oid,-D_MEAS_NUE)][1:5,bbwp_id]
     
     # add them to list
     list.meas[[i]] <- data.table(id = i,
