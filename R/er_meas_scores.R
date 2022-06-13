@@ -5,6 +5,7 @@
 #' @param B_SOILTYPE_AGR (character) The type of soil
 #' @param B_LU_BRP (numeric) The crop type (conform BRP coding, preferable the most frequent crop on the field)
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
+#' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'diary', 'arable', 'tree_nursery', 'bulbs')
 #' @param measures (list) the measures planned / done per fields
 #'   
@@ -12,17 +13,20 @@
 #'
 #' @export
 # calculate the score for a list of measures for one or multiple fields
-er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP, measures, sector){
+er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures, sector){
   
   # add visual bindings
   eco_id = type = fr_area = D_AREA = id = er_urgency = NULL
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = fbulbs = bulbs = NULL
   crop_cat1 = crop_cat2 = crop_cat3 = crop_cat4 = crop_cat5 = crop_cat6 = crop_cat7 = crop_cat8 = crop_cat9 = NULL
   soiltype = peat = clay = sand = silt = loess = NULL
-  patterns = indicator = erscore = urgency = NULL
+  patterns = indicator = erscore = urgency = reward = value = NULL
+  
+  # reformat B_AER_CBS
+  B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
   
   # check on the inputs
-  arg.length <- max(length(B_SOILTYPE_AGR), length(B_LU_BRP),length(B_LU_BBWP))
+  arg.length <- max(length(B_SOILTYPE_AGR), length(B_LU_BRP),length(B_LU_BBWP),length(B_AER_CBS))
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
                                                        'dalgrond','moerige_klei','veen','loess'))
   checkmate::assert_integerish(B_LU_BRP, lower = 0, len = arg.length)
@@ -47,6 +51,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP, measures, sector){
     B_SOILTYPE_AGR = B_SOILTYPE_AGR,
     B_LU_BRP = B_LU_BRP,
     B_LU_BBWP = B_LU_BBWP,
+    B_AER_CBS = B_AER_CBS,
     D_AREA = D_AREA
   )
   
@@ -55,8 +60,8 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP, measures, sector){
   
   # set scores to zero when measures are not applicable given the crop type
   
-    # columns with the Ecoregelingen ranks
-    cols <- c('er_soil','er_water','er_biodiversity','er_climate','er_landscape')
+    # columns with the Ecoregelingen ranks and reward
+    cols <- c('er_soil','er_water','er_biodiversity','er_climate','er_landscape','er_profit')
     
     # set first all missing data impacts to 0
     dt[,c(cols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = cols]
@@ -108,18 +113,24 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP, measures, sector){
                id.vars = c('id','bbwp_id','soiltype'),
                measure = patterns(erscore = "^er_"),
                variable.name = 'indicator',
-               value.name = 'erscore')
+               value.name = 'value')
     dt[,indicator := gsub('er_', '',cols[indicator])]
     
     # merge with urgency table
-    dt <- merge(dt,dt.er.urgency, by= c('soiltype','indicator'))
+    dt <- merge(dt,dt.er.urgency, by= c('soiltype','indicator'),all.x = TRUE)
     
   # calculate the weighed average ER score (points/ ha) for the whole farm due to measures taken
-  dt.field <- dt[,list(erscore = sum(erscore * urgency)),by = c('id', 'indicator')]
+  dt.field <- dt[indicator != 'profit',list(erscore = sum(value * urgency)),by = c('id', 'indicator')]
   
   # dcast the output
   dt.field <- dcast(dt.field,id~indicator,value.var = "erscore")
   
+  # calculate total reward per field (euro / ha)
+  dt.reward <- dt[indicator == 'profit',list(reward = sum(value)),by = 'id']
+  
+  # add reward to the field
+  dt.field <- merge(dt.field,dt.reward,by='id')
+   
   # setnames
   setnames(dt.field,
            c('biodiversity', 'climate', 'landscape', 'soil','water'),
@@ -128,6 +139,6 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP, measures, sector){
   # order to ensure field order
   setorder(dt.field, id)
   
-  # return value
+  # return value, scores and euros per hectare
   return(dt.field)
 }

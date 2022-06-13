@@ -11,7 +11,9 @@ bbwp(
   B_GWL_CLASS,
   B_SC_WENR,
   B_HELP_WENR,
-  B_SLOPE,
+  B_SLOPE = NULL,
+  B_SLOPE_DEGREE = NULL,
+  B_AER_CBS,
   A_CLAY_MI,
   A_SAND_MI,
   A_SILT_MI,
@@ -29,18 +31,20 @@ bbwp(
   B_CT_NSW,
   B_CT_PSW_MAX = 0.5,
   B_CT_NSW_MAX = 5,
-  D_WP,
+  D_SA_W,
   D_RO_R,
   D_AREA,
   M_DRAIN,
   LSW,
+  lat = NULL,
+  lon = NULL,
   measures,
   sector,
   output = "scores"
 )
 }
 \arguments{
-\item{B_SOILTYPE_AGR}{(character) The type of soil}
+\item{B_SOILTYPE_AGR}{(character) The type of soil, using agronomic classification}
 
 \item{B_LU_BRP}{(numeric) The crop type (conform BRP coding, preferable the most frequent crop on the field)}
 
@@ -52,7 +56,11 @@ bbwp(
 
 \item{B_HELP_WENR}{(character) The soil type abbreviation, derived from 1:50.000 soil map}
 
-\item{B_SLOPE}{(numeric) The slope of the field (degrees)}
+\item{B_SLOPE}{(boolean) The slope of the field, steeper than 2\%}
+
+\item{B_SLOPE_DEGREE}{(numeric) The slope of the field (degrees)}
+
+\item{B_AER_CBS}{(character) The agricultural economic region in the Netherlands (CBS, 2016)}
 
 \item{A_CLAY_MI}{(numeric) The clay content of the soil (\%)}
 
@@ -64,15 +72,15 @@ bbwp(
 
 \item{A_N_RT}{(numeric) The organic nitrogen content of the soil (mg N / kg)}
 
-\item{A_FE_OX}{(numeric) The aluminium content of soil (mmol+ / kg)}
+\item{A_FE_OX}{(numeric) The aluminium content of soil (mmol / kg)}
 
-\item{A_AL_OX}{(numeric) The iron content of soil (mmol+ / kg)}
+\item{A_AL_OX}{(numeric) The iron content of soil (mmol / kg)}
 
 \item{A_P_CC}{(numeric) The plant available P content, measured via 0.01M CaCl2 extraction (mg / kg)}
 
 \item{A_P_AL}{(numeric) The plant extractable P content, measured via ammonium lactate extraction (mg / kg)}
 
-\item{A_P_WA}{(numeric) The P-content of the soil extracted with water}
+\item{A_P_WA}{(numeric) The P-content of the soil extracted with water (mg P2O5 / L)}
 
 \item{A_P_SG}{(numeric) The P-saturation index (\%)}
 
@@ -88,7 +96,7 @@ bbwp(
 
 \item{B_CT_NSW_MAX}{(numeric) the max critical target for N reduction loss (kg N / ha)}
 
-\item{D_WP}{(numeric) The fraction of the parcel that is surrounded by surface water}
+\item{D_SA_W}{(numeric) The wet perimeter index of the field, fraction that field is surrounded by water}
 
 \item{D_RO_R}{(numeric) The risk that surface water runs off the parcel}
 
@@ -96,7 +104,11 @@ bbwp(
 
 \item{M_DRAIN}{(boolean) is there tube drainage present in the field}
 
-\item{LSW}{(data.table) The surface water polygon for catchment or polder}
+\item{LSW}{(data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)}
+
+\item{lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
+
+\item{lon}{(numeric) Longitude of the field (required if no LSW is submitted)}
 
 \item{measures}{(data.table) the measures planned / done per fields}
 
@@ -107,4 +119,7 @@ bbwp(
 \description{
 Estimate the potential to contribute to agronomic and environmental challenges in a region for a farm and assess the impact of farm measures taken.
 A high BBWP score is indicative for the number of opportunities to improve soil quality and land use.
+}
+\details{
+B_SLOPE respresents the slope of the field as a boolean variable (is the slope bigger than 2\% or not) and was used in previous versions of BBWP. This has been replaced by B_SLOPE_DEGREE.
 }

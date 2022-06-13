@@ -10,7 +10,8 @@ bbwp_field_properties(
   B_GWL_CLASS,
   B_SC_WENR,
   B_HELP_WENR,
-  B_SLOPE,
+  B_SLOPE_DEGREE,
+  B_AER_CBS,
   A_CLAY_MI,
   A_SAND_MI,
   A_SILT_MI,
@@ -22,13 +23,15 @@ bbwp_field_properties(
   A_P_AL,
   A_P_WA,
   A_P_SG,
-  D_WP,
+  D_SA_W,
   D_RO_R,
-  LSW
+  LSW,
+  lat = NULL,
+  lon = NULL
 )
 }
 \arguments{
-\item{B_SOILTYPE_AGR}{(character) The type of soil}
+\item{B_SOILTYPE_AGR}{(character) The type of soil, using agronomic classification}
 
 \item{B_LU_BRP}{(numeric) The crop type (conform BRP coding, preferable the most frequent crop on the field)}
 
@@ -38,7 +41,9 @@ bbwp_field_properties(
 
 \item{B_HELP_WENR}{(character) The soil type abbreviation, derived from 1:50.000 soil map}
 
-\item{B_SLOPE}{(numeric) The slope of the field (degrees)}
+\item{B_SLOPE_DEGREE}{(numeric) The slope of the field (degrees)}
+
+\item{B_AER_CBS}{(character) The agricultural economic region in the Netherlands (CBS, 2016)}
 
 \item{A_CLAY_MI}{(numeric) The clay content of the soil (\%)}
 
@@ -58,15 +63,19 @@ bbwp_field_properties(
 
 \item{A_P_AL}{(numeric) The plant extractable P content, measured via ammonium lactate extraction (mg / kg)}
 
-\item{A_P_WA}{(numeric) The P-content of the soil extracted with water}
+\item{A_P_WA}{(numeric) The P-content of the soil extracted with water (mg P2O5 / L)}
 
 \item{A_P_SG}{(numeric) The P-saturation index (\%)}
 
-\item{D_WP}{(numeric) The fraction of the parcel that is surrounded by surface water}
+\item{D_SA_W}{(numeric) The wet perimeter index of the field, fraction that field is surrounded by water}
 
 \item{D_RO_R}{(numeric) The risk that surface water runs off the parcel}
 
-\item{LSW}{(data.table) The surface water polygon for catchment or polder}
+\item{LSW}{(data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)}
+
+\item{lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
+
+\item{lon}{(numeric) Longitude of the field (required if no LSW is submitted)}
 }
 \description{
 Estimate the relative ranking of field properties given their contribution to nutrient losses to aquatic ecosystems as well as nutrient and water efficiency.

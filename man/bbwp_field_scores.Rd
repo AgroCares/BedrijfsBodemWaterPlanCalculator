@@ -8,11 +8,12 @@ bbwp_field_scores(
   B_SOILTYPE_AGR,
   B_GWL_CLASS,
   A_P_SG,
-  B_SLOPE,
+  B_SLOPE_DEGREE,
   B_LU_BRP,
   B_LU_BBWP,
+  B_AER_CBS,
   M_DRAIN,
-  D_WP,
+  D_SA_W,
   D_RISK_NGW,
   D_RISK_NSW,
   D_RISK_PSW,
@@ -35,15 +36,17 @@ bbwp_field_scores(
 
 \item{A_P_SG}{(numeric)}
 
-\item{B_SLOPE}{(boolean)}
+\item{B_SLOPE_DEGREE}{(numeric) The slope of the field (degrees)}
 
 \item{B_LU_BRP}{(integer)}
 
 \item{B_LU_BBWP}{(numeric) The BBWP category used for allocation of measures to BBWP crop categories}
 
+\item{B_AER_CBS}{(character) The agricultural economic region in the Netherlands (CBS, 2016)}
+
 \item{M_DRAIN}{(boolean) is there tube drainage present in the field}
 
-\item{D_WP}{(numeric) The fraction of the parcel that is surrounded by surface water}
+\item{D_SA_W}{(numeric) The wet perimeter index of the field, fraction that field is surrounded by water}
 
 \item{D_RISK_NGW}{(numeric) the risk for nitrate leaching to groundwater given field properties}
 

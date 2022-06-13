@@ -8,10 +8,11 @@
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param A_P_SG (numeric) 
-#' @param B_SLOPE (boolean)
+#' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
+#' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param D_AREA (numeric) the area of the field (\ m2 or \ ha) 
-#' @param D_WP (numeric) The fraction of the parcel that is surrounded by surface water
+#' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
 #' @param B_CT_SOIL (numeric) the target value for soil quality conform Ecoregeling scoring
 #' @param B_CT_WATER (numeric) the target value for water quality conform Ecoregeling scoring
 #' @param B_CT_CLIMATE (numeric) the target value for climate conform Ecoregeling scoring
@@ -25,8 +26,8 @@
 #'
 #' @export
 # rank the measures given their effectiveness to improve the sustainability of the farm
-er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE, B_LU_BRP, M_DRAIN, D_WP,
-                         D_AREA,
+er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, M_DRAIN, D_SA_W,
+                         D_AREA,B_AER_CBS,
                          B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE, 
                          measures, sector){
   
@@ -47,8 +48,8 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE,
   er_aim <- er_scoring[type == 'aim'][,type := NULL]
   
   # check length of the inputs
-  arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BRP),length(B_LU_BBWP),length(A_P_SG),length(B_SLOPE),
-                    length(M_DRAIN),length(D_WP),length(B_CT_SOIL),length(B_CT_WATER),length(B_CT_CLIMATE),
+  arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BRP),length(B_LU_BBWP),length(A_P_SG),length(B_SLOPE_DEGREE),
+                    length(M_DRAIN),length(D_SA_W),length(B_CT_SOIL),length(B_CT_WATER),length(B_CT_CLIMATE),length(B_AER_CBS),
                     length(B_CT_BIO),length(B_CT_LANDSCAPE))
   
   # check inputs
@@ -57,29 +58,35 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE,
   checkmate::assert_integerish(B_LU_BRP, lower = 0, len = arg.length)
   checkmate::assert_integerish(B_LU_BBWP, lower = 0, upper = 9,len = arg.length)
   checkmate::assert_character(B_SOILTYPE_AGR,len = arg.length)
+  checkmate::assert_numeric(B_SLOPE_DEGREE, lower = 0, upper = 30, any.missing = FALSE, len = arg.length)
   
   # collect data in one data.table
   dt <- data.table(id = 1:arg.length,
-                    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
-                    B_GWL_CLASS = B_GWL_CLASS,
-                    D_AREA = D_AREA,
-                    A_P_SG = A_P_SG,
-                    B_SLOPE = B_SLOPE,
-                    B_LU_BRP = B_LU_BRP,
-                    B_LU_BBWP = B_LU_BBWP,
-                    M_DRAIN = M_DRAIN,
-                    B_CT_SOIL = B_CT_SOIL, 
-                    B_CT_WATER = B_CT_WATER,
-                    B_CT_CLIMATE = B_CT_CLIMATE,
-                    B_CT_BIO = B_CT_BIO,
-                    B_CT_LANDSCAPE = B_CT_LANDSCAPE
+                   B_SOILTYPE_AGR = B_SOILTYPE_AGR,
+                   B_GWL_CLASS = B_GWL_CLASS,
+                   D_AREA = D_AREA,
+                   A_P_SG = A_P_SG,
+                   B_SLOPE_DEGREE = B_SLOPE_DEGREE,
+                   B_LU_BRP = B_LU_BRP,
+                   B_LU_BBWP = B_LU_BBWP,
+                   B_AER_CBS = B_AER_CBS,
+                   M_DRAIN = M_DRAIN,
+                   B_CT_SOIL = B_CT_SOIL, 
+                   B_CT_WATER = B_CT_WATER,
+                   B_CT_CLIMATE = B_CT_CLIMATE,
+                   B_CT_BIO = B_CT_BIO,
+                   B_CT_LANDSCAPE = B_CT_LANDSCAPE
                   )
+  
+  # do check op Gt
+  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS, B_AER_CBS = B_AER_CBS)]
   
   # add the generic farm score as baseline
   # this gives the averaged ER score based on the crops in crop rotation plan
   dt.farm <- er_croprotation(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR,
                              B_LU_BRP = dt$B_LU_BRP,
                              B_LU_BBWP = dt$B_LU_BBWP,
+                             B_AER_CBS= dt$B_AER_CBS,
                              D_AREA = dt$D_AREA,
                              B_CT_SOIL = dt$B_CT_SOIL,
                              B_CT_WATER = dt$B_CT_WATER,
@@ -169,31 +176,31 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE,
     list.field <- list()
     
     # Get the overall top measures
-    top.tot <- dt[id == i & er_total > 0, ][order(-er_total)][1:5,bbwp_id]
+    top_er_tot <- dt[id == i & er_total > 0, ][order(-er_total)][1:5,bbwp_id]
     
     # Get the top measures for soil quality
-    top.soil <- dt[id == i & er_soil > 0, ][order(-er_soil)][1:5,bbwp_id]
+    top_er_soil <- dt[id == i & er_soil > 0, ][order(-er_soil)][1:5,bbwp_id]
     
     # Get the top measures for water quality
-    top.water <- dt[id == i & er_water > 0, ][order(-er_water)][1:5,bbwp_id]
+    top_er_water <- dt[id == i & er_water > 0, ][order(-er_water)][1:5,bbwp_id]
     
     # Get the top measures for climate
-    top.climate <- dt[id == i & er_climate > 0, ][order(-er_climate)][1:5,bbwp_id]
+    top_er_climate <- dt[id == i & er_climate > 0, ][order(-er_climate)][1:5,bbwp_id]
     
     # Get the top measures for biodiversity
-    top.biodiversity <- dt[id == i & er_biodiversity > 0, ][order(-er_biodiversity)][1:5,bbwp_id]
+    top_er_biodiversity <- dt[id == i & er_biodiversity > 0, ][order(-er_biodiversity)][1:5,bbwp_id]
     
     # Get the top measures for landscape
-    top.landscape <- dt[id == i & er_landscape > 0, ][order(-er_landscape)][1:5,bbwp_id]
+    top_er_landscape <- dt[id == i & er_landscape > 0, ][order(-er_landscape)][1:5,bbwp_id]
     
     # add them to list
     list.meas[[i]] <- data.table(id = i,
-                                 top.tot = top.tot,
-                                 top.soil = top.soil,
-                                 top.water = top.water,
-                                 top.climate = top.climate,
-                                 top.biodiversity = top.biodiversity,
-                                 top.landscape = top.landscape)
+                                 top_er_tot = top_er_tot,
+                                 top_er_soil = top_er_soil,
+                                 top_er_water = top_er_water,
+                                 top_er_climate = top_er_climate,
+                                 top_er_biodiversity = top_er_biodiversity,
+                                 top_er_landscape = top_er_landscape)
   }
   
   # retrieve output object

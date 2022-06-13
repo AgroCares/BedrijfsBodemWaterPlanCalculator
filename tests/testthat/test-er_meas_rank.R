@@ -2,36 +2,42 @@
 require(testthat)
 
 # default input for testing
-  # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
-  # B_LU_BRP = c(265,265,265,265)
-  # B_LU_BBWP = c(1,1,1,1)
-  # D_AREA = c(45,18,0.8,6)
-  # B_CT_SOIL = 20
-  # B_CT_WATER = 15
-  # B_CT_CLIMATE = 8
-  # B_CT_BIO = 24
-  # B_CT_LANDSCAPE = 20
-  # measures = NULL
-  # sector = 'dairy'
+  B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
+  B_LU_BRP = c(265,265,265,265)
+  B_LU_BBWP = c(1,1,1,1)
+  B_GWL_CLASS = rep('GtIII',4)
+  D_AREA = c(45,18,0.8,6)
+  B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland")
+  B_SLOPE_DEGREE = rep(2.5,4)
+  M_DRAIN = rep(TRUE,4)
+  A_P_SG = rep(25,4) 
+  B_CT_SOIL = 20
+  B_CT_WATER = 15
+  B_CT_CLIMATE = 8
+  B_CT_BIO = 24
+  B_CT_LANDSCAPE = 20
+  measures = NULL
+  sector = 'dairy'
 
 # run example 1 without any measures taken
 test <- er_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                      B_LU_BRP = c(265,2005,256,259),
-                      B_LU_BBWP = c(1,4,4,9),
-                      B_GWL_CLASS = 'GtIII', 
-                      A_P_SG = 25, 
-                      B_SLOPE = 2.5,
-                      M_DRAIN = TRUE,
-                      D_WP = 0.5,
-                      D_AREA = c(45,18,0.8,6),
-                      B_CT_SOIL = 15, 
-                      B_CT_WATER = 5,
-                      B_CT_CLIMATE = 8,
-                      B_CT_BIO = 24,
-                      B_CT_LANDSCAPE = 11, 
-                      measures = NULL,
-                      sector = 'dairy'
-                        )
+                     B_LU_BRP = c(265,2005,256,259),
+                     B_LU_BBWP = c(1,4,4,9),
+                     B_GWL_CLASS = 'GtIII', 
+                     A_P_SG = 25, 
+                     B_SLOPE_DEGREE = rep(2.5,4),
+                     B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland"),
+                     M_DRAIN = TRUE,
+                     D_SA_W = 0.5,
+                     D_AREA = c(45,18,0.8,6),
+                     B_CT_SOIL = 15, 
+                     B_CT_WATER = 5,
+                     B_CT_CLIMATE = 8,
+                     B_CT_BIO = 24,
+                     B_CT_LANDSCAPE = 11, 
+                     measures = NULL,
+                     sector = 'dairy'
+                    )
 
 test_that("check er_meas_rank", {
   expect_equal(
@@ -43,13 +49,13 @@ test_that("check er_meas_rank", {
 test_that("check er_meas_rank", {
   expect_equal(
     object = colnames(test),
-    expected = c('id',"top.tot","top.soil","top.water","top.climate","top.biodiversity","top.landscape"),
+    expected = c('id',"top_er_tot","top_er_soil","top_er_water","top_er_climate","top_er_biodiversity","top_er_landscape"),
     tolerance = 0.01)
 })
 
 test_that("check er_meas_rank", {
   expect_equal(
-    object = test$top.tot[c(1,4,9,15)],
+    object = test$top_er_tot[c(1,4,9,15)],
     expected = c("B156",'G60','G60','B156'),
     tolerance = 0.01)
 })
@@ -68,9 +74,10 @@ test <- er_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
                      B_LU_BBWP = c(1,4,4,9),
                      B_GWL_CLASS = 'GtIII', 
                      A_P_SG = 25, 
-                     B_SLOPE = 2.5,
+                     B_SLOPE_DEGREE = rep(2.5,4),
+                     B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland"),
                      M_DRAIN = TRUE,
-                     D_WP = 0.5,
+                     D_SA_W = 0.5,
                      D_AREA = c(45,18,0.8,6),
                      B_CT_SOIL = 15, 
                      B_CT_WATER = 5,
@@ -91,14 +98,14 @@ test_that("check er_meas_rank", {
 test_that("check er_meas_rank", {
   expect_equal(
     object = colnames(test),
-    expected = c('id',"top.tot","top.soil","top.water","top.climate","top.biodiversity","top.landscape"),
+    expected = c('id',"top_er_tot","top_er_soil","top_er_water","top_er_climate","top_er_biodiversity","top_er_landscape"),
     tolerance = 0.01)
 })
 
 test_that("check er_meas_rank", {
   expect_equal(
-    object = test$top.tot[c(1,4,9,15)],
-    expected = c("B156",'G60','G60','B156'),
+    object = test$top_er_tot[c(1,4,8,15)],
+    expected = c("B156",'G54','G60','G48'),
     tolerance = 0.01)
 })
 

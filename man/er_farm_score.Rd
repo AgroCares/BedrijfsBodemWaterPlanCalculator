@@ -5,27 +5,30 @@
 \title{Calculate the total EcoRegelingen score of five opportunity indicators}
 \usage{
 er_farm_score(
-  D_OPI_TOT,
-  D_OPI_SOIL,
-  D_OPI_WATER,
-  D_OPI_CLIMATE,
-  D_OPI_BIO,
-  D_OPI_LANDSCAPE,
+  S_ER_TOT,
+  S_ER_SOIL,
+  S_ER_WATER,
+  S_ER_CLIMATE,
+  S_ER_BIODIVERSITY,
+  S_ER_LANDSCAPE,
+  reward,
   D_AREA
 )
 }
 \arguments{
-\item{D_OPI_TOT}{(numeric) the Ecoregeling score for the integrative opportunity index for each field}
+\item{S_ER_TOT}{(numeric) the Ecoregeling score for the integrative opportunity index for each field}
 
-\item{D_OPI_SOIL}{(numeric) the Ecoregeling scoring index for soil quality for each field}
+\item{S_ER_SOIL}{(numeric) the Ecoregeling scoring index for soil quality for each field}
 
-\item{D_OPI_WATER}{(numeric) the Ecoregeling scoring index for water quality for each field}
+\item{S_ER_WATER}{(numeric) the Ecoregeling scoring index for water quality for each field}
 
-\item{D_OPI_CLIMATE}{(numeric) the Ecoregeling scoring index for climate for each field}
+\item{S_ER_CLIMATE}{(numeric) the Ecoregeling scoring index for climate for each field}
 
-\item{D_OPI_BIO}{(numeric) the Ecoregeling scoring index for biodiversity for each field}
+\item{S_ER_BIODIVERSITY}{(numeric) the Ecoregeling scoring index for biodiversity for each field}
 
-\item{D_OPI_LANDSCAPE}{(numeric) the Ecoregeling scoring index for landscape for each field}
+\item{S_ER_LANDSCAPE}{(numeric) the Ecoregeling scoring index for landscape for each field}
+
+\item{reward}{(numeric) The financial reward per field for taking Ecoregeling measures (euro / ha)}
 
 \item{D_AREA}{(numeric) the area of the field (\ m2 or \ ha)}
 }

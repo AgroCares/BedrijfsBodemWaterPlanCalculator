@@ -1,5 +1,35 @@
 # Changelog BBWPC
 
+### 0.5.0
+### Added
+- internal table `er_aer_reward`, prepared in dev
+- check and automatic update `B_GWL_CLASS` via function `bbwp_format_aer`, included in all relevant bbwp and er functions, issue #18
+- add `B_AER_CBS` as argument to all bbwp and er functions
+- output `reward` added to `er_meas_score`, `er_field_scores` and `er_farm_score`, issue #17
+- function `ecoregeling` adds `reward` as output in objects farm and field, issue #17
+- argument `B_LU_BBWP` is converted from string to integerish by removing `cat_` in wrapper funs `ecoregeling` and `bbwp`
+
+## 0.4.2
+### Added
+- add LSW data as geopackage to dev
+- add `bbwp_check_lsw` to check, update the LSW data, with option for spatial intersection when geopackage is available
+- add internal package table `lsw` with the properties per local surface water (LSW)
+
+### Changed
+- argument `D_WP` changed into `D_SA_W` for all BBWP functions
+
+## 0.4.1
+### Added
+- B_SLOPE and B_SLOPE_DEGREE as input in wrapper function `bbwp`
+
+### Changed
+- change output of `er_meas_rank` from `top.x` to `top_er_x` with x being the targets
+- change output of `bbwp_meas_rank` from `top.x` to `top_bbwp_x` with x being the targets
+- replace `x_meas_rank` to inside the if-function in wrapper funs to speed up the code
+- change output scores of `bbwp_field_score` and input for `bbwp_farm_score` from `D_OPI_x` to `S_BBWP_x`
+- change output scores of `er_field_score` and input for `er_farm_score` from `D_OPI_x` to `S_ER_x`
+- change B_SLOPE to B_SLOPE_DEGREE in all functions
+
 ## 0.4.0
 ### Added
 - add wrapper function `bbwp` to run BBWP for a series of fields

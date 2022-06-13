@@ -71,3 +71,28 @@
 #'   \item{er_description}{The description of the crop related measure}
 #' }
 "er_crops"
+
+#' A national dataset describing statistics of soil properties per Local Surface Water
+#' 
+#' This table contains mean and standard deviation of soil properties per Local Surface Water Polygon in the Netherlands
+#' 
+#' @format A data.table with 546 rows and 32 columns:
+#' \describe{
+#'   \item{c1}{bla bla}
+#'   \item{c2}{bla bla}
+#'   \item{c3}{bla bla}
+#'   \item{c4}{bla bla}
+#' }
+"lsw"
+
+#' An overview of correction factors per economic agricultural area
+#' 
+#' This table contains the correction factor for the financial reward differentiated per Agricultural Economic Region
+#' 
+#' @format A data.table with 14 rows and 3 columns:
+#' \describe{
+#'   \item{statcode}{bla bla}
+#'   \item{statname}{bla bla}
+#'   \item{er_cf}{bla bla}
+#' }
+"er_aer_reward"
