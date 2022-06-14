@@ -34,6 +34,7 @@ test_that("check er_meas_scores", {
       D_MEAS_LAND = rep(0,4),
       D_MEAS_SOIL = rep(0,4),
       D_MEAS_WAT = rep(0,4),
+      D_MEAS_TOT = rep(0,4),
       reward = rep(0,4)
     ),
     tolerance = 0.01,
@@ -63,12 +64,13 @@ test_that("check er_meas_scores", {
     object = test,
     expected = data.table(
       id = 1:4,
-      D_MEAS_BIO = c(15,0,3,0),
-      D_MEAS_CLIM = c(7,0,42,0),
-      D_MEAS_LAND = c(4,0,15,0),
-      D_MEAS_SOIL = c(2,0,7.5,0),
-      D_MEAS_WAT = c(10.5,0,6.25,0),
-      reward = c(600,0,200,0)
+      D_MEAS_BIO = c(3.75,0,11,0),
+      D_MEAS_CLIM = c(11,0,11,0),
+      D_MEAS_LAND = c(4,0,12,0),
+      D_MEAS_SOIL = c(11,0,0,0),
+      D_MEAS_WAT = c(12,0,8.75,0),
+      D_MEAS_TOT = c(41.75,0,42.75,0),
+      reward = c(715,0,950,0)
     ),
     tolerance = 1,
     ignore_attr = TRUE)

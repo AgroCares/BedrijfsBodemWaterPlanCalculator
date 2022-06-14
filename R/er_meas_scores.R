@@ -21,6 +21,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
   crop_cat1 = crop_cat2 = crop_cat3 = crop_cat4 = crop_cat5 = crop_cat6 = crop_cat7 = crop_cat8 = crop_cat9 = NULL
   soiltype = peat = clay = sand = silt = loess = NULL
   patterns = indicator = erscore = urgency = reward = value = NULL
+  total = biodiversity = climate = landscape = soil = water = oid = NULL
   
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
@@ -99,7 +100,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
     dt[grepl('zand|dal', B_SOILTYPE_AGR) & sand == FALSE , c(cols) := 0]
     dt[grepl('veen', B_SOILTYPE_AGR) & peat == FALSE , c(cols) := 0]
     dt[grepl('loess', B_SOILTYPE_AGR) & loess == FALSE , c(cols) := 0]
-  
+    
   # multiply by (political) urgency
   
     # first add soil type for political and environmental urgency
@@ -110,7 +111,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
     
     # melt dt
     dt <- melt(dt,
-               id.vars = c('id','bbwp_id','soiltype'),
+               id.vars = c('id','bbwp_id','soiltype','bbwp_conflict'),
                measure = patterns(erscore = "^er_"),
                variable.name = 'indicator',
                value.name = 'value')
@@ -119,12 +120,20 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
     # merge with urgency table
     dt <- merge(dt,dt.er.urgency, by= c('soiltype','indicator'),all.x = TRUE)
     
+  # adapt the score based on urgency
+  dt[indicator != 'profit', value := value * urgency]
+    
+  # dcast to add totals, to be used to update scores when measures are conflicting
+  
+    cols <- c('biodiversity', 'climate', 'landscape', 'soil','water','total')
+    dt2 <- dcast(dt, id + soiltype + bbwp_id + bbwp_conflict ~ indicator, value.var = 'value')
+    dt2[, total := biodiversity + climate + landscape + soil + water]
+    dt2[, oid := frank(-total, ties.method = 'first',na.last = 'keep'), by = c('id','bbwp_conflict')]
+    dt2[oid > 1, c(cols) := 0]
+    
   # calculate the weighed average ER score (points/ ha) for the whole farm due to measures taken
-  dt.field <- dt[indicator != 'profit',list(erscore = sum(value * urgency)),by = c('id', 'indicator')]
-  
-  # dcast the output
-  dt.field <- dcast(dt.field,id~indicator,value.var = "erscore")
-  
+  dt.field <- dt2[,lapply(.SD,sum), .SDcols = cols, by = 'id']
+    
   # calculate total reward per field (euro / ha)
   dt.reward <- dt[indicator == 'profit',list(reward = sum(value)),by = 'id']
   
@@ -133,8 +142,8 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
    
   # setnames
   setnames(dt.field,
-           c('biodiversity', 'climate', 'landscape', 'soil','water'),
-           c('D_MEAS_BIO', 'D_MEAS_CLIM', 'D_MEAS_LAND', 'D_MEAS_SOIL', 'D_MEAS_WAT'))
+           c('biodiversity', 'climate', 'landscape', 'soil','water','total'),
+           c('D_MEAS_BIO', 'D_MEAS_CLIM', 'D_MEAS_LAND', 'D_MEAS_SOIL', 'D_MEAS_WAT','D_MEAS_TOT'))
   
   # order to ensure field order
   setorder(dt.field, id)

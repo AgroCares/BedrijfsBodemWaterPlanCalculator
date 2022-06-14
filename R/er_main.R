@@ -112,6 +112,9 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
     # Add field id
     setnames(dt.fields,'id','field_id')
     
+    # add fake medal for the moment
+    dt.farm$er_medal <- 'silver'
+    
     # set output object
     out <- list(farm = as.list(dt.farm),fields = dt.fields)
     
