@@ -1,6 +1,13 @@
 # Changelog BBWPC
 
-### 0.5.0
+## 0.5.1
+### Changed
+- internal table `bbwp_measures` with column bbwp_conflict
+- avoid additive scoring for conflicting measures in `bbwp_meas_score` and `bbp_meas_rank`
+- avoid additive scoring for conflicting measures in `er_meas_score`
+- tests are updated
+
+## 0.5.0
 ### Added
 - internal table `er_aer_reward`, prepared in dev
 - check and automatic update `B_GWL_CLASS` via function `bbwp_format_aer`, included in all relevant bbwp and er functions, issue #18
