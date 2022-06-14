@@ -5,6 +5,7 @@
 - internal table `bbwp_measures` with column bbwp_conflict
 - avoid additive scoring for conflicting measures in `bbwp_meas_score` and `bbp_meas_rank`
 - avoid additive scoring for conflicting measures in `er_meas_score`
+- add `er_medal` as farm output for `ecoregeling` 
 - tests are updated
 
 ## 0.5.0
