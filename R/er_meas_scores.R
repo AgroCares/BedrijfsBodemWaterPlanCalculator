@@ -21,6 +21,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
   crop_cat1 = crop_cat2 = crop_cat3 = crop_cat4 = crop_cat5 = crop_cat6 = crop_cat7 = crop_cat8 = crop_cat9 = NULL
   soiltype = peat = clay = sand = silt = loess = NULL
   patterns = indicator = erscore = urgency = reward = value = NULL
+  total = biodiversity = climate = landscape = soil = water = oid = NULL
   
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)

@@ -1,6 +1,6 @@
 
-  # # default inputs for testing
-  # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei') 
+  ## default inputs for testing
+  # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei')
   # B_GWL_CLASS = c('-', 'GtI', 'GtV')
   # A_P_SG = c(0.4, 0.8, 1)
   # B_SLOPE_DEGREE = c(1.5,4,1.5)
@@ -8,15 +8,15 @@
   # B_LU_BBWP = c(1,4,1)
   # M_DRAIN = c(TRUE, FALSE, TRUE)
   # D_SA_W = c(0, 0.5, 1)
-  # D_RISK_NGW = c(0, 0.5 ,1) 
+  # D_RISK_NGW = c(0, 0.5 ,1)
   # D_RISK_NSW = c(0, 0.5, 1)
   # D_RISK_PSW = c(0, 0.5, 1)
   # D_RISK_NUE = c(0, 0.5, 1)
   # D_RISK_WB= c(0, 0.5, 1)
-  # B_GWP = c(TRUE, FALSE, TRUE) 
+  # B_GWP = c(TRUE, FALSE, TRUE)
   # B_AREA_DROUGHT = c(TRUE, FALSE, TRUE)
   # B_CT_PSW = c(0, 25, 50)
-  # B_CT_NSW = c(0, 50, 100) 
+  # B_CT_NSW = c(0, 50, 100)
   # B_CT_PSW_MAX = 0.5
   # B_CT_NSW_MAX = 5.0
   # measures = NULL
@@ -102,12 +102,12 @@ test_that("check bbwp_field_scores", {
   expect_equal(
     object = test,
     expected = data.table(
-      S_BBWP_NGW = c(99,53,27),
-      S_BBWP_NSW = c(100,0,88),
-      S_BBWP_PSW = c(100,0,75),
-      S_BBWP_NUE = c(99,53,31),
-      S_BBWP_WB = c(100,53,41),
-      S_BBWP_TOT = c(100,16,45)
+      S_BBWP_NGW = c(100,53,2),
+      S_BBWP_NSW = c(100,0,0),
+      S_BBWP_PSW = c(100,0,0),
+      S_BBWP_NUE = c(100,53,3),
+      S_BBWP_WB = c(100,53,2),
+      S_BBWP_TOT = c(100,16,1)
     ),
     tolerance = 0.01)
 })
