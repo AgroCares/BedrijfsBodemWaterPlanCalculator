@@ -4,12 +4,12 @@
 \alias{er_farm_aim}
 \title{Calculate the minimum required Ecoregelingen Scores on Farm level}
 \usage{
-er_farm_aim(B_SOILTYPE_AGR, D_AREA, farmscore = 100)
+er_farm_aim(B_SOILTYPE_AGR, B_AREA, farmscore = 100)
 }
 \arguments{
 \item{B_SOILTYPE_AGR}{(character) The type of soil}
 
-\item{D_AREA}{(numeric) the area of the field (\ m2 or \ ha)}
+\item{B_AREA}{(numeric) the area of the field (m2)}
 
 \item{farmscore}{(numeric) the desired farm score for Ecoregeling (number / ha)}
 }

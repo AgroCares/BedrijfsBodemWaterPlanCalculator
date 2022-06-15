@@ -13,7 +13,7 @@ ecoregeling(
   B_AER_CBS,
   A_P_SG,
   D_SA_W,
-  D_AREA,
+  B_AREA,
   M_DRAIN,
   farmscore,
   measures,
@@ -38,7 +38,7 @@ ecoregeling(
 
 \item{D_SA_W}{(numeric) The wet perimeter index of the field, fraction that field is surrounded by water}
 
-\item{D_AREA}{(numeric) the area of the field (\ m2 or \ ha)}
+\item{B_AREA}{(numeric) the area of the field (m2)}
 
 \item{M_DRAIN}{(boolean) is there tube drainage present in the field}
 

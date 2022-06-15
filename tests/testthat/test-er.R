@@ -11,7 +11,7 @@ require(testthat)
   # B_LU_BBWP = c(1,4,1)
   # M_DRAIN = c(TRUE, FALSE, TRUE)
   # D_SA_W = c(0, 0.5, 1)
-  # D_AREA = c(100,80,2.5)
+  # B_AREA = c(100,80,2.5)
   # measures = NULL
   # farmscore = 100
   # sector = c('dairy', 'arable')
@@ -27,7 +27,7 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                     B_LU_BBWP = c(1,4,1),
                     M_DRAIN = c(TRUE, FALSE, TRUE),
                     D_SA_W = c(0, 0.5, 1),
-                    D_AREA = c(100,80,2.5),
+                    B_AREA = c(100,80,2.5),
                     farmscore = 100,
                     measures = NULL,
                     sector = c('dairy', 'arable'),
@@ -45,7 +45,7 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check ecoregeling", {
     expect_equal(
       object = colnames(test$fields),
-      expected = c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity","s_er_landscape","s_er_tot","reward"))
+      expected = c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity","s_er_landscape","s_er_tot","s_er_reward"))
   })
   
   test_that("check ecoregeling", {
@@ -82,7 +82,7 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                     B_AER_CBS = c('LG05','LG14','LG02'),
                     M_DRAIN = c(TRUE, FALSE, TRUE),
                     D_SA_W = c(0, 0.5, 1),
-                    D_AREA = c(100,80,2.5),
+                    B_AREA = c(100,80,2.5),
                     farmscore = 100,
                     measures = measures,
                     sector = c('dairy', 'arable'),
@@ -114,7 +114,7 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                       B_AER_CBS = c('LG05','LG14','LG02'),
                       M_DRAIN = c(TRUE, FALSE, TRUE),
                       D_SA_W = c(0, 0.5, 1),
-                      D_AREA = c(100,80,2.5),
+                      B_AREA = c(100,80,2.5),
                       farmscore = 100,
                       measures = measures,
                       sector = c('dairy', 'arable'),

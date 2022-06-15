@@ -8,19 +8,19 @@
 #' @param S_ER_CLIMATE (numeric) the Ecoregeling scoring index for climate for each field
 #' @param S_ER_BIODIVERSITY (numeric) the Ecoregeling scoring index for biodiversity for each field
 #' @param S_ER_LANDSCAPE (numeric) the Ecoregeling scoring index for landscape for each field
-#' @param reward (numeric) The financial reward per field for taking Ecoregeling measures (euro / ha)
-#' @param D_AREA (numeric) the area of the field (\ m2 or \ ha) 
+#' @param S_ER_REWARD (numeric) The financial reward per field for taking Ecoregeling measures (euro / ha)
+#' @param B_AREA (numeric) the area of the field (m2) 
 #'   
 #' @import data.table
 #'
 #' @export
 # calculate the opportunities for a set of fields
 er_farm_score <- function(S_ER_TOT,S_ER_SOIL,S_ER_WATER,S_ER_CLIMATE,S_ER_BIODIVERSITY,S_ER_LANDSCAPE, 
-                          reward, D_AREA){
+                          S_ER_REWARD, B_AREA){
   
   # check length of the inputs
   arg.length <- max(length(S_ER_TOT),length(S_ER_SOIL),length(S_ER_WATER),length(S_ER_CLIMATE),
-                    length(S_ER_BIODIVERSITY),length(S_ER_LANDSCAPE),length(D_AREA))
+                    length(S_ER_BIODIVERSITY),length(S_ER_LANDSCAPE),length(B_AREA))
   
   # check inputs
   checkmate::assert_numeric(S_ER_TOT, lower = 0, upper = 100, len = arg.length)
@@ -29,8 +29,8 @@ er_farm_score <- function(S_ER_TOT,S_ER_SOIL,S_ER_WATER,S_ER_CLIMATE,S_ER_BIODIV
   checkmate::assert_numeric(S_ER_CLIMATE, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(S_ER_BIODIVERSITY, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(S_ER_LANDSCAPE, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(D_AREA, lower = 0, upper = 50000, len = arg.length)
-  checkmate::assert_numeric(reward, lower = 0, upper = 10000, len = arg.length)
+  checkmate::assert_numeric(B_AREA, lower = 0, upper = 50000, len = arg.length)
+  checkmate::assert_numeric(S_ER_REWARD, lower = 0, upper = 10000, len = arg.length)
   
   # collect data in one data.table
   dt <- data.table(id = 1:arg.length,
@@ -40,15 +40,15 @@ er_farm_score <- function(S_ER_TOT,S_ER_SOIL,S_ER_WATER,S_ER_CLIMATE,S_ER_BIODIV
                    S_ER_BIODIVERSITY = S_ER_BIODIVERSITY,
                    S_ER_LANDSCAPE = S_ER_LANDSCAPE,
                    S_ER_TOT = S_ER_TOT,
-                   reward = reward,
-                   D_AREA = D_AREA
+                   S_ER_REWARD = S_ER_REWARD,
+                   B_AREA = B_AREA
                   )
   
   # columns with the score of the opportunity indexes
-  cols <- c('S_ER_TOT','S_ER_SOIL','S_ER_WATER','S_ER_CLIMATE','S_ER_BIODIVERSITY','S_ER_LANDSCAPE','reward')
+  cols <- c('S_ER_TOT','S_ER_SOIL','S_ER_WATER','S_ER_CLIMATE','S_ER_BIODIVERSITY','S_ER_LANDSCAPE','S_ER_REWARD')
   
   # calculate area weigthed sum of the field indices
-  dt <- dt[,lapply(.SD, stats::weighted.mean, w = D_AREA), .SDcols = cols]
+  dt <- dt[,lapply(.SD, stats::weighted.mean, w = B_AREA), .SDcols = cols]
   
   # Round the values
   dt<- dt[, lapply(.SD, round, digits = 0)]

@@ -6,7 +6,7 @@ require(testthat)
   # B_LU_BRP = c(265,265,265,265)
   # B_LU_BBWP = c(1,1,1,1)
   # B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland")
-  # D_AREA = c(45,18,0.8,6)
+  # B_AREA = c(45,18,0.8,6)
   # B_CT_SOIL = 20
   # B_CT_WATER = 15
   # B_CT_CLIMATE = 8
@@ -20,7 +20,7 @@ test <- er_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','vee
                         B_LU_BRP = c(265,2005,256,259),
                         B_LU_BBWP = c(1,4,4,9),
                         B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland"),
-                        D_AREA = c(45,18,0.8,6),
+                        B_AREA = c(45,18,0.8,6),
                         B_CT_SOIL = 20,
                         B_CT_WATER = 15,
                         B_CT_CLIMATE = 8,
@@ -41,7 +41,7 @@ test_that("check er_field_scores", {
       S_ER_BIODIVERSITY = rep(7,4),
       S_ER_LANDSCAPE = rep(1,4),
       S_ER_TOT = rep(9,4),
-      reward = rep(652.04,4)
+      S_ER_REWARD = rep(652.04,4)
     ),
     tolerance = 0.01)
 })
@@ -59,7 +59,7 @@ test <- er_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','vee
                         B_LU_BRP = c(265,265,265,265),
                         B_LU_BBWP = c(1,1,1,1),
                         B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland"),
-                        D_AREA = c(45,18,0.8,6),
+                        B_AREA = c(45,18,0.8,6),
                         B_CT_SOIL = 20,
                         B_CT_WATER = 15,
                         B_CT_CLIMATE = 8,
@@ -81,7 +81,7 @@ test_that("check er_field_scores", {
       S_ER_BIODIVERSITY = c(21,11,23,11),
       S_ER_LANDSCAPE = c(11,1,76,1),
       S_ER_TOT = c(29,13,55,13),
-      reward = c(1346.6,946.58,1146.58,946.58)
+      S_ER_REWARD = c(1346.6,946.58,1146.58,946.58)
     ),
     tolerance = 1,
     ignore_attr = TRUE)

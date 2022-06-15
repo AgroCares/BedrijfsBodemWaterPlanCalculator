@@ -11,7 +11,7 @@
 #' @param B_CT_CLIMATE (numeric) the target value for climate conform Ecoregeling scoring
 #' @param B_CT_BIO (numeric) the target value for biodiversity conform Ecoregeling scoring
 #' @param B_CT_LANDSCAPE (numeric) the target value for landscape quality conform Ecoregeling scoring
-#' @param D_AREA (numeric) the area of the field (\ m2 or \ ha) 
+#' @param B_AREA (numeric) the area of the field (m2) 
 #' @param measures (list) the measures planned / done per fields (measurement nr)
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'melkveehouderij','akkerbouw','vollegrondsgroente','boomteelt','bollen','veehouderij','overig')
 #'    
@@ -21,23 +21,23 @@
 #' @export
 # calculate the opportunitie indices for a set of fields
 er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
-                            D_AREA,
+                            B_AREA,
                             B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE, 
                             measures = NULL, sector){
   
   # add visual bindings
   value = . = eco_id = b_lu_brp = type = erscore = EG15 = EG22 = cf = EB1A = EB1B = EB1C = NULL
-  D_AREA_RR = EB2 = EB3 = EB8 = EB9 = soiltype = urgency = indicator = farmid = NULL
+  B_AREA_RR = EB2 = EB3 = EB8 = EB9 = soiltype = urgency = indicator = farmid = NULL
   D_OPI_SOIL = D_OPI_WATER = D_OPI_CLIMATE = D_OPI_BIO = D_OPI_LANDSCAPE = NULL
   D_MEAS_BIO = D_MEAS_CLIM = D_MEAS_LAND = D_MEAS_SOIL = D_MEAS_WAT = NULL
-  cfSOIL = cfWAT = cfCLIM = cfBIO = cfLAND = D_OPI_TOT = id = reward = NULL
+  cfSOIL = cfWAT = cfCLIM = cfBIO = cfLAND = D_OPI_TOT = id = S_ER_REWARD = NULL
  
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
   
   # check length of the inputs
   arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BRP),length(B_LU_BBWP),
-                    length(D_AREA),length(B_AER_CBS))
+                    length(B_AREA),length(B_AER_CBS))
   
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
@@ -76,7 +76,7 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
                    B_LU_BRP = B_LU_BRP,
                    B_LU_BBWP = B_LU_BBWP,
                    B_AER_CBS = B_AER_CBS,
-                   D_AREA = D_AREA,
+                   B_AREA = B_AREA,
                    B_CT_SOIL = B_CT_SOIL, 
                    B_CT_WATER = B_CT_WATER,
                    B_CT_CLIMATE = B_CT_CLIMATE,
@@ -93,7 +93,7 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
                              B_LU_BRP = dt$B_LU_BRP,
                              B_LU_BBWP = dt$B_LU_BBWP,
                              B_AER_CBS = dt$B_AER_CBS,
-                             D_AREA = dt$D_AREA,
+                             B_AREA = dt$B_AREA,
                              B_CT_SOIL = dt$B_CT_SOIL,
                              B_CT_WATER = dt$B_CT_WATER,
                              B_CT_CLIMATE = dt$B_CT_CLIMATE,
@@ -106,7 +106,7 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
   # these are not yet converted to a 0-1 scale
     
     # set colnames for the impact of measures
-    mcols <- c('D_MEAS_BIO', 'D_MEAS_CLIM', 'D_MEAS_LAND', 'D_MEAS_SOIL', 'D_MEAS_WAT','reward')
+    mcols <- c('D_MEAS_BIO', 'D_MEAS_CLIM', 'D_MEAS_LAND', 'D_MEAS_SOIL', 'D_MEAS_WAT','S_ER_REWARD')
   
     # calculate the total score per indicator 
     if(nrow(dt.er.meas) > 0){
@@ -171,11 +171,11 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
               c('S_ER_SOIL','S_ER_WATER','S_ER_CLIMATE','S_ER_BIODIVERSITY','S_ER_LANDSCAPE','S_ER_TOT'))
   
   # round the values and get the field scores
-  cols <- c('S_ER_SOIL','S_ER_WATER','S_ER_CLIMATE','S_ER_BIODIVERSITY','S_ER_LANDSCAPE','S_ER_TOT','reward')
+  cols <- c('S_ER_SOIL','S_ER_WATER','S_ER_CLIMATE','S_ER_BIODIVERSITY','S_ER_LANDSCAPE','S_ER_TOT','S_ER_REWARD')
   dt <- dt[, c(cols) := lapply(.SD, round, digits = 0),.SDcols = cols]
   
   # update the field-reward with the farm-reward (in euro/ha)
-  dt[,reward := reward + dt.farm$reward / sum(D_AREA)]
+  dt[,S_ER_REWARD := S_ER_REWARD + dt.farm$S_ER_REWARD / sum(B_AREA)]
   
   # extract value
   value <- dt[,mget(c('id',cols))]

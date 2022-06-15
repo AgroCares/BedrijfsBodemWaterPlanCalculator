@@ -6,7 +6,7 @@ require(testthat)
   # B_LU_BRP = c(265,265,265,265)
   # B_LU_BBWP = c(1,1,1,1)
   # B_AER_CBS = c('Bouwhoek en Hogeland','LG14','LG12','Westelijk Holland')
-  # D_AREA = c(45,18,0.8,6)
+  # B_AREA = c(45,18,0.8,6)
   # B_CT_SOIL = 20
   # B_CT_WATER = 15
   # B_CT_CLIMATE = 8
@@ -20,7 +20,7 @@ test <- er_croprotation(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','vee
                         B_LU_BRP = c(265,2005,256,259),
                         B_LU_BBWP = c(1,4,4,9),
                         B_AER_CBS = c('Bouwhoek en Hogeland','LG14','LG12','Westelijk Holland'),
-                        D_AREA = c(45,18,0.8,6),
+                        B_AREA = c(45,18,0.8,6),
                         B_CT_SOIL = 15, 
                         B_CT_WATER = 5,
                         B_CT_CLIMATE = 8,
@@ -38,7 +38,7 @@ test_that("check er_croprotation", {
 test_that("check er_croprotation", {
   expect_equal(
     object = colnames(test),
-    expected = c('farmid','biodiversity','climate','landscape','soil','water','reward'),
+    expected = c('farmid','biodiversity','climate','landscape','soil','water','S_ER_REWARD'),
     tolerance = 0.01)
 })
 
@@ -63,7 +63,7 @@ test <- er_croprotation(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','vee
                      B_LU_BRP = c(265,2005,256,259),
                      B_LU_BBWP = c(1,4,4,9),
                      B_AER_CBS =  c('Bouwhoek en Hogeland','LG14','LG12','Westelijk Holland'),
-                     D_AREA = c(4.5,18,0.8,60),
+                     B_AREA = c(4.5,18,0.8,60),
                      B_CT_SOIL = 1.5, 
                      B_CT_WATER = 50,
                      B_CT_CLIMATE = 18,
@@ -81,7 +81,7 @@ test_that("check er_croprotation", {
 test_that("check er_croprotation", {
   expect_equal(
     object = colnames(test),
-    expected = c('farmid','biodiversity','climate','landscape','soil','water','reward'),
+    expected = c('farmid','biodiversity','climate','landscape','soil','water','S_ER_REWARD'),
     tolerance = 0.01)
 })
 

@@ -147,8 +147,8 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
 #' 
 #' @param LSW (data.table) The input LSW table with `oow_id` as identifier
 #' @param lsw.sf (sf object) a geopackage with the LSW properties, crs 4326
-#' @param lon (numeric) Longitude of the field (required if no LSW is submitted)
-#' @param lat (numeric) Latitude of the field (required if no LSW is submitted)
+#' @param a_lon (numeric) Longitude of the field (required if no LSW is submitted)
+#' @param a_lat (numeric) Latitude of the field (required if no LSW is submitted)
 #' 
 #' @import data.table
 #' @import sf
@@ -157,7 +157,7 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
 #' Due to high memory use, the spatial LSW gpkg is moved to "dev" directory of the package.
 #' 
 #' @export
-bbwp_check_lsw <- function(LSW, lat = NULL, lon = NULL,lsw.sf = NULL){
+bbwp_check_lsw <- function(LSW, a_lat = NULL, a_lon = NULL,lsw.sf = NULL){
   
   # add visual bindings
   id = NULL
@@ -174,7 +174,7 @@ bbwp_check_lsw <- function(LSW, lat = NULL, lon = NULL,lsw.sf = NULL){
   if(!is.null(lsw.sf)){
     
     # length of inputs
-    arg.length <- max(length(lat),length(lon))
+    arg.length <- max(length(a_lat),length(a_lon))
     
     # check properties of the spatial object
     checkmate::assert_choice(st_crs(lsw.sf)$input,choices = c('EPSG:4326'))
@@ -184,14 +184,14 @@ bbwp_check_lsw <- function(LSW, lat = NULL, lon = NULL,lsw.sf = NULL){
     checkmate::assert_logical('geom|geometry' %in% colnames(lsw.sf))
     
     # check inputs lon and lat
-    checkmate::assert_numeric(lon, lower = 3.3, upper = 7.3, len = arg.length)
-    checkmate::assert_numeric(lat, lower = 50.5, upper = 53.5, len = arg.length)
+    checkmate::assert_numeric(a_lon, lower = 3.3, upper = 7.3, len = arg.length)
+    checkmate::assert_numeric(a_lat, lower = 50.5, upper = 53.5, len = arg.length)
       
     # load internal LSW
     lsw.sf <- st_as_sf(lsw.sf)
     
     # make sf object of field location(s)
-    loc <- sf::st_sf(geom = st_sfc(st_multipoint(matrix(c(lon,lat),ncol=2))), crs = 4326)
+    loc <- sf::st_sf(geom = st_sfc(st_multipoint(matrix(c(a_lon,a_lat),ncol=2))), crs = 4326)
     
     # crop lsw.sf by an extend slightly bigger than the points
     suppressWarnings(lsw.crop <- st_crop(lsw.sf,st_bbox(loc) + c(-0.005,-0.0025,0.005,0.0025)))

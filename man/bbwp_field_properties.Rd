@@ -26,8 +26,8 @@ bbwp_field_properties(
   D_SA_W,
   D_RO_R,
   LSW,
-  lat = NULL,
-  lon = NULL
+  a_lat = NULL,
+  a_lon = NULL
 )
 }
 \arguments{
@@ -73,9 +73,9 @@ bbwp_field_properties(
 
 \item{LSW}{(data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)}
 
-\item{lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
+\item{a_lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
 
-\item{lon}{(numeric) Longitude of the field (required if no LSW is submitted)}
+\item{a_lon}{(numeric) Longitude of the field (required if no LSW is submitted)}
 }
 \description{
 Estimate the relative ranking of field properties given their contribution to nutrient losses to aquatic ecosystems as well as nutrient and water efficiency.

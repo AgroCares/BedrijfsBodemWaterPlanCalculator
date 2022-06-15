@@ -11,8 +11,8 @@ er_farm_score(
   S_ER_CLIMATE,
   S_ER_BIODIVERSITY,
   S_ER_LANDSCAPE,
-  reward,
-  D_AREA
+  S_ER_REWARD,
+  B_AREA
 )
 }
 \arguments{
@@ -28,9 +28,9 @@ er_farm_score(
 
 \item{S_ER_LANDSCAPE}{(numeric) the Ecoregeling scoring index for landscape for each field}
 
-\item{reward}{(numeric) The financial reward per field for taking Ecoregeling measures (euro / ha)}
+\item{S_ER_REWARD}{(numeric) The financial reward per field for taking Ecoregeling measures (euro / ha)}
 
-\item{D_AREA}{(numeric) the area of the field (\ m2 or \ ha)}
+\item{B_AREA}{(numeric) the area of the field (m2)}
 }
 \description{
 Estimate the potential to contribute to agronomic and environmental challenges in a region for a farm

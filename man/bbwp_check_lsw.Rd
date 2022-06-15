@@ -4,14 +4,14 @@
 \alias{bbwp_check_lsw}
 \title{Helper function to check the LSW table}
 \usage{
-bbwp_check_lsw(LSW, lat = NULL, lon = NULL, lsw.sf = NULL)
+bbwp_check_lsw(LSW, a_lat = NULL, a_lon = NULL, lsw.sf = NULL)
 }
 \arguments{
 \item{LSW}{(data.table) The input LSW table with `oow_id` as identifier}
 
-\item{lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
+\item{a_lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
 
-\item{lon}{(numeric) Longitude of the field (required if no LSW is submitted)}
+\item{a_lon}{(numeric) Longitude of the field (required if no LSW is submitted)}
 
 \item{lsw.sf}{(sf object) a geopackage with the LSW properties, crs 4326}
 }

@@ -33,11 +33,11 @@ bbwp(
   B_CT_NSW_MAX = 5,
   D_SA_W,
   D_RO_R,
-  D_AREA,
+  B_AREA,
   M_DRAIN,
   LSW,
-  lat = NULL,
-  lon = NULL,
+  a_lat = NULL,
+  a_lon = NULL,
   measures,
   sector,
   output = "scores"
@@ -100,15 +100,15 @@ bbwp(
 
 \item{D_RO_R}{(numeric) The risk that surface water runs off the parcel}
 
-\item{D_AREA}{(numeric) the area of the field (\ m2 or \ ha)}
+\item{B_AREA}{(numeric) the area of the field (m2)}
 
 \item{M_DRAIN}{(boolean) is there tube drainage present in the field}
 
 \item{LSW}{(data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)}
 
-\item{lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
+\item{a_lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
 
-\item{lon}{(numeric) Longitude of the field (required if no LSW is submitted)}
+\item{a_lon}{(numeric) Longitude of the field (required if no LSW is submitted)}
 
 \item{measures}{(data.table) the measures planned / done per fields}
 

@@ -28,6 +28,7 @@ Other contributors:
 \itemize{
   \item Job de Pater \email{yuki.fujita@nmi-agro.nl} [contributor]
   \item Yuki Fujita \email{yuki.fujita@nmi-agro.nl} [contributor]
+  \item Kees van den Dool \email{kees.vandendool@nmi-agro.nl} [contributor]
   \item Nutriënten Managment Instituut \email{nmi@nmi-agro.nl} [copyright holder]
 }
 
