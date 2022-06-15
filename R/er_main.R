@@ -11,7 +11,7 @@
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param A_P_SG (numeric) The P-saturation index (\%)
 #' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
-#' @param D_AREA (numeric) the area of the field (\ m2 or \ ha) 
+#' @param B_AREA (numeric) the area of the field (m2) 
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param farmscore (numeric) The desired total ER score on farm level
 #' @param measures (data.table) the measures planned / done per fields
@@ -23,7 +23,7 @@
 #'
 #' @export
 ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
-                        A_P_SG,D_SA_W, D_AREA,M_DRAIN, farmscore, 
+                        A_P_SG,D_SA_W, B_AREA,M_DRAIN, farmscore, 
                         measures, sector,output = 'scores'){
   
   # check wrapper inputs that are not checked in the bbwp functions
@@ -36,7 +36,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
   
   # Calculate the minimum required ER scores on Farm level
   dt.farm.aim <- er_farm_aim(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
-                             D_AREA = D_AREA, 
+                             B_AREA = B_AREA, 
                              farmscore = 100)
    
   # when measures are requested as output, then field scores are derived for situation without measures
@@ -46,7 +46,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
   dt.fields <- er_field_scores(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
                                B_LU_BRP = B_LU_BRP, 
                                B_LU_BBWP = B_LU_BBWP,
-                               D_AREA = D_AREA,
+                               B_AREA = B_AREA,
                                B_AER_CBS = B_AER_CBS,
                                B_CT_SOIL = dt.farm.aim$B_CT_SOIL, 
                                B_CT_WATER = dt.farm.aim$B_CT_WATER,
@@ -63,8 +63,8 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
                            S_ER_CLIMATE = dt.fields$S_ER_CLIMATE,
                            S_ER_BIODIVERSITY = dt.fields$S_ER_BIODIVERSITY,
                            S_ER_LANDSCAPE = dt.fields$S_ER_LANDSCAPE,
-                           reward = dt.fields$reward,
-                           D_AREA = D_AREA)
+                           S_ER_REWARD = dt.fields$reward,
+                           B_AREA = B_AREA)
  
  
   # return output when preferred measures are requested
@@ -80,7 +80,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
                             B_AER_CBS = B_AER_CBS,
                             M_DRAIN = M_DRAIN,
                             D_SA_W = D_SA_W,
-                            D_AREA = D_AREA,
+                            B_AREA = B_AREA,
                             B_CT_SOIL = dt.farm.aim$B_CT_SOIL, 
                             B_CT_WATER = dt.farm.aim$B_CT_WATER,
                             B_CT_CLIMATE = dt.farm.aim$B_CT_CLIMATE,
@@ -113,7 +113,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
     setnames(dt.fields,'id','field_id')
     
     # add fake medal for the moment
-    dt.farm$er_medal <- 'silver'
+    dt.farm$s_er_medal <- 'silver'
     
     # set output object
     out <- list(farm = as.list(dt.farm),fields = dt.fields)

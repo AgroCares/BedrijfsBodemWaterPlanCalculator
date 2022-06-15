@@ -11,7 +11,7 @@
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
-#' @param D_AREA (numeric) the area of the field (\ m2 or \ ha) 
+#' @param B_AREA (numeric) the area of the field (m2) 
 #' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
 #' @param B_CT_SOIL (numeric) the target value for soil quality conform Ecoregeling scoring
 #' @param B_CT_WATER (numeric) the target value for water quality conform Ecoregeling scoring
@@ -27,7 +27,7 @@
 #' @export
 # rank the measures given their effectiveness to improve the sustainability of the farm
 er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, M_DRAIN, D_SA_W,
-                         D_AREA,B_AER_CBS,
+                         B_AREA,B_AER_CBS,
                          B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE, 
                          measures, sector){
   
@@ -64,7 +64,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
   dt <- data.table(id = 1:arg.length,
                    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                    B_GWL_CLASS = B_GWL_CLASS,
-                   D_AREA = D_AREA,
+                   B_AREA = B_AREA,
                    A_P_SG = A_P_SG,
                    B_SLOPE_DEGREE = B_SLOPE_DEGREE,
                    B_LU_BRP = B_LU_BRP,
@@ -87,7 +87,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
                              B_LU_BRP = dt$B_LU_BRP,
                              B_LU_BBWP = dt$B_LU_BBWP,
                              B_AER_CBS= dt$B_AER_CBS,
-                             D_AREA = dt$D_AREA,
+                             B_AREA = dt$B_AREA,
                              B_CT_SOIL = dt$B_CT_SOIL,
                              B_CT_WATER = dt$B_CT_WATER,
                              B_CT_CLIMATE = dt$B_CT_CLIMATE,

@@ -9,7 +9,7 @@ er_field_scores(
   B_LU_BRP,
   B_LU_BBWP,
   B_AER_CBS,
-  D_AREA,
+  B_AREA,
   B_CT_SOIL,
   B_CT_WATER,
   B_CT_CLIMATE,
@@ -28,7 +28,7 @@ er_field_scores(
 
 \item{B_AER_CBS}{(character) The agricultural economic region in the Netherlands (CBS, 2016)}
 
-\item{D_AREA}{(numeric) the area of the field (\ m2 or \ ha)}
+\item{B_AREA}{(numeric) the area of the field (m2)}
 
 \item{B_CT_SOIL}{(numeric) the target value for soil quality conform Ecoregeling scoring}
 

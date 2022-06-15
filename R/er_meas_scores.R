@@ -16,7 +16,7 @@
 er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures, sector){
   
   # add visual bindings
-  eco_id = type = fr_area = D_AREA = id = er_urgency = NULL
+  eco_id = type = fr_area = id = er_urgency = NULL
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = fbulbs = bulbs = NULL
   crop_cat1 = crop_cat2 = crop_cat3 = crop_cat4 = crop_cat5 = crop_cat6 = crop_cat7 = crop_cat8 = crop_cat9 = NULL
   soiltype = peat = clay = sand = silt = loess = NULL
@@ -52,8 +52,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
     B_SOILTYPE_AGR = B_SOILTYPE_AGR,
     B_LU_BRP = B_LU_BRP,
     B_LU_BBWP = B_LU_BBWP,
-    B_AER_CBS = B_AER_CBS,
-    D_AREA = D_AREA
+    B_AER_CBS = B_AER_CBS
   )
   
   # merge all measures to the given fields

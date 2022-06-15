@@ -3,23 +3,23 @@
 #' Estimate the  required score on farm level for soil quality, water quality, climate, biodiversity and landscape given soil type
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil
-#' @param D_AREA (numeric) the area of the field (\ m2 or \ ha) 
+#' @param B_AREA (numeric) the area of the field (m2) 
 #' @param farmscore (numeric) the desired farm score for Ecoregeling (number / ha)
 #'    
 #' @import data.table
 #'
 #' @export
 # calculate the desired Ecoregeling Score for a farm
-er_farm_aim <- function(B_SOILTYPE_AGR, D_AREA, farmscore = 100){
+er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, farmscore = 100){
   
   # add visual bindings
   . = type = soiltype = value.mis = value = farmid = NULL
   
   # check length of the inputs
-  arg.length <- max(length(B_SOILTYPE_AGR),length(D_AREA))
+  arg.length <- max(length(B_SOILTYPE_AGR),length(B_AREA))
   
   # check inputs
-  checkmate::assert_numeric(D_AREA, lower = 0, upper = 50000)
+  checkmate::assert_numeric(B_AREA, lower = 0, upper = 50000)
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
                                                        'dalgrond','moerige_klei','veen','loess'))
   checkmate::assert_numeric(farmscore,lower = 0,upper = 1000, len = 1)
@@ -30,7 +30,7 @@ er_farm_aim <- function(B_SOILTYPE_AGR, D_AREA, farmscore = 100){
   # make internal table
   dt <- data.table(id = 1:arg.length,
                    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
-                   D_AREA = D_AREA,
+                   B_AREA = B_AREA,
                    farmscore = farmscore)
   
   # add soil type
@@ -43,7 +43,7 @@ er_farm_aim <- function(B_SOILTYPE_AGR, D_AREA, farmscore = 100){
   dt <- merge(dt, er_aim,by='soiltype')
   
   # reshape table to estimate minimum socre per indicator on farm level
-  dt <- melt(dt,id.vars = c('id','D_AREA','farmscore'),
+  dt <- melt(dt,id.vars = c('id','B_AREA','farmscore'),
              measure.vars = c('cf_soil', 'cf_water','cf_climate', 'cf_biodiversity','cf_landscape'),
              variable.name = 'indicator')
   
@@ -51,7 +51,7 @@ er_farm_aim <- function(B_SOILTYPE_AGR, D_AREA, farmscore = 100){
   dt[value == 0, value := value.mis]
   
   # weighted mean on farm level
-  dt <- dt[,list(er_score = weighted.mean(farmscore * value,w = D_AREA)), by = c('indicator')]
+  dt <- dt[,list(er_score = weighted.mean(farmscore * value,w = B_AREA)), by = c('indicator')]
   
   # add a farm id
   dt[,farmid := 1]

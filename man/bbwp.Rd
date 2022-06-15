@@ -33,7 +33,7 @@ bbwp(
   B_CT_NSW_MAX = 5,
   D_SA_W,
   D_RO_R,
-  D_AREA,
+  B_AREA,
   M_DRAIN,
   LSW,
   lat = NULL,
@@ -100,7 +100,7 @@ bbwp(
 
 \item{D_RO_R}{(numeric) The risk that surface water runs off the parcel}
 
-\item{D_AREA}{(numeric) the area of the field (\ m2 or \ ha)}
+\item{B_AREA}{(numeric) the area of the field (m2)}
 
 \item{M_DRAIN}{(boolean) is there tube drainage present in the field}
 

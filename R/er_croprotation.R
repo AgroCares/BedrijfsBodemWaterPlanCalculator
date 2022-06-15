@@ -11,18 +11,18 @@
 #' @param B_CT_CLIMATE (numeric) the target value for climate conform Ecoregeling scoring
 #' @param B_CT_BIO (numeric) the target value for biodiversity conform Ecoregeling scoring
 #' @param B_CT_LANDSCAPE (numeric) the target value for landscape quality conform Ecoregeling scoring
-#' @param D_AREA (numeric) the area of the field (\ m2 or \ ha) 
+#' @param B_AREA (numeric) the area of the field (m2) 
 #'    
 #' @import data.table
 #' @import stats
 #'
 #' @export
 # calculate the opportunities for a set of fields
-er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,D_AREA,
+er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,B_AREA,
                             B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE){
   
   # add visual bindings
-  . = eco_id = farmid = b_lu_brp = type = erscore = D_AREA_RR = indicator = NULL
+  . = eco_id = farmid = b_lu_brp = type = erscore = B_AREA_RR = indicator = NULL
   EG15 = EG22 = cf = EB1A = EB1B = EB1C = EB2 = EB3 = EB8 = EB9 = NULL
   urgency = soiltype = NULL
   er_profit = statcode = er_cf = id = value = reward = NULL
@@ -74,7 +74,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,D_AREA
                    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                    B_LU_BRP = B_LU_BRP,
                    B_LU_BBWP = B_LU_BBWP,
-                   D_AREA = D_AREA,
+                   B_AREA = B_AREA,
                    B_CT_SOIL = B_CT_SOIL, 
                    B_CT_WATER = B_CT_WATER,
                    B_CT_CLIMATE = B_CT_CLIMATE,
@@ -88,10 +88,10 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,D_AREA
   
     # add filter for rustgewas (EB1) and estimate percentage rustgewassen
     dt.fin[,cf := fifelse(B_LU_BRP %in% dt.er.crops[eco_id=='EB1',b_lu_brp],1,0)]
-    dt.fin[,D_AREA_RR := sum(D_AREA * cf) / sum(D_AREA)]
+    dt.fin[,B_AREA_RR := sum(B_AREA * cf) / sum(B_AREA)]
   
     # combine with all measures
-    dt.fin <- cbind(dt.fin[rep(id,each = nrow(dt.er.meas)),.(id,er_cf,B_LU_BRP,D_AREA,D_AREA_RR)],
+    dt.fin <- cbind(dt.fin[rep(id,each = nrow(dt.er.meas)),.(id,er_cf,B_LU_BRP,B_AREA,B_AREA_RR)],
                     dt.er.meas[rep(1:.N,nrow(dt.fin)),])
   
     # add baseline profit
@@ -101,12 +101,12 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,D_AREA
     dt.fin[B_LU_BRP %in% dt.er.crops[eco_id == 'EG15',b_lu_brp] & eco_id == 'EG15', value := value + er_profit]
     
     # add kleinschalig landschap (EG22)
-    dt.fin[D_AREA < 2 & eco_id == 'EG22', value := value + er_profit]
+    dt.fin[B_AREA < 2 & eco_id == 'EG22', value := value + er_profit]
     
     # add percentage rustgewassen (EB1)
-    dt.fin[D_AREA_RR > 20 & D_AREA_RR <= 30 & eco_id == 'EB1' , value := value + er_profit]
-    dt.fin[D_AREA_RR > 30 & D_AREA_RR <= 40 & eco_id == 'EB1' , value := value + er_profit]
-    dt.fin[D_AREA_RR > 40 & eco_id == 'EB1' , value := value + er_profit]
+    dt.fin[B_AREA_RR > 20 & B_AREA_RR <= 30 & eco_id == 'EB1' , value := value + er_profit]
+    dt.fin[B_AREA_RR > 30 & B_AREA_RR <= 40 & eco_id == 'EB1' , value := value + er_profit]
+    dt.fin[B_AREA_RR > 40 & eco_id == 'EB1' , value := value + er_profit]
     
     # add eiwitgewassen (EB2)
     dt.fin[B_LU_BRP %in% dt.er.crops[eco_id=='EB2',b_lu_brp] & eco_id == 'EB2' , value := value + er_profit]
@@ -121,7 +121,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,D_AREA
     dt.fin[B_LU_BRP %in% dt.er.crops[eco_id=='EB9',b_lu_brp] & eco_id == 'EB9' , value := value + er_profit]
     
     # add all financial rewards per field
-    dt.fin <- dt.fin[,list(reward = sum(value * er_cf * D_AREA))]
+    dt.fin <- dt.fin[,list(reward = sum(value * er_cf * B_AREA))]
   
   # adapt dt to get the Ecoregeling score
     
@@ -135,7 +135,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,D_AREA
   
     # melt the data.table to simplify addition of basic ER points
     dt.score <-  melt(dt, 
-                      id.vars = c('id','B_SOILTYPE_AGR','B_LU_BRP','D_AREA'),
+                      id.vars = c('id','B_SOILTYPE_AGR','B_LU_BRP','B_AREA'),
                       measure.vars = cols,
                       variable.name = 'indicator',
                       value.name = 'm0')
@@ -152,16 +152,16 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,D_AREA
       dt.score[B_LU_BRP %in% dt.er.crops[eco_id=='EG15',b_lu_brp], erscore := erscore + EG15]
           
       # add kleinschalig landschap (EG22)
-      dt.score[D_AREA < 2, erscore := erscore + EG22]
+      dt.score[B_AREA < 2, erscore := erscore + EG22]
          
       # add filter for rustgewas (EB1)
       dt.score[,cf := fifelse(B_LU_BRP %in% dt.er.crops[eco_id=='EB1',b_lu_brp],1,0)]
       
       # add percentage rustgewassen (EB1)
-      dt.score[,D_AREA_RR := sum(D_AREA * cf) / sum(D_AREA)]
-      dt.score[D_AREA_RR > 20 & D_AREA_RR <= 30, erscore := erscore + EB1A]
-      dt.score[D_AREA_RR > 30 & D_AREA_RR <= 40, erscore := erscore + EB1B]
-      dt.score[D_AREA_RR > 40, erscore := erscore + EB1C]
+      dt.score[,B_AREA_RR := sum(B_AREA * cf) / sum(B_AREA)]
+      dt.score[B_AREA_RR > 20 & B_AREA_RR <= 30, erscore := erscore + EB1A]
+      dt.score[B_AREA_RR > 30 & B_AREA_RR <= 40, erscore := erscore + EB1B]
+      dt.score[B_AREA_RR > 40, erscore := erscore + EB1C]
   
       # add eiwitgewassen (EB2)
       dt.score[B_LU_BRP %in% dt.er.crops[eco_id=='EB2',b_lu_brp], erscore := erscore + EB2]
@@ -187,7 +187,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,D_AREA
     dt.score <- merge(dt.score,dt.er.urgency, by= c('indicator','soiltype'))
     
     # calculate the weighed average ER score (points/ ha) for the whole farm due to crop rotation 
-    dt.score <- dt.score[,list(erscore = weighted.mean(erscore * urgency, D_AREA)),by = indicator]
+    dt.score <- dt.score[,list(erscore = weighted.mean(erscore * urgency, B_AREA)),by = indicator]
     
     # add a farm id
     dt.score[,farmid := 1]

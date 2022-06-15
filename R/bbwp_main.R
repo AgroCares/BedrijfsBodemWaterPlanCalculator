@@ -31,7 +31,7 @@
 #' @param A_P_SG (numeric) The P-saturation index (\%)
 #' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
 #' @param D_RO_R (numeric) The risk that surface water runs off the parcel
-#' @param D_AREA (numeric) the area of the field (\ m2 or \ ha) 
+#' @param B_AREA (numeric) the area of the field (m2) 
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param LSW (data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)
 #' @param lat (numeric) Latitude of the field (required if no LSW is submitted)
@@ -51,7 +51,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                  B_AER_CBS,
                  A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
                  B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW,B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, 
-                 D_SA_W, D_RO_R, D_AREA, 
+                 D_SA_W, D_RO_R, B_AREA, 
                  M_DRAIN, LSW, lat = NULL, lon = NULL,
                  measures, sector,output = 'scores'){
   
@@ -164,7 +164,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                              S_BBWP_PSW = dt.fields$S_BBWP_PSW,
                              S_BBWP_NUE = dt.fields$S_BBWP_NUE,
                              S_BBWP_WB = dt.fields$S_BBWP_WB,
-                             D_AREA = D_AREA)
+                             B_AREA = B_AREA)
                               
   # return output when preferred measures are requested
   if(output == 'measures'){
