@@ -6,7 +6,7 @@ require(testthat)
   # B_LU_BRP = c(265,265,265,265)
   # B_LU_BBWP = c(1,1,1,1)
   # B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland")
-  # D_AREA = c(45,18,0.8,6)
+  # B_AREA = c(45,18,0.8,6)
   # B_CT_SOIL = 20
   # B_CT_WATER = 15
   # B_CT_CLIMATE = 8

@@ -7,7 +7,7 @@ test_that("check bbwp_farm_score", {
       S_BBWP_PSW = seq(0, 10, 2.5),
       S_BBWP_NUE = seq(0, 10, 2.5),
       S_BBWP_WB = seq(0, 10, 2.5),
-      D_AREA = c(10,10,10,10,10)
+      B_AREA = c(10,10,10,10,10)
     ),
     expected = data.table(
       S_BBWP_TOT = 5,
@@ -29,7 +29,7 @@ test_that("check bbwp_farm_score", {
       S_BBWP_PSW = seq(0, 25, length.out = 5),
       S_BBWP_NUE = seq(0, 2.5, length.out = 5),
       S_BBWP_WB = seq(100, 25, length.out = 5),
-      D_AREA = c(100,8,2.5,0.6,80)
+      B_AREA = c(100,8,2.5,0.6,80)
     ),
     expected = data.table(
       S_BBWP_TOT = 44,
