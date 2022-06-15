@@ -29,7 +29,7 @@ er_farm_score <- function(S_ER_TOT,S_ER_SOIL,S_ER_WATER,S_ER_CLIMATE,S_ER_BIODIV
   checkmate::assert_numeric(S_ER_CLIMATE, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(S_ER_BIODIVERSITY, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(S_ER_LANDSCAPE, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(B_AREA, lower = 0, upper = 50000, len = arg.length)
+  checkmate::assert_numeric(B_AREA, lower = 0, upper = 500000000, len = arg.length)
   checkmate::assert_numeric(S_ER_REWARD, lower = 0, upper = 10000, len = arg.length)
   
   # collect data in one data.table
