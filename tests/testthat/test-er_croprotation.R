@@ -38,7 +38,7 @@ test_that("check er_croprotation", {
 test_that("check er_croprotation", {
   expect_equal(
     object = colnames(test),
-    expected = c('farmid','biodiversity','climate','landscape','soil','water','reward'),
+    expected = c('farmid','biodiversity','climate','landscape','soil','water','S_ER_REWARD'),
     tolerance = 0.01)
 })
 
@@ -81,7 +81,7 @@ test_that("check er_croprotation", {
 test_that("check er_croprotation", {
   expect_equal(
     object = colnames(test),
-    expected = c('farmid','biodiversity','climate','landscape','soil','water','reward'),
+    expected = c('farmid','biodiversity','climate','landscape','soil','water','S_ER_REWARD'),
     tolerance = 0.01)
 })
 

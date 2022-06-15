@@ -59,3 +59,4 @@ test_that("check er_farm_score", {
     ),
     tolerance = 0.01)
 })
+

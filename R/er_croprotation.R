@@ -196,7 +196,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,B_AREA
   out <- dcast(dt.score,farmid~indicator,value.var ='erscore')
   
   # add financial reward for crop rotation
-  out$reward <- dt.fin
+  out$S_ER_REWARD <- dt.fin
   
   # return the Ecoregelingen Score based on Crop Rotation Only
   return(out)

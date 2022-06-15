@@ -36,8 +36,8 @@ bbwp(
   B_AREA,
   M_DRAIN,
   LSW,
-  lat = NULL,
-  lon = NULL,
+  a_lat = NULL,
+  a_lon = NULL,
   measures,
   sector,
   output = "scores"
@@ -106,9 +106,9 @@ bbwp(
 
 \item{LSW}{(data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)}
 
-\item{lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
+\item{a_lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
 
-\item{lon}{(numeric) Longitude of the field (required if no LSW is submitted)}
+\item{a_lon}{(numeric) Longitude of the field (required if no LSW is submitted)}
 
 \item{measures}{(data.table) the measures planned / done per fields}
 

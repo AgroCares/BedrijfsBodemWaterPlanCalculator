@@ -63,7 +63,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
                            S_ER_CLIMATE = dt.fields$S_ER_CLIMATE,
                            S_ER_BIODIVERSITY = dt.fields$S_ER_BIODIVERSITY,
                            S_ER_LANDSCAPE = dt.fields$S_ER_LANDSCAPE,
-                           S_ER_REWARD = dt.fields$reward,
+                           S_ER_REWARD = dt.fields$S_ER_REWARD,
                            B_AREA = B_AREA)
  
  

@@ -41,7 +41,7 @@ test_that("check er_field_scores", {
       S_ER_BIODIVERSITY = rep(7,4),
       S_ER_LANDSCAPE = rep(1,4),
       S_ER_TOT = rep(9,4),
-      reward = rep(652.04,4)
+      S_ER_REWARD = rep(652.04,4)
     ),
     tolerance = 0.01)
 })
@@ -81,7 +81,7 @@ test_that("check er_field_scores", {
       S_ER_BIODIVERSITY = c(21,11,23,11),
       S_ER_LANDSCAPE = c(11,1,76,1),
       S_ER_TOT = c(29,13,55,13),
-      reward = c(1346.6,946.58,1146.58,946.58)
+      S_ER_REWARD = c(1346.6,946.58,1146.58,946.58)
     ),
     tolerance = 1,
     ignore_attr = TRUE)
