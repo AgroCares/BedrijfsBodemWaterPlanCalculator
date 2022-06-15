@@ -1,5 +1,9 @@
 # Changelog BBWPC
 
+## 0.5.3
+### Changed
+- Update check on B_AREA, set to m2
+
 ## 0.5.2
 ### Changed
 - Change variable names: `d_area` to `b_area`, `reward` to `s_er_reward`, `er_medal` to `s_er_medal`, `lat` and `lon` to `a_lat` and `a_lon`

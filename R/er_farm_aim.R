@@ -19,7 +19,7 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, farmscore = 100){
   arg.length <- max(length(B_SOILTYPE_AGR),length(B_AREA))
   
   # check inputs
-  checkmate::assert_numeric(B_AREA, lower = 0, upper = 50000)
+  checkmate::assert_numeric(B_AREA, lower = 0, upper = 500000000)
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
                                                        'dalgrond','moerige_klei','veen','loess'))
   checkmate::assert_numeric(farmscore,lower = 0,upper = 1000, len = 1)
