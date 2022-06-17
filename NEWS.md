@@ -1,5 +1,9 @@
 # Changelog BBWPC
 
+## 0.5.4
+### Fixed
+- Fixed error with check on B_GWL_CLASS, removed from bbwp_meas_rank
+
 ## 0.5.3
 ### Changed
 - Update check on B_AREA, set to m2
