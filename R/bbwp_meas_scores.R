@@ -50,7 +50,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
                                                        'dalgrond','moerige_klei','veen','loess'))
-  checkmate::assert_subset(B_GWL_CLASS, choices = c('-', 'GtI','GtII','GtII','GtIII','GtIII','GtIV','GtV','GtV','GtVI','GtVII','GtVIII'))
+  checkmate::assert_subset(B_GWL_CLASS, choices = c('-', 'GtI','GtII','GtII','GtIII','GtIII','GtIV', 'GtV','GtVI','GtVII','GtVIII'))
   checkmate::assert_logical(M_DRAIN,len = arg.length)
   checkmate::assert_numeric(A_P_SG, lower = 0, upper = 120, len = arg.length)
   checkmate::assert_numeric(B_SLOPE_DEGREE, lower=0, upper = 30,len = arg.length)

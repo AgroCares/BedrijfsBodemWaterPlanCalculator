@@ -308,7 +308,7 @@ bbwp_check_gt <- function(B_GWL_CLASS,B_AER_CBS){
   
   # checkmate test for the allowed values for B_GWL_CLASS
   checkmate::assert_subset(dt$B_GWL_CLASS, 
-                           choices = c('-', 'GtI','GtII','GtII','GtIII','GtIII','GtIV','GtV','GtV','GtVI','GtVII','GtVIII'))
+                           choices = c('-', 'GtI','GtII','GtII','GtIII','GtIII','GtIV', 'GtV','GtVI','GtVII','GtVIII'))
   # get output
   out <- dt[,B_GWL_CLASS]
   
