@@ -36,5 +36,4 @@ Suggests:
     patchwork,
     covr
 VignetteBuilder: knitr
-Remotes: 
 Config/testthat/edition: 3
