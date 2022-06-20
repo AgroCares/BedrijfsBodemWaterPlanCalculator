@@ -1,5 +1,9 @@
 # Changelog BBWPC
 
+## 0.5.6
+### Fixed
+- In the table `bbwp_measures` NA values are set to 0
+
 ## 0.5.5
 ### Fixed
 - Fixed error in description
