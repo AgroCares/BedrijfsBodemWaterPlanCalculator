@@ -13,6 +13,10 @@ require(data.table); require(readxl);library(usethis)
   Encoding(bbwp_measures$description) <- 'latin1'
   bbwp_measures$description <- iconv(bbwp_measures$description, 'latin1', 'UTF-8')
   
+  # set effect values to 0 when NA
+  scols <- colnames(bbwp_measures)[grepl('^nsw|^ngw|^psw|^p_|^n_|^effect|^er',colnames(bbwp_measures))]
+  bbwp_measures[,c(scols) := lapply(.SD,function(x) fifelse(is.na(x),0,x)),.SDcols = scols]
+  
   # save measures as bbwp table
   use_data(bbwp_measures, overwrite = TRUE)
   
