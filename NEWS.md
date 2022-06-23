@@ -1,5 +1,12 @@
 # Changelog BBWPC
 
+## 0.5.7
+### Fixed
+- remove incorrect B_GWL_CLASS unit check in `bbwp_field_properties`, issue #32
+
+### Added
+- lower the task (opgave) for wet and peat soils for nitrate leaching, issue #25
+
 ## 0.5.6
 ### Fixed
 - In the table `bbwp_measures` NA values are set to 0
