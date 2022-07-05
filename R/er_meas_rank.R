@@ -125,7 +125,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
       fs1 <- paste0('f',sector)
       fs2 <- fs0[!fs0 %in% fs1]
       dt[,c(fs1) := 1]
-      dt[,c(fs2) := 0]
+      if(length(fs2) >= 1) { dt[,c(fs2) := 0] }
     
       # estimate whether sector allows applicability
       dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs]
