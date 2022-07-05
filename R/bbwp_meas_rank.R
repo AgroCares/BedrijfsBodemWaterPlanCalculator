@@ -36,7 +36,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
   clay = sand= peat = loess = D_MEAS_TOT = effect_costs = id = D_MEAS_PSW = NULL
   crop_cat1 = crop_cat2 = crop_cat3 = crop_cat4 = crop_cat5 = crop_cat6 = crop_cat7 = crop_cat8 = crop_cat9 = NULL
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = fbulbs = bulbs = NULL
-  bbwp_id = oid = NULL
+  bbwp_id = oid = level = NULL
   
   # check length of the inputs
   arg.length <- max(length(D_OPI_NGW), length(D_OPI_NSW), length(D_OPI_PSW), length(D_OPI_NUE),
@@ -93,6 +93,9 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
   # merge inputs with data.table measures
   dt <- as.data.table(merge.data.frame(dt, dt.measures, all = TRUE))
   
+    # only select measures at field level
+    dt <- dt[level == 'field']
+  
     # Add bonus points for psw
     dt[A_P_SG >= 50 & A_P_SG < 75, effect_psw := effect_psw + psw_psg_medium]
     dt[A_P_SG >= 75, effect_psw := effect_psw + psw_psg_high]
@@ -138,7 +141,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     fs1 <- paste0('f',sector)
     fs2 <- fs0[!fs0 %in% fs1]
     dt[,c(fs1) := 1]
-    dt[,c(fs2) := 0]
+    if(length(fs2) >= 1){ dt[,c(fs2) := 0] }
     
     # estimate whether sector allows applicability
     dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs]

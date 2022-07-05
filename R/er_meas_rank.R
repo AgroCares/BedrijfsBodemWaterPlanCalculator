@@ -37,7 +37,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
   crop_cat1 = crop_cat2 = crop_cat3 = crop_cat4 = crop_cat5 = crop_cat6 = crop_cat7 = crop_cat8 = crop_cat9 = NULL
   soiltype = peat = clay = sand = silt = loess = NULL
   er_water = cf_water = er_soil = cf_soil = er_climate = cf_climate = er_biodiversity = cf_biodiversity = er_landscape = cf_landscape = NULL
-  er_total = NULL
+  er_total = level = NULL
   
   # derive a table with all possible measurements
   dt.meas.av <- bbwp_check_meas(measures,eco = TRUE, score = FALSE)
@@ -97,6 +97,9 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
   # merge all measures to the given fields
   dt <- as.data.table(merge.data.frame(dt, dt.meas.av, all = TRUE))
   
+    # only select measures at field level
+    dt <- dt[level == 'field']
+    
   # rank is zero when measures are not applicable given the crop type
   
     # columns with the Ecoregelingen ranks
@@ -122,7 +125,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
       fs1 <- paste0('f',sector)
       fs2 <- fs0[!fs0 %in% fs1]
       dt[,c(fs1) := 1]
-      dt[,c(fs2) := 0]
+      if(length(fs2) >= 1) { dt[,c(fs2) := 0] }
     
       # estimate whether sector allows applicability
       dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs]
