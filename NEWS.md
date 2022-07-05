@@ -1,5 +1,9 @@
 # Changelog BBWPC
 
+## 0.5.8
+### Fixed
+- Farm level measures are no longer advised at field level in `bbwp_meas_rank` and `er_meas_rank`
+
 ## 0.5.7
 ### Fixed
 - remove incorrect B_GWL_CLASS unit check in `bbwp_field_properties`, issue #32
