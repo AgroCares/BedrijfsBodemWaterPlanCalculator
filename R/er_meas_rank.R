@@ -97,6 +97,9 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
   # merge all measures to the given fields
   dt <- as.data.table(merge.data.frame(dt, dt.meas.av, all = TRUE))
   
+    # only select measures at field level
+    dt <- dt[level = 'field']
+    
   # rank is zero when measures are not applicable given the crop type
   
     # columns with the Ecoregelingen ranks
