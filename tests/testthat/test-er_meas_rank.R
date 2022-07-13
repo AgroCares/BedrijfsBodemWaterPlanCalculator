@@ -10,12 +10,13 @@ require(testthat)
   # B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland")
   # B_SLOPE_DEGREE = rep(2.5,4)
   # M_DRAIN = rep(TRUE,4)
-  # A_P_SG = rep(25,4) 
+  # A_P_SG = rep(25,4)
   # B_CT_SOIL = 20
   # B_CT_WATER = 15
   # B_CT_CLIMATE = 8
   # B_CT_BIO = 24
   # B_CT_LANDSCAPE = 20
+  # D_SA_W = 100
   # measures = NULL
   # sector = 'dairy'
 
