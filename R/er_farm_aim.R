@@ -3,14 +3,17 @@
 #' Estimate the  required score on farm level for soil quality, water quality, climate, biodiversity and landscape given soil type
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil
-#' @param B_AREA (numeric) the area of the field (m2) 
-#' @param farmscore (numeric) the desired farm score for Ecoregeling (number / ha)
+#' @param B_AREA (numeric) The area of the field (m2) 
+#' @param medalscore (character) The desired medal score expressed as bronze, silver or gold 
+#' @param farmscore (numeric) The desired total ER score on farm level
+
+#' 
 #'    
 #' @import data.table
 #'
 #' @export
 # calculate the desired Ecoregeling Score for a farm
-er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, farmscore = 100){
+er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore = NA_real_){
   
   # add visual bindings
   . = type = soiltype = value.mis = value = farmid = NULL
@@ -22,7 +25,7 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, farmscore = 100){
   checkmate::assert_numeric(B_AREA, lower = 0, upper = 500000000)
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
                                                        'dalgrond','moerige_klei','veen','loess'))
-  checkmate::assert_numeric(farmscore,lower = 0,upper = 1000, len = 1)
+  checkmate::assert_subset(medalscore, choices = c('bronze','silver','gold'))
   
   # get internal table for minimum scores on farm level
   er_aim <- as.data.table(BBWPC::er_scoring)[type == 'aim'][,type := NULL]
@@ -31,7 +34,27 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, farmscore = 100){
   dt <- data.table(id = 1:arg.length,
                    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                    B_AREA = B_AREA,
+                   medalscore = medalscore,
                    farmscore = farmscore)
+  
+  # add target farmscore corresponding with the medal score if there is no farmscore given
+  if(is.na(farmscore) == TRUE){
+  
+      # calculate medalscore based on the total farm area
+      dt[,farmscore := fifelse(medalscore == "bronze", sum(B_AREA)*14, NA_real_)]
+      dt[,farmscore := fifelse(medalscore == "silver", sum(B_AREA)*22, farmscore)]
+      dt[,farmscore := fifelse(medalscore == "gold", sum(B_AREA)*35, farmscore)]
+      
+      # normalize farmscore
+      vec <- scales::rescale(c(1,(sum(B_AREA)*35),dt$farmscore[1]), to = c(0,100))
+      dt[, farmscore := vec[3]]
+      
+      } else{
+        
+    # normalize farmscore if there is a target farmscore given 
+    vec <- scales::rescale(c(1,(sum(B_AREA)*35),dt$farmscore[1]), to = c(0,100))
+    dt[, farmscore := vec[3]]
+  }
   
   # add soil type
   dt[grepl('klei', B_SOILTYPE_AGR) , soiltype := 'klei']
@@ -42,7 +65,7 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, farmscore = 100){
   # merge dt with er_aim
   dt <- merge(dt, er_aim,by='soiltype')
   
-  # reshape table to estimate minimum socre per indicator on farm level
+  # reshape table to estimate minimum score per indicator on farm level
   dt <- melt(dt,id.vars = c('id','B_AREA','farmscore'),
              measure.vars = c('cf_soil', 'cf_water','cf_climate', 'cf_biodiversity','cf_landscape'),
              variable.name = 'indicator')
@@ -67,3 +90,6 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, farmscore = 100){
   # return
   return(out)
 }
+
+
+
