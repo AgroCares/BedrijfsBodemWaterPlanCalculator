@@ -1,13 +1,17 @@
 # load packages
-require(data.table); require(readxl);library(usethis)
+require(data.table);require(readxl);library(usethis);library(readr);
 
 
 # -- prepare measures table -----
+# set andere values zoals bijvoorbeeld sector etc to 0 when NA
+# hier moet iets komen van d melt van de crop categories
+# in ppr tables kolommen wijzigen van c1=c29 naar c1=c21 (eerst hernoemen)
+# result: nieuwe maatregelentabel met minder crop categories
 
-  # load in excel with measures
-  bbwp_measures <- as.data.table(read_xlsx('dev/220517 measures total versie 4.xlsx'))
-  
-  # setcolorder
+  # load measures table (under construction)
+  bbwp_measures <- as.data.table(read_excel("dev/ER_puntenregeling_aan_te_vullen_220706.xlsx"))
+ 
+   # setcolorder
   setcolorder(bbwp_measures,'bbwp_id')
   
   Encoding(bbwp_measures$description) <- 'latin1'
@@ -17,6 +21,43 @@ require(data.table); require(readxl);library(usethis)
   scols <- colnames(bbwp_measures)[grepl('^nsw|^ngw|^psw|^p_|^n_|^effect|^er',colnames(bbwp_measures))]
   bbwp_measures[,c(scols) := lapply(.SD,function(x) fifelse(is.na(x),0,x)),.SDcols = scols]
   
+  # create new crop categories in new columns bbwp, eco1 and eco2
+      # eco1 includes: natuur; (kruidenrijke) rand; vanggewas; wortelspruit gewas; rooivruchten (voorjaar); maiskolvenschroot;
+      # eco2 includes: rooivruchten (najaar); mais; groenbemesters; sloten langs grasland; bufferstrook langs bouwland;
+      # eco3 includes: sloten langs grasland of bouwland; groenebraak;
+      # eco4 includes: eiwitgewas; heg,haag,struweel; akkerranden,keverbanken;
+      # eco5 includes: rustgewassen (niet grassen); voedergewas; overig hout;
+      # eco6 includes: meerjarig gewas; riet,poelen;
+      # eco7 includes: diepwortelend; natte teelten; granen;
+      # eco8 includes: voedergewas; groene braak;
+      bbwp_measures[,nc1:= fifelse(crop_cat1==1,1,0)]
+      bbwp_measures[,nc2:= fifelse(crop_cat2==1,1,0)]
+      bbwp_measures[,nc3:= fifelse(crop_cat3==1|c15==1|c27==1|c19==1,1,0)]
+      bbwp_measures[,nc4:= fifelse(crop_cat4==1,1,0)]
+      bbwp_measures[,nc5:= fifelse(crop_cat5==1,1,0)]
+      bbwp_measures[,nc6:= fifelse(crop_cat6==1,1,0)]
+      bbwp_measures[,nc7:= fifelse(crop_cat7==1,1,0)]
+      bbwp_measures[,nc8:= fifelse(crop_cat8 == 1|c22==1|c25==1,1,0)]
+      bbwp_measures[,nc9:= fifelse(crop_cat9==1|c21==1,1,0)] #c20
+      bbwp_measures[,tmp1:= nc1+nc2+nc3+nc4+nc5+nc6+nc7+nc8+nc9]
+      bbwp_measures[,nc10:= fifelse(tmp1== 0 & (c10==1|c28==1|c29==1|c26==1|c23==1|c20==1),1,0)]
+      bbwp_measures[,nc11:= fifelse(tmp1== 0 & (c11==1|c16==1|c13==1),1,0)]
+      bbwp_measures[,nc12:= fifelse(tmp1== 0 & c11==0 & (c12==1|c17==1),1,0)]
+      bbwp_measures[,eco1:= fifelse(crop_cat8==1|c10==1|c11==1|c15==1|c21==1|c17==1,1,0)]
+      bbwp_measures[,eco2:= fifelse(crop_cat4==1|crop_cat9==1|c16==1|c19==1,1,0)]
+      bbwp_measures[,eco3:= fifelse(c20==1|c24==1,1,0)] 
+      bbwp_measures[,eco4:= fifelse(c12==1|c22==11|c29==1,1,0)]
+      bbwp_measures[,eco5:= fifelse(c18==1|c23==1,1,0)]
+      bbwp_measures[,eco6:= fifelse(c14==1|c25==1|c28==1,1,0)]
+      bbwp_measures[,eco7:= fifelse(c26==1|c27==1|c29==1|c13==1,1,0)]
+      bbwp_measures[,eco8:= fifelse(c18==1|c24==1,1,0)]
+     
+      #keep relevant columns
+      bbwp_measures[,c(39:67,94):= NULL]
+ 
+      # rename cols
+      setnames(bbwp_measures,c("nc1","nc2","nc3","nc4","nc5","nc6","nc7","nc8","nc9","nc10","nc11","nc12"),c("crop_cat1","crop_cat2","crop_cat3","crop_cat4","crop_cat5","crop_cat6","crop_cat7","crop_cat8","crop_cat9","crop_cat10","crop_cat11","crop_cat12"))
+      
   # save measures as bbwp table
   use_data(bbwp_measures, overwrite = TRUE)
   
@@ -38,8 +79,55 @@ require(data.table); require(readxl);library(usethis)
   
 # -- prepare crop specific tables for Ecoregelingen ---
   
-  # load in csv
-  er_crops <- as.data.table(fread('dev/220517 er_croplists.csv',dec=','))
+  # load in csv with crop list
+  er_crops <- as.data.table(read_excel("dev/b_lu_brp_GR220707_decast_for_client.xlsx"))
+  
+  # transform old cropcategories in new categories
+  # eco1 includes: natuur; (kruidenrijke) rand; vanggewas; wortelspruit gewas; rooivruchten (voorjaar); maiskolvenschroot;
+  # eco2 includes: rooivruchten (najaar); mais; groenbemesters; sloten langs grasland; bufferstrook langs bouwland;
+  # eco3 includes: sloten langs grasland of bouwland; groenebraak;
+  # eco4 includes: eiwitgewas; heg,haag,struweel; akkerranden,keverbanken;
+  # eco5 includes: rustgewassen (niet grassen); voedergewas; overig hout;
+  # eco6 includes: meerjarig gewas; riet,poelen;
+  # eco7 includes: diepwortelend; natte teelten; granen;
+  # eco8 includes: voedergewas; groene braak;
+  er_crops[,nc1:= fifelse(crop_cat1==1,1,0)]
+  er_crops[,nc2:= fifelse(crop_cat2==1,1,0)]
+  er_crops[,nc3:= fifelse(crop_cat3==1|c15==1|c27==1|c19==1,1,0)]
+  er_crops[,nc4:= fifelse(crop_cat4==1,1,0)]
+  er_crops[,nc5:= fifelse(crop_cat5==1,1,0)]
+  er_crops[,nc6:= fifelse(crop_cat6==1,1,0)]
+  er_crops[,nc7:= fifelse(crop_cat7==1,1,0)]
+  er_crops[,nc8:= fifelse(crop_cat8 == 1|c22==1|c25==1,1,0)]
+  er_crops[,nc9:= fifelse(crop_cat9==1|c21==1,1,0)] #c20
+  er_crops[,tmp1:= nc1+nc2+nc3+nc4+nc5+nc6+nc7+nc8+nc9]
+  er_crops[,nc10:= fifelse(tmp1== 0 & (c10==1|c28==1|c29==1|c26==1|c23==1|c20==1),1,0)]
+  er_crops[,nc11:= fifelse(tmp1== 0 & (c11==1|c16==1|c13==1),1,0)]
+  er_crops[,nc12:= fifelse(tmp1== 0 & c11==0 & (c12==1|c17==1),1,0)]
+  er_crops[,eco1:= fifelse(crop_cat8==1|c10==1|c11==1|c15==1|c21==1|c17==1,1,0)]
+  er_crops[,eco2:= fifelse(crop_cat4==1|crop_cat9==1|c16==1|c19==1,1,0)]
+  er_crops[,eco3:= fifelse(c20==1|c24==1,1,0)] 
+  er_crops[,eco4:= fifelse(c12==1|c22==11|c29==1,1,0)]
+  er_crops[,eco5:= fifelse(c18==1|c23==1,1,0)]
+  er_crops[,eco6:= fifelse(c14==1|c25==1|c28==1,1,0)]
+  er_crops[,eco7:= fifelse(c26==1|c27==1|c29==1|c13==1,1,0)]
+  er_crops[,eco8:= fifelse(c18==1|c24==1,1,0)]
+  
+  #keep relevant columns and remove rows without B_LU_BRP code
+  er_crops[,c(3:31,35,45):= NULL]
+  er_crops[complete.cases(B_LU_BRP),]
+  
+  # rename cols
+  setnames(er_crops,c("nc1","nc2","nc3","nc4","nc5","nc6","nc7","nc8","nc9","nc10","nc11","nc12"),c("crop_cat1","crop_cat2","crop_cat3","crop_cat4","crop_cat5","crop_cat6","crop_cat7","crop_cat8","crop_cat9","crop_cat10","crop_cat11","crop_cat12"))
+  
+  # load in csv with measures and brp codes of crops to which the measure applies
+  m_brp <- as.data.table(fread('dev/er_croplist_supplemented_versie aangevuld AB.csv',dec=','))
+  
+  # merge measures table and crop table with new categories
+  er_crops <- merge(m_brp,er_crops, by.x = "b_lu_brp", by.y = "B_LU_BRP")
+  
+  # remove duplicate columns
+  er_crops[, B_LU_NAME := NULL]
   
   # save measures as bbwp table
   use_data(er_crops, overwrite = TRUE)
