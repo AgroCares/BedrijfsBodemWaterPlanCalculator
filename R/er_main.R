@@ -17,6 +17,7 @@
 #' @param measures (data.table) the measures planned / done per fields
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: options: 'diary', 'arable', 'tree_nursery', 'bulbs')
 #' @param output (string) a vector specifying the output type of the function. Options: scores, measures 
+#' @param medalscore (character)
 #'  
 #' @import data.table
 #' @import OBIC
@@ -24,7 +25,7 @@
 #' @export
 ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
                         A_P_SG,D_SA_W, B_AREA,M_DRAIN, farmscore, 
-                        measures, sector,output = 'scores'){
+                        measures, sector,output = 'scores',medalscore = 'gold'){
   
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
@@ -37,7 +38,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
   # Calculate the minimum required ER scores on Farm level
   dt.farm.aim <- er_farm_aim(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
                              B_AREA = B_AREA, 
-                             farmscore = 100)
+                             medalscore = medalscore)
    
   # when measures are requested as output, then field scores are derived for situation without measures
   if(output == 'measures'){measures <- NULL}
@@ -64,8 +65,11 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE
                            S_ER_BIODIVERSITY = dt.fields$S_ER_BIODIVERSITY,
                            S_ER_LANDSCAPE = dt.fields$S_ER_LANDSCAPE,
                            S_ER_REWARD = dt.fields$S_ER_REWARD,
-                           B_AREA = B_AREA)
- 
+                           B_AREA = B_AREA,
+                           B_SOILTYPE_AGR,
+                           sector,
+                           B_AER_CBS,
+                           measures)
  
   # return output when preferred measures are requested
   if(output == 'measures'){

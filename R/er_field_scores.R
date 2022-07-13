@@ -19,7 +19,7 @@
 #' @import stats
 #'
 #' @export
-# calculate the opportunitie indices for a set of fields
+# calculate the opportunity indices for a set of fields
 er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
                             B_AREA,
                             B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE, 
@@ -44,11 +44,11 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
                                                        'dalgrond','moerige_klei','veen','loess'))
   checkmate::assert_integerish(B_LU_BRP, lower = 0, len = arg.length)
   checkmate::assert_integerish(B_LU_BBWP, lower = 0, len = arg.length)
-  checkmate::assert_numeric(B_CT_SOIL, lower = 0, upper = 1000, min.len = 1)
-  checkmate::assert_numeric(B_CT_WATER, lower = 0, upper = 1000, min.len = 1)
-  checkmate::assert_numeric(B_CT_CLIMATE, lower = 0, upper = 1000,min.len = 1)
-  checkmate::assert_numeric(B_CT_BIO, lower = 0, upper = 1000, min.len = 1)
-  checkmate::assert_numeric(B_CT_LANDSCAPE, lower = 0, upper = 1000,min.len = 1)
+  checkmate::assert_numeric(B_CT_SOIL, lower = 0, upper = 5000, min.len = 1)
+  checkmate::assert_numeric(B_CT_WATER, lower = 0, upper = 5000, min.len = 1)
+  checkmate::assert_numeric(B_CT_CLIMATE, lower = 0, upper = 5000,min.len = 1)
+  checkmate::assert_numeric(B_CT_BIO, lower = 0, upper = 5000, min.len = 1)
+  checkmate::assert_numeric(B_CT_LANDSCAPE, lower = 0, upper = 5000,min.len = 1)
   
   # check and update the measure table
   dt.er.meas <- bbwp_check_meas(measures, eco = TRUE, score = TRUE)
@@ -98,7 +98,8 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
                              B_CT_WATER = dt$B_CT_WATER,
                              B_CT_CLIMATE = dt$B_CT_CLIMATE,
                              B_CT_BIO = dt$B_CT_BIO,
-                             B_CT_LANDSCAPE = dt$B_CT_LANDSCAPE)
+                             B_CT_LANDSCAPE = dt$B_CT_LANDSCAPE) #,
+                             #measures = measures)
   
   # calculate the change in opportunity indexes given the measures taken
   

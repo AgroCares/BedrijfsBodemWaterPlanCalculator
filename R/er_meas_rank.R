@@ -92,7 +92,9 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
                              B_CT_WATER = dt$B_CT_WATER,
                              B_CT_CLIMATE = dt$B_CT_CLIMATE,
                              B_CT_BIO = dt$B_CT_BIO,
-                             B_CT_LANDSCAPE = dt$B_CT_LANDSCAPE)
+                             B_CT_LANDSCAPE = dt$B_CT_LANDSCAPE) #,
+                             #measures = measures,
+                             #sector = sector)
   
   # merge all measures to the given fields
   dt <- as.data.table(merge.data.frame(dt, dt.meas.av, all = TRUE))
@@ -160,6 +162,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
     dt[, er_climate := er_climate * (1 - dt.farm$climate)]
     dt[, er_biodiversity := er_biodiversity * (1 - dt.farm$biodiversity)]
     dt[, er_landscape := er_landscape * (1 - dt.farm$landscape)]
+    dt[, er_reward := dt.farm$reward]
     
     # Calculate total measurement score given the distance to target
     dt[, er_total := (er_water + er_soil + er_climate + er_biodiversity + er_landscape) / 5]
@@ -176,22 +179,27 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
     list.field <- list()
     
     # Get the overall top measures
-    top_er_tot <- dt[id == i & er_total > 0, ][order(-er_total)][1:5,bbwp_id]
+    top_er_tot <- dt[id == i & er_total > 0, ][order(-er_total)][1:5,eco_id]
     
+   # top_er_tot <- dt[id == i & er_total > 0, ][order(((-er_total)*0.8+(er_reward)*0.2)/1)][1:5,eco_id]
+
     # Get the top measures for soil quality
-    top_er_soil <- dt[id == i & er_soil > 0, ][order(-er_soil)][1:5,bbwp_id]
+    top_er_soil <- dt[id == i & er_soil > 0, ][order(-er_soil)][1:5,eco_id]
     
     # Get the top measures for water quality
-    top_er_water <- dt[id == i & er_water > 0, ][order(-er_water)][1:5,bbwp_id]
+    top_er_water <- dt[id == i & er_water > 0, ][order(-er_water)][1:5,eco_id]
     
     # Get the top measures for climate
-    top_er_climate <- dt[id == i & er_climate > 0, ][order(-er_climate)][1:5,bbwp_id]
+    top_er_climate <- dt[id == i & er_climate > 0, ][order(-er_climate)][1:5,eco_id]
     
     # Get the top measures for biodiversity
-    top_er_biodiversity <- dt[id == i & er_biodiversity > 0, ][order(-er_biodiversity)][1:5,bbwp_id]
+    top_er_biodiversity <- dt[id == i & er_biodiversity > 0, ][order(-er_biodiversity)][1:5,eco_id]
     
     # Get the top measures for landscape
-    top_er_landscape <- dt[id == i & er_landscape > 0, ][order(-er_landscape)][1:5,bbwp_id]
+    top_er_landscape <- dt[id == i & er_landscape > 0, ][order(-er_landscape)][1:5,eco_id]
+    
+    # Get the top measures for rewards 
+    top_er_reward <- 
     
     # add them to list
     list.meas[[i]] <- data.table(id = i,
@@ -200,7 +208,8 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
                                  top_er_water = top_er_water,
                                  top_er_climate = top_er_climate,
                                  top_er_biodiversity = top_er_biodiversity,
-                                 top_er_landscape = top_er_landscape)
+                                 top_er_landscape = top_er_landscape,
+                                 top_er_reward = top_er_reward)
   }
   
   # retrieve output object

@@ -79,12 +79,13 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,B_AREA
                    B_CT_WATER = B_CT_WATER,
                    B_CT_CLIMATE = B_CT_CLIMATE,
                    B_CT_BIO = B_CT_BIO,
-                   B_CT_LANDSCAPE = B_CT_LANDSCAPE
+                   B_CT_LANDSCAPE = B_CT_LANDSCAPE,
+                   sector = sector
   )
   
   
   # merge with regional correction factor for the financial reward
-  dt.fin <- merge(dt,dt.er.reward[,.(statcode,er_cf)], by.x = 'B_AER_CBS',by.y = 'statcode')
+  dt.fin <- merge(dt,dt.er.reward[,.(statcode,er_cf)], by.x = 'B_AER_CBS',by.y = 'statcode',allow.cartesian = TRUE)
   
     # add filter for rustgewas (EB1) and estimate percentage rustgewassen
     dt.fin[,cf := fifelse(B_LU_BRP %in% dt.er.crops[eco_id=='EB1',b_lu_brp],1,0)]
@@ -141,7 +142,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,B_AREA
                       value.name = 'm0')
   
     # merge dt.farm with the farm crop rotation based measures
-    dt.score <- merge(dt.score,dt.er.farm,by='indicator')
+    dt.score <- merge(dt.score,dt.er.farm,by='indicator',allow.cartesian = TRUE)
   
     # apply filters and selections
   
@@ -184,7 +185,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,B_AREA
     dt.score[grepl('loess', B_SOILTYPE_AGR), soiltype := 'loess']
     
     # merge with soil specific urgency table
-    dt.score <- merge(dt.score,dt.er.urgency, by= c('indicator','soiltype'))
+    dt.score <- merge(dt.score,dt.er.urgency, by= c('indicator','soiltype'),allow.cartesian = TRUE)
     
     # calculate the weighed average ER score (points/ ha) for the whole farm due to crop rotation 
     dt.score <- dt.score[,list(erscore = weighted.mean(erscore * urgency, B_AREA)),by = indicator]

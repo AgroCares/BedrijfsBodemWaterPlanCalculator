@@ -100,7 +100,7 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
       cols.miss <- unique(c('bbwp_id',colnames(dt.measures)[!colnames(dt.measures) %in% colnames(dt)]))
       
       # merge measurement properties with the input list of available measures
-      dt <- merge(dt, dt.measures[,mget(cols.miss)],by='bbwp_id')
+      dt <- merge(dt, dt.measures[,mget(cols.miss)],by='bbwp_id',allow.cartesian = TRUE)
       
     }
     
