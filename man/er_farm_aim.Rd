@@ -4,14 +4,14 @@
 \alias{er_farm_aim}
 \title{Calculate the minimum required Ecoregelingen Scores on Farm level}
 \usage{
-er_farm_aim(B_SOILTYPE_AGR, B_AREA, farmscore = 100)
+er_farm_aim(B_SOILTYPE_AGR, B_AREA, medalscore)
 }
 \arguments{
 \item{B_SOILTYPE_AGR}{(character) The type of soil}
 
 \item{B_AREA}{(numeric) the area of the field (m2)}
 
-\item{farmscore}{(numeric) the desired farm score for Ecoregeling (number / ha)}
+\item{medalscore}{(numeric) the desired medal score expressed as bronze, silver or gold}
 }
 \description{
 Estimate the  required score on farm level for soil quality, water quality, climate, biodiversity and landscape given soil type

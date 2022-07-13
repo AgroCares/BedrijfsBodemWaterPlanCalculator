@@ -7,13 +7,13 @@
 \format{
 A data.table with 8 rows and 7 columns:
 \describe{
-  \item{soiltype}{bla bla}
-  \item{type}{bla bla}
-  \item{cf_soil}{bla bla}
-  \item{cf_water}{bla bla}
-  \item{cf_climate}{bla bla}
-  \item{cf_biodiversity}{bla bla}
-  \item{cf_landscape}{ bla bla}
+  \item{soiltype}{The type of soil}
+  \item{type}{The type of driving factor (either political urgency (urgency) or contribution to an environmental theme (aim))}
+  \item{cf_soil}{Correction factor to estimate soil score for Ecoregeling}
+  \item{cf_water}{Correction factor to estimate water score for Ecoregeling}
+  \item{cf_climate}{Correction factor to estimate climate score for Ecoregeling}
+  \item{cf_biodiversity}{Correction factor to estimate biodiversity score for Ecoregeling}
+  \item{cf_landscape}{Correction factor to estimate landscape score for Ecoregeling}
 }
 }
 \usage{

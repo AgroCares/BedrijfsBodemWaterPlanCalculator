@@ -12,7 +12,11 @@ er_farm_score(
   S_ER_BIODIVERSITY,
   S_ER_LANDSCAPE,
   S_ER_REWARD,
-  B_AREA
+  B_AREA,
+  B_SOILTYPE_AGR,
+  sector,
+  B_AER_CBS,
+  measures
 )
 }
 \arguments{
@@ -31,6 +35,14 @@ er_farm_score(
 \item{S_ER_REWARD}{(numeric) The financial reward per field for taking Ecoregeling measures (euro / ha)}
 
 \item{B_AREA}{(numeric) the area of the field (m2)}
+
+\item{B_SOILTYPE_AGR}{(character) The type of soil}
+
+\item{sector}{(string) a vector with the farm type given the agricultural sector (options: 'melkveehouderij','akkerbouw','vollegrondsgroente','boomteelt','bollen','veehouderij','overig')}
+
+\item{B_AER_CBS}{(character) The agricultural economic region in the Netherlands (CBS, 2016)}
+
+\item{measures}{(list) the measures planned /done (measure nr)}
 }
 \description{
 Estimate the potential to contribute to agronomic and environmental challenges in a region for a farm

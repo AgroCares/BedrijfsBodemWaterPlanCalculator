@@ -7,11 +7,11 @@
 \format{
 A data.table with 40 rows and 5 columns:
 \describe{
-  \item{id}{bla bla}
-  \item{indicator}{bla bla}
-  \item{eco_id}{bla bla}
-  \item{description}{bla bla}
-  \item{er_score}{bla bla}
+  \item{id}{A unique ID number}
+  \item{indicator}{The environmental theme to which the measure applies}
+  \item{eco_id}{The unique ID corresponding with a specific Ecoregelingen measure}
+  \item{description}{Short decription of the measure} 
+  \item{er_score}{The score of the measure on the environmental theme}
 }
 }
 \usage{

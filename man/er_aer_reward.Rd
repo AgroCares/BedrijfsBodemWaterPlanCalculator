@@ -7,9 +7,9 @@
 \format{
 A data.table with 14 rows and 3 columns:
 \describe{
-  \item{statcode}{bla bla}
-  \item{statname}{bla bla}
-  \item{er_cf}{bla bla}
+  \item{statcode}{The unique code of the Agricultural Economic Region in the Netherlands (CBS, 2016)}
+  \item{statname}{The name of the Agricultural Economic Region in the Netherlands (CBS, 2016)}
+  \item{er_cf}{The value of the correction factor for the financial reward differentiated per Agricutural Economic Region in the Netherlands (CBS,2016)}
 }
 }
 \usage{
