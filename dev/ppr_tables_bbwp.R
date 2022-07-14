@@ -3,10 +3,6 @@ require(data.table);require(readxl);library(usethis);library(readr);
 
 
 # -- prepare measures table -----
-# set andere values zoals bijvoorbeeld sector etc to 0 when NA
-# hier moet iets komen van d melt van de crop categories
-# in ppr tables kolommen wijzigen van c1=c29 naar c1=c21 (eerst hernoemen)
-# result: nieuwe maatregelentabel met minder crop categories
 
   # load measures table (under construction)
   bbwp_measures <- as.data.table(read_excel("dev/ER_puntenregeling_aan_te_vullen_220706.xlsx"))
@@ -29,31 +25,34 @@ require(data.table);require(readxl);library(usethis);library(readr);
       # eco5 includes: rustgewassen (niet grassen); voedergewas; overig hout;
       # eco6 includes: meerjarig gewas; riet,poelen;
       # eco7 includes: diepwortelend; natte teelten; granen;
-      # eco8 includes: voedergewas; groene braak;
       bbwp_measures[,nc1:= fifelse(crop_cat1==1,1,0)]
       bbwp_measures[,nc2:= fifelse(crop_cat2==1,1,0)]
-      bbwp_measures[,nc3:= fifelse(crop_cat3==1|c15==1|c27==1|c19==1,1,0)]
+      bbwp_measures[,nc3:= fifelse(crop_cat3==1,1,0)]
       bbwp_measures[,nc4:= fifelse(crop_cat4==1,1,0)]
       bbwp_measures[,nc5:= fifelse(crop_cat5==1,1,0)]
       bbwp_measures[,nc6:= fifelse(crop_cat6==1,1,0)]
       bbwp_measures[,nc7:= fifelse(crop_cat7==1,1,0)]
-      bbwp_measures[,nc8:= fifelse(crop_cat8 == 1|c22==1|c25==1,1,0)]
-      bbwp_measures[,nc9:= fifelse(crop_cat9==1|c21==1,1,0)] #c20
+      bbwp_measures[,nc8:= fifelse(crop_cat8==1,1,0)] 
+      bbwp_measures[,nc9:= fifelse(crop_cat9==1,1,0)] 
       bbwp_measures[,tmp1:= nc1+nc2+nc3+nc4+nc5+nc6+nc7+nc8+nc9]
-      bbwp_measures[,nc10:= fifelse(tmp1== 0 & (c10==1|c28==1|c29==1|c26==1|c23==1|c20==1),1,0)]
-      bbwp_measures[,nc11:= fifelse(tmp1== 0 & (c11==1|c16==1|c13==1),1,0)]
-      bbwp_measures[,nc12:= fifelse(tmp1== 0 & c11==0 & (c12==1|c17==1),1,0)]
+      bbwp_measures[,nc3:= fifelse(tmp1==0 & (c15==1|c27==1|c14==1),1,0)]
+      bbwp_measures[,nc4:= fifelse(tmp1==0 & (c17==1),1,0)]
+      bbwp_measures[,nc8:= fifelse(tmp1==0 & (c22==1|c25==1|c24==1|c23==1|c26==1),1,0)]
+      bbwp_measures[,nc9:= fifelse(tmp1==0 & (c21==1),1,0)]
+      bbwp_measures[,tmp2:= nc1+nc2+nc3+nc4+nc5+nc6+nc7+nc8+nc9]
+      bbwp_measures[,nc10:= fifelse(tmp1==0 & tmp2==0 & (c10==1|c28==1|c29==1|c20==1|c19==1),1,0)]
+      bbwp_measures[,nc11:= fifelse(tmp1==0 & tmp2==0 & (c11==1|c16==1|c13==1),1,0)]
+      bbwp_measures[,nc12:= fifelse(tmp1==0 & tmp2==0 & nc11==0 & (c12==1|c18==1),1,0)]
       bbwp_measures[,eco1:= fifelse(crop_cat8==1|c10==1|c11==1|c15==1|c21==1|c17==1,1,0)]
       bbwp_measures[,eco2:= fifelse(crop_cat4==1|crop_cat9==1|c16==1|c19==1,1,0)]
       bbwp_measures[,eco3:= fifelse(c20==1|c24==1,1,0)] 
       bbwp_measures[,eco4:= fifelse(c12==1|c22==11|c29==1,1,0)]
-      bbwp_measures[,eco5:= fifelse(c18==1|c23==1,1,0)]
+      bbwp_measures[,eco5:= fifelse(c23==1|c18==1,1,0)] 
       bbwp_measures[,eco6:= fifelse(c14==1|c25==1|c28==1,1,0)]
       bbwp_measures[,eco7:= fifelse(c26==1|c27==1|c29==1|c13==1,1,0)]
-      bbwp_measures[,eco8:= fifelse(c18==1|c24==1,1,0)]
      
       #keep relevant columns
-      bbwp_measures[,c(39:67,94):= NULL]
+      bbwp_measures[,c(39:67,94:95):= NULL]
  
       # rename cols
       setnames(bbwp_measures,c("nc1","nc2","nc3","nc4","nc5","nc6","nc7","nc8","nc9","nc10","nc11","nc12"),c("crop_cat1","crop_cat2","crop_cat3","crop_cat4","crop_cat5","crop_cat6","crop_cat7","crop_cat8","crop_cat9","crop_cat10","crop_cat11","crop_cat12"))
@@ -90,31 +89,34 @@ require(data.table);require(readxl);library(usethis);library(readr);
   # eco5 includes: rustgewassen (niet grassen); voedergewas; overig hout;
   # eco6 includes: meerjarig gewas; riet,poelen;
   # eco7 includes: diepwortelend; natte teelten; granen;
-  # eco8 includes: voedergewas; groene braak;
   er_crops[,nc1:= fifelse(crop_cat1==1,1,0)]
   er_crops[,nc2:= fifelse(crop_cat2==1,1,0)]
-  er_crops[,nc3:= fifelse(crop_cat3==1|c15==1|c27==1|c19==1,1,0)]
+  er_crops[,nc3:= fifelse(crop_cat3==1,1,0)]
   er_crops[,nc4:= fifelse(crop_cat4==1,1,0)]
   er_crops[,nc5:= fifelse(crop_cat5==1,1,0)]
   er_crops[,nc6:= fifelse(crop_cat6==1,1,0)]
   er_crops[,nc7:= fifelse(crop_cat7==1,1,0)]
-  er_crops[,nc8:= fifelse(crop_cat8 == 1|c22==1|c25==1,1,0)]
-  er_crops[,nc9:= fifelse(crop_cat9==1|c21==1,1,0)] #c20
+  er_crops[,nc8:= fifelse(crop_cat8==1,1,0)] 
+  er_crops[,nc9:= fifelse(crop_cat9==1,1,0)] 
   er_crops[,tmp1:= nc1+nc2+nc3+nc4+nc5+nc6+nc7+nc8+nc9]
-  er_crops[,nc10:= fifelse(tmp1== 0 & (c10==1|c28==1|c29==1|c26==1|c23==1|c20==1),1,0)]
-  er_crops[,nc11:= fifelse(tmp1== 0 & (c11==1|c16==1|c13==1),1,0)]
-  er_crops[,nc12:= fifelse(tmp1== 0 & c11==0 & (c12==1|c17==1),1,0)]
+  er_crops[,nc3:= fifelse(tmp1==0 & (c15==1|c27==1|c14==1),1,0)]
+  er_crops[,nc4:= fifelse(tmp1==0 & (c17==1),1,0)]
+  er_crops[,nc8:= fifelse(tmp1==0 & (c22==1|c25==1|c24==1|c23==1|c26==1),1,0)]
+  er_crops[,nc9:= fifelse(tmp1==0 & (c21==1),1,0)]
+  er_crops[,tmp2:= nc1+nc2+nc3+nc4+nc5+nc6+nc7+nc8+nc9]
+  er_crops[,nc10:= fifelse(tmp1==0 & tmp2==0 & (c10==1|c28==1|c29==1|c20==1|c19==1),1,0)]
+  er_crops[,nc11:= fifelse(tmp1==0 & tmp2==0 & (c11==1|c16==1|c13==1),1,0)]
+  er_crops[,nc12:= fifelse(tmp1==0 & tmp2==0 & nc11==0 & (c12==1|c18==1),1,0)]
   er_crops[,eco1:= fifelse(crop_cat8==1|c10==1|c11==1|c15==1|c21==1|c17==1,1,0)]
   er_crops[,eco2:= fifelse(crop_cat4==1|crop_cat9==1|c16==1|c19==1,1,0)]
   er_crops[,eco3:= fifelse(c20==1|c24==1,1,0)] 
   er_crops[,eco4:= fifelse(c12==1|c22==11|c29==1,1,0)]
-  er_crops[,eco5:= fifelse(c18==1|c23==1,1,0)]
+  er_crops[,eco5:= fifelse(c23==1|c18==1,1,0)] 
   er_crops[,eco6:= fifelse(c14==1|c25==1|c28==1,1,0)]
   er_crops[,eco7:= fifelse(c26==1|c27==1|c29==1|c13==1,1,0)]
-  er_crops[,eco8:= fifelse(c18==1|c24==1,1,0)]
   
   #keep relevant columns and remove rows without B_LU_BRP code
-  er_crops[,c(3:31,35,45):= NULL]
+  er_crops[,c(3:31,35,45:46):= NULL]
   er_crops[complete.cases(B_LU_BRP),]
   
   # rename cols
