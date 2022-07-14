@@ -96,6 +96,9 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
       # check if bbwp-id is present (unique per measure)
       checkmate::assert_true('bbwp_id' %in% colnames(dt))
       
+      # check if measure-status is present (unique per measure)
+      checkmate::assert_true('bbwp_status' %in% colnames(dt))
+      
       # which columns are missing in dt
       cols.miss <- unique(c('bbwp_id',colnames(dt.measures)[!colnames(dt.measures) %in% colnames(dt)]))
       
@@ -118,8 +121,8 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
     # check if farm-id is present
     checkmate::assert_true('id' %in% colnames(dt))
     
-    # add 'id' to cols.use
-    cols.use <- unique(c('id',cols.use))
+    # add 'id' and 'status' to cols.use
+    cols.use <- unique(c('id','bbwp_status', cols.use))
   }
   
   # set all scoring, applicabilility and effects to zero when data is missing
