@@ -3,7 +3,6 @@
 #' Estimate the Ecoregeling score for agronomic measures taken to improve soil and water management on agricultural farms.
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil
-#' @param B_LU_BRP (numeric) The crop type (conform BRP coding, preferable the most frequent crop on the field)
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param B_AREA (numeric) the area of the field (m2)
@@ -14,14 +13,20 @@
 #' @param B_LU_ECO5 (boolean) does the crop belong in Ecoregeling category 5
 #' @param B_LU_ECO6 (boolean) does the crop belong in Ecoregeling category 6
 #' @param B_LU_ECO7 (boolean) does the crop belong in Ecoregeling category 7
-#' @param sector (string) a vector with the farm type given the agricultural sector (options: 'diary', 'arable', 'tree_nursery', 'bulbs')
+#' @param B_LU_ECO8 (boolean) does the crop fall within the category "arable"
+#' @param B_LU_ECO9 (boolean) does the crop fall within the category "productive"
+#' @param B_LU_ECO10 (boolean) does the crop fall within the category "cultivated"
+#' @param sector (string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
 #' @param measures (list) The measures planned / done per fields
 #'   
 #' @import data.table
 #'
 #' @export
 # calculate the score for a list of measures for one or multiple fields
-er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures, sector){
+er_meas_score <- function(B_SOILTYPE_AGR,  B_AER_CBS,B_AREA,
+                          B_LU_BBWP,B_LU_ECO1,B_LU_ECO2, B_LU_ECO3, B_LU_ECO4, B_LU_ECO5, 
+                          B_LU_ECO6, B_LU_ECO7,B_LU_ECO8, B_LU_ECO9,B_LU_ECO10,
+                          measures, sector){
   
   # add visual bindings
   eco_id = type = fr_area = id = er_urgency = NULL
@@ -55,21 +60,29 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
                         value.name = 'urgency')
   
   # collect data in one data.table
-  dt <- data.table(
-    id = 1:arg.length,
-    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
-    B_LU_BRP = B_LU_BRP,
-    B_LU_BBWP = B_LU_BBWP,
-    B_LU_ECO1 = B_LU_ECO1,
-    B_LU_ECO2 = B_LU_ECO2,
-    B_LU_ECO3 = B_LU_ECO3,
-    B_LU_ECO4 = B_LU_ECO4,
-    B_LU_ECO5 = B_LU_ECO5,
-    B_LU_ECO6 = B_LU_ECO6,
-    B_LU_ECO7 = B_LU_ECO7,
-    B_AER_CBS = B_AER_CBS,
-    B_AREA = B_AREA
-  )
+  dt <- data.table(id = 1:arg.length,
+                   B_SOILTYPE_AGR = B_SOILTYPE_AGR,
+                   B_LU_BRP = B_LU_BRP,
+                   B_LU_BBWP = B_LU_BBWP,
+                   B_LU_ECO1 = B_LU_ECO1,
+                   B_LU_ECO2 = B_LU_ECO2,
+                   B_LU_ECO3 = B_LU_ECO3,
+                   B_LU_ECO4 = B_LU_ECO4,
+                   B_LU_ECO5 = B_LU_ECO5,
+                   B_LU_ECO6 = B_LU_ECO6,
+                   B_LU_ECO7 = B_LU_ECO7,
+                   B_LU_ECO8 = B_LU_ECO8,
+                   B_LU_ECO9 = B_LU_ECO9,
+                   B_LU_ECO10 = B_LU_ECO10,
+                   B_AER_CBS = B_AER_CBS,
+                   B_AREA = B_AREA
+                  )
+  
+  # collect total areas on farm level
+  dt.farm <- data.table(area_farm = sum(B_AREA),
+                        area_arable = sum(B_AREA * B_LU_ECO8),
+                        area_productive = sum(B_AREA * B_LU_ECO9),
+                        area_cultivated = sum(B_AREA * B_LU_ECO10))
   
   # merge all measures to the given fields
   dt <- merge(dt,dt.meas.taken,by = 'id',all=TRUE)
@@ -82,28 +95,17 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
     # set first all missing data impacts to 0
     dt[,c(cols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = cols]
     
-    # set the score to zero when not applicable for given crop category
-    # this includes also the measures that are taken on farm level
-    # ACTION NEEDED 
-    dt[B_LU_BBWP == 1 & crop_cat1 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 2 & crop_cat2 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 3 & crop_cat3 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 4 & crop_cat4 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 5 & crop_cat5 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 6 & crop_cat6 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 7 & crop_cat7 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 8 & crop_cat8 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 9 & crop_cat9 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 10 & crop_cat10 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 11 & crop_cat11 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 12 & crop_cat12 <= 0, c(cols) := 0]
-    dt[B_LU_ECO1 == 1 & eco1 <= 0, c(cols) := 0]
-    dt[B_LU_ECO2 == 1 & eco2 <= 0, c(cols) := 0]
-    dt[B_LU_ECO3 == 1 & eco3 <= 0, c(cols) := 0]
-    dt[B_LU_ECO4 == 1 & eco4 <= 0, c(cols) := 0]
-    dt[B_LU_ECO5 == 1 & eco5 <= 0, c(cols) := 0]
-    dt[B_LU_ECO6 == 1 & eco6 <= 0, c(cols) := 0]
-    dt[B_LU_ECO7 == 1 & eco7 <= 0, c(cols) := 0]
+    # set the score to zero when not applicable for given BBWP or ECO crop category
+    dt[(B_LU_BBWP == 1 & nc1 == 0) | (B_LU_BBWP == 2 & nc2 == 0), c(cols) := 0]
+    dt[(B_LU_BBWP == 3 & nc3 == 0) | (B_LU_BBWP == 4 & nc4 == 0), c(cols) := 0]
+    dt[(B_LU_BBWP == 5 & nc5 == 0) | (B_LU_BBWP == 6 & nc6 == 0), c(cols) := 0]
+    dt[(B_LU_BBWP == 7 & nc7 == 0) | (B_LU_BBWP == 8 & nc8 == 0), c(cols) := 0]
+    dt[(B_LU_BBWP == 9 & nc9 == 0) | (B_LU_BBWP == 10 & nc10 == 0), c(cols) := 0]
+    dt[(B_LU_BBWP == 11 & nc11 == 0) | (B_LU_BBWP == 12 & nc12 == 0), c(cols) := 0]
+    dt[(B_LU_ECO1 == 1 & eco1 == 0) | (B_LU_ECO2 == 1 & eco2 == 0), c(cols) := 0]
+    dt[(B_LU_ECO3 == 1 & eco3 == 0) | (B_LU_ECO4 == 1 & eco4 == 0), c(cols) := 0]
+    dt[(B_LU_ECO5 == 1 & eco5 == 0) | (B_LU_ECO6 == 1 & eco6 == 0), c(cols) := 0]
+    dt[B_LU_ECO7 == 1 & eco7 == 0, c(cols) := 0]
 
   # set the score and profit to zero when the measure is not applicable given sector or soil type
   
@@ -115,7 +117,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
     dt[,c(fs2) := 0]
     
     # estimate whether sector allows applicability
-    dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs] # dit werkt niet, generates NA for fsector DIARY AANPASSEN
+    dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs] 
     
     # adapt the score when measure is not applicable
     dt[fsector == 0, c(cols) := 0]
@@ -126,11 +128,8 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
     dt[grepl('veen', B_SOILTYPE_AGR) & peat == FALSE , c(cols) := 0]
     dt[grepl('loess', B_SOILTYPE_AGR) & loess == FALSE , c(cols) := 0]
     
-  # set the score and profit to zero when the measure is not applicable given the percentage area of the total farm to which the measure applies 
-    
     # set ER measures that are applicable on farm level to zero
-    # check TYPE OR CATEGORY: which one is used to distinguish measures that are scored on farm level
-    dt[level == 'farm' | !is.na(er_euro_farm), c(cols) := 0]
+    dt[level == 'farm' | er_euro_farm > 0, c(cols) := 0]
     
   # update score and rewards when there are conflicts in measures 
     
@@ -139,32 +138,71 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
     cols.reward <- c('er_euro_ha','er_euro_farm')
     
     # adjust the score and reward when measure is applied as ANLB
-    dt[ACC_ANLB == "none" & grepl('ANLB',bbwp_status), c(cols.score,cols.reward) := 0]
-    dt[ACC_ANLB == "score only" & grepl('ANLB',bbwp_status), c(cols.reward) := 0]
-    dt[ACC_ANLB == "reward only" & grepl('ANLB',bbwp_status), c(cols.score) := 0]
+    dt[acc_anlb == "none" & grepl('ANLB',bbwp_status), c(cols.score,cols.reward) := 0]
+    dt[acc_anlb == "score only" & grepl('ANLB',bbwp_status), c(cols.reward) := 0]
+    dt[acc_anlb == "reward only" & grepl('ANLB',bbwp_status), c(cols.score) := 0]
    
     # adjust the score and reward when measure is applied as GLMC
-    dt[ACC_GLMC == "none" & grepl('GLMC',bbwp_status), c(cols.score,cols.reward) := 0]
-    dt[ACC_GLMC == "score only" & grepl('GLMC',bbwp_status), c(cols.reward) := 0]
-    dt[ACC_GLMC == "reward only" & grepl('GLMC',bbwp_status), c(cols.score) := 0]
+    dt[acc_glmc == "none" & grepl('GLMC',bbwp_status), c(cols.score,cols.reward) := 0]
+    dt[acc_glmc == "score only" & grepl('GLMC',bbwp_status), c(cols.reward) := 0]
+    dt[acc_glmc == "reward only" & grepl('GLMC',bbwp_status), c(cols.score) := 0]
     
   # there are field measures where the score depends on the farm properties
     
-    # set total areas: totaal oppervlak, beteelbaar oppervlak, bouwland oppervlak, en productief oppervlak
-    # THESE AREAS SHOULD BE INPUT OF THE FUNCTION
-    area.total <- data.table(area_farm = sum(B_AREA),
-                             area_cultivated = 65,
-                             area_arable = 65,
-                             area_productive = 65)
-                               
-    # case 1. inzet baggerspuit (check na update maatregelentabel, EG13 kan 1 keer per perceel voorkomen)
-    # dt[,oid := frank(eco_id),by=eco_id]
-    dt[grepl('EG13',eco_id), B_AREA_REL := sum(B_AREA) / area.total$area_farm]
-    dt[grepl('EG13',eco_id) & B_AREA_REL < 25, c(cols.score) := 0]
-    dt[grepl('EG13',eco_id) & B_AREA_REL > 50, er_water := er_water + 6]
-    dt[grepl('EG13',eco_id) & B_AREA_REL > 50, er_biodiversity := er_biodiversity + 4]
-  
+    # columns to be updated
+    cols.sel <- c('er_climate','er_soil','er_water','er_landscape','er_biodiversity')
     
+    # measure EB1. Cultivate rustgewas on a field
+    cols.ad1 <- c(3,3,3,0,1)
+    cols.ad2 <- c(4,4,4,1,1)
+    dt[bbwp_id == 'G54', B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_arable]
+    dt[bbwp_id == 'G54' & B_AREA_REL <= 20, c(cols.sel) := 0]
+    dt[bbwp_id == 'G54' & B_AREA_REL > 35 & B_AREA_REL <= 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    dt[bbwp_id == 'G54' & B_AREA_REL > 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+    
+    # measure EB12. Green cultivation on the field
+    cols.ad1 <- c(2,3,3,1,1)
+    cols.ad2 <- c(5,6,6,1,2)
+    dt[grepl('^EB12',eco_id),B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_farm]
+    dt[grepl('^EB12',eco_id) & B_AREA_REL <= 51, c(cols.sel) := 0]
+    dt[grepl('^EB12',eco_id) & B_AREA_REL > 71 & B_AREA_REL <= 85, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    dt[grepl('^EB12',eco_id) & B_AREA_REL > 85, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+    
+    # measure EB13. no till and reduced till
+    cols.ad1 <- c(1,1,0,0,0)
+    cols.ad2 <- c(2,2,0,0,0)
+    dt[grepl('^EB13',eco_id), B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_arable]
+    dt[grepl('^EB13',eco_id) & B_AREA_REL <= 50, c(cols.sel) := 0]
+    dt[grepl('^EB13',eco_id) & B_AREA_REL > 65 & B_AREA_REL <= 80, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    dt[grepl('^EB13',eco_id) & B_AREA_REL > 80, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+
+    # measure EG11. Apply treated manure from other stable systems
+    cols.ad1 <- c(0,2,1,0,2)
+    cols.ad2 <- c(0,5,2,0,3)
+    dt[grepl('^EG11',eco_id),B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_farm]
+    dt[grepl('^EG11',eco_id) & B_AREA_REL <= 10, c(cols.sel) := 0]
+    dt[grepl('^EG11',eco_id) & B_AREA_REL > 25 & B_AREA_REL <= 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    dt[grepl('^EG11',eco_id) & B_AREA_REL > 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+    
+    # measure EG20. Not productive land
+    cols.ad1 <- c(1,0,1,3,5)
+    cols.ad2 <- c(2,0,2,6,10)
+    dt[grepl('^EG20',eco_id),B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_farm]
+    dt[grepl('^EG20',eco_id) & B_AREA_REL <= 1, c(cols.sel) := 0]
+    dt[grepl('^EG20',eco_id) & B_AREA_REL > 3 & B_AREA_REL <= 5, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    dt[grepl('^EG20',eco_id) & B_AREA_REL > 5, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+    
+    # measure EG13. inzet baggerspuit (check na update maatregelentabel, EG13 kan 1 keer per perceel voorkomen)
+    cols.ad1 <- c(0,0,5,0,5)
+    dt[grepl('EG13',eco_id), B_AREA_REL := sum(B_AREA) / dt.farm$area_farm]
+    dt[grepl('EG13',eco_id) & B_AREA_REL < 25, c(cols.score) := 0]
+    dt[grepl('EG13',eco_id) & B_AREA_REL > 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+
+    # measure EG13. inzet baggerspuit (check na update maatregelentabel, EG13 kan 1 keer per perceel voorkomen)
+    cols.ad1 <- c(0,2,2,1,5)
+    dt[grepl('EG14',eco_id), B_AREA_REL := sum(B_AREA) / dt.farm$area_farm]
+    dt[grepl('EG14',eco_id) & B_AREA_REL < 25, c(cols.score) := 0]
+    dt[grepl('EG14',eco_id) & B_AREA_REL > 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
     
   # multiply by (political) urgency
   
@@ -186,7 +224,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
     dt <- merge(dt,dt.er.urgency, by= c('soiltype','indicator'),all.x = TRUE)
     
   # adapt the score based on urgency
-  dt[indicator != 'er_euro_ha|er_euro_farm', value := value * urgency]
+  dt[!grepl('euro',indicator), value := value * urgency]
     
   # dcast to add totals, to be used to update scores when measures are conflicting
   
@@ -200,7 +238,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
   dt.field <- dt2[,lapply(.SD,sum), .SDcols = cols, by = 'id']
     
   # select total reward per field which is equal to the reward from the measure with the highest er_euro_ha (euro / ha)
-  dt.reward <- dt[indicator == 'er_euro_ha',list(S_ER_REWARD = max(value)),by = 'id']
+  dt.reward <- dt[grepl('euro_ha',indicator),list(S_ER_REWARD = max(value,na.rm=T)),by = 'id']
   
   # add reward to the field
   dt.field <- merge(dt.field,dt.reward,by='id')
