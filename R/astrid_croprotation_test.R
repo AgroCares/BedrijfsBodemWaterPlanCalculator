@@ -118,30 +118,25 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,B_AREA
     dt[B_LU_BBWP == 10 & crop_cat10 <= 0, c(cols) := 0]
     dt[B_LU_BBWP == 11 & crop_cat11 <= 0, c(cols) := 0]
     dt[B_LU_BBWP == 12 & crop_cat12 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 13 & eco1 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 14 & eco2 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 15 & eco3 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 16 & eco4 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 17 & eco5 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 18 & eco6 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 19 & eco7 <= 0, c(cols) := 0]
-    dt[B_LU_BBWP == 20 & eco8 <= 0, c(cols) := 0]
+    dt[B_LU_ECO1 == 1 & eco1 <= 0, c(cols) := 0]
+    dt[B_LU_ECO2 == 1 & eco2 <= 0, c(cols) := 0]
+    dt[B_LU_ECO3 == 1 & eco3 <= 0, c(cols) := 0]
+    dt[B_LU_ECO4 == 1 & eco4 <= 0, c(cols) := 0]
+    dt[B_LU_ECO5 == 1 & eco5 <= 0, c(cols) := 0]
+    dt[B_LU_ECO6 == 1 & eco6 <= 0, c(cols) := 0]
+    dt[B_LU_ECO7 == 1 & eco7 <= 0, c(cols) := 0]
 
-  # load crop table   
-    #dt.er.crops <- as.data.table(BBWPC::er_crops)
-    #dt.er.crops <- dt.er.crops[,.(eco_id,b_lu_brp,bouwland,productief,beteelbaar)]
+  # set score to zero when measures is not applicable given Bouwland, Productief or Beteelbaar 
     
-  # set score to zero when measure is not applicable for Bouwland, Productief or Beteelbaar
-    dt[B_LU_BRP %in% dt.er.crops[b_lu_brp,bouwland]]
-    
-    dt[B_LU_BRP %in% dt.er.crops[eco_id == "EB23",b_lu_brp] & eco_id == "EB23", ]
-    
-    
-    
+    # get internal table of BRP codes with data on Bouwland, Productief or Beteelbaar and rename these cols as preparation on merge
     dt.er.crops <- as.data.table(BBWPC::er_crops)
-    dt.er.crops <- dt.er.crops[,.(eco_id,b_lu_brp)]
+    setnames(dt.er.crops,c("bouwland","productive","Beteelbaar"),c("is_bouwland","is_productief","is_beteelbaar"))
     
-    
+    # merge dt with selected columns from dt.er.crops
+    dt <- merge(dt,dt.er.crops[,c("b_lu_brp","is_bouwland","is_productief","is_beteelbaar")], by.x = "B_LU_BRP", by.y = "b_lu_brp", all.x = TRUE)
+    dt[is_bouwland == 1 & Bouwland <= 0, c(cols):= 0]
+    dt[is_productief == 1 & Productief <= 0, c(cols):= 0]
+    dt[is_beteelbaar == 1 & Beteelbaar <= 0, c(cols):= 0]
 
   # set the score and profit to zero when the measure is not applicable given sector
     

@@ -175,6 +175,21 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
     # calculate the reward per hectare while correcting for the specific agricultural region to which the measures applies
     dt[, er_euro_ha := er_euro_ha * er_cf]
 
+  # update score and rewards when there are conflicts in measures 
+    cols 
+    dt[ACC_ANLB == "none", c(cols) := 0]
+    dt[ACC_ANLB == "score only", c(cols) := 0]
+    dt[ACC_ANLB == "reward only", c(cols) := 0]
+    dt[ACC_ANLB == "both score and reward", c(cols) := 0]
+    
+    
+    
+    
+    
+    
+    
+    
+    
   # multiply by (political) urgency
   
     # first add soil type for political and environmental urgency
@@ -208,11 +223,8 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,B_AER_CBS, measures
   # calculate the weighed average ER score (points/ ha) for the whole farm due to measures taken
   dt.field <- dt2[,lapply(.SD,sum), .SDcols = cols, by = 'id']
     
-  # calculate the total er_euro_farm for the whole farm (euro/ha) for the whole farm due to measures taken
-  dt.reward <- dt[indicator == 'er_euro_ha',list(S_ER_REWARD = sum(value)),by = 'id']
-  
   # select total reward per field which is equal to the reward from the measure with the highest er_euro_ha (euro / ha)
-  #dt.reward <- dt[indicator == 'er_euro_ha',list(S_ER_REWARD = max(value)),by = 'id']
+  dt.reward <- dt[indicator == 'er_euro_ha',list(S_ER_REWARD = max(value)),by = 'id']
   
   # add reward to the field
   dt.field <- merge(dt.field,dt.reward,by='id')

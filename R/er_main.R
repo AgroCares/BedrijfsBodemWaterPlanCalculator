@@ -14,10 +14,10 @@
 #' @param B_AREA (numeric) the area of the field (m2) 
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param farmscore (numeric) The desired total ER score on farm level
-#' @param measures (data.table) the measures planned / done per fields
+#' @param measures (data.table) The measures planned / done per fields
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: options: 'diary', 'arable', 'tree_nursery', 'bulbs')
 #' @param output (string) a vector specifying the output type of the function. Options: scores, measures 
-#' @param medalscore (character)
+#' @param medalscore (character) The desired medal score expressed as bronze, silver or gold 
 #'  
 #' @import data.table
 #' @import OBIC
@@ -25,7 +25,7 @@
 #' @export
 ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
                         A_P_SG,D_SA_W, B_AREA,M_DRAIN, farmscore, 
-                        measures, sector,output = 'scores',medalscore = 'gold'){
+                        measures, sector, output = 'scores', medalscore){
   
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)

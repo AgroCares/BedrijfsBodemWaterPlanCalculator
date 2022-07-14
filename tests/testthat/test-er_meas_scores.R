@@ -2,18 +2,25 @@
 require(testthat)
 
 # default input for testing
-  # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
-  # B_LU_BRP = c(265,265,265,265)
-  # B_LU_BBWP = c(1,1,1,1)
-  # B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland")
-  # B_AREA = c(45,18,0.8,6)
-  # B_CT_SOIL = 20
-  # B_CT_WATER = 15
-  # B_CT_CLIMATE = 8
-  # B_CT_BIO = 24
-  # B_CT_LANDSCAPE = 20
-  # measures = NULL
-  # sector = 'dairy'
+  B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
+  B_LU_BRP = c(265,265,265,265)
+  B_LU_BBWP = c(1,1,1,1)
+  B_LU_ECO1 = c(0,0,0,0)
+  B_LU_ECO2 = c(0,0,0,0)
+  B_LU_ECO3 = c(0,0,0,0)
+  B_LU_ECO4 = c(0,0,0,0)
+  B_LU_ECO5 = c(1,1,1,1)
+  B_LU_ECO6 = c(0,0,0,0)   
+  B_LU_ECO7 = c(0,0,0,0)
+  B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland")
+  B_AREA = c(45,18,0.8,6)
+  B_CT_SOIL = 20
+  B_CT_WATER = 15
+  B_CT_CLIMATE = 8
+  B_CT_BIO = 24
+  B_CT_LANDSCAPE = 20
+  measures = NULL
+  sector = 'dairy'
 
 # run example 1 without any measures taken
 test <- er_meas_score(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),

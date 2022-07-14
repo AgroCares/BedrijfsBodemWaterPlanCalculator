@@ -886,3 +886,101 @@ merge(b_lu_brp,er_crops,by = "B_LU_BRP")
 use_data(b_lu_brp, overwrite = TRUE)
 
 #---------------#
+
+
+# load in csv with crop list
+er_crops <- as.data.table(read_excel("dev/b_lu_brp_GR220707_decast_for_client.xlsx"))
+
+# transform old cropcategories in new categories
+# eco1 includes: natuur; (kruidenrijke) rand; vanggewas; wortelspruit gewas; rooivruchten (voorjaar); maiskolvenschroot;
+# eco2 includes: rooivruchten (najaar); mais; groenbemesters; sloten langs grasland; bufferstrook langs bouwland;
+# eco3 includes: sloten langs grasland of bouwland; groenebraak;
+# eco4 includes: eiwitgewas; heg,haag,struweel; akkerranden,keverbanken;
+# eco5 includes: rustgewassen (niet grassen); voedergewas; overig hout;
+# eco6 includes: meerjarig gewas; riet,poelen;
+# eco7 includes: diepwortelend; natte teelten; granen;
+# eco8 includes: voedergewas; groene braak;
+  er_crops[,nc1:= fifelse(crop_cat1==1,1,0)]
+  er_crops[,nc2:= fifelse(crop_cat2==1,1,0)]
+  er_crops[,nc3:= fifelse(crop_cat3==1,1,0)]
+  er_crops[,nc4:= fifelse(crop_cat4==1,1,0)]
+  er_crops[,nc5:= fifelse(crop_cat5==1,1,0)]
+  er_crops[,nc6:= fifelse(crop_cat6==1,1,0)]
+  er_crops[,nc7:= fifelse(crop_cat7==1,1,0)]
+  er_crops[,nc8:= fifelse(crop_cat8==1,1,0)] 
+  er_crops[,nc9:= fifelse(crop_cat9==1,1,0)] 
+  er_crops[,tmp1:= nc1+nc2+nc3+nc4+nc5+nc6+nc7+nc8+nc9]
+  er_crops[,nc3:= fifelse(tmp1==0 & (c15==1|c27==1|c14==1),1,0)]
+  er_crops[,nc4:= fifelse(tmp1==0 & (c17==1),1,0)]
+  er_crops[,nc8:= fifelse(tmp1==0 & (c22==1|c25==1|c24==1|c23==1|c26==1),1,0)]
+  er_crops[,nc9:= fifelse(tmp1==0 & (c21==1),1,0)]
+  er_crops[,tmp2:= nc1+nc2+nc3+nc4+nc5+nc6+nc7+nc8+nc9]
+  er_crops[,nc10:= fifelse(tmp1==0 & tmp2==0 & (c10==1|c28==1|c29==1|c20==1|c19==1),1,0)]
+  er_crops[,nc11:= fifelse(tmp1==0 & tmp2==0 & (c11==1|c16==1|c13==1),1,0)]
+  er_crops[,nc12:= fifelse(tmp1==0 & tmp2==0 & nc11==0 & (c12==1|c18==1),1,0)]
+  er_crops[,nc13:= fifelse(crop_cat8==1|c10==1|c11==1|c15==1|c21==1|c17==1,1,0)]
+  er_crops[,nc14:= fifelse(crop_cat4==1|crop_cat9==1|c16==1|c19==1,1,0)]
+  er_crops[,nc15:= fifelse(c20==1|c24==1,1,0)] 
+  er_crops[,nc16:= fifelse(c12==1|c22==11|c29==1,1,0)]
+  er_crops[,nc17:= fifelse(c23==1|c18==1,1,0)] 
+  er_crops[,nc18:= fifelse(c14==1|c25==1|c28==1,1,0)]
+  er_crops[,nc19:= fifelse(c26==1|c27==1|c29==1|c13==1,1,0)]
+  #er_crops[,nc20:= fifelse(c18==1|c24==1,1,0)]
+
+  #c18, c24, c14 voedergewas wordt eiwitgewas
+  
+  # als crop_cat3 ongelijk is aan 
+  
+
+# change format from wide to long
+dt2 <- melt(er_crops, 
+            id.vars = c("B_LU_BRP","B_LU_NAME"),
+            measure.vars = patterns("^nc"),
+            variable.name = "BBWP_CAT",
+            value.name = "boolean")
+
+# keep only rows that indicate to which category the crop type belongs 
+dt2 <- dt2[boolean == 1,]
+dt2 <- dt2[,boolean := NULL]
+
+# create data tables to separate BBWP_CAT into two columns of which the first (bcat) includes nc1-nc12 and the second (ecat) nc13-nc19
+dt2[grepl("nc1$|nc2$|nc3|nc4|nc5|nc6|nc7|nc8|nc9|nc10|nc11|nc12",BBWP_CAT), type := "bbwp"]
+dt2[grepl("nc13|nc14|nc15|nc16|nc17|nc18|nc19",BBWP_CAT), type := "eco1"]
+
+dt2[, test:= duplicated(B_LU_BRP)]
+dt2[ test == T,][type=="bbwp",]
+
+
+
+# als van de maatregelen die worden ingestuurd de ACC_ER op 1 staat, maak dan een tabel met de maatregel in de rij en de maatregelen die in de list ACC_ER_LIST staan met bijbehorende scores
+# selecteer dan uit die tabel de hoogste score en de hoogste reward en voeg die toe bij de betreffende maatregel
+# zorg ervoor dat als een van deze maatregelen nog een keer komt dat die dan niet nogmaals wordt gerekend
+
+# filter the measures that accumulate and assign to each accumulation a unique ID number in order to do calculations per group
+# 
+#     dt1 <- dt[Accumulatie_ER_met_ER == 1,]
+#     dt1 <- dt1[, acc.id := .I]
+#   
+#     # if there is an accumulation then do the following calculations
+#     if(nrow(dt1)>0){
+#    
+#     #unlist cumulatie_list_ER, keep acc.id column
+#     dt2 = dt1[ , .(acc.id = rep(acc.id, lengths(cumulatie_list_ER)), cumulatie_list_ER = unlist(cumulatie_list_ER))]
+#     # eigenlijk krijg je dan:
+#     dt2 = data.table(acc.id = c(1,2,2),
+#                      cumulatie_list_ER = c("EG1D","EG3A","EG10B"))
+#     
+#     #merge 
+#     dt2 = dt2[dt1[ , !'cumulatie_list_ER'], on = 'acc.id']  
+#       
+#     # als cumulatie_list_E voorkomt in eco_id kolom: dan maximum nemen van beide rijen
+#     cols <- c('er_soil','er_water','er_biodiversity','er_climate','er_landscape','er_euro_ha', 'er_euro_farm')
+#     test <- dt2[eco_id %in% cumulatie_list_ER & cumulatie_list_ER %in% eco_id, c(cols) := lapply(.SD,max), .SDcols = c(cols)]
+#     
+#     }
+# 
+#   # reset score when ECO measure clashes with ANLb   
+#     
+#     
+
+
