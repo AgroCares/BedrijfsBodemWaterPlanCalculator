@@ -59,6 +59,9 @@ require(data.table);require(readxl);library(usethis)
     bbwp_measures[,eco6:= fifelse(c14==1|c25==1|c28==1,1,0)]
     bbwp_measures[,eco7:= fifelse(c26==1|c27==1|c29==1|c13==1,1,0)]
      
+    # setnames
+    setnames(bbwp_measures,old = c('bouwland','productief','beteelbaar'),new = c('eco8','eco9','eco10'))
+    
     # columns to remove
     cols.rem <- paste0('c',1:29)
     
