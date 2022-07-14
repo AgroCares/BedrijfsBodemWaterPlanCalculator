@@ -23,7 +23,7 @@
 #'
 #' @export
 # calculate the score for a list of measures for one or multiple fields
-er_meas_score <- function(B_SOILTYPE_AGR,  B_AER_CBS,B_AREA,
+er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                           B_LU_BBWP,B_LU_ECO1,B_LU_ECO2, B_LU_ECO3, B_LU_ECO4, B_LU_ECO5, 
                           B_LU_ECO6, B_LU_ECO7,B_LU_ECO8, B_LU_ECO9,B_LU_ECO10,
                           measures, sector){
@@ -40,12 +40,24 @@ er_meas_score <- function(B_SOILTYPE_AGR,  B_AER_CBS,B_AREA,
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
   
   # check on the inputs
-  arg.length <- max(length(B_SOILTYPE_AGR), length(B_LU_BRP),length(B_LU_BBWP),length(B_AER_CBS))
+  arg.length <- max(length(B_SOILTYPE_AGR), length(B_LU_BBWP),length(B_AER_CBS), length(B_LU_ECO1),
+                    length(B_LU_ECO1),length(B_LU_ECO2),length(B_LU_ECO3),length(B_LU_ECO4),
+                    length(B_LU_ECO5),length(B_LU_ECO6),length(B_LU_ECO7),length(B_LU_ECO8),
+                    length(B_LU_ECO9),length(B_LU_ECO10))
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
                                                        'dalgrond','moerige_klei','veen','loess'))
-  checkmate::assert_integerish(B_LU_BRP, lower = 0, len = arg.length)
-  checkmate::assert_integerish(B_LU_BBWP, lower = 0, upper = 9,len = arg.length)
+  checkmate::assert_integerish(B_LU_BBWP, lower = 0, upper = 12,len = arg.length)
   checkmate::assert_character(B_SOILTYPE_AGR,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO1,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO2,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO3,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO4,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO5,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO6,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO7,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO8,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO9,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO10,len = arg.length)
   
   # get the measurement data.table
   dt.meas.taken <- bbwp_check_meas(dt = measures, eco = TRUE, score = TRUE)
@@ -62,7 +74,6 @@ er_meas_score <- function(B_SOILTYPE_AGR,  B_AER_CBS,B_AREA,
   # collect data in one data.table
   dt <- data.table(id = 1:arg.length,
                    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
-                   B_LU_BRP = B_LU_BRP,
                    B_LU_BBWP = B_LU_BBWP,
                    B_LU_ECO1 = B_LU_ECO1,
                    B_LU_ECO2 = B_LU_ECO2,
