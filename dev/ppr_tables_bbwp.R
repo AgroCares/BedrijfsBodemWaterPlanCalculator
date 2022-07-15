@@ -21,11 +21,11 @@ require(data.table);require(readxl);library(usethis)
     
     # definition of the eco categories 
     # eco1 includes: natuur; (kruidenrijke) rand; vanggewas; wortelspruit gewas; rooivruchten (voorjaar); maiskolvenschroot;
-    # eco2 includes: rooivruchten (najaar); mais; groenbemesters; sloten langs grasland; bufferstrook langs bouwland;
+    # eco2 includes: rooivruchten (najaar); mais; groenbemesters; sloten langs grasland; 
     # eco3 includes: sloten langs grasland of bouwland; groenebraak;
     # eco4 includes: eiwitgewas; heg,haag,struweel; akkerranden,keverbanken;
-    # eco5 includes: rustgewassen (niet grassen); voedergewas; overig hout;
-    # eco6 includes: meerjarig gewas; riet,poelen;
+    # eco5 includes: voedergewas; overig hout;
+    # eco6 includes: meerjarig gewas; riet,poelen; bufferstrook langs bouwland;
     # eco7 includes: diepwortelend; natte teelten; granen;
   
     # definition of BBWP categories
@@ -57,7 +57,7 @@ require(data.table);require(readxl);library(usethis)
     bbwp_measures[,eco4:= fifelse(c12==1|c22==11|c29==1,1,0)]
     bbwp_measures[,eco5:= fifelse(c23==1|c18==1,1,0)] 
     bbwp_measures[,eco6:= fifelse(c14==1|c25==1|c28==1,1,0)]
-    bbwp_measures[,eco7:= fifelse(c26==1|c27==1|c29==1|c13==1,1,0)]
+    bbwp_measures[,eco7:= fifelse(c26==1|c27==1|c13==1,1,0)]
      
     # setnames
     setnames(bbwp_measures,old = c('bouwland','productief','beteelbaar'),new = c('eco8','eco9','eco10'))
@@ -94,11 +94,11 @@ require(data.table);require(readxl);library(usethis)
   
   # transform old cropcategories in new categories
   # eco1 includes: natuur; (kruidenrijke) rand; vanggewas; wortelspruit gewas; rooivruchten (voorjaar); maiskolvenschroot;
-  # eco2 includes: rooivruchten (najaar); mais; groenbemesters; sloten langs grasland; bufferstrook langs bouwland;
+  # eco2 includes: rooivruchten (najaar); mais; groenbemesters; sloten langs grasland; 
   # eco3 includes: sloten langs grasland of bouwland; groenebraak;
   # eco4 includes: eiwitgewas; heg,haag,struweel; akkerranden,keverbanken;
-  # eco5 includes: rustgewassen (niet grassen); voedergewas; overig hout;
-  # eco6 includes: meerjarig gewas; riet,poelen;
+  # eco5 includes: voedergewas; overig hout;
+  # eco6 includes: meerjarig gewas; riet,poelen; bufferstrook langs bouwland;
   # eco7 includes: diepwortelend; natte teelten; granen;
   er_crops[,nc1:= fifelse(crop_cat1==1,1,0)]
   er_crops[,nc2:= fifelse(crop_cat2==1,1,0)]
@@ -124,7 +124,7 @@ require(data.table);require(readxl);library(usethis)
   er_crops[,eco4:= fifelse(c12==1|c22==11|c29==1,1,0)]
   er_crops[,eco5:= fifelse(c23==1|c18==1,1,0)] 
   er_crops[,eco6:= fifelse(c14==1|c25==1|c28==1,1,0)]
-  er_crops[,eco7:= fifelse(c26==1|c27==1|c29==1|c13==1,1,0)]
+  er_crops[,eco7:= fifelse(c26==1|c27==1|c13==1,1,0)]
   
   #keep relevant columns and remove rows without B_LU_BRP code
   er_crops[,c(3:31,35,45:46):= NULL]
