@@ -4,20 +4,29 @@
 #' And send an ordered list back of the most suitable measures.
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil
-#' @param B_LU_BRP (integer)
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_GWL_CLASS (character) The groundwater table class
+#' @param B_LU_ECO1 (boolean) does the crop belong in Ecoregeling category 1
+#' @param B_LU_ECO2 (boolean) does the crop belong in Ecoregeling category 2
+#' @param B_LU_ECO3 (boolean) does the crop belong in Ecoregeling category 3
+#' @param B_LU_ECO4 (boolean) does the crop belong in Ecoregeling category 4
+#' @param B_LU_ECO5 (boolean) does the crop belong in Ecoregeling category 5
+#' @param B_LU_ECO6 (boolean) does the crop belong in Ecoregeling category 6
+#' @param B_LU_ECO7 (boolean) does the crop belong in Ecoregeling category 7
+#' @param B_LU_ECO8 (boolean) does the crop fall within the category "arable"
+#' @param B_LU_ECO9 (boolean) does the crop fall within the category "productive"
+#' @param B_LU_ECO10 (boolean) does the crop fall within the category "cultivated"
 #' @param A_P_SG (numeric) 
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param B_AREA (numeric) the area of the field (m2) 
 #' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
-#' @param B_CT_SOIL (numeric) the target value for soil quality conform Ecoregeling scoring
-#' @param B_CT_WATER (numeric) the target value for water quality conform Ecoregeling scoring
-#' @param B_CT_CLIMATE (numeric) the target value for climate conform Ecoregeling scoring
-#' @param B_CT_BIO (numeric) the target value for biodiversity conform Ecoregeling scoring
-#' @param B_CT_LANDSCAPE (numeric) the target value for landscape quality conform Ecoregeling scoring
+#' @param B_CT_SOIL (numeric) the target value for soil quality conform Ecoregeling scoring (score / ha)
+#' @param B_CT_WATER (numeric) the target value for water quality conform Ecoregeling scoring (score / ha)
+#' @param B_CT_CLIMATE (numeric) the target value for climate conform Ecoregeling scoring (score / ha)
+#' @param B_CT_BIO (numeric) the target value for biodiversity conform Ecoregeling scoring (score / ha)
+#' @param B_CT_LANDSCAPE (numeric) the target value for landscape quality conform Ecoregeling scoring (score / ha)
 #' @param measures (data.table) table with the properties of the available measures
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'diary', 'arable', 'tree_nursery', 'bulbs')
 #' 
@@ -26,8 +35,10 @@
 #'
 #' @export
 # rank the measures given their effectiveness to improve the sustainability of the farm
-er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, M_DRAIN, D_SA_W,
+er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, M_DRAIN, D_SA_W,
                          B_AREA,B_AER_CBS,
+                         B_LU_BBWP,B_LU_ECO1,B_LU_ECO2, B_LU_ECO3, B_LU_ECO4, B_LU_ECO5, 
+                         B_LU_ECO6, B_LU_ECO7,B_LU_ECO8, B_LU_ECO9,B_LU_ECO10,
                          B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE, 
                          measures, sector){
   
@@ -50,7 +61,10 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
   # check length of the inputs
   arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BRP),length(B_LU_BBWP),length(A_P_SG),length(B_SLOPE_DEGREE),
                     length(M_DRAIN),length(D_SA_W),length(B_CT_SOIL),length(B_CT_WATER),length(B_CT_CLIMATE),length(B_AER_CBS),
-                    length(B_CT_BIO),length(B_CT_LANDSCAPE))
+                    length(B_CT_BIO),length(B_CT_LANDSCAPE),
+                    length(B_LU_ECO1),length(B_LU_ECO2),length(B_LU_ECO3),length(B_LU_ECO4),
+                    length(B_LU_ECO5),length(B_LU_ECO6),length(B_LU_ECO7),length(B_LU_ECO8),
+                    length(B_LU_ECO9),length(B_LU_ECO10))
   
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
@@ -67,8 +81,17 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
                    B_AREA = B_AREA,
                    A_P_SG = A_P_SG,
                    B_SLOPE_DEGREE = B_SLOPE_DEGREE,
-                   B_LU_BRP = B_LU_BRP,
                    B_LU_BBWP = B_LU_BBWP,
+                   B_LU_ECO1 = B_LU_ECO1,
+                   B_LU_ECO2 = B_LU_ECO2,
+                   B_LU_ECO3 = B_LU_ECO3,
+                   B_LU_ECO4 = B_LU_ECO4,
+                   B_LU_ECO5 = B_LU_ECO5,
+                   B_LU_ECO6 = B_LU_ECO6,
+                   B_LU_ECO7 = B_LU_ECO7,
+                   B_LU_ECO8 = B_LU_ECO8,
+                   B_LU_ECO9 = B_LU_ECO9,
+                   B_LU_ECO10 = B_LU_ECO10,
                    B_AER_CBS = B_AER_CBS,
                    M_DRAIN = M_DRAIN,
                    B_CT_SOIL = B_CT_SOIL, 
@@ -82,40 +105,52 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, A_P_SG, B_SLOPE_
   dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS, B_AER_CBS = B_AER_CBS)]
   
   # add the generic farm score as baseline
-  # this gives the averaged ER score based on the crops in crop rotation plan
+  # this gives the averaged ER score based on the crops in crop rotation plan and the farm measures taken
   dt.farm <- er_croprotation(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR,
-                             B_LU_BRP = dt$B_LU_BRP,
                              B_LU_BBWP = dt$B_LU_BBWP,
-                             B_AER_CBS= dt$B_AER_CBS,
+                             B_LU_ECO1 = dt$B_LU_ECO1,
+                             B_LU_ECO2 = dt$B_LU_ECO2,
+                             B_LU_ECO3 = dt$B_LU_ECO3,
+                             B_LU_ECO4 = dt$B_LU_ECO4,
+                             B_LU_ECO5 = dt$B_LU_ECO5,
+                             B_LU_ECO6 = dt$B_LU_ECO6,
+                             B_LU_ECO7 = dt$B_LU_ECO7,
+                             B_LU_ECO8 = dt$B_LU_ECO8,
+                             B_LU_ECO9 = dt$B_LU_ECO9,
+                             B_LU_ECO10 = dt$B_LU_ECO10,
+                             B_AER_CBS = dt$B_AER_CBS,
                              B_AREA = dt$B_AREA,
                              B_CT_SOIL = dt$B_CT_SOIL,
                              B_CT_WATER = dt$B_CT_WATER,
                              B_CT_CLIMATE = dt$B_CT_CLIMATE,
                              B_CT_BIO = dt$B_CT_BIO,
-                             B_CT_LANDSCAPE = dt$B_CT_LANDSCAPE) #,
-                             #measures = measures,
-                             #sector = sector)
+                             B_CT_LANDSCAPE = dt$B_CT_LANDSCAPE,
+                             measures = measures,
+                             sector = sector)
   
   # merge all measures to the given fields
   dt <- as.data.table(merge.data.frame(dt, dt.meas.av, all = TRUE))
   
   # rank is zero when measures are not applicable given the crop type
   
-    # columns with the Ecoregelingen ranks
-    cols <- c('er_soil','er_water','er_biodiversity','er_climate','er_landscape')
+    # columns with the Ecoregelingen ranks and reward
+    cols <- c('er_soil','er_water','er_biodiversity','er_climate','er_landscape','er_euro_ha', 'er_euro_farm')
     
-    # lower the score with 90% when not applicable for permanent grassland (cat 1), temporary grassland (cat 2),
-    # cereals and catch crops (cat 3), tuber crops (cat 4), vegetables (cat 5), bulbs and flowers (cat 6)
-    # tree nurseries and fruits (cat 7), nature areas and ditch borders (cat 8) and maize (cat 9)
-    dt[B_LU_BBWP == 1 & crop_cat1 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 2 & crop_cat2 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 3 & crop_cat3 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 4 & crop_cat4 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 5 & crop_cat5 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 6 & crop_cat6 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 7 & crop_cat7 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 8 & crop_cat8 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 9 & crop_cat9 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    # set first all missing data impacts to 0
+    dt[,c(cols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = cols]
+    
+    # set the score to zero when not applicable for given BBWP category
+    dt[(B_LU_BBWP == 1 & nc1 == 0) | (B_LU_BBWP == 2 & nc2 == 0), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[(B_LU_BBWP == 3 & nc3 == 0) | (B_LU_BBWP == 4 & nc4 == 0), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[(B_LU_BBWP == 5 & nc5 == 0) | (B_LU_BBWP == 6 & nc6 == 0), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[(B_LU_BBWP == 7 & nc7 == 0) | (B_LU_BBWP == 8 & nc8 == 0), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[(B_LU_BBWP == 9 & nc9 == 0) | (B_LU_BBWP == 10 & nc10 == 0), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[(B_LU_BBWP == 11 & nc11 == 0) | (B_LU_BBWP == 12 & nc12 == 0), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    
+    # set the score to zero when nog applicable as ECO category
+    dt[,ecocheck := B_LU_ECO1 * eco1 + B_LU_ECO2 * eco2 + B_LU_ECO3 * eco3 + B_LU_ECO4 * eco4 + 
+         B_LU_ECO5 * eco5 + B_LU_ECO6 * eco6 + B_LU_ECO7 * eco7]
+    dt[ecocheck == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     
     # lower the score when the sector limits the applicability of measures
     
