@@ -1,6 +1,6 @@
 #' Calculate the minimum required Ecoregelingen Scores on Farm level
 #'
-#' Estimate the  required score on farm level for soil quality, water quality, climate, biodiversity and landscape given soil type
+#' Estimate the  required score on farm level for soil quality, water quality, climate, biodiversity and landscape given soil type. Unit is score per hectare.
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil
 #' @param B_AREA (numeric) The area of the field (m2) 
@@ -35,10 +35,10 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
                    medalscore = medalscore,
                    farmscore = farmscore)
   
-  # calculate minimum score for medals
-  dt[medalscore == "bronze" & is.na(farmscore),farmscore := B_AREA * 14]
-  dt[medalscore == "silver" & is.na(farmscore),farmscore := B_AREA * 22]
-  dt[medalscore == "gold" & is.na(farmscore),farmscore := B_AREA * 35]
+  # calculate minimum score for medals: score per ha
+  dt[medalscore == "bronze" & is.na(farmscore),farmscore := 14]
+  dt[medalscore == "silver" & is.na(farmscore),farmscore := 22]
+  dt[medalscore == "gold" & is.na(farmscore),farmscore := 35]
   
   # add soil type
   dt[grepl('klei', B_SOILTYPE_AGR) , soiltype := 'klei']
