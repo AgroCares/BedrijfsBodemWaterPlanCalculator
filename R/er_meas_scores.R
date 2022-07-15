@@ -118,6 +118,11 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt[,ecocheck := B_LU_ECO1 * eco1 + B_LU_ECO2 * eco2 + B_LU_ECO3 * eco3 + B_LU_ECO4 * eco4 + 
                     B_LU_ECO5 * eco5 + B_LU_ECO6 * eco6 + B_LU_ECO7 * eco7]
     dt[ecocheck == 0, c(cols) := 0]
+    
+    # set the score to zero when not applicable as arable/productive/cultivated measure
+    dt[B_LU_ECO8 == 1 & eco8 == 0, c(cols) := 0]
+    dt[B_LU_ECO9 ==1 & eco9 ==0, c(cols) := 0]
+    dt[B_LU_ECO10 ==1 & eco10 == 0, c(cols):= 0]
 
   # set the score and profit to zero when the measure is not applicable given sector or soil type
   
