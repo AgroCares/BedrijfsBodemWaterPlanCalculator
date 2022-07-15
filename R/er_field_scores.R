@@ -3,8 +3,17 @@
 #' Estimate the potential to contribute to agronomic and environmental challenges in a region given aims for soil quality, water quality, climate, biodiversity and landscape
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil
-#' @param B_LU_BRP (integer)
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
+#' @param B_LU_ECO1 (boolean) does the crop belong in Ecoregeling category 1
+#' @param B_LU_ECO2 (boolean) does the crop belong in Ecoregeling category 2
+#' @param B_LU_ECO3 (boolean) does the crop belong in Ecoregeling category 3
+#' @param B_LU_ECO4 (boolean) does the crop belong in Ecoregeling category 4
+#' @param B_LU_ECO5 (boolean) does the crop belong in Ecoregeling category 5
+#' @param B_LU_ECO6 (boolean) does the crop belong in Ecoregeling category 6
+#' @param B_LU_ECO7 (boolean) does the crop belong in Ecoregeling category 7
+#' @param B_LU_ECO8 (boolean) does the crop fall within the category "arable"
+#' @param B_LU_ECO9 (boolean) does the crop fall within the category "productive"
+#' @param B_LU_ECO10 (boolean) does the crop fall within the category "cultivated"
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param B_CT_SOIL (numeric) the target value for soil quality conform Ecoregeling scoring
 #' @param B_CT_WATER (numeric) the target value for water quality conform Ecoregeling scoring
@@ -20,8 +29,9 @@
 #'
 #' @export
 # calculate the opportunity indices for a set of fields
-er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
-                            B_AREA,
+er_field_scores <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
+                            B_LU_BBWP,B_LU_ECO1,B_LU_ECO2, B_LU_ECO3, B_LU_ECO4, B_LU_ECO5, 
+                            B_LU_ECO6, B_LU_ECO7,B_LU_ECO8, B_LU_ECO9,B_LU_ECO10,
                             B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE, 
                             measures = NULL, sector){
   
@@ -36,8 +46,11 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
   
   # check length of the inputs
-  arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BRP),length(B_LU_BBWP),
-                    length(B_AREA),length(B_AER_CBS))
+  arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BBWP),
+                    length(B_AREA),length(B_AER_CBS),
+                    length(B_LU_ECO1),length(B_LU_ECO2),length(B_LU_ECO3),length(B_LU_ECO4),
+                    length(B_LU_ECO5),length(B_LU_ECO6),length(B_LU_ECO7),length(B_LU_ECO8),
+                    length(B_LU_ECO9),length(B_LU_ECO10))
   
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
@@ -49,17 +62,19 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
   checkmate::assert_numeric(B_CT_CLIMATE, lower = 0, upper = 5000,min.len = 1)
   checkmate::assert_numeric(B_CT_BIO, lower = 0, upper = 5000, min.len = 1)
   checkmate::assert_numeric(B_CT_LANDSCAPE, lower = 0, upper = 5000,min.len = 1)
+  checkmate::assert_logical(B_LU_ECO1,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO2,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO3,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO4,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO5,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO6,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO7,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO8,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO9,len = arg.length)
+  checkmate::assert_logical(B_LU_ECO10,len = arg.length)
   
   # check and update the measure table
   dt.er.meas <- bbwp_check_meas(measures, eco = TRUE, score = TRUE)
-  
-  # add bbwp table for crop rotation related measures
-  dt.er.farm <- as.data.table(BBWPC::er_farm_measure)
-  dt.er.farm <- dcast(dt.er.farm,indicator~eco_id,value.var = 'er_score')
-  
-  # add bwwp table for crop lists relevant for ecoregeling
-  dt.er.crops <- as.data.table(BBWPC::er_crops)
-  dt.er.crops <- dt.er.crops[,.(eco_id,b_lu_brp)]
   
   # get internal table with importance of environmental challenges
   dt.er.scoring <- as.data.table(BBWPC::er_scoring)
@@ -73,8 +88,17 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
   # collect data in one data.table
   dt <- data.table(id = 1:arg.length,
                    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
-                   B_LU_BRP = B_LU_BRP,
                    B_LU_BBWP = B_LU_BBWP,
+                   B_LU_ECO1 = B_LU_ECO1,
+                   B_LU_ECO2 = B_LU_ECO2,
+                   B_LU_ECO3 = B_LU_ECO3,
+                   B_LU_ECO4 = B_LU_ECO4,
+                   B_LU_ECO5 = B_LU_ECO5,
+                   B_LU_ECO6 = B_LU_ECO6,
+                   B_LU_ECO7 = B_LU_ECO7,
+                   B_LU_ECO8 = B_LU_ECO8,
+                   B_LU_ECO9 = B_LU_ECO9,
+                   B_LU_ECO10 = B_LU_ECO10,
                    B_AER_CBS = B_AER_CBS,
                    B_AREA = B_AREA,
                    B_CT_SOIL = B_CT_SOIL, 
@@ -90,16 +114,28 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
   # add the generic farm score as baseline
   # this gives the averaged ER score based on the crops in crop rotation plan
   dt.farm <- er_croprotation(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR,
-                             B_LU_BRP = dt$B_LU_BRP,
                              B_LU_BBWP = dt$B_LU_BBWP,
+                             B_LU_ECO1 = dt$B_LU_ECO1,
+                             B_LU_ECO2 = dt$B_LU_ECO2,
+                             B_LU_ECO3 = dt$B_LU_ECO3,
+                             B_LU_ECO4 = dt$B_LU_ECO4,
+                             B_LU_ECO5 = dt$B_LU_ECO5,
+                             B_LU_ECO6 = dt$B_LU_ECO6,
+                             B_LU_ECO7 = dt$B_LU_ECO7,
+                             B_LU_ECO8 = dt$B_LU_ECO8,
+                             B_LU_ECO9 = dt$B_LU_ECO9,
+                             B_LU_ECO10 = dt$B_LU_ECO10,
                              B_AER_CBS = dt$B_AER_CBS,
                              B_AREA = dt$B_AREA,
                              B_CT_SOIL = dt$B_CT_SOIL,
                              B_CT_WATER = dt$B_CT_WATER,
                              B_CT_CLIMATE = dt$B_CT_CLIMATE,
                              B_CT_BIO = dt$B_CT_BIO,
-                             B_CT_LANDSCAPE = dt$B_CT_LANDSCAPE) #,
-                             #measures = measures)
+                             B_CT_LANDSCAPE = dt$B_CT_LANDSCAPE,
+                             measures = measures,
+                             sector = sector)
+  
+  
   
   # calculate the change in opportunity indexes given the measures taken
   
@@ -113,9 +149,7 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
     if(nrow(dt.er.meas) > 0){
       
       # calculate
-      dt.meas.impact <- er_meas_score(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR, 
-                                      B_AER_CBS = dt$B_AER_CBS,
-                                      B_LU_BRP = dt$B_LU_BRP,
+      dt.meas.impact <- er_meas_score(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
                                       B_LU_BBWP = B_LU_BBWP,
                                       B_LU_ECO1 = B_LU_ECO1,
                                       B_LU_ECO2 = B_LU_ECO2,
@@ -124,11 +158,16 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
                                       B_LU_ECO5 = B_LU_ECO5,
                                       B_LU_ECO6 = B_LU_ECO6,
                                       B_LU_ECO7 = B_LU_ECO7,
+                                      B_LU_ECO8 = B_LU_ECO8,
+                                      B_LU_ECO9 = B_LU_ECO9,
+                                      B_LU_ECO10 = B_LU_ECO10,
                                       B_AER_CBS = B_AER_CBS,
                                       B_AREA = B_AREA,
                                       measures = measures, 
                                       sector = sector)
 
+    
+      
       # merge with dt
       dt <- merge(dt,dt.meas.impact,by='id')
       
@@ -185,7 +224,7 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
   dt <- dt[, c(cols) := lapply(.SD, round, digits = 0),.SDcols = cols]
   
   # update the field-reward with the farm-reward (in euro/ha)
-  dt[,S_ER_REWARD := S_ER_REWARD + dt.farm$S_ER_REWARD / sum(B_AREA)]
+  dt[,S_ER_REWARD := S_ER_REWARD + dt.farm$S_ER_REWARD]
   
   # extract value
   value <- dt[,mget(c('id',cols))]

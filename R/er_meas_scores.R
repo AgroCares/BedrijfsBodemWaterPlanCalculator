@@ -106,17 +106,18 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     # set first all missing data impacts to 0
     dt[,c(cols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = cols]
     
-    # set the score to zero when not applicable for given BBWP or ECO crop category
+    # set the score to zero when not applicable for given BBWP category
     dt[(B_LU_BBWP == 1 & nc1 == 0) | (B_LU_BBWP == 2 & nc2 == 0), c(cols) := 0]
     dt[(B_LU_BBWP == 3 & nc3 == 0) | (B_LU_BBWP == 4 & nc4 == 0), c(cols) := 0]
     dt[(B_LU_BBWP == 5 & nc5 == 0) | (B_LU_BBWP == 6 & nc6 == 0), c(cols) := 0]
     dt[(B_LU_BBWP == 7 & nc7 == 0) | (B_LU_BBWP == 8 & nc8 == 0), c(cols) := 0]
     dt[(B_LU_BBWP == 9 & nc9 == 0) | (B_LU_BBWP == 10 & nc10 == 0), c(cols) := 0]
     dt[(B_LU_BBWP == 11 & nc11 == 0) | (B_LU_BBWP == 12 & nc12 == 0), c(cols) := 0]
-    dt[(B_LU_ECO1 == 1 & eco1 == 0) | (B_LU_ECO2 == 1 & eco2 == 0), c(cols) := 0]
-    dt[(B_LU_ECO3 == 1 & eco3 == 0) | (B_LU_ECO4 == 1 & eco4 == 0), c(cols) := 0]
-    dt[(B_LU_ECO5 == 1 & eco5 == 0) | (B_LU_ECO6 == 1 & eco6 == 0), c(cols) := 0]
-    dt[B_LU_ECO7 == 1 & eco7 == 0, c(cols) := 0]
+    
+    # set the score to zero when nog applicable as ECO category
+    dt[,ecocheck := B_LU_ECO1 * eco1 + B_LU_ECO2 * eco2 + B_LU_ECO3 * eco3 + B_LU_ECO4 * eco4 + 
+                    B_LU_ECO5 * eco5 + B_LU_ECO6 * eco6 + B_LU_ECO7 * eco7]
+    dt[ecocheck == 0, c(cols) := 0]
 
   # set the score and profit to zero when the measure is not applicable given sector or soil type
   
