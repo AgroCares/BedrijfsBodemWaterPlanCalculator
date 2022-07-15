@@ -223,7 +223,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt.er.reward <- as.data.table(BBWPC::er_aer_reward)
   
   
-  
+  ## CHECK: express as weighted mean score over all farm area???
   
   
   
@@ -270,80 +270,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     # add all financial rewards per field
     dt.fin <- dt.fin[,list(reward = sum(value * er_cf * B_AREA))]
   
-  # ---- adapt dt to get the Ecoregeling score ----
-    
-    # select relevant columns
-    cols <- colnames(dt.meas)[grepl('^er_|^nc|^acc|bbwp_id|eco_id|level|dairy|arable|veget|tree|sand|loes|clay|peat',colnames(dt.meas))]
-    
-    # add all measures to the input
-    dt.meas <- dt.meas[level=='farm',mget(cols)]
-    
-    # merge with the measures
-    dt.score <- dt[,as.list(dt.meas),by=names(dt)]
-    
-    # get the scores for all land use related scores
-    
-    
-    
-    
-    # add the generic farm score as baseline
-  
-    # start with zero points
-    dt[, c(cols) := list(0,0,0,0,0)]
-  
-    # melt the data.table to simplify addition of basic ER points
-    dt.score <-  melt(dt, 
-                      id.vars = c('id','B_SOILTYPE_AGR','B_LU_BRP','B_AREA'),
-                      measure.vars = cols,
-                      variable.name = 'indicator',
-                      value.name = 'm0')
-  
-    # merge dt.farm with the farm crop rotation based measures
-    dt.score <- merge(dt.score,dt.er.farm,by='indicator',allow.cartesian = TRUE)
-  
-    # apply filters and selections
-  
-      # start value for ER score and ER reward
-      dt.score[,erscore := 0]
-     
-      # add kruidenrijke randen (EG15)
-      dt.score[B_LU_BRP %in% dt.er.crops[eco_id=='EG15',b_lu_brp], erscore := erscore + EG15]
-          
-      # add kleinschalig landschap (EG22)
-      dt.score[B_AREA < 2, erscore := erscore + EG22]
-         
-      # add filter for rustgewas (EB1)
-      dt.score[,cf := fifelse(B_LU_BRP %in% dt.er.crops[eco_id=='EB1',b_lu_brp],1,0)]
-      
-      # add percentage rustgewassen (EB1)
-      dt.score[,B_AREA_RR := sum(B_AREA * cf) / sum(B_AREA)]
-      dt.score[B_AREA_RR > 20 & B_AREA_RR <= 30, erscore := erscore + EB1A]
-      dt.score[B_AREA_RR > 30 & B_AREA_RR <= 40, erscore := erscore + EB1B]
-      dt.score[B_AREA_RR > 40, erscore := erscore + EB1C]
-  
-      # add eiwitgewassen (EB2)
-      dt.score[B_LU_BRP %in% dt.er.crops[eco_id=='EB2',b_lu_brp], erscore := erscore + EB2]
-      
-      # add meerjarige gewassen (EB3)
-      dt.score[B_LU_BRP %in% dt.er.crops[eco_id=='EB3',b_lu_brp], erscore := erscore + EB3]
-      
-      # add diepwortelende gewassen (EB8)
-      dt.score[B_LU_BRP %in% dt.er.crops[eco_id=='EB8',b_lu_brp], erscore := erscore + EB8]
-      
-      # teelt van gewassen met een gunstige wortel-spruit (EB9)
-      dt.score[B_LU_BRP %in% dt.er.crops[eco_id=='EB9',b_lu_brp], erscore := erscore + EB9]
-      
-  # merge with soil specific urgency table
-  
-    # add soil type for political and environmental urgency
-    dt.score[grepl('klei', B_SOILTYPE_AGR) , soiltype := 'klei']
-    dt.score[grepl('zand|dal', B_SOILTYPE_AGR), soiltype := 'zand']
-    dt.score[grepl('veen', B_SOILTYPE_AGR), soiltype := 'veen']
-    dt.score[grepl('loess', B_SOILTYPE_AGR), soiltype := 'loess']
-    
-    # merge with soil specific urgency table
-    dt.score <- merge(dt.score,dt.er.urgency, by= c('indicator','soiltype'),allow.cartesian = TRUE)
-    
+   
     # calculate the weighed average ER score (points/ ha) for the whole farm due to crop rotation 
     dt.score <- dt.score[,list(erscore = weighted.mean(erscore * urgency, B_AREA)),by = indicator]
     
