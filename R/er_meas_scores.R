@@ -40,7 +40,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
   
   # check on the inputs
-  arg.length <- max(length(B_SOILTYPE_AGR), length(B_LU_BBWP),length(B_AER_CBS), length(B_LU_ECO1),
+  arg.length <- max(length(B_SOILTYPE_AGR), length(B_LU_BBWP),length(B_AER_CBS), 
                     length(B_LU_ECO1),length(B_LU_ECO2),length(B_LU_ECO3),length(B_LU_ECO4),
                     length(B_LU_ECO5),length(B_LU_ECO6),length(B_LU_ECO7),length(B_LU_ECO8),
                     length(B_LU_ECO9),length(B_LU_ECO10))
