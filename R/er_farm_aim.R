@@ -6,9 +6,7 @@
 #' @param B_AREA (numeric) The area of the field (m2) 
 #' @param medalscore (character) The desired medal score expressed as bronze, silver or gold 
 #' @param farmscore (numeric) The desired total ER score on farm level
-
 #' 
-#'    
 #' @import data.table
 #'
 #' @export
@@ -37,24 +35,10 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
                    medalscore = medalscore,
                    farmscore = farmscore)
   
-  # add target farmscore corresponding with the medal score if there is no farmscore given
-  if(is.na(farmscore) == TRUE){
-  
-      # calculate medalscore based on the total farm area
-      dt[,farmscore := fifelse(medalscore == "bronze", sum(B_AREA)*14, NA_real_)]
-      dt[,farmscore := fifelse(medalscore == "silver", sum(B_AREA)*22, farmscore)]
-      dt[,farmscore := fifelse(medalscore == "gold", sum(B_AREA)*35, farmscore)]
-      
-      # normalize farmscore
-      vec <- scales::rescale(c(1,(sum(B_AREA)*35),dt$farmscore[1]), to = c(0,100))
-      dt[, farmscore := vec[3]]
-      
-      } else{
-        
-    # normalize farmscore if there is a target farmscore given 
-    vec <- scales::rescale(c(1,(sum(B_AREA)*35),dt$farmscore[1]), to = c(0,100))
-    dt[, farmscore := vec[3]]
-  }
+  # calculate minimum score for medals
+  dt[medalscore == "bronze" & is.na(farmscore),farmscore := B_AREA * 14]
+  dt[medalscore == "silver" & is.na(farmscore),farmscore := B_AREA * 22]
+  dt[medalscore == "gold" & is.na(farmscore),farmscore := B_AREA * 35]
   
   # add soil type
   dt[grepl('klei', B_SOILTYPE_AGR) , soiltype := 'klei']
@@ -70,7 +54,7 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
              measure.vars = c('cf_soil', 'cf_water','cf_climate', 'cf_biodiversity','cf_landscape'),
              variable.name = 'indicator')
   
-  dt[,value.mis := (1 - sum(value))/sum(value==0),by='id']
+  dt[,value.mis := (1 - sum(value)) / sum(value==0),by='id']
   dt[value == 0, value := value.mis]
   
   # weighted mean on farm level
