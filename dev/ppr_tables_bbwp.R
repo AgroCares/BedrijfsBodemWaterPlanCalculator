@@ -18,46 +18,67 @@ require(data.table);require(readxl);library(usethis)
   bbwp_measures[,c(scols) := lapply(.SD,function(x) fifelse(is.na(x),0,x)),.SDcols = scols]
   
   # create new crop categories in new columns bbwp, eco1 and eco2
+  
+    # set BBWP categories where a measure can be applied
     
-    # definition of the eco categories 
-    # eco1 includes: natuur; (kruidenrijke) rand; vanggewas; wortelspruit gewas; rooivruchten (voorjaar); maiskolvenschroot;
-    # eco2 includes: rooivruchten (najaar); mais; groenbemesters; sloten langs grasland; 
-    # eco3 includes: sloten langs grasland of bouwland; groenebraak;
-    # eco4 includes: eiwitgewas; heg,haag,struweel; akkerranden,keverbanken;
-    # eco5 includes: voedergewas; overig hout;
-    # eco6 includes: meerjarig gewas; riet,poelen; bufferstrook langs bouwland;
-    # eco7 includes: diepwortelend; natte teelten; granen;
-  
-    # definition of BBWP categories
-  
-    # set BBWP categories (crops can not occur in multiple BBWP categories)
+    # cat1 is permanent grassland
     bbwp_measures[,nc1:= fifelse(c1==1,1,0)]
-    bbwp_measures[,nc2:= fifelse(c2==1,1,0)]
-    bbwp_measures[,nc3:= fifelse(c3==1,1,0)]
-    bbwp_measures[,nc4:= fifelse(c3==1,1,0)]
-    bbwp_measures[,nc5:= fifelse(c5==1,1,0)]
-    bbwp_measures[,nc6:= fifelse(c6==1,1,0)]
-    bbwp_measures[,nc7:= fifelse(c7==1,1,0)]
-    bbwp_measures[,nc8:= fifelse(c8==1,1,0)] 
-    bbwp_measures[,nc9:= fifelse(c9==1,1,0)] 
-    bbwp_measures[,tmp1:= nc1+nc2+nc3+nc4+nc5+nc6+nc7+nc8+nc9]
-    bbwp_measures[,nc3:= fifelse(tmp1==0 & (c15==1|c27==1|c14==1),1,0)]
-    bbwp_measures[,nc4:= fifelse(tmp1==0 & (c17==1),1,0)]
-    bbwp_measures[,nc8:= fifelse(tmp1==0 & (c22==1|c25==1|c24==1|c23==1|c26==1),1,0)]
-    bbwp_measures[,nc9:= fifelse(tmp1==0 & (c21==1),1,0)]
-    bbwp_measures[,tmp2:= nc1+nc2+nc3+nc4+nc5+nc6+nc7+nc8+nc9]
-    bbwp_measures[,nc10:= fifelse(tmp1==0 & tmp2==0 & (c10==1|c28==1|c29==1|c20==1|c19==1),1,0)]
-    bbwp_measures[,nc11:= fifelse(tmp1==0 & tmp2==0 & (c11==1|c16==1|c13==1),1,0)]
-    bbwp_measures[,nc12:= fifelse(tmp1==0 & tmp2==0 & nc11==0 & (c12==1|c18==1),1,0)]
     
-    # add ecoregling categories
-    bbwp_measures[,eco1:= fifelse(c8==1|c10==1|c11==1|c15==1|c21==1|c17==1,1,0)]
-    bbwp_measures[,eco2:= fifelse(c4==1|c9==1|c16==1|c19==1,1,0)]
-    bbwp_measures[,eco3:= fifelse(c20==1|c24==1,1,0)] 
-    bbwp_measures[,eco4:= fifelse(c12==1|c22==11|c29==1,1,0)]
-    bbwp_measures[,eco5:= fifelse(c23==1|c18==1,1,0)] 
-    bbwp_measures[,eco6:= fifelse(c14==1|c25==1|c28==1,1,0)]
-    bbwp_measures[,eco7:= fifelse(c26==1|c27==1|c13==1,1,0)]
+    # cat2 tijdelijk grasland, graszaad etc
+    bbwp_measures[,nc2:= fifelse(c2==1,1,0)]
+    
+    # cat3 is rustgewassen (niet gras)
+    bbwp_measures[,nc3:= fifelse(c3==1|c15==1|c27==1|c14==1,1,0)]
+    
+    # cat4 is rooivrucht
+    bbwp_measures[,nc4:= fifelse(c3==1|c17==1,1,0)]
+    
+    # cat5 is groenten
+    bbwp_measures[,nc5:= fifelse(c5==1,1,0)]
+    
+    # cat6 zijn bloembollen en sierteelt
+    bbwp_measures[,nc6:= fifelse(c6==1,1,0)]
+    
+    # cat7 is boomteelt, fruit, etc
+    bbwp_measures[,nc7:= fifelse(c7==1,1,0)]
+    
+    # cat8 is natuur
+    bbwp_measures[,nc8:= fifelse(c8==1|c22==1|c25==1|c24==1|c23==1|c26==1,1,0)] 
+    
+    # cat9 is mais
+    bbwp_measures[,nc9:= fifelse(c9==1|c21==1,1,0)] 
+    
+    # cat10 is (kruidenrijke) randen
+    bbwp_measures[,nc10:= fifelse(c10==1|c28==1|c29==1|c20==1|c19==1,1,0)]
+    
+    # cat11 is vanggewas
+    bbwp_measures[,nc11:= fifelse(c11==1|c16==1|c13==1,1,0)]
+    
+    # cat12 is eiwitgewas
+    bbwp_measures[,nc12:= fifelse(c12==1|c18==1,1,0)]
+    
+    # add ecoregeling categories
+    
+      # eco1 includes: natuur; (kruidenrijke) rand; vanggewas; wortelspruit gewas; rooivruchten (voorjaar); maiskolvenschroot;
+      bbwp_measures[,eco1:= fifelse(c8==1|c10==1|c11==1|c15==1|c21==1|c17==1,1,0)]
+    
+      # eco2 includes: rooivruchten (najaar); mais; groenbemesters; sloten langs grasland; 
+      bbwp_measures[,eco2:= fifelse(c4==1|c9==1|c16==1|c19==1,1,0)]
+      
+      # eco3 includes: sloten langs grasland of bouwland; groenebraak;
+      bbwp_measures[,eco3:= fifelse(c20==1|c24==1,1,0)] 
+    
+      # eco4 includes: eiwitgewas; heg,haag,struweel; akkerranden,keverbanken;
+      bbwp_measures[,eco4:= fifelse(c12==1|c22==11|c29==1,1,0)]
+      
+      # eco5 includes: voedergewas; overig hout;
+      bbwp_measures[,eco5:= fifelse(c23==1|c18==1,1,0)] 
+    
+      # eco6 includes: meerjarig gewas; riet,poelen; bufferstrook langs bouwland;
+      bbwp_measures[,eco6:= fifelse(c14==1|c25==1|c28==1,1,0)]
+      
+      # eco7 includes: diepwortelend; natte teelten; granen;
+      bbwp_measures[,eco7:= fifelse(c26==1|c27==1|c13==1,1,0)]
      
     # setnames
     setnames(bbwp_measures,old = c('bouwland','productief','beteelbaar'),new = c('eco8','eco9','eco10'))
