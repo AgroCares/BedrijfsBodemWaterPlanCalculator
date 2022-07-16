@@ -51,7 +51,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_
   er_total = NULL
   
   # derive a table with all possible field measurements
-  dt.meas.av <- bbwp_check_meas(measures,eco = TRUE, score = FALSE)
+  dt.meas.av <- bbwp_check_meas(dt = NULL,eco = TRUE, score = FALSE)
   dt.meas.av <- dt.meas.av[level=='field']
   
   # get internal table with importance of environmental challenges
@@ -60,7 +60,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_
   er_aim <- er_scoring[type == 'aim'][,type := NULL]
   
   # check length of the inputs
-  arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BRP),length(B_LU_BBWP),length(A_P_SG),length(B_SLOPE_DEGREE),
+  arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BBWP),length(A_P_SG),length(B_SLOPE_DEGREE),
                     length(M_DRAIN),length(D_SA_W),length(B_CT_SOIL),length(B_CT_WATER),length(B_CT_CLIMATE),length(B_AER_CBS),
                     length(B_CT_BIO),length(B_CT_LANDSCAPE),
                     length(B_LU_ECO1),length(B_LU_ECO2),length(B_LU_ECO3),length(B_LU_ECO4),
@@ -70,7 +70,6 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
                                                        'dalgrond','moerige_klei','veen','loess'))
-  checkmate::assert_integerish(B_LU_BRP, lower = 0, len = arg.length)
   checkmate::assert_integerish(B_LU_BBWP, lower = 0, upper = 9,len = arg.length)
   checkmate::assert_character(B_SOILTYPE_AGR,len = arg.length)
   checkmate::assert_numeric(B_SLOPE_DEGREE, lower = 0, upper = 30, any.missing = FALSE, len = arg.length)
