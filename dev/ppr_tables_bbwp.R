@@ -130,38 +130,42 @@ require(data.table);require(readxl);library(usethis)
   er_crops[,nc7:= fifelse(crop_cat7==1,1,0)]
   er_crops[,nc8:= fifelse(crop_cat8==1,1,0)] 
   er_crops[,nc9:= fifelse(crop_cat9==1,1,0)] 
-  er_crops[,tmp1:= nc1+nc2+nc3+nc4+nc5+nc6+nc7+nc8+nc9]
-  er_crops[,nc3:= fifelse(tmp1==0 & (c15==1|c27==1|c14==1),1,0)]
-  er_crops[,nc4:= fifelse(tmp1==0 & (c17==1),1,0)]
-  er_crops[,nc8:= fifelse(tmp1==0 & (c22==1|c25==1|c24==1|c23==1|c26==1),1,0)]
-  er_crops[,nc9:= fifelse(tmp1==0 & (c21==1),1,0)]
-  er_crops[,tmp2:= nc1+nc2+nc3+nc4+nc5+nc6+nc7+nc8+nc9]
-  er_crops[,nc10:= fifelse(tmp1==0 & tmp2==0 & (c10==1|c28==1|c29==1|c20==1|c19==1),1,0)]
-  er_crops[,nc11:= fifelse(tmp1==0 & tmp2==0 & (c11==1|c16==1|c13==1),1,0)]
-  er_crops[,nc12:= fifelse(tmp1==0 & tmp2==0 & nc11==0 & (c12==1|c18==1),1,0)]
-  er_crops[,eco1:= fifelse(crop_cat8==1|c10==1|c11==1|c15==1|c21==1|c17==1,1,0)]
+  er_crops[,nc10:= fifelse(c10==1,1,0)] 
+  er_crops[,nc11:= fifelse(c11==1,1,0)] 
+  er_crops[,nc12:= fifelse(c12==1,1,0)] 
+  er_crops[,eco1:= fifelse((crop_cat8==1|c10==1|c11==1|c15==1|c21==1|c17==1) & c28==0,1,0)]
   er_crops[,eco2:= fifelse(crop_cat4==1|crop_cat9==1|c16==1|c19==1,1,0)]
+  er_crops[B_LU_BRP == 7002, c('eco1','eco2') := list(0,1)]
   er_crops[,eco3:= fifelse(c20==1|c24==1,1,0)] 
-  er_crops[,eco4:= fifelse(c12==1|c22==11|c29==1,1,0)]
+  er_crops[,eco4:= fifelse(c12==1|c22==1|c29==1,1,0)]
   er_crops[,eco5:= fifelse(c23==1|c18==1,1,0)] 
   er_crops[,eco6:= fifelse(c14==1|c25==1|c28==1,1,0)]
   er_crops[,eco7:= fifelse(c26==1|c27==1|c13==1,1,0)]
   
-  #keep relevant columns and remove rows without B_LU_BRP code
-  er_crops[,c(3:31,35,45:46):= NULL]
-  er_crops[complete.cases(B_LU_BRP),]
+  # each BBWP category in one column
+  er_crops[nc1==1, B_LU_BBWP := 1]
+  er_crops[nc2==1, B_LU_BBWP := 2]
+  er_crops[nc3==1, B_LU_BBWP := 3]
+  er_crops[nc4==1, B_LU_BBWP := 4]
+  er_crops[nc5==1, B_LU_BBWP := 5]
+  er_crops[nc6==1, B_LU_BBWP := 6]
+  er_crops[nc7==1, B_LU_BBWP := 7]
+  er_crops[nc8==1, B_LU_BBWP := 8]
+  er_crops[nc9==1, B_LU_BBWP := 8]
+  er_crops[nc10==1, B_LU_BBWP := 10]
+  er_crops[nc11==1, B_LU_BBWP := 11]
+  er_crops[nc12==1, B_LU_BBWP := 12]
   
-  # rename cols
-  setnames(er_crops,c("nc1","nc2","nc3","nc4","nc5","nc6","nc7","nc8","nc9","nc10","nc11","nc12"),c("crop_cat1","crop_cat2","crop_cat3","crop_cat4","crop_cat5","crop_cat6","crop_cat7","crop_cat8","crop_cat9","crop_cat10","crop_cat11","crop_cat12"))
+  # remove columns not needed
+  cols.rem <- c(paste0('crop_cat',1:9),paste0('c',10:29),paste0('nc',1:12),'SUM')
   
-  # load in csv with measures and brp codes of crops to which the measure applies
-  m_brp <- as.data.table(fread('dev/er_croplist_supplemented_versie aangevuld AB.csv',dec=','))
-  
-  # merge measures table and crop table with new categories
-  er_crops <- merge(m_brp,er_crops, by.x = "b_lu_brp", by.y = "B_LU_BRP")
-  
-  # remove duplicate columns
-  er_crops[, B_LU_NAME := NULL]
+  # keep relevant columns and remove rows without B_LU_BRP code
+  er_crops[,c(cols.rem):= NULL]
+
+  # rename
+  setnames(er_crops, 
+           old = c('bouwland','productive','beteelbaar'),
+           new = c('eco8','eco9','eco10'))
   
   # save measures as bbwp table
   use_data(er_crops, overwrite = TRUE)
