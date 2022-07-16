@@ -213,30 +213,45 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt.farm.urgency <- merge(dt.er.urgency[soiltype %in% dt$soiltype], dt.farm.soiltype,by= 'soiltype')
     dt.farm.urgency <- dt.farm.urgency[,list(urgency = weighted.mean(x = urgency,w = fr_soil)),by = indicator]
     
-    dt3 <- melt(dt.meas.farm, 
-                id.vars = c('bbwp_id','bbwp_conflict'),
-                measure = patterns(erscore = "^er_"),
-                variable.name = 'indicator',
-                value.name = 'value')
-    dt3[,indicator := gsub('er_', '',indicator)]
-    dt3 <- merge(dt3,dt.farm.urgency[,.(indicator,urgency)],by= 'indicator',all.x = T)
+    # add farm measures when present
+    if(nrow(dt.meas.farm) > 0){
+      
+      dt3 <- melt(dt.meas.farm, 
+                  id.vars = c('bbwp_id','bbwp_conflict'),
+                  measure = patterns(erscore = "^er_"),
+                  variable.name = 'indicator',
+                  value.name = 'value')
+      dt3[,indicator := gsub('er_', '',indicator)]
+      dt3 <- merge(dt3,dt.farm.urgency[,.(indicator,urgency)],by= 'indicator',all.x = T)
+      
+      # adapt the score based on urgency
+      dt3[!grepl('euro',indicator), value := value * urgency]
+      
+      # dcast to add totals, to be used to update scores when measures are conflicting
+      cols <- c('biodiversity', 'climate', 'landscape', 'soil','water','total')
+      dt4 <- dcast(dt3, bbwp_id + bbwp_conflict  ~ indicator, value.var = 'value')
+      dt4[, total := biodiversity + climate + landscape + soil + water]
+      dt4[, oid := frank(-total, ties.method = 'first',na.last = 'keep'),by = c('bbwp_conflict')]
+      dt4[oid > 1, c(cols) := 0]
+      
+      # add correction reward
+      cfr <- weighted.mean(x = dt$reward_cf, w = dt$B_AREA)
+      
+      # sum total score (score per hectare)
+      dt.farm.score <- dt4[total>0,lapply(.SD,sum), .SDcols = cols]
+      dt.farm.reward <- dt4[total>0,list(er_reward = cfr * (max(euro_ha) + max(euro_farm) / dt.farm$area_farm))]
+      
+    } else {
+      
+      dt.farm.score <- data.table(biodiversity = 0,
+                                  climate = 0,
+                                  landscape = 0,
+                                  soil = 0,
+                                  water = 0,
+                                  total = 0)
+      dt.farm.reward <- data.table(er_reward = 0)
+    }
     
-    # adapt the score based on urgency
-    dt3[!grepl('euro',indicator), value := value * urgency]
-    
-    # dcast to add totals, to be used to update scores when measures are conflicting
-    cols <- c('biodiversity', 'climate', 'landscape', 'soil','water','total')
-    dt4 <- dcast(dt3, bbwp_id + bbwp_conflict  ~ indicator, value.var = 'value')
-    dt4[, total := biodiversity + climate + landscape + soil + water]
-    dt4[, oid := frank(-total, ties.method = 'first',na.last = 'keep'),by = c('bbwp_conflict')]
-    dt4[oid > 1, c(cols) := 0]
-    
-    # add correction reward
-    cfr <- weighted.mean(x = dt$reward_cf, w = dt$B_AREA)
-    
-    # sum total score (score per hectare)
-    dt.farm.score <- dt4[total>0,lapply(.SD,sum), .SDcols = cols]
-    dt.farm.reward <- dt4[total>0,list(er_reward = cfr * (max(euro_ha) + max(euro_farm) / dt.farm$area_farm))]
     
   # total score for farm measures and crop rotation
   out <- dt.farm.score + dt.field.score
