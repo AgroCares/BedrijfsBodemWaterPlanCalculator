@@ -21,65 +21,53 @@ require(data.table);require(readxl);library(usethis)
   
     # set BBWP categories where a measure can be applied
     
-    # cat1 is permanent grassland
+    # cat1 is permanent grassland, cat2 tijdelijk grasland, graszaad etc
     bbwp_measures[,nc1:= fifelse(c1==1,1,0)]
-    
-    # cat2 tijdelijk grasland, graszaad etc
     bbwp_measures[,nc2:= fifelse(c2==1,1,0)]
     
-    # cat3 is rustgewassen (niet gras)
-    bbwp_measures[,nc3:= fifelse(c3==1|c15==1|c27==1|c14==1,1,0)]
+    # cat3 is rustgewassen (niet gras), cat4 is rooivrucht
+    bbwp_measures[,nc3:= fifelse(c3==1,1,0)]
+    bbwp_measures[,nc4:= fifelse(c4==1,1,0)]
     
-    # cat4 is rooivrucht
-    bbwp_measures[,nc4:= fifelse(c3==1|c17==1,1,0)]
-    
-    # cat5 is groenten
+    # cat5 is groenten, cat6 zijn bloembollen en sierteelt
     bbwp_measures[,nc5:= fifelse(c5==1,1,0)]
-    
-    # cat6 zijn bloembollen en sierteelt
     bbwp_measures[,nc6:= fifelse(c6==1,1,0)]
     
-    # cat7 is boomteelt, fruit, etc
+    # cat7 is boomteelt, fruit, etc, cat8 is natuur
     bbwp_measures[,nc7:= fifelse(c7==1,1,0)]
+    bbwp_measures[,nc8:= fifelse(c8==1,1,0)] 
     
-    # cat8 is natuur
-    bbwp_measures[,nc8:= fifelse(c8==1|c22==1|c25==1|c24==1|c23==1|c26==1,1,0)] 
+    # cat9 is mais, cat10 is (kruidenrijke) randen / sloten
+    bbwp_measures[,nc9:= fifelse(c9==1,1,0)] 
+    bbwp_measures[,nc10:= fifelse(c10==1,1,0)]
     
-    # cat9 is mais
-    bbwp_measures[,nc9:= fifelse(c9==1|c21==1,1,0)] 
-    
-    # cat10 is (kruidenrijke) randen
-    bbwp_measures[,nc10:= fifelse(c10==1|c28==1|c29==1|c20==1|c19==1,1,0)]
-    
-    # cat11 is vanggewas
-    bbwp_measures[,nc11:= fifelse(c11==1|c16==1|c13==1,1,0)]
-    
-    # cat12 is eiwitgewas
-    bbwp_measures[,nc12:= fifelse(c12==1|c18==1,1,0)]
+    # cat11 is vanggewas, cat12 is eiwitgewas
+    bbwp_measures[,nc11:= fifelse(c11==1,1,0)]
+    bbwp_measures[,nc12:= fifelse(c12==1,1,0)]
     
     # add ecoregeling categories
     
       # eco1 includes: natuur; (kruidenrijke) rand; vanggewas; wortelspruit gewas; rooivruchten (voorjaar); maiskolvenschroot;
-      bbwp_measures[,eco1:= fifelse(c8==1|c10==1|c11==1|c15==1|c21==1|c17==1,1,0)]
+      bbwp_measures[,eco1:= fifelse((nc3==1|nc4==1|nc9==1|nc10==1|nc11=1) & (c11==1|c15==1|c17==1|c21==1),1,0)]
     
       # eco2 includes: rooivruchten (najaar); mais; groenbemesters; sloten langs grasland; 
-      bbwp_measures[,eco2:= fifelse(c4==1|c9==1|c16==1|c19==1,1,0)]
+      bbwp_measures[,eco2:= fifelse((nc4==1|nc9==1|nc10==1|nc11==1) & (c16==1|c19==1),1,0)]
       
       # eco3 includes: sloten langs grasland of bouwland; groenebraak;
-      bbwp_measures[,eco3:= fifelse(c20==1|c24==1,1,0)] 
+      bbwp_measures[,eco3:= fifelse((nc8==1|nc10==1) & (c20==1|c24==1),1,0)] 
     
       # eco4 includes: eiwitgewas; heg,haag,struweel; akkerranden,keverbanken;
-      bbwp_measures[,eco4:= fifelse(c12==1|c22==11|c29==1,1,0)]
+      bbwp_measures[,eco4:= fifelse((nc8==1|nc10==1|nc12==1) & (c12==1|c22==1|c29),1,0)]
       
       # eco5 includes: voedergewas; overig hout;
-      bbwp_measures[,eco5:= fifelse(c23==1|c18==1,1,0)] 
+      bbwp_measures[,eco5:= fifelse((nc8==1|nc12==1) & (c18==1|c23==1),1,0)] 
     
       # eco6 includes: meerjarig gewas; riet,poelen; bufferstrook langs bouwland;
-      bbwp_measures[,eco6:= fifelse(c14==1|c25==1|c28==1,1,0)]
+      bbwp_measures[,eco6:= fifelse((nc3==1|nc8==1|nc10==1) & (c14==1|c25==1|c28)==1,1,0)]
       
-      # eco7 includes: diepwortelend; natte teelten; granen;
-      bbwp_measures[,eco7:= fifelse(c26==1|c27==1|c13==1,1,0)]
-     
+      # eco7 includes: diepwortelend; natte teelten; vogelgranen en arenstripper;
+      bbwp_measures[,eco7:= fifelse((nc3==1|nc8==1|nc11==1) & (c13==1|c26==1|c27==1),1,0)]
+      
     # setnames
     setnames(bbwp_measures,old = c('bouwland','productief','beteelbaar'),new = c('eco8','eco9','eco10'))
     
@@ -121,6 +109,7 @@ require(data.table);require(readxl);library(usethis)
   # eco5 includes: voedergewas; overig hout;
   # eco6 includes: meerjarig gewas; riet,poelen; bufferstrook langs bouwland;
   # eco7 includes: diepwortelend; natte teelten; granen;
+  # example: luzerne is C3 (rustgewas,bbwp), C11 (vanggewas,eco1), C12 (eiwt,eco4), C13 (diepwortelend,exo7), C14 (meerjarig, eco6),C18 (voedergewas,eco5)
   er_crops[,nc1:= fifelse(crop_cat1==1,1,0)]
   er_crops[,nc2:= fifelse(crop_cat2==1,1,0)]
   er_crops[,nc3:= fifelse(crop_cat3==1,1,0)]
@@ -133,14 +122,13 @@ require(data.table);require(readxl);library(usethis)
   er_crops[,nc10:= fifelse(c10==1,1,0)] 
   er_crops[,nc11:= fifelse(c11==1,1,0)] 
   er_crops[,nc12:= fifelse(c12==1,1,0)] 
-  er_crops[,eco1:= fifelse((crop_cat8==1|c10==1|c11==1|c15==1|c21==1|c17==1) & c28==0,1,0)]
-  er_crops[,eco2:= fifelse(crop_cat4==1|crop_cat9==1|c16==1|c19==1,1,0)]
-  er_crops[B_LU_BRP == 7002, c('eco1','eco2') := list(0,1)]
-  er_crops[,eco3:= fifelse(c20==1|c24==1,1,0)] 
-  er_crops[,eco4:= fifelse(c12==1|c22==1|c29==1,1,0)]
-  er_crops[,eco5:= fifelse(c23==1|c18==1,1,0)] 
-  er_crops[,eco6:= fifelse(c14==1|c25==1|c28==1,1,0)]
-  er_crops[,eco7:= fifelse(c26==1|c27==1|c13==1,1,0)]
+  er_crops[,eco1:= fifelse((nc3==1|nc4==1|nc9==1|nc10==1|nc11=1) & (c11==1|c15==1|c17==1|c21==1),1,0)]
+  er_crops[,eco2:= fifelse((nc4==1|nc9==1|nc10==1|nc11==1) & (c16==1|c19==1),1,0)]
+  er_crops[,eco3:= fifelse((nc8==1|nc10==1) & (c20==1|c24==1),1,0)] 
+  er_crops[,eco4:= fifelse((nc8==1|nc10==1|nc12==1) & (c12==1|c22==1|c29),1,0)]
+  er_crops[,eco5:= fifelse((nc8==1|nc12==1) & (c18==1|c23==1),1,0)] 
+  er_crops[,eco6:= fifelse((nc3==1|nc8==1|nc10==1) & (c14==1|c25==1|c28)==1,1,0)]
+  er_crops[,eco7:= fifelse((nc3==1|nc8==1|nc11==1) & (c13==1|c26==1|c27==1),1,0)]
   
   # each BBWP category in one column
   er_crops[nc1==1, B_LU_BBWP := 1]
@@ -151,7 +139,7 @@ require(data.table);require(readxl);library(usethis)
   er_crops[nc6==1, B_LU_BBWP := 6]
   er_crops[nc7==1, B_LU_BBWP := 7]
   er_crops[nc8==1, B_LU_BBWP := 8]
-  er_crops[nc9==1, B_LU_BBWP := 8]
+  er_crops[nc9==1, B_LU_BBWP := 9]
   er_crops[nc10==1, B_LU_BBWP := 10]
   er_crops[nc11==1, B_LU_BBWP := 11]
   er_crops[nc12==1, B_LU_BBWP := 12]
