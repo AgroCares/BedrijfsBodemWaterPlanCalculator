@@ -142,9 +142,9 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt.field[ecocheck == 0, c(cols) := 0]
 
     # set measures not applicable on arable, cultivated or productive land
-    dt.field[(B_LU_ECO8 == 1 & nc8 == 0), c(cols) := 0]
-    dt.field[(B_LU_ECO9 == 1 & nc9 == 0), c(cols) := 0]
-    dt.field[(B_LU_ECO10 == 1 & nc10 == 0), c(cols) := 0]
+    dt.field[B_LU_ECO8 == 1 & eco8 == 0, c(cols) := 0]
+    dt.field[B_LU_ECO9 == 1 & eco9 == 0, c(cols) := 0]
+    dt.field[B_LU_ECO10 == 1 & eco10 == 0, c(cols) := 0]
     
     # add columns for the sector to which the farms belong
     fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
@@ -204,8 +204,10 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     
     # calculate the weighed average ER score (points/ ha) for the whole farm due to measures taken
     dt.field.score <- dt2[total>0,lapply(.SD,function(x) weighted.mean(x,w = B_AREA)), .SDcols = cols]
-    dt.field.reward <- dt2[,list(er_reward = max(euro_ha * reward_cf))]
-      
+    dt.field.reward <- dt2[total>0,list(er_reward = max(euro_ha * reward_cf),
+                                        B_AREA = B_AREA[1]),by=id]
+    dt.field.reward <- dt.field.reward[,list(er_reward = weighted.mean(x = er_reward,w=B_AREA))]
+    
     # calculate the total score for farm measures
     dt.farm.soiltype <- dt[,list(fr_soil = B_AREA / sum(dt$B_AREA)),by = soiltype]
     dt.farm.urgency <- merge(dt.er.urgency[soiltype %in% dt$soiltype], dt.farm.soiltype,by= 'soiltype')
@@ -232,9 +234,9 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     # add correction reward
     cfr <- weighted.mean(x = dt$reward_cf, w = dt$B_AREA)
     
-    # sum total score
-    dt.farm.score <- dt4[,lapply(.SD,sum), .SDcols = cols]
-    dt.farm.reward <- dt4[,list(er_reward = cfr * (max(euro_ha) + max(euro_farm) / dt.farm$area_farm))]
+    # sum total score (score per hectare)
+    dt.farm.score <- dt4[total>0,lapply(.SD,sum), .SDcols = cols]
+    dt.farm.reward <- dt4[total>0,list(er_reward = cfr * (max(euro_ha) + max(euro_farm) / dt.farm$area_farm))]
     
   # total score for farm measures and crop rotation
   out <- dt.farm.score + dt.field.score
@@ -243,6 +245,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   out[,S_ER_REWARD := dt.farm.reward + dt.field.reward]
   setcolorder(out,'farmid')
   
-  # return the Ecoregelingen Score based on Crop Rotation Only
+  # return the Ecoregelingen Score based on Crop Rotation and Farm Measures
+  # output has units score / ha and euro/ha
   return(out)
 }
