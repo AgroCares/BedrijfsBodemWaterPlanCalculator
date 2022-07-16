@@ -31,7 +31,9 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   # add visual bindings
   eco_id = type = fr_area = id = er_urgency = NULL
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = fbulbs = bulbs = NULL
-  crop_cat1 = crop_cat2 = crop_cat3 = crop_cat4 = crop_cat5 = crop_cat6 = crop_cat7 = crop_cat8 = crop_cat9 = NULL
+  level = nc1 = nc2 = nc3 = nc4 = nc5 = nc6 = nc7 = nc8 = nc9 = nc10 = nc11 = nc12 = NULL
+  ecocheck = eco1 = eco2 = eco3 = eco4 = eco5 = eco6 = eco7 = eco8 = eco9 = eco10 = NULL
+  er_euro_farm = acc_anlb = bbwp_status = acc_glmc = B_AREA_REL = NULL
   soiltype = peat = clay = sand = silt = loess = NULL
   patterns = indicator = erscore = urgency = S_ER_REWARD = value = NULL
   total = biodiversity = climate = landscape = soil = water = oid = NULL

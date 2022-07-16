@@ -37,9 +37,12 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   
   # add visual bindings
   . = eco_id = farmid = b_lu_brp = type = erscore = B_AREA_RR = indicator = NULL
-  EG15 = EG22 = cf = EB1A = EB1B = EB1C = EB2 = EB3 = EB8 = EB9 = NULL
-  urgency = soiltype = NULL
-  er_profit = statcode = er_cf = id = value = reward = NULL
+  urgency = soiltype = er_profit = statcode = er_cf = id = value = reward = NULL
+  level = nc1 = nc2 = nc3 = nc4 = nc5 = nc6 = nc7 = nc8 = nc9 = nc10 = nc11 = nc12 = NULL
+  ecocheck = eco1 = eco2 = eco3 = eco4 = eco5 = eco6 = eco7 = eco8 = eco9 = eco10 = NULL
+  fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = patterns = fbulbs = bulbs = NULL
+  clay = sand = silt = peat = bbwp_id = B_AREA_REL = S_ER_REWARD = euro_farm = NULL
+  fr_soil = er_reward = fr_soil = reward_cf = euro_ha = oid = water = soil = climate = biodiversity = landscape = climate = total = NULL
   
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
@@ -80,6 +83,15 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   
   # add bbwp table for financial reward correction factor per AER
   dt.er.reward <- as.data.table(BBWPC::er_aer_reward)
+  
+  # get internal table with importance of environmental challenges
+  dt.er.scoring <- as.data.table(BBWPC::er_scoring)
+  setnames(dt.er.scoring,gsub('cf_','',colnames(dt.er.scoring)))
+  dt.er.urgency <- melt(dt.er.scoring[type=='urgency'],
+                        id.vars='soiltype',
+                        measure.vars = c('soil', 'water', 'climate',  'biodiversity', 'landscape'),
+                        variable.name = 'indicator',
+                        value.name = 'urgency')
   
   # collect total areas on farm level
   dt.farm <- data.table(area_farm = sum(B_AREA),

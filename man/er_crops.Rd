@@ -7,10 +7,10 @@
 \format{
 A data.table with 75 rows and 4 columns:
 \describe{
-  \item{eco_id}{The unique ID corresponding with a specific Ecoregelingen measure}
-  \item{b_lu_brp}{The crop type (conform BRP coding, preferable the most frequent crop on the field)}
-  \item{b_lu_name}{The crop name of the most frequent crop on the field}
-  \item{er_description}{The description of the crop related measure}
+  \item{eco_id}{bla bla}
+  \item{b_lu_brp}{bla bla}
+  \item{b_lu_name}{bla bla}
+  \item{er_description}{bla bla}
 }
 }
 \usage{

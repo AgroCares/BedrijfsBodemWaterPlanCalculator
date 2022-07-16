@@ -55,7 +55,6 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
                                                        'dalgrond','moerige_klei','veen','loess'))
-  checkmate::assert_integerish(B_LU_BRP, lower = 0, len = arg.length)
   checkmate::assert_integerish(B_LU_BBWP, lower = 0, len = arg.length)
   checkmate::assert_numeric(B_CT_SOIL, lower = 0, upper = 5000, min.len = 1)
   checkmate::assert_numeric(B_CT_WATER, lower = 0, upper = 5000, min.len = 1)

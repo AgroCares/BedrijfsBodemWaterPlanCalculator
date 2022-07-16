@@ -45,10 +45,13 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_
   # add visual bindings
   eco_id = type = fr_area = id = bbwp_id = NULL
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = fbulbs = bulbs = NULL
-  crop_cat1 = crop_cat2 = crop_cat3 = crop_cat4 = crop_cat5 = crop_cat6 = crop_cat7 = crop_cat8 = crop_cat9 = NULL
+  level = nc1 = nc2 = nc3 = nc4 = nc5 = nc6 = nc7 = nc8 = nc9 = nc10 = nc11 = nc12 = NULL
+  ecocheck = eco1 = eco2 = eco3 = eco4 = eco5 = eco6 = eco7 = eco8 = eco9 = eco10 = NULL
   soiltype = peat = clay = sand = silt = loess = NULL
   er_water = cf_water = er_soil = cf_soil = er_climate = cf_climate = er_biodiversity = cf_biodiversity = er_landscape = cf_landscape = NULL
-  er_total = NULL
+  er_total = B_AREA_FARM = er_reward = er_total_scaled = er_soil_scaled = er_water_scaled = NULL
+  er_climate_scaled = er_biodiversity_scaled = er_landscape_scaled= NULL
+  er_euro_combi = er_euro_ha = er_euro_farm = er_reward_scaled = oid = NULL
   
   # derive a table with all possible field measurements
   dt.meas.av <- bbwp_check_meas(dt = NULL,eco = TRUE, score = FALSE)
