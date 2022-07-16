@@ -48,7 +48,7 @@ require(data.table);require(readxl);library(usethis)
     # add ecoregeling categories
     
       # eco1 includes: natuur; (kruidenrijke) rand; vanggewas; wortelspruit gewas; rooivruchten (voorjaar); maiskolvenschroot;
-      bbwp_measures[,eco1:= fifelse((nc3==1|nc4==1|nc9==1|nc10==1|nc11=1) & (c11==1|c15==1|c17==1|c21==1),1,0)]
+      bbwp_measures[,eco1:= fifelse((nc3==1|nc4==1|nc9==1|nc10==1|nc11==1) & (c11==1|c15==1|c17==1|c21==1),1,0)]
     
       # eco2 includes: rooivruchten (najaar); mais; groenbemesters; sloten langs grasland; 
       bbwp_measures[,eco2:= fifelse((nc4==1|nc9==1|nc10==1|nc11==1) & (c16==1|c19==1),1,0)]
@@ -122,7 +122,7 @@ require(data.table);require(readxl);library(usethis)
   er_crops[,nc10:= fifelse(c10==1,1,0)] 
   er_crops[,nc11:= fifelse(c11==1,1,0)] 
   er_crops[,nc12:= fifelse(c12==1,1,0)] 
-  er_crops[,eco1:= fifelse((nc3==1|nc4==1|nc9==1|nc10==1|nc11=1) & (c11==1|c15==1|c17==1|c21==1),1,0)]
+  er_crops[,eco1:= fifelse((nc3==1|nc4==1|nc9==1|nc10==1|nc11==1) & (c11==1|c15==1|c17==1|c21==1),1,0)]
   er_crops[,eco2:= fifelse((nc4==1|nc9==1|nc10==1|nc11==1) & (c16==1|c19==1),1,0)]
   er_crops[,eco3:= fifelse((nc8==1|nc10==1) & (c20==1|c24==1),1,0)] 
   er_crops[,eco4:= fifelse((nc8==1|nc10==1|nc12==1) & (c12==1|c22==1|c29),1,0)]
@@ -154,6 +154,8 @@ require(data.table);require(readxl);library(usethis)
   setnames(er_crops, 
            old = c('bouwland','productive','beteelbaar'),
            new = c('eco8','eco9','eco10'))
+  
+  setcolorder(er_crops,c('B_LU_BRP','B_LU_NAME','B_LU_BBWP',paste0('eco',1:10)))
   
   # save measures as bbwp table
   use_data(er_crops, overwrite = TRUE)
