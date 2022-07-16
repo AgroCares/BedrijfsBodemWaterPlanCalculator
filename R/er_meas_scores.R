@@ -121,8 +121,8 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     
     # set the score to zero when not applicable as arable/productive/cultivated measure
     dt[B_LU_ECO8 == 1 & eco8 == 0, c(cols) := 0]
-    dt[B_LU_ECO9 ==1 & eco9 ==0, c(cols) := 0]
-    dt[B_LU_ECO10 ==1 & eco10 == 0, c(cols):= 0]
+    dt[B_LU_ECO9 == 1 & eco9 == 0, c(cols) := 0]
+    dt[B_LU_ECO10 == 1 & eco10 == 0, c(cols):= 0]
 
   # set the score and profit to zero when the measure is not applicable given sector or soil type
   
@@ -169,14 +169,14 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     # columns to be updated
     cols.sel <- c('er_climate','er_soil','er_water','er_landscape','er_biodiversity')
     
-    # measure EB1. Cultivate rustgewas on a field
-    cols.ad1 <- c(3,3,3,0,1)
-    cols.ad2 <- c(4,4,4,1,1)
-    dt[bbwp_id == 'G54', B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_arable]
-    dt[bbwp_id == 'G54' & B_AREA_REL <= 20, c(cols.sel) := 0]
-    dt[bbwp_id == 'G54' & B_AREA_REL > 35 & B_AREA_REL <= 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
-    dt[bbwp_id == 'G54' & B_AREA_REL > 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
-    
+    # measure EB1. Cultivate rustgewas on a field (already in er_croprotation)
+    # cols.ad1 <- c(3,3,3,0,1)
+    # cols.ad2 <- c(4,4,4,1,1)
+    # dt[bbwp_id == 'G54', B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_arable]
+    # dt[bbwp_id == 'G54' & B_AREA_REL <= 20, c(cols.sel) := 0]
+    # dt[bbwp_id == 'G54' & B_AREA_REL > 35 & B_AREA_REL <= 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    # dt[bbwp_id == 'G54' & B_AREA_REL > 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+  
     # measure EB12. Green cultivation on the field
     cols.ad1 <- c(2,3,3,1,1)
     cols.ad2 <- c(5,6,6,1,2)
@@ -231,7 +231,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     
     # melt dt
     dt <- melt(dt,
-               id.vars = c('id','bbwp_id','soiltype','bbwp_conflict'),
+               id.vars = c('id','bbwp_id','soiltype','bbwp_conflict','B_AREA'),
                measure = patterns(erscore = "^er_"),
                variable.name = 'indicator',
                value.name = 'value')
@@ -246,13 +246,13 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   # dcast to add totals, to be used to update scores when measures are conflicting
   
     cols <- c('biodiversity', 'climate', 'landscape', 'soil','water','total')
-    dt2 <- dcast(dt, id + soiltype + bbwp_id + bbwp_conflict ~ indicator, value.var = 'value')
+    dt2 <- dcast(dt, id + soiltype + bbwp_id + bbwp_conflict + B_AREA ~ indicator, value.var = 'value')
     dt2[, total := biodiversity + climate + landscape + soil + water]
     dt2[, oid := frank(-total, ties.method = 'first',na.last = 'keep'),by = c('id','bbwp_conflict')]
     dt2[oid > 1, c(cols) := 0]
     
   # calculate the weighed average ER score (points/ ha) for the whole farm due to measures taken
-  dt.field <- dt2[,lapply(.SD,sum), .SDcols = cols, by = 'id']
+  dt.field <- dt2[total > 0,lapply(.SD,sum), .SDcols = cols, by = 'id']
     
   # select total reward per field which is equal to the reward from the measure with the highest er_euro_ha (euro / ha)
   dt.reward <- dt[grepl('euro_ha',indicator),list(S_ER_REWARD = max(value,na.rm=T)),by = 'id']
@@ -268,6 +268,6 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   # order to ensure field order
   setorder(dt.field, id)
   
-  # return value, scores and euros per hectare
+  # return value, with for each field the total scores and euros per hectare
   return(dt.field)
 }
