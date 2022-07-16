@@ -50,8 +50,9 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_
   er_water = cf_water = er_soil = cf_soil = er_climate = cf_climate = er_biodiversity = cf_biodiversity = er_landscape = cf_landscape = NULL
   er_total = NULL
   
-  # derive a table with all possible measurements
+  # derive a table with all possible field measurements
   dt.meas.av <- bbwp_check_meas(measures,eco = TRUE, score = FALSE)
+  dt.meas.av <- dt.meas.av[level=='field']
   
   # get internal table with importance of environmental challenges
   er_scoring <- as.data.table(BBWPC::er_scoring)
@@ -104,6 +105,9 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_
   # do check op Gt
   dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS, B_AER_CBS = B_AER_CBS)]
   
+  # add farm area
+  dt[, B_AREA_FARM := sum(B_AREA)]
+  
   # add the generic farm score as baseline
   # this gives the averaged ER score based on the crops in crop rotation plan and the farm measures taken
   dt.farm <- er_croprotation(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR,
@@ -139,7 +143,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_
     # set first all missing data impacts to 0
     dt[,c(cols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = cols]
     
-    # set the score to zero when not applicable for given BBWP category
+    # lower the score when not applicable for given BBWP category
     dt[(B_LU_BBWP == 1 & nc1 == 0) | (B_LU_BBWP == 2 & nc2 == 0), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     dt[(B_LU_BBWP == 3 & nc3 == 0) | (B_LU_BBWP == 4 & nc4 == 0), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     dt[(B_LU_BBWP == 5 & nc5 == 0) | (B_LU_BBWP == 6 & nc6 == 0), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
@@ -147,10 +151,15 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_
     dt[(B_LU_BBWP == 9 & nc9 == 0) | (B_LU_BBWP == 10 & nc10 == 0), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     dt[(B_LU_BBWP == 11 & nc11 == 0) | (B_LU_BBWP == 12 & nc12 == 0), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     
-    # set the score to zero when nog applicable as ECO category
+    # lower the score  when nog applicable as ECO category
     dt[,ecocheck := B_LU_ECO1 * eco1 + B_LU_ECO2 * eco2 + B_LU_ECO3 * eco3 + B_LU_ECO4 * eco4 + 
-         B_LU_ECO5 * eco5 + B_LU_ECO6 * eco6 + B_LU_ECO7 * eco7]
+                    B_LU_ECO5 * eco5 + B_LU_ECO6 * eco6 + B_LU_ECO7 * eco7]
     dt[ecocheck == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    
+    # lower the score  when not applicable as arable/productive/cultivated measure
+    dt[B_LU_ECO8 == 1 & eco8 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_ECO9 == 1 & eco9 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_ECO10 == 1 & eco10 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     
     # lower the score when the sector limits the applicability of measures
     
@@ -192,16 +201,46 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_
     dt[, er_landscape := er_landscape * cf_landscape]
     
     # multiply measurement score by distance to target
-    dt[, er_water := er_water * (1 - dt.farm$water)]
-    dt[, er_soil := er_soil * (1 - dt.farm$soil)]
-    dt[, er_climate := er_climate * (1 - dt.farm$climate)]
-    dt[, er_biodiversity := er_biodiversity * (1 - dt.farm$biodiversity)]
-    dt[, er_landscape := er_landscape * (1 - dt.farm$landscape)]
-    dt[, er_reward := dt.farm$reward]
+    dt[, er_water := er_water * pmax(0.1,1 - dt.farm$water / B_CT_WATER)]
+    dt[, er_soil := er_soil * pmax(0.1,1 - dt.farm$soil/B_CT_SOIL)]
+    dt[, er_climate := er_climate * pmax(0.1,1 - dt.farm$climate / B_CT_CLIMATE)]
+    dt[, er_biodiversity := er_biodiversity * pmax(0.1,1 - dt.farm$biodiversity / B_CT_BIO)]
+    dt[, er_landscape := er_landscape * pmax(0.1,1 - dt.farm$landscape/B_CT_LANDSCAPE)]
+    dt[, er_reward := dt.farm$S_ER_REWARD]
     
     # Calculate total measurement score given the distance to target
     dt[, er_total := (er_water + er_soil + er_climate + er_biodiversity + er_landscape) / 5]
   
+    # add scaling for both scoring and reward, and combine both
+    dt[, er_total_scaled := (er_total - min(er_total)) / (max(er_total) - min(er_total))]
+    dt[, er_soil_scaled := (er_soil - min(er_soil)) / (max(er_soil) - min(er_soil))]
+    dt[, er_water_scaled := (er_water - min(er_water)) / (max(er_water) - min(er_water))]
+    dt[, er_climate_scaled := (er_climate - min(er_climate)) / (max(er_climate) - min(er_climate))]
+    dt[, er_biodiversity_scaled := (er_biodiversity - min(er_biodiversity)) / (max(er_biodiversity) - min(er_biodiversity))]
+    dt[, er_landscape_scaled := (er_landscape - min(er_landscape)) / (max(er_landscape) - min(er_landscape))]
+    dt[, er_euro_combi := er_euro_ha + er_euro_farm / B_AREA_FARM ]
+    dt[, er_reward_scaled := (er_euro_combi - min(er_euro_combi)) / (max(er_euro_combi) - min(er_euro_combi))]
+    dt[, er_total_scaled := 0.8 * er_total_scaled + 0.2 * er_reward_scaled]
+    dt[, er_water_scaled := 0.8 * er_water_scaled + 0.2 * er_reward_scaled]
+    dt[, er_soil_scaled := 0.8 * er_soil_scaled + 0.2 * er_reward_scaled]
+    dt[, er_climate_scaled := 0.8 * er_climate_scaled + 0.2 * er_reward_scaled]
+    dt[, er_biodiversity_scaled := 0.8 * er_biodiversity_scaled + 0.2 * er_reward_scaled]
+    dt[, er_landscape_scaled := 0.8 * er_landscape_scaled + 0.2 * er_reward_scaled]
+    
+    # set score from lowest rank to zero per conflicting measure
+    dt[, oid := frank(-er_total_scaled, ties.method = 'first',na.last = 'keep'),by = c('id','bbwp_conflict')]
+    dt[oid > 1, er_total_scaled := 0]
+    dt[, oid := frank(-er_water_scaled, ties.method = 'first',na.last = 'keep'),by = c('id','bbwp_conflict')]
+    dt[oid > 1, er_water_scaled := 0]
+    dt[, oid := frank(-er_climate_scaled, ties.method = 'first',na.last = 'keep'),by = c('id','bbwp_conflict')]
+    dt[oid > 1, er_climate_scaled := 0]
+    dt[, oid := frank(-er_biodiversity_scaled, ties.method = 'first',na.last = 'keep'),by = c('id','bbwp_conflict')]
+    dt[oid > 1, er_biodiversity_scaled := 0]
+    dt[, oid := frank(-er_soil_scaled, ties.method = 'first',na.last = 'keep'),by = c('id','bbwp_conflict')]
+    dt[oid > 1, er_soil_scaled := 0]
+    dt[, oid := frank(-er_landscape_scaled, ties.method = 'first',na.last = 'keep'),by = c('id','bbwp_conflict')]
+    dt[oid > 1, er_landscape_scaled := 0]
+   
   # Loop through each field
   
   # define an empty list
@@ -214,27 +253,25 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_
     list.field <- list()
     
     # Get the overall top measures
-    top_er_tot <- dt[id == i & er_total > 0, ][order(-er_total)][1:5,eco_id]
+    top_er_tot <- dt[id == i & er_total > 0, ][order(-er_total_scaled)][1:5,bbwp_id]
     
-   # top_er_tot <- dt[id == i & er_total > 0, ][order(((-er_total)*0.8+(er_reward)*0.2)/1)][1:5,eco_id]
-
     # Get the top measures for soil quality
-    top_er_soil <- dt[id == i & er_soil > 0, ][order(-er_soil)][1:5,eco_id]
+    top_er_soil <- dt[id == i & er_soil > 0, ][order(-er_soil_scaled)][1:5,bbwp_id]
     
     # Get the top measures for water quality
-    top_er_water <- dt[id == i & er_water > 0, ][order(-er_water)][1:5,eco_id]
+    top_er_water <- dt[id == i & er_water > 0, ][order(-er_water_scaled)][1:5,bbwp_id]
     
     # Get the top measures for climate
-    top_er_climate <- dt[id == i & er_climate > 0, ][order(-er_climate)][1:5,eco_id]
+    top_er_climate <- dt[id == i & er_climate > 0, ][order(-er_climate_scaled)][1:5,bbwp_id]
     
     # Get the top measures for biodiversity
-    top_er_biodiversity <- dt[id == i & er_biodiversity > 0, ][order(-er_biodiversity)][1:5,eco_id]
+    top_er_biodiversity <- dt[id == i & er_biodiversity > 0, ][order(-er_biodiversity_scaled)][1:5,bbwp_id]
     
     # Get the top measures for landscape
-    top_er_landscape <- dt[id == i & er_landscape > 0, ][order(-er_landscape)][1:5,eco_id]
+    top_er_landscape <- dt[id == i & er_landscape > 0, ][order(-er_landscape_scaled)][1:5,bbwp_id]
     
     # Get the top measures for rewards 
-    top_er_reward <- 
+    top_er_reward <- dt[id == i & er_reward_scaled > 0, ][order(-er_reward_scaled)][1:5,bbwp_id]
     
     # add them to list
     list.meas[[i]] <- data.table(id = i,
