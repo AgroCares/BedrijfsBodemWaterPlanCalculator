@@ -38,6 +38,10 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
                         A_P_SG,D_SA_W, B_AREA,M_DRAIN, farmscore, 
                         measures, sector, output = 'scores', medalscore = 'gold'){
   
+  # add visual bindings
+  S_ER_TOT = S_ER_SOIL = S_ER_WATER = S_ER_CLIMATE = S_ER_BIODIVERSITY = S_ER_LANDSCAPE = S_ER_REWARD = NULL
+  medal = NULL
+  
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
   checkmate::assert_subset(output,choices = c('scores','measures'))
