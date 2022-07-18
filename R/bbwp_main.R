@@ -4,7 +4,6 @@
 #' A high BBWP score is indicative for the number of opportunities to improve soil quality and land use.
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil, using agronomic classification
-#' @param B_LU_BRP (numeric) The crop type (conform BRP coding, preferable the most frequent crop on the field)
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param B_SC_WENR (character) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006)
@@ -33,7 +32,7 @@
 #' @param D_RO_R (numeric) The risk that surface water runs off the parcel
 #' @param B_AREA (numeric) the area of the field (m2) 
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
-#' @param LSW (data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)
+#' @param LSW (data.table) A data.table with the LSW properties including oow_id. See details. 
 #' @param a_lat (numeric) Latitude of the field (required if no LSW is submitted)
 #' @param a_lon (numeric) Longitude of the field (required if no LSW is submitted)
 #' @param measures (data.table) the measures planned / done per fields
@@ -42,12 +41,14 @@
 #' 
 #' @details 
 #' B_SLOPE respresents the slope of the field as a boolean variable (is the slope bigger than 2\% or not) and was used in previous versions of BBWP. This has been replaced by B_SLOPE_DEGREE.
+#' LSW is by default a data.table with LSW properties.Sending only oow_id is sufficient to retreive the LSW properties from BBWP internal package table.
+#' If needed, one can also send in a sf object to retreive the LSW properties.
 #' 
 #' @import data.table
 #' @import OBIC
 #'  
 #' @export
-bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE = NULL,B_SLOPE_DEGREE = NULL,
+bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE = NULL,B_SLOPE_DEGREE = NULL,
                  B_AER_CBS,
                  A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
                  B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW,B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, 
@@ -77,7 +78,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
   
   # convert soil properties to a BBWP risk indicator
   dt <- bbwp_field_properties(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
-                              B_LU_BRP = B_LU_BRP, 
+                              B_LU_BBWP = B_LU_BBWP,
                               B_GWL_CLASS = B_GWL_CLASS, 
                               B_SC_WENR = B_SC_WENR, 
                               B_HELP_WENR = B_HELP_WENR,
@@ -137,7 +138,6 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                                     B_GWL_CLASS = B_GWL_CLASS,
                                     A_P_SG = A_P_SG,
                                     B_SLOPE_DEGREE = B_SLOPE_DEGREE,
-                                    B_LU_BRP = B_LU_BRP,
                                     B_LU_BBWP = B_LU_BBWP,
                                     B_AER_CBS = B_AER_CBS,
                                     M_DRAIN = M_DRAIN,
@@ -174,7 +174,6 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                               B_GWL_CLASS = B_GWL_CLASS,
                               A_P_SG = A_P_SG,
                               B_SLOPE_DEGREE = B_SLOPE_DEGREE,
-                              B_LU_BRP = B_LU_BRP,
                               B_LU_BBWP = B_LU_BBWP,
                               B_AER_CBS = B_AER_CBS,
                               M_DRAIN = M_DRAIN,

@@ -4,7 +4,7 @@
 #' A high rank is indicative for the number of opportunities to improve soil quality and land use.
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil, using agronomic classification
-#' @param B_LU_BRP (numeric) The crop type (conform BRP coding, preferable the most frequent crop on the field)
+#' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param B_SC_WENR (character) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006)
 #' @param B_HELP_WENR (character) The soil type abbreviation, derived from 1:50.000 soil map
@@ -31,12 +31,12 @@
 #' @import OBIC
 #'
 #' @export
-bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE_DEGREE,B_AER_CBS,
+bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE_DEGREE,B_AER_CBS,
                                   A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,
                                   A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
                                   D_SA_W, D_RO_R, LSW, a_lat = NULL, a_lon = NULL) {
   
-  ngw_scr = croptype.nleach = nf = ngw_lea = ngw_nlv = NULL
+  ngw_scr = croptype.nleach = nf = ngw_lea = ngw_nlv = B_LU_BRP = NULL
   nsw_scr = nsw_gwt = nsw_ro = nsw_ws = nsw_nlv = nsw_slope = NULL 
   psw_scr = psw_gwt = psw_ro = psw_ws = psw_pcc = psw_pvg = psw_pret = psw_slope = NULL 
   npe_wri = npe_pbi = npe_wdri = npe_nlv = wue_wwri = wue_wdri = wue_whc = NULL
@@ -48,7 +48,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   
   # check length inputs
   arg.length <- max(
-    length(B_SOILTYPE_AGR), length(B_LU_BRP), length(B_GWL_CLASS), length(B_SC_WENR), length(B_HELP_WENR),length(B_AER_CBS),
+    length(B_SOILTYPE_AGR), length(B_LU_BBWP), length(B_GWL_CLASS), length(B_SC_WENR), length(B_HELP_WENR),length(B_AER_CBS),
     length(A_CLAY_MI), length(A_SAND_MI), length(A_SILT_MI), length(A_SOM_LOI), length(A_N_RT), length(B_SLOPE_DEGREE),
     length(A_FE_OX), length(A_AL_OX), length(A_P_CC), length(A_P_AL),length(A_P_WA), length(A_P_SG),
     length(D_SA_W), length(D_RO_R)
@@ -84,8 +84,6 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   LSW.dt = bbwp_check_lsw(LSW = LSW, a_lat = a_lat, a_lon = a_lon)
   
   # load in the datasets for soil and crop types and N leaching fractions
-  crops.obic <- as.data.table(OBIC::crops.obic)
-  setkey(crops.obic, crop_code)
   soils.obic <- as.data.table(OBIC::soils.obic)
   setkey(soils.obic, soiltype)
   nleach_table <- as.data.table(OBIC::nleach_table)
@@ -94,7 +92,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   # copy input in one data.table
   dt <- data.table(id = 1:arg.length,
                    B_SOILTYPE_AAGR = B_SOILTYPE_AGR,
-                   B_LU_BRP = B_LU_BRP,
+                   B_LU_BBWP = B_LU_BBWP,
                    B_GWL_CLASS = B_GWL_CLASS,
                    B_SC_WENR = B_SC_WENR, 
                    B_HELP_WENR = B_HELP_WENR,
@@ -119,8 +117,27 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BRP, B_GWL_CLASS, B_SC_WE
   
   # add crop names and categories
   dt <- merge(dt, LSW.dt, by = 'id')
-  dt <- merge(dt, crops.obic[, list(crop_code, crop_category)], by.x = "B_LU_BRP", by.y = "crop_code")
   dt <- merge(dt, soils.obic[, list(soiltype, soiltype.n)], by.x = "B_SOILTYPE_AAGR", by.y = "soiltype")
+  
+  # add crop categories
+  dt[B_LU_BBWP %in% c(1,2), crop_category := 'grasland']
+  dt[B_LU_BBWP %in% c(9), crop_category := 'mais']
+  dt[B_LU_BBWP %in% c(3,4,5,6,7,11,12), crop_category := 'akkerbouw']
+  dt[B_LU_BBWP %in% c(8,10), crop_category := 'natuur']
+  
+  # set a  default crop for estimating water stress per B_LU_BBWP category
+  dt[B_LU_BBWP == 1, B_LU_BRP := 265] # permanent gras
+  dt[B_LU_BBWP == 2, B_LU_BRP := 266] # tijdelijk grasland
+  dt[B_LU_BBWP == 3, B_LU_BRP := 233] # wintertarwe
+  dt[B_LU_BBWP == 4, B_LU_BRP := 2014] # aardappel
+  dt[B_LU_BBWP == 5, B_LU_BRP := 2759] # rode kool
+  dt[B_LU_BBWP == 6, B_LU_BRP := 176] # bloembol 
+  dt[B_LU_BBWP == 7, B_LU_BRP := 1096] # appelboom 
+  dt[B_LU_BBWP == 8, B_LU_BRP := 335] # natuur
+  dt[B_LU_BBWP == 9, B_LU_BRP := 259] # mais
+  dt[B_LU_BBWP == 10, B_LU_BRP := 372] # rand langs bouwland
+  dt[B_LU_BBWP == 11, B_LU_BRP := 3504] # bladrammenas
+  dt[B_LU_BBWP == 12, B_LU_BRP := 258] # luzerne
   
   # estimate field properties that contribute to the risk to N losses to groundwater -------
   

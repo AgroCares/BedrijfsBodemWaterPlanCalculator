@@ -63,36 +63,35 @@ require(data.table)
   )
 # run example 1 without any measures taken
 test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-              B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
-              B_SC_WENR = c(4, 2,2),
-              B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
+             B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
+             B_SC_WENR = c(4, 2,2),
+             B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
              B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
-              A_P_SG = c(0.4, 0.8, 1),
-              A_CLAY_MI = c(15, 5,8),
-              A_SAND_MI = c(45, 65,15),
-              A_SILT_MI = c(40, 30,45),
-              A_SOM_LOI = c(5, 15,3) ,
-              A_N_RT = c(4200, 1000,3000),
-              A_FE_OX = c(500, 500,800),
-              A_AL_OX = c(150, 150,145),
-              A_P_CC = c(5, 1,6),
-              A_P_AL = c(65, 5,40),
-              A_P_WA = c(52, 5,45),
+             A_P_SG = c(0.4, 0.8, 1),
+             A_CLAY_MI = c(15, 5,8),
+             A_SAND_MI = c(45, 65,15),
+             A_SILT_MI = c(40, 30,45),
+             A_SOM_LOI = c(5, 15,3) ,
+             A_N_RT = c(4200, 1000,3000),
+             A_FE_OX = c(500, 500,800),
+             A_AL_OX = c(150, 150,145),
+             A_P_CC = c(5, 1,6),
+             A_P_AL = c(65, 5,40),
+             A_P_WA = c(52, 5,45),
              B_SLOPE_DEGREE = c(1.5,4,1.5),
-              B_LU_BRP = c(265, 1932, 266),
-              B_LU_BBWP = c(1,4,1),
-              M_DRAIN = c(TRUE, FALSE, TRUE),
-              D_SA_W = c(0, 0.5, 1),
-              D_RO_R = c(0.5, 0,0.9),
-              B_AREA = c(100,80,2.5),
-              B_GWP = c(TRUE, FALSE, TRUE),
-              B_AREA_DROUGHT = c(TRUE, FALSE, TRUE),
-              B_CT_PSW = c(0, 25, 50),
-              B_CT_NSW = c(0, 50, 100),
-              B_CT_PSW_MAX = 0.5,
-              B_CT_NSW_MAX = 5.0,
-              measures = NULL,
-              sector = c('dairy', 'arable'),
+             B_LU_BBWP = c(1,4,1),
+             M_DRAIN = c(TRUE, FALSE, TRUE),
+             D_SA_W = c(0, 0.5, 1),
+             D_RO_R = c(0.5, 0,0.9),
+             B_AREA = c(100,80,2.5),
+             B_GWP = c(TRUE, FALSE, TRUE),
+             B_AREA_DROUGHT = c(TRUE, FALSE, TRUE),
+             B_CT_PSW = c(0, 25, 50),
+             B_CT_NSW = c(0, 50, 100),
+             B_CT_PSW_MAX = 0.5,
+             B_CT_NSW_MAX = 5.0,
+             measures = NULL,
+             sector = c('dairy', 'arable'),
              output = 'scores',
              LSW = LSW
             )
@@ -143,7 +142,6 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
              A_P_AL = c(65, 5,40),
              A_P_WA = c(52, 5,45),
              B_SLOPE_DEGREE = c(1.5,4,1.5),
-             B_LU_BRP = c(265, 1932, 266),
              B_LU_BBWP = c(1,4,1),
              M_DRAIN = c(TRUE, FALSE, TRUE),
              D_SA_W = c(0, 0.5, 1),
@@ -171,18 +169,19 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
     test_that("check bbwp", {
       expect_equal(
         object = test$measures[[1]]$top_bbwp_tot,
-        expected = c("G17","G16", "G18", "G19", "G88"))
+        expected = c("G17","G16", "G18", "G19", "G21"))
     })
 
 
 
 # get internal table with measures
 dt.measures <- as.data.table(BBWPC::bbwp_measures)
-dt.measures <- dt.measures[!is.na(effect_psw)]
+dt.measures <- dt.measures[!is.na(eco_id)]
 
 # make measurement list for 2 of the 4 fields
-measures <- rbind(data.table(id = 1, dt.measures[c(2,5,18,28,32,3,38,43,62)]),
-                  data.table(id = 3, dt.measures[c(7,21,30,46,5)]))
+measures <- rbind(data.table(id = 1, dt.measures[grepl('B189|G50|G3|B137|B172|G84',bbwp_id)]),
+                  data.table(id = 3, dt.measures[grepl('B135|G84|B118|G58|B146',bbwp_id)]))
+measures$bbwp_status <- 'given for ANLB'
 
 # run example 3 without any measures taken
 test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
@@ -202,7 +201,6 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
              A_P_AL = c(65, 5,40),
              A_P_WA = c(52, 5,45),
              B_SLOPE_DEGREE = c(1.5,4,1.5),
-             B_LU_BRP = c(265, 1932, 266),
              B_LU_BBWP = c(1,4,1),
              M_DRAIN = c(TRUE, FALSE, TRUE),
              D_SA_W = c(0, 0.5, 1),
@@ -224,14 +222,14 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check bbwp", {
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(69,17,8),
+      expected = c(92,17,44),
       tolerance = 0.01)
   })
   
   test_that("check bbwp", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(45,69,54,54,39,93),
+      expected = c(58,82,55,54,68,94),
       tolerance = 0.01)
   })
 
@@ -254,7 +252,6 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                A_P_AL = c(65, 5,40),
                A_P_WA = c(52, 5,45),
                B_SLOPE_DEGREE = c(1.5,4,1.5),
-               B_LU_BRP = c(265, 1932, 266),
                B_LU_BBWP = c(1,4,1),
                M_DRAIN = c(TRUE, FALSE, TRUE),
                D_SA_W = c(0, 0.5, 1),
@@ -271,6 +268,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                output = 'scores',
                LSW = data.table(oow_id = c(1,1295,84))
   )
+  
   
   # run tests on format and output values
   test_that("check bbwp", {

@@ -6,7 +6,7 @@
 \usage{
 bbwp_field_properties(
   B_SOILTYPE_AGR,
-  B_LU_BRP,
+  B_LU_BBWP,
   B_GWL_CLASS,
   B_SC_WENR,
   B_HELP_WENR,
@@ -33,7 +33,7 @@ bbwp_field_properties(
 \arguments{
 \item{B_SOILTYPE_AGR}{(character) The type of soil, using agronomic classification}
 
-\item{B_LU_BRP}{(numeric) The crop type (conform BRP coding, preferable the most frequent crop on the field)}
+\item{B_LU_BBWP}{(numeric) The BBWP category used for allocation of measures to BBWP crop categories}
 
 \item{B_GWL_CLASS}{(character) The groundwater table class}
 

@@ -6,7 +6,6 @@
 \usage{
 bbwp(
   B_SOILTYPE_AGR,
-  B_LU_BRP,
   B_LU_BBWP,
   B_GWL_CLASS,
   B_SC_WENR,
@@ -45,8 +44,6 @@ bbwp(
 }
 \arguments{
 \item{B_SOILTYPE_AGR}{(character) The type of soil, using agronomic classification}
-
-\item{B_LU_BRP}{(numeric) The crop type (conform BRP coding, preferable the most frequent crop on the field)}
 
 \item{B_LU_BBWP}{(numeric) The BBWP category used for allocation of measures to BBWP crop categories}
 
@@ -104,7 +101,7 @@ bbwp(
 
 \item{M_DRAIN}{(boolean) is there tube drainage present in the field}
 
-\item{LSW}{(data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)}
+\item{LSW}{(data.table) A data.table with the LSW properties including oow_id. See details.}
 
 \item{a_lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
 
@@ -122,4 +119,6 @@ A high BBWP score is indicative for the number of opportunities to improve soil 
 }
 \details{
 B_SLOPE respresents the slope of the field as a boolean variable (is the slope bigger than 2\% or not) and was used in previous versions of BBWP. This has been replaced by B_SLOPE_DEGREE.
+LSW is by default a data.table with LSW properties.Sending only oow_id is sufficient to retreive the LSW properties from BBWP internal package table.
+If needed, one can also send in a sf object to retreive the LSW properties.
 }

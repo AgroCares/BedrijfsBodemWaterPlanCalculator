@@ -78,12 +78,41 @@
 #' 
 #' @format A data.table with 546 rows and 32 columns:
 #' \describe{
-#'   \item{c1}{bla bla}
-#'   \item{c2}{bla bla}
-#'   \item{c3}{bla bla}
-#'   \item{c4}{bla bla}
+#'   \item{oow_id}{The unique ID number of the surface water polygon for catchment or polder}
+#'   \item{oow_name}{The name of the surface water polygon for catchment or polder}
+#'   \item{oow_nitrogen}{bla bla}
+#'   \item{oow_phosphate}{bla bla}
+#'   \item{oow_source}{The type of the surface water polygon for catchment or polder}
+#'   \item{oow_mean_n_rt}{The mean organic nitrogen content of the soil in the specific surface water polygon for catchment or polder (mg N / kg)}
+#'   \item{oow_sd_n_rt}{The standard deviation of the organic nitrogen content of the soil in the specific surface water polygon for catchment or polder (mg N / kg)}
+#'   \item{oow_mean_p_cc}{The mean plant available P content, measured via 0.01M CaCl2 extraction in the specific surface water polygon for catchment or polder (mg / kg)}
+#'   \item{oow_sd_p_cc}{The standard deviation of the plant available P content, measured via 0.01M CaCl2 extraction in the specific surface water polygon for catchment or polder (mg / kg)}
+#'   \item{oow_mean_p_al}{The mean plant extractable P content, measured via ammonium lactate extraction in the specific surface water polygon for catchment or polder (mg / kg)}
+#'   \item{oow_sd_p_al}{The standard deviation of the plant extractable P content, measured via ammonium lactate extraction in the specific surface water polygon for catchment or polder (mg / kg)}
+#'   \item{oow_mean_p_wa}{The mean P-content of the soil extracted with water in the specific surface water polygon for catchment or polder (mg P2O5 / L)}
+#'   \item{oow_sd_p_wa}{The standard deviation of the P-content of the soil extracted with water in the specific surface water polygon for catchment or polder (mg P2O5 / L)}
+#'   \item{oow_mean_p_sg}{The mean P-saturation index in the specific surface water polygon for catchment or polder (\%)}
+#'   \item{oow_sd_p_sg}{The standard deviation of the P-saturation index in the specific surface water polygon for catchment or polder (\%)}
+#'   \item{oow_mean_fe_ox}{The mean aluminium content of soil in the specific surface water polygon for catchment or polder (mmol+ / kg)}
+#'   \item{oow_sd_fe_ox}{The standard deviation of the aluminium content of soil in the specific surface water polygon for catchment or polder (mmol+ / kg)}
+#'   \item{oow_mean_al_ox}{The mean iron content of soil in the specific surface water polygon for catchment or polder (mmol+ / kg)}
+#'   \item{oow_sd_al_ox}{The standard deviation of the iron content of soil in the specific surface water polygon for catchment or polder (mmol+ / kg)}
+#'   \item{oow_mean_clay_mi}{The mean clay content of the soil in the specific surface water polygon for catchment or polder (\%)}
+#'   \item{oow_sd_clay_mi}{The standard deviation of the clay content of the soil in the specific surface water polygon for catchment or polder (\%)}
+#'   \item{oow_mean_sand_mi}{The mean sand content of the soil in the specific surface water polygon for catchment or polder(\%)}
+#'   \item{oow_sd_sand_mi}{The standard deviation of the sand content of the soil in the specific surface water polygon for catchment or polder(\%)}
+#'   \item{oow_mean_silt_mi}{The mean silt content of the soil in the specific surface water polygon for catchment or polder(\%)}
+#'   \item{oow_sd_silt_mi}{The standard deviation of the silt content of the soil in the specific surface water polygon for catchment or polder(\%)}
+#'   \item{oow_mean_som_loi}{The mean organic matter content of the soil in the specific surface water polygon for catchment or polder(\%)}
+#'   \item{oow_sd_som_loi}{The standard deviation of the organic matter content of the soil in the specific surface water polygon for catchment or polder(\%)}
+#'   \item{oow_mean_ro_r}{The mean risk that surface water runs off the parcel in the specific surface water polygon for catchment or polder}
+#'   \item{oow_sd_ro_r}{The standard deviation of the risk that surface water runs off the parcel in the specific surface water polygon for catchment or polder}
+#'   \item{oow_mean_sa_w}{The mean wet perimeter index of the field, fraction that field is surrounded by water in the specific surface water polygon for catchment or polder}
+#'   \item{oow_sd_sa_w}{The standard deviation of the wet perimeter index of the field, fraction that field is surrounded by water in the specific surface water polygon for catchment or polder}
+#'   \item{geom}{The geometry of the surface water polygon for catchment or polder}
 #' }
 "lsw"
+
 
 #' An overview of correction factors per economic agricultural area
 #' 
@@ -91,8 +120,8 @@
 #' 
 #' @format A data.table with 14 rows and 3 columns:
 #' \describe{
-#'   \item{statcode}{bla bla}
-#'   \item{statname}{bla bla}
-#'   \item{er_cf}{bla bla}
+#'   \item{statcode}{The unique code of the Agricultural Economic Region}
+#'   \item{statname}{The name of the Agricultural Economic Region}
+#'   \item{er_cf}{The value of the correction factor for the financial reward differentiated per Agricutural Economic Region}
 #' }
 "er_aer_reward"

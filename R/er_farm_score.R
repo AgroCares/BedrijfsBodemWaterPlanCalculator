@@ -42,18 +42,16 @@ er_farm_score <- function(S_ER_TOT,S_ER_SOIL,S_ER_WATER,S_ER_CLIMATE,S_ER_BIODIV
                    S_ER_TOT = S_ER_TOT,
                    S_ER_REWARD = S_ER_REWARD,
                    B_AREA = B_AREA
-                  )
+  )
   
   # columns with the score of the opportunity indexes
-  cols <- c('S_ER_TOT','S_ER_SOIL','S_ER_WATER','S_ER_CLIMATE','S_ER_BIODIVERSITY','S_ER_LANDSCAPE','S_ER_REWARD')
+  cols <- c('S_ER_SOIL','S_ER_WATER','S_ER_CLIMATE','S_ER_BIODIVERSITY','S_ER_LANDSCAPE','S_ER_TOT','S_ER_REWARD')
   
   # calculate area weigthed sum of the field indices
   dt <- dt[,lapply(.SD, stats::weighted.mean, w = B_AREA), .SDcols = cols]
   
   # Round the values
   dt<- dt[, lapply(.SD, round, digits = 0)]
-  
-  # add scores from farm measures taken???
   
   # return output
   return(dt)

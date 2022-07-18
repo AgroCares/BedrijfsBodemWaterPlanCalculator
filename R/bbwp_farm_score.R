@@ -49,9 +49,6 @@ bbwp_farm_score <- function(S_BBWP_TOT,S_BBWP_NGW,S_BBWP_NSW,S_BBWP_PSW,S_BBWP_N
   # Round the values
   dt<- dt[, lapply(.SD, round, digits = 0)]
   
-  # add scores from farm measures taken???
-  
-  
   # return output
   return(dt)
 }

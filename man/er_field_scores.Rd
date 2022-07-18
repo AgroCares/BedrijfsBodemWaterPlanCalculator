@@ -6,10 +6,19 @@
 \usage{
 er_field_scores(
   B_SOILTYPE_AGR,
-  B_LU_BRP,
-  B_LU_BBWP,
   B_AER_CBS,
   B_AREA,
+  B_LU_BBWP,
+  B_LU_ECO1,
+  B_LU_ECO2,
+  B_LU_ECO3,
+  B_LU_ECO4,
+  B_LU_ECO5,
+  B_LU_ECO6,
+  B_LU_ECO7,
+  B_LU_ECO8,
+  B_LU_ECO9,
+  B_LU_ECO10,
   B_CT_SOIL,
   B_CT_WATER,
   B_CT_CLIMATE,
@@ -22,13 +31,31 @@ er_field_scores(
 \arguments{
 \item{B_SOILTYPE_AGR}{(character) The type of soil}
 
-\item{B_LU_BRP}{(integer)}
-
-\item{B_LU_BBWP}{(numeric) The BBWP category used for allocation of measures to BBWP crop categories}
-
 \item{B_AER_CBS}{(character) The agricultural economic region in the Netherlands (CBS, 2016)}
 
 \item{B_AREA}{(numeric) the area of the field (m2)}
+
+\item{B_LU_BBWP}{(numeric) The BBWP category used for allocation of measures to BBWP crop categories}
+
+\item{B_LU_ECO1}{(boolean) does the crop belong in Ecoregeling category 1}
+
+\item{B_LU_ECO2}{(boolean) does the crop belong in Ecoregeling category 2}
+
+\item{B_LU_ECO3}{(boolean) does the crop belong in Ecoregeling category 3}
+
+\item{B_LU_ECO4}{(boolean) does the crop belong in Ecoregeling category 4}
+
+\item{B_LU_ECO5}{(boolean) does the crop belong in Ecoregeling category 5}
+
+\item{B_LU_ECO6}{(boolean) does the crop belong in Ecoregeling category 6}
+
+\item{B_LU_ECO7}{(boolean) does the crop belong in Ecoregeling category 7}
+
+\item{B_LU_ECO8}{(boolean) does the crop fall within the category "arable"}
+
+\item{B_LU_ECO9}{(boolean) does the crop fall within the category "productive"}
+
+\item{B_LU_ECO10}{(boolean) does the crop fall within the category "cultivated"}
 
 \item{B_CT_SOIL}{(numeric) the target value for soil quality conform Ecoregeling scoring}
 
