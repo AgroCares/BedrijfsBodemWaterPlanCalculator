@@ -1,5 +1,19 @@
 # Changelog BBWPC
 
+## 0.6.0
+
+### Changed
+- `B_LU_BRP` is removed as input for all `bbwp_x` functions, issue #35
+- set default BRP codes per BBWP category for waterstress indicators in `bbwp_field_properties`
+- `B_LU_BBWP`categories have been updated from 1-9 to 1-12
+
+### Added
+- table `bbwp_measures` is updated with scores, rewards and applicability of ER measures, issue #11
+- accumulation requirements are added to `er_meas_rank` and `er_meas_score`, issue #13
+- farm measure scoring is added to `er_croprotation`, issue #12
+- measures input table requires a `bbwp_status` to account for accumulation effects
+- `medalscore` added as argument to`er_farm_aim`, overruling input of argument `farmscore`
+
 ## 0.5.6
 ### Fixed
 - In the table `bbwp_measures` NA values are set to 0
