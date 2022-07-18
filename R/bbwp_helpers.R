@@ -179,7 +179,7 @@ bbwp_check_lsw <- function(LSW, a_lat = NULL, a_lon = NULL,lsw.sf = NULL){
     arg.length <- max(length(a_lat),length(a_lon))
     
     # check properties of the spatial object
-    checkmate::assert_choice(st_crs(lsw.sf)$input,choices = c('EPSG:4326'))
+    checkmate::assert_choice(sf::st_crs(lsw.sf)$input,choices = c('EPSG:4326'))
     checkmate::assert_class(lsw.sf,classes = c('sf'))
     checkmate::assertDataFrame(lsw.sf, nrows = arg.length)
     checkmate::assert_logical('oow_id' %in% colnames(lsw.sf))
@@ -193,7 +193,7 @@ bbwp_check_lsw <- function(LSW, a_lat = NULL, a_lon = NULL,lsw.sf = NULL){
     lsw.sf <- sf::st_as_sf(lsw.sf)
     
     # make sf object of field location(s)
-    loc <- sf::st_sf(geom = st_sfc(st_multipoint(matrix(c(a_lon,a_lat),ncol=2))), crs = 4326)
+    loc <- sf::st_sf(geom = sf::st_sfc(sf::st_multipoint(matrix(c(a_lon,a_lat),ncol=2))), crs = 4326)
     
     # crop lsw.sf by an extend slightly bigger than the points
     suppressWarnings(lsw.crop <- sf::st_crop(lsw.sf,sf::st_bbox(loc) + c(-0.005,-0.0025,0.005,0.0025)))
