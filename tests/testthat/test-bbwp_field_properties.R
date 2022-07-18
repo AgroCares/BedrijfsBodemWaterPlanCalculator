@@ -27,7 +27,7 @@ LSW = data.table(sd_wp = rep(0.27, 2),
                   mean_som_loi = 3.92
                 )
 test <- bbwp_field_properties(B_SOILTYPE_AGR = c('dekzand', 'loess'),
-                              B_LU_BRP = c(265, 1932),
+                              B_LU_BBWP = c(1,4),
                               B_GWL_CLASS = c('GtIII', '-'),
                               B_SC_WENR = c(4, 2), 
                               B_HELP_WENR = c('AZW1AwF', 'AZW1AwF'),
@@ -70,12 +70,12 @@ test_that("check bbwp_field_properties", {
       psw_pcc = c(0.9017, 0.045),
       psw_psg = c(0.0033, 0.990),
       psw_pret = c(0, 0),
-      npe_wri = c(0.095, 0.23),
+      npe_wri = c(0.095, 0.25),
       npe_pbi = c(0.976, 0.0216),
-      npe_wdri = c(0, 0.21),
+      npe_wdri = c(0, 0.23),
       npe_nlv = c(0.5, 0.946),
       wue_wwri = c(0.095, 0.03),
-      wue_wdri = c(0, 0.21),
+      wue_wdri = c(0, 0.23),
       wue_whc = c(0.2338, 0.055)
     ),
     tolerance = 0.01)

@@ -19,7 +19,6 @@ require(testthat)
 
 # run example 1 without any measures taken
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                       B_LU_BRP = c(265,2005,256,259),
                        B_LU_BBWP = c(1,4,4,9),
                        B_GWL_CLASS = 'GtIII', 
                        A_P_SG = rep(25,4) ,
@@ -53,7 +52,7 @@ test_that("check bbwp_meas_rank", {
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_tot[c(1,2,7,12,15)],
-    expected = c(NA,"G21","G20","G66","G17"),
+    expected = c(NA,"BWP5","G66" ,"G87", "BWP9"),
     tolerance = 0.01)
 })
 
@@ -62,13 +61,13 @@ dt.measures <- as.data.table(BBWPC::bbwp_measures)
 dt.measures <- dt.measures[!is.na(eco_id)]
 
 # make measurement list for 2 of the 4 fields
-measures <- rbind(data.table(id = 1, dt.measures[c(2,5,18,28,32,3,38,43,62)]),
-                  data.table(id = 3, dt.measures[c(7,21,30,46,5)]))
+measures <- rbind(data.table(id = 1, dt.measures[grepl('B189|G50|G3|B137|B172|G84',bbwp_id)]),
+                  data.table(id = 3, dt.measures[grepl('B135|G84|B118|G58|B146',bbwp_id)]))
+measures$bbwp_status <- 'given for ANLB'
 
 
 # run example 2 without any measures taken
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                       B_LU_BRP = c(265,2005,256,259),
                        B_LU_BBWP = c(1,4,4,9),
                        B_GWL_CLASS = c('GtIII', 'GtVII','GtII','GtIV'),
                        A_P_SG = rep(25,4) ,
@@ -102,7 +101,7 @@ test_that("check bbwp_meas_rank", {
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_tot[c(1,2,5,9,16)],
-    expected = c("G68","G27","B131","BWP7","G66"),
+    expected = c("G66" , "G68",  "BWP5", "G27" , "G87"),
     tolerance = 0.01)
 })
 
