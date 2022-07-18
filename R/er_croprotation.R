@@ -160,13 +160,13 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     
     # this is the other way around: if measure can not be applied: set to zero ONLY when eco is TRUE
     # since eco measures can overlap, setting scores 0 is not done when ec2 > 0
-    dt.field[ec2 == 0 & eco1 == TRUE, c(cols) := 0]
-    dt.field[ec2 == 0 & eco2 == TRUE, c(cols) := 0]
-    dt.field[ec2 == 0 & eco3 == TRUE, c(cols) := 0]
-    dt.field[ec2 == 0 & eco4 == TRUE, c(cols) := 0]
-    dt.field[ec2 == 0 & eco5 == TRUE, c(cols) := 0]
-    dt.field[ec2 == 0 & eco6 == TRUE, c(cols) := 0]
-    dt.field[ec2 == 0 & eco7 == TRUE, c(cols) := 0]
+    dt.field[ec2 == 0 & eco1 == TRUE & B_LU_ECO1 == FALSE, c(cols) := 0]
+    dt.field[ec2 == 0 & eco2 == TRUE & B_LU_ECO2 == FALSE, c(cols) := 0]
+    dt.field[ec2 == 0 & eco3 == TRUE & B_LU_ECO3 == FALSE, c(cols) := 0]
+    dt.field[ec2 == 0 & eco4 == TRUE & B_LU_ECO4 == FALSE, c(cols) := 0]
+    dt.field[ec2 == 0 & eco5 == TRUE & B_LU_ECO5 == FALSE, c(cols) := 0]
+    dt.field[ec2 == 0 & eco6 == TRUE & B_LU_ECO6 == FALSE, c(cols) := 0]
+    dt.field[ec2 == 0 & eco7 == TRUE & B_LU_ECO7 == FALSE, c(cols) := 0]
 
     # set measures not applicable on arable, cultivated or productive land
     dt.field[B_LU_ECO8 == TRUE & eco8 == 0, c(cols) := 0]
@@ -198,10 +198,11 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     # measure EB1. Cultivate rustgewas on a field
     cols.ad1 <- c(3,3,3,0,1)
     cols.ad2 <- c(4,4,4,1,1)
-    dt.field[bbwp_id == 'G54', B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_arable]
-    dt.field[bbwp_id == 'G54' & B_AREA_REL <= 20, c(cols.sel) := 0]
-    dt.field[bbwp_id == 'G54' & B_AREA_REL > 35 & B_AREA_REL <= 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
-    dt.field[bbwp_id == 'G54' & B_AREA_REL > 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+    dt.field[, er_total := er_climate + er_soil + er_water + er_landscape + er_biodiversity]
+    dt.field[bbwp_id == 'G54' & er_total > 0, B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_arable]
+    dt.field[bbwp_id == 'G54' & er_total > 0 & B_AREA_REL <= 20, c(cols.sel) := 0]
+    dt.field[bbwp_id == 'G54' & er_total > 0 & B_AREA_REL > 35 & B_AREA_REL <= 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    dt.field[bbwp_id == 'G54' & er_total > 0 & B_AREA_REL > 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
     
     # multiply by (political) urgency
     
@@ -211,7 +212,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                measure = patterns(erscore = "^er_"),
                variable.name = 'indicator',
                value.name = 'value')
-      dt.field[,indicator := gsub('er_', '',cols[indicator])]
+      dt.field[,indicator := gsub('er_', '',indicator)]
     
     # merge with urgency table
     dt.field <- merge(dt.field,dt.er.urgency, by= c('soiltype','indicator'),all.x = TRUE)
@@ -231,7 +232,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     
     # calculate the weighed average ER score (points/ ha) for the whole farm due to measures taken
     dt.field.score <- dt2[,lapply(.SD,function(x) weighted.mean(x,w = B_AREA)), .SDcols = cols]
-    dt.field.reward <- dt2[,list(er_reward = max(euro_ha[total>0] * reward_cf),
+    dt.field.reward <- dt2[,list(er_reward = max(euro_ha[total>0] * reward_cf,0),
                                         B_AREA = B_AREA[1]),by=id]
     dt.field.reward <- dt.field.reward[,list(er_reward = weighted.mean(x = er_reward,w=B_AREA))]
     
