@@ -1,5 +1,5 @@
 require(testthat)
-
+require(data.table)
   # # default input for testing
   # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei')
   # B_GWL_CLASS = c('GtIII', 'GtI', 'GtV')
@@ -112,14 +112,14 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
     test_that("check bbwp", {
       expect_equal(
         object = test$fields$s_bbwp_tot,
-        expected = c(35,17,8),
+        expected = c(37,17,8),
         tolerance = 0.01)
     })
     
     test_that("check bbwp", {
       expect_equal(
         object = as.numeric(unlist(test$farm)),
-        expected = c(27,42,54,54,24,92),
+        expected = c(28,45,54,54,24,92),
         tolerance = 0.01)
     })
 
@@ -285,14 +285,14 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check bbwp", {
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(35,17,8),
+      expected = c(37,17,8),
       tolerance = 0.01)
   })
   
   test_that("check bbwp", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(27,42,54,54,22,92),
+      expected = c(28,45,54,54,22,92),
       tolerance = 0.01)
   })
   

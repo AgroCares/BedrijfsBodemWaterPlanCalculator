@@ -1,5 +1,16 @@
 # Changelog BBWPC
 
+## 0.5.8
+### Fixed
+- Farm level measures are no longer advised at field level in `bbwp_meas_rank` and `er_meas_rank`
+
+## 0.5.7
+### Fixed
+- remove incorrect B_GWL_CLASS unit check in `bbwp_field_properties`, issue #32
+
+### Added
+- lower the task (opgave) for wet and peat soils for nitrate leaching, issue #25
+
 ## 0.6.0
 
 ### Changed

@@ -98,6 +98,10 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   
     # correction when field is in a ground water protection zone
     dt[,cfngw := fifelse(B_GWP, 1, 0.5)]
+
+    # lower the risk for nitrate leaching in both wet soils and peat soils
+    dt[B_GWL_CLASS %in% c('GtI','GtII','GtIII'), cfngw := cfngw * 0.5]
+    dt[B_SOILTYPE_AGR == 'veen', cfngw := cfngw * 0.1]
     
     # correction when field is in a region with high water deficiency risks
     dt[,cfwb := fifelse(B_AREA_DROUGHT, 1, 0.5)]

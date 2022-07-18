@@ -52,7 +52,7 @@ test_that("check bbwp_field_scores", {
   expect_equal(
     object = test,
     expected = data.table(
-      S_BBWP_NGW = c(98, 53, 2),
+      S_BBWP_NGW = c(99, 58, 2),
       S_BBWP_NSW = c(99, 0, 0),
       S_BBWP_PSW = c(99, 0, 0),
       S_BBWP_NUE = c(99, 53, 3),
