@@ -122,7 +122,11 @@
                            B_CT_LANDSCAPE = aim$B_CT_LANDSCAPE, 
                            measures = measures, sector)
   
-  
+  test <- ecoregeling(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
+                      B_LU_BBWP,B_LU_ECO1,B_LU_ECO2, B_LU_ECO3, B_LU_ECO4, B_LU_ECO5, 
+                      B_LU_ECO6, B_LU_ECO7,B_LU_ECO8, B_LU_ECO9,B_LU_ECO10,
+                      A_P_SG,D_SA_W, B_AREA,M_DRAIN, farmscore, 
+                      measures, sector, output = 'scores', medalscore = 'gold')
   
   
   
