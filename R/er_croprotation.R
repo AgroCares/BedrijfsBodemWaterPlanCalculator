@@ -37,7 +37,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   
   # add visual bindings
   . = eco_id = farmid = b_lu_brp = type = erscore = B_AREA_RR = indicator = NULL
-  urgency = soiltype = er_profit = statcode = er_cf = id = value = reward = NULL
+  urgency = soiltype = er_profit = statcode = er_cf = id = value = reward = ec1 = ec2 = NULL
   level = nc1 = nc2 = nc3 = nc4 = nc5 = nc6 = nc7 = nc8 = nc9 = nc10 = nc11 = nc12 = NULL
   ecocheck = eco1 = eco2 = eco3 = eco4 = eco5 = eco6 = eco7 = eco8 = eco9 = eco10 = NULL
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = patterns = fbulbs = bulbs = NULL

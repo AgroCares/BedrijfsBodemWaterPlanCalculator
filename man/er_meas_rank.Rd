@@ -9,7 +9,6 @@ er_meas_rank(
   B_GWL_CLASS,
   A_P_SG,
   B_SLOPE_DEGREE,
-  B_LU_BRP,
   M_DRAIN,
   D_SA_W,
   B_AREA,

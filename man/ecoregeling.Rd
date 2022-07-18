@@ -28,7 +28,7 @@ ecoregeling(
   measures,
   sector,
   output = "scores",
-  medalscore
+  medalscore = "gold"
 )
 }
 \arguments{
