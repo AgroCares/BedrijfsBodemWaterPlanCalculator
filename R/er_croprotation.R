@@ -236,7 +236,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt.field.reward <- dt.field.reward[,list(er_reward = weighted.mean(x = er_reward,w=B_AREA))]
     
     # calculate the total score for farm measures
-    dt.farm.soiltype <- dt[,list(fr_soil = B_AREA / sum(dt$B_AREA)),by = soiltype]
+    dt.farm.soiltype <- dt[,list(fr_soil = sum(B_AREA) / sum(dt$B_AREA)),by = soiltype]
     dt.farm.urgency <- merge(dt.er.urgency[soiltype %in% dt$soiltype], dt.farm.soiltype,by= 'soiltype')
     dt.farm.urgency <- dt.farm.urgency[,list(urgency = weighted.mean(x = urgency,w = fr_soil)),by = indicator]
     
