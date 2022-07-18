@@ -11,14 +11,15 @@
 #' @param S_ER_LANDSCAPE (numeric) the Ecoregeling scoring index for landscape for each field
 #' @param S_ER_REWARD (numeric) The financial reward per field for taking Ecoregeling measures (euro / ha)
 #' @param B_AREA (numeric) The area of the field (m2) 
+#' @param type (character) option to return field or farm medal
 #' 
 #' @import data.table
 #'
 #' @export
 # calculate the field and farm medal type
 er_medal <- function(B_SOILTYPE_AGR, B_AREA, 
-                        S_ER_TOT,S_ER_SOIL,S_ER_WATER,S_ER_CLIMATE,S_ER_BIODIVERSITY,S_ER_LANDSCAPE, 
-                        S_ER_REWARD){
+                     S_ER_TOT,S_ER_SOIL,S_ER_WATER,S_ER_CLIMATE,S_ER_BIODIVERSITY,S_ER_LANDSCAPE, 
+                     S_ER_REWARD,type = 'field'){
   
   # add visual bindings
  
@@ -81,42 +82,51 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
   
   # estimate the absolute ER score
   dt[, score := fifelse(indicator == 'REWARD',value,value * er_gold * 0.01)]
+
+  # set output depending on farm or field level
+  if(type == 'field'){
+    
+    # set checks for medals score per field
+    dt[,c_gold := fifelse(score>=er_gold,1,0)]
+    dt[,c_silver := fifelse(score>=er_silver,1,0)]
+    dt[,c_bronze := fifelse(score>=er_bronze,1,0)]
+    
+    # sum the requirement for the medal (total should be 7 per field)
+    dt.field <- dt[,lapply(.SD,sum),.SDcols = c('c_gold','c_silver','c_bronze'),by= c('id','B_AREA')]
+    
+    # set the medal per field
+    dt.field[c_bronze >= 7,medal := 'bronze']
+    dt.field[c_silver >= 7, medal := 'silver']
+    dt.field[c_gold >= 7, medal := 'gold']
+    dt.field[is.na(medal), medal := 'none']
   
-  # set checks for medals score per field
-  dt[,c_gold := fifelse(score>=er_gold,1,0)]
-  dt[,c_silver := fifelse(score>=er_silver,1,0)]
-  dt[,c_bronze := fifelse(score>=er_bronze,1,0)]
-  
-  # sum the requirement for the medal (total should be 7 per field)
-  dt.field <- dt[,lapply(.SD,sum),.SDcols = c('c_gold','c_silver','c_bronze'),by= c('id','B_AREA')]
-  
-  # set the medal per field
-  dt.field[c_bronze >= 7,medal := 'bronze']
-  dt.field[c_silver >= 7, medal := 'silver']
-  dt.field[c_gold >= 7, medal := 'gold']
-  dt.field[is.na(medal), medal := 'none']
-  
-  # estimate weighted mean score for full farm
-  dt.farm <- dt[,lapply(.SD,weighted.mean,w = B_AREA),
-                .SDcols = c('score','er_gold','er_silver','er_bronze'), by = 'indicator']
-  
-  # set checks for medals score per field
-  dt.farm[,c_gold := fifelse(score>=er_gold,1,0)]
-  dt.farm[,c_silver := fifelse(score>=er_silver,1,0)]
-  dt.farm[,c_bronze := fifelse(score>=er_bronze,1,0)]
-  dt.farm[is.na(medal), medal := 'none']
-  
-  # sum the requirement for the medal (total should be 7 per field)
-  dt.farm <- dt.farm[,lapply(.SD,sum),.SDcols = c('c_gold','c_silver','c_bronze')]
-  
-  # set the medal for farm
-  dt.farm[c_bronze >= 7,medal := 'bronze']
-  dt.farm[c_silver >= 7, medal := 'silver']
-  dt.farm[c_gold >= 7, medal := 'gold']
-  
-  # set output of the function
-  out <- list(field = dt.field[,.(id,medal)],
-              farm = dt.farm$medal)
+    # set output object
+    out <- dt.field[,medal]
+    
+  } else {
+    
+    # estimate weighted mean score for full farm
+    dt.farm <- dt[,lapply(.SD,weighted.mean,w = B_AREA),
+                  .SDcols = c('score','er_gold','er_silver','er_bronze'), by = 'indicator']
+    
+    # set checks for medals score per field
+    dt.farm[,c_gold := fifelse(score>=er_gold,1,0)]
+    dt.farm[,c_silver := fifelse(score>=er_silver,1,0)]
+    dt.farm[,c_bronze := fifelse(score>=er_bronze,1,0)]
+    
+    # sum the requirement for the medal (total should be 7 per field)
+    dt.farm <- dt.farm[,lapply(.SD,sum),.SDcols = c('c_gold','c_silver','c_bronze')]
+    
+    # set the medal for farm
+    dt.farm[c_bronze >= 7,medal := 'bronze']
+    dt.farm[c_silver >= 7, medal := 'silver']
+    dt.farm[c_gold >= 7, medal := 'gold']
+    dt.farm[is.na(medal), medal := 'none']
+    
+    # set output object
+    out <- dt.farm[,medal]
+    
+  }
   
   # return
   return(out)
