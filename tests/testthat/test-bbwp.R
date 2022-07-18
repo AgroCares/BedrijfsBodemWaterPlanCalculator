@@ -229,7 +229,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check bbwp", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(58,80,55,54,68,94),
+      expected = c(58,82,55,54,68,94),
       tolerance = 0.01)
   })
 
@@ -268,6 +268,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                output = 'scores',
                LSW = data.table(oow_id = c(1,1295,84))
   )
+  
   
   # run tests on format and output values
   test_that("check bbwp", {
