@@ -94,6 +94,7 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
   dt.field[c_bronze >= 7,medal := 'bronze']
   dt.field[c_silver >= 7, medal := 'silver']
   dt.field[c_gold >= 7, medal := 'gold']
+  dt.field[is.na(medal), medal := 'none']
   
   # estimate weighted mean score for full farm
   dt.farm <- dt[,lapply(.SD,weighted.mean,w = B_AREA),
@@ -103,6 +104,7 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
   dt.farm[,c_gold := fifelse(score>=er_gold,1,0)]
   dt.farm[,c_silver := fifelse(score>=er_silver,1,0)]
   dt.farm[,c_bronze := fifelse(score>=er_bronze,1,0)]
+  dt.farm[is.na(medal), medal := 'none']
   
   # sum the requirement for the medal (total should be 7 per field)
   dt.farm <- dt.farm[,lapply(.SD,sum),.SDcols = c('c_gold','c_silver','c_bronze')]
