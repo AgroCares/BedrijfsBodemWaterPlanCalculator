@@ -34,7 +34,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   level = nc1 = nc2 = nc3 = nc4 = nc5 = nc6 = nc7 = nc8 = nc9 = nc10 = nc11 = nc12 = NULL
   ecocheck = eco1 = eco2 = eco3 = eco4 = eco5 = eco6 = eco7 = eco8 = eco9 = eco10 = NULL
   er_euro_farm = acc_anlb = bbwp_status = acc_glmc = B_AREA_REL = NULL
-  soiltype = peat = clay = sand = silt = loess = NULL
+  soiltype = peat = clay = sand = silt = loess = ec1 = ec2 = NULL
   patterns = indicator = erscore = urgency = S_ER_REWARD = value = NULL
   total = biodiversity = climate = landscape = soil = water = oid = NULL
   
@@ -116,15 +116,31 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt[(B_LU_BBWP == 9 & nc9 == 0) | (B_LU_BBWP == 10 & nc10 == 0), c(cols) := 0]
     dt[(B_LU_BBWP == 11 & nc11 == 0) | (B_LU_BBWP == 12 & nc12 == 0), c(cols) := 0]
     
-    # set the score to zero when nog applicable as ECO category
-    dt[,ecocheck := B_LU_ECO1 * eco1 + B_LU_ECO2 * eco2 + B_LU_ECO3 * eco3 + B_LU_ECO4 * eco4 + 
-                    B_LU_ECO5 * eco5 + B_LU_ECO6 * eco6 + B_LU_ECO7 * eco7]
-    dt[ecocheck == 0, c(cols) := 0]
+    # set to zero when measure is not applicable at all
+    dt[, ec1 := nc1 * (B_LU_BBWP == 1) + nc2 * (B_LU_BBWP == 2) + nc3 * (B_LU_BBWP == 3) +
+         nc4 * (B_LU_BBWP == 4) + nc5 * (B_LU_BBWP == 5) + nc6 * (B_LU_BBWP == 6) +
+         nc7 * (B_LU_BBWP == 7) + nc8 * (B_LU_BBWP == 8) + nc9 * (B_LU_BBWP == 9) +
+         nc10 * (B_LU_BBWP == 10) + nc11 * (B_LU_BBWP == 11) + nc12 * (B_LU_BBWP == 12)]
+    dt[ec1 == 0 & level == 'field', c(cols) := 0]
+    
+    # set the score to zero when not applicable for a given ER combined category
+    dt[,ec2 := eco1 * B_LU_ECO1 + eco2 * B_LU_ECO2 + eco3 * B_LU_ECO3 + eco4 * B_LU_ECO4 + 
+               eco5 * B_LU_ECO5 + eco6 * B_LU_ECO6 + eco7 * B_LU_ECO7]
+    
+    # this is the other way around: if measure can not be applied: set to zero ONLY when eco is TRUE
+    # since eco measures can overlap, setting scores 0 is not done when ec2 > 0
+    dt[ec2 == 0 & eco1 == TRUE, c(cols) := 0]
+    dt[ec2 == 0 & eco2 == TRUE, c(cols) := 0]
+    dt[ec2 == 0 & eco3 == TRUE, c(cols) := 0]
+    dt[ec2 == 0 & eco4 == TRUE, c(cols) := 0]
+    dt[ec2 == 0 & eco5 == TRUE, c(cols) := 0]
+    dt[ec2 == 0 & eco6 == TRUE, c(cols) := 0]
+    dt[ec2 == 0 & eco7 == TRUE, c(cols) := 0]
     
     # set the score to zero when not applicable as arable/productive/cultivated measure
-    dt[B_LU_ECO8 == 1 & eco8 == 0, c(cols) := 0]
-    dt[B_LU_ECO9 == 1 & eco9 == 0, c(cols) := 0]
-    dt[B_LU_ECO10 == 1 & eco10 == 0, c(cols):= 0]
+    dt[B_LU_ECO8 == TRUE & eco8 == 0, c(cols) := 0]
+    dt[B_LU_ECO9 == TRUE & eco9 == 0, c(cols) := 0]
+    dt[B_LU_ECO10 == TRUE & eco10 == 0, c(cols):= 0]
 
   # set the score and profit to zero when the measure is not applicable given sector or soil type
   
@@ -254,7 +270,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt2[oid > 1, c(cols) := 0]
     
   # calculate the weighed average ER score (points/ ha) for the whole farm due to measures taken
-  dt.field <- dt2[total > 0,lapply(.SD,sum), .SDcols = cols, by = 'id']
+  dt.field <- dt2[,lapply(.SD,sum), .SDcols = cols, by = 'id']
     
   # select total reward per field which is equal to the reward from the measure with the highest er_euro_ha (euro / ha)
   dt.reward <- dt[grepl('euro_ha',indicator),list(S_ER_REWARD = max(value,na.rm=T)),by = 'id']

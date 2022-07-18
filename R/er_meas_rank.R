@@ -47,7 +47,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = fbulbs = bulbs = NULL
   level = nc1 = nc2 = nc3 = nc4 = nc5 = nc6 = nc7 = nc8 = nc9 = nc10 = nc11 = nc12 = NULL
   ecocheck = eco1 = eco2 = eco3 = eco4 = eco5 = eco6 = eco7 = eco8 = eco9 = eco10 = NULL
-  soiltype = peat = clay = sand = silt = loess = NULL
+  soiltype = peat = clay = sand = silt = loess = ec1 = ec2 = NULL
   er_water = cf_water = er_soil = cf_soil = er_climate = cf_climate = er_biodiversity = cf_biodiversity = er_landscape = cf_landscape = NULL
   er_total = B_AREA_FARM = er_reward = er_total_scaled = er_soil_scaled = er_water_scaled = NULL
   er_climate_scaled = er_biodiversity_scaled = er_landscape_scaled= NULL
@@ -153,15 +153,31 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_
     dt[(B_LU_BBWP == 9 & nc9 == 0) | (B_LU_BBWP == 10 & nc10 == 0), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     dt[(B_LU_BBWP == 11 & nc11 == 0) | (B_LU_BBWP == 12 & nc12 == 0), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     
-    # lower the score  when nog applicable as ECO category
-    dt[,ecocheck := B_LU_ECO1 * eco1 + B_LU_ECO2 * eco2 + B_LU_ECO3 * eco3 + B_LU_ECO4 * eco4 + 
-                    B_LU_ECO5 * eco5 + B_LU_ECO6 * eco6 + B_LU_ECO7 * eco7]
-    dt[ecocheck == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    # set to zero when measure is not applicable at all
+    dt[, ec1 := nc1 * (B_LU_BBWP == 1) + nc2 * (B_LU_BBWP == 2) + nc3 * (B_LU_BBWP == 3) +
+         nc4 * (B_LU_BBWP == 4) + nc5 * (B_LU_BBWP == 5) + nc6 * (B_LU_BBWP == 6) +
+         nc7 * (B_LU_BBWP == 7) + nc8 * (B_LU_BBWP == 8) + nc9 * (B_LU_BBWP == 9) +
+         nc10 * (B_LU_BBWP == 10) + nc11 * (B_LU_BBWP == 11) + nc12 * (B_LU_BBWP == 12)]
+    dt[ec1 == 0 & level == 'field', c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    
+    # set the score to zero when not applicable for a given ER combined category
+    dt[,ec2 := eco1 * B_LU_ECO1 + eco2 * B_LU_ECO2 + eco3 * B_LU_ECO3 + eco4 * B_LU_ECO4 + 
+               eco5 * B_LU_ECO5 + eco6 * B_LU_ECO6 + eco7 * B_LU_ECO7]
+    
+    # this is the other way around: if measure can not be applied: set to zero ONLY when eco is TRUE
+    # since eco measures can overlap, setting scores 0 is not done when ec2 > 0
+    dt[ec2 == 0 & eco1 == TRUE, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[ec2 == 0 & eco2 == TRUE, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[ec2 == 0 & eco3 == TRUE, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[ec2 == 0 & eco4 == TRUE, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[ec2 == 0 & eco5 == TRUE, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[ec2 == 0 & eco6 == TRUE, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[ec2 == 0 & eco7 == TRUE, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     
     # lower the score  when not applicable as arable/productive/cultivated measure
-    dt[B_LU_ECO8 == 1 & eco8 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_ECO9 == 1 & eco9 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_ECO10 == 1 & eco10 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_ECO8 == TRUE & eco8 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_ECO9 == TRUE & eco9 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_ECO10 == TRUE & eco10 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     
     # lower the score when the sector limits the applicability of measures
     

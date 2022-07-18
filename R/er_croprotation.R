@@ -119,8 +119,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                    B_CT_WATER = B_CT_WATER,
                    B_CT_CLIMATE = B_CT_CLIMATE,
                    B_CT_BIO = B_CT_BIO,
-                   B_CT_LANDSCAPE = B_CT_LANDSCAPE,
-                   sector = sector)
+                   B_CT_LANDSCAPE = B_CT_LANDSCAPE)
   
   # add regional correction value for price
   dt <- merge(dt,dt.er.reward[,.(statcode,reward_cf = er_cf)], by.x = 'B_AER_CBS',by.y = 'statcode',all.x = TRUE)
@@ -148,15 +147,31 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt.field[(B_LU_BBWP == 9 & nc9 == 0) | (B_LU_BBWP == 10 & nc10 == 0), c(cols) := 0]
     dt.field[(B_LU_BBWP == 11 & nc11 == 0) | (B_LU_BBWP == 12 & nc12 == 0), c(cols) := 0]
     
-    # set the score to zero when not applicable for given ECO crop category
-    dt.field[,ecocheck := B_LU_ECO1 * eco1 + B_LU_ECO2 * eco2 + B_LU_ECO3 * eco3 + B_LU_ECO4 * eco4 + 
-                          B_LU_ECO5 * eco5 + B_LU_ECO6 * eco6 + B_LU_ECO7 * eco7]
-    dt.field[ecocheck == 0, c(cols) := 0]
+    # set to zero when measure is not applicable at all
+    dt.field[, ec1 := nc1 * (B_LU_BBWP == 1) + nc2 * (B_LU_BBWP == 2) + nc3 * (B_LU_BBWP == 3) +
+                      nc4 * (B_LU_BBWP == 4) + nc5 * (B_LU_BBWP == 5) + nc6 * (B_LU_BBWP == 6) +
+                      nc7 * (B_LU_BBWP == 7) + nc8 * (B_LU_BBWP == 8) + nc9 * (B_LU_BBWP == 9) +
+                      nc10 * (B_LU_BBWP == 10) + nc11 * (B_LU_BBWP == 11) + nc12 * (B_LU_BBWP == 12)]
+    dt.field[ec1 == 0 & level == 'field', c(cols) := 0]
+    
+    # set the score to zero when not applicable for a given ER combined category
+    dt.field[,ec2 := eco1 * B_LU_ECO1 + eco2 * B_LU_ECO2 + eco3 * B_LU_ECO3 + eco4 * B_LU_ECO4 + 
+                     eco5 * B_LU_ECO5 + eco6 * B_LU_ECO6 + eco7 * B_LU_ECO7]
+    
+    # this is the other way around: if measure can not be applied: set to zero ONLY when eco is TRUE
+    # since eco measures can overlap, setting scores 0 is not done when ec2 > 0
+    dt.field[ec2 == 0 & eco1 == TRUE, c(cols) := 0]
+    dt.field[ec2 == 0 & eco2 == TRUE, c(cols) := 0]
+    dt.field[ec2 == 0 & eco3 == TRUE, c(cols) := 0]
+    dt.field[ec2 == 0 & eco4 == TRUE, c(cols) := 0]
+    dt.field[ec2 == 0 & eco5 == TRUE, c(cols) := 0]
+    dt.field[ec2 == 0 & eco6 == TRUE, c(cols) := 0]
+    dt.field[ec2 == 0 & eco7 == TRUE, c(cols) := 0]
 
     # set measures not applicable on arable, cultivated or productive land
-    dt.field[B_LU_ECO8 == 1 & eco8 == 0, c(cols) := 0]
-    dt.field[B_LU_ECO9 == 1 & eco9 == 0, c(cols) := 0]
-    dt.field[B_LU_ECO10 == 1 & eco10 == 0, c(cols) := 0]
+    dt.field[B_LU_ECO8 == TRUE & eco8 == 0, c(cols) := 0]
+    dt.field[B_LU_ECO9 == TRUE & eco9 == 0, c(cols) := 0]
+    dt.field[B_LU_ECO10 == TRUE & eco10 == 0, c(cols) := 0]
     
     # add columns for the sector to which the farms belong
     fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
@@ -215,8 +230,8 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt2[oid > 1, c(cols) := 0]
     
     # calculate the weighed average ER score (points/ ha) for the whole farm due to measures taken
-    dt.field.score <- dt2[total>0,lapply(.SD,function(x) weighted.mean(x,w = B_AREA)), .SDcols = cols]
-    dt.field.reward <- dt2[total>0,list(er_reward = max(euro_ha * reward_cf),
+    dt.field.score <- dt2[,lapply(.SD,function(x) weighted.mean(x,w = B_AREA)), .SDcols = cols]
+    dt.field.reward <- dt2[,list(er_reward = max(euro_ha[total>0] * reward_cf),
                                         B_AREA = B_AREA[1]),by=id]
     dt.field.reward <- dt.field.reward[,list(er_reward = weighted.mean(x = er_reward,w=B_AREA))]
     
@@ -250,8 +265,8 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       cfr <- weighted.mean(x = dt$reward_cf, w = dt$B_AREA)
       
       # sum total score (score per hectare)
-      dt.farm.score <- dt4[total>0,lapply(.SD,sum), .SDcols = cols]
-      dt.farm.reward <- dt4[total>0,list(er_reward = cfr * (max(euro_ha) + max(euro_farm) / dt.farm$area_farm))]
+      dt.farm.score <- dt4[,lapply(.SD,sum), .SDcols = cols]
+      dt.farm.reward <- dt4[,list(er_reward = cfr * (max(euro_ha[total>0]) + max(euro_farm[total>0]) / dt.farm$area_farm))]
       
     } else {
       
