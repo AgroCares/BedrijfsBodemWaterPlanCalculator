@@ -7,7 +7,6 @@
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param A_P_SG (numeric) 
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
-#' @param B_LU_BRP (integer)
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
@@ -30,7 +29,7 @@
 #'
 #' @export
 # calculate the opportunities for a set of fields
-bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, B_LU_BBWP,B_AER_CBS,
+bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BBWP,B_AER_CBS,
                               M_DRAIN, D_SA_W, D_RISK_NGW, D_RISK_NSW, D_RISK_PSW, D_RISK_NUE, D_RISK_WB,
                               B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW, 
                               B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, measures, sector){
@@ -43,7 +42,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   
   # check length of the inputs
   arg.length <- max(length(B_SOILTYPE_AGR),length(B_GWL_CLASS), length(A_P_SG),length(B_AER_CBS),
-                    length(B_SLOPE_DEGREE), length(B_LU_BRP), length(B_LU_BBWP),length(M_DRAIN),length(D_SA_W),
+                    length(B_SLOPE_DEGREE), length(B_LU_BBWP),length(M_DRAIN),length(D_SA_W),
                     length(D_RISK_NGW),length(D_RISK_NSW),length(D_RISK_PSW),length(D_RISK_NUE),
                     length(D_RISK_WB),length(B_GWP),length(B_AREA_DROUGHT),length(B_CT_PSW),
                     length(B_CT_NSW))
@@ -53,7 +52,6 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
                                                        'dalgrond','moerige_klei','veen','loess'))
   checkmate::assert_numeric(A_P_SG, lower = 0, upper = 120, len = arg.length)
   checkmate::assert_numeric(B_SLOPE_DEGREE, lower = 0, upper = 30,len = arg.length)
-  checkmate::assert_integerish(B_LU_BRP, lower = 0, len = arg.length)
   checkmate::assert_integerish(B_LU_BBWP, lower = 0, upper = 9,len = arg.length)
   checkmate::assert_logical(M_DRAIN,len = arg.length)
   checkmate::assert_numeric(D_SA_W, lower = 0, upper = 1, len = arg.length)
@@ -76,7 +74,6 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
                     B_GWL_CLASS = B_GWL_CLASS,
                     A_P_SG = A_P_SG,
                     B_SLOPE_DEGREE = B_SLOPE_DEGREE,
-                    B_LU_BRP = B_LU_BRP,
                     B_LU_BBWP = B_LU_BBWP,
                     B_AER_CBS = B_AER_CBS,
                     M_DRAIN = M_DRAIN,
@@ -135,7 +132,6 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
       
       # calculate
       dt.meas.impact <- bbwp_meas_score(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR, 
-                                        B_LU_BRP = dt$B_LU_BRP,
                                         B_LU_BBWP = dt$B_LU_BBWP,
                                         B_GWL_CLASS = dt$B_GWL_CLASS,
                                         B_AER_CBS = dt$B_AER_CBS,
@@ -177,7 +173,6 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   dt[,D_OPI_NUE := 100 * D_OPI_NUE]
   dt[,D_OPI_WB :=  100 * D_OPI_WB]
   
-  # calculate the integrative opportunity index (risk times impact)
   dt[,D_OPI_TOT := (D_OPI_NGW * wf(D_OPI_NGW, type="score") + 
                     D_OPI_NSW * wf(D_OPI_NSW, type="score") + 
                     D_OPI_PSW * wf(D_OPI_PSW, type="score") + 

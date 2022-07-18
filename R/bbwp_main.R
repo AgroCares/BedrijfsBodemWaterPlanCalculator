@@ -4,7 +4,6 @@
 #' A high BBWP score is indicative for the number of opportunities to improve soil quality and land use.
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil, using agronomic classification
-#' @param B_LU_BRP (numeric) The crop type (conform BRP coding, preferable the most frequent crop on the field)
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param B_SC_WENR (character) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006)
@@ -47,7 +46,7 @@
 #' @import OBIC
 #'  
 #' @export
-bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE = NULL,B_SLOPE_DEGREE = NULL,
+bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE = NULL,B_SLOPE_DEGREE = NULL,
                  B_AER_CBS,
                  A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
                  B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW,B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, 
@@ -77,7 +76,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
   
   # convert soil properties to a BBWP risk indicator
   dt <- bbwp_field_properties(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
-                              B_LU_BRP = B_LU_BRP, 
+                              B_LU_BBWP = B_LU_BBWP,
                               B_GWL_CLASS = B_GWL_CLASS, 
                               B_SC_WENR = B_SC_WENR, 
                               B_HELP_WENR = B_HELP_WENR,
@@ -137,7 +136,6 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                                     B_GWL_CLASS = B_GWL_CLASS,
                                     A_P_SG = A_P_SG,
                                     B_SLOPE_DEGREE = B_SLOPE_DEGREE,
-                                    B_LU_BRP = B_LU_BRP,
                                     B_LU_BBWP = B_LU_BBWP,
                                     B_AER_CBS = B_AER_CBS,
                                     M_DRAIN = M_DRAIN,
@@ -174,7 +172,6 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BRP, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_H
                               B_GWL_CLASS = B_GWL_CLASS,
                               A_P_SG = A_P_SG,
                               B_SLOPE_DEGREE = B_SLOPE_DEGREE,
-                              B_LU_BRP = B_LU_BRP,
                               B_LU_BBWP = B_LU_BBWP,
                               B_AER_CBS = B_AER_CBS,
                               M_DRAIN = M_DRAIN,

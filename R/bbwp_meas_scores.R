@@ -7,7 +7,6 @@
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param A_P_SG (numeric) 
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
-#' @param B_LU_BRP (integer)
 #' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
@@ -24,7 +23,7 @@
 #'
 #' @export
 # calculate the score for a list of measures for one or multiple fields
-bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE, B_LU_BRP, B_LU_BBWP, B_AER_CBS,
+bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE, B_LU_BBWP, B_AER_CBS,
                             M_DRAIN, D_SA_W,
                             D_OPI_NGW, D_OPI_NSW, D_OPI_PSW, D_OPI_NUE, D_OPI_WB,
                             measures = NULL, sector){
@@ -41,7 +40,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   # check length of the inputs
   arg.length <- max(length(D_OPI_NGW), length(D_OPI_NSW), length(D_OPI_PSW), length(D_OPI_NUE),
                     length(D_OPI_WB),length(B_SOILTYPE_AGR), length(B_GWL_CLASS), length(B_AER_CBS),length(M_DRAIN),
-                    length(A_P_SG), length(B_SLOPE_DEGREE), length(B_LU_BRP),length(B_LU_BBWP),
+                    length(A_P_SG), length(B_SLOPE_DEGREE), length(B_LU_BBWP),
                     length(D_SA_W))
   
   # reformat B_AER_CBS
@@ -54,7 +53,6 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   checkmate::assert_logical(M_DRAIN,len = arg.length)
   checkmate::assert_numeric(A_P_SG, lower = 0, upper = 120, len = arg.length)
   checkmate::assert_numeric(B_SLOPE_DEGREE, lower=0, upper = 30,len = arg.length)
-  checkmate::assert_integerish(B_LU_BRP, lower = 0, len = arg.length)
   checkmate::assert_integerish(B_LU_BBWP, lower = 0, upper = 9,len = arg.length)
   checkmate::assert_numeric(D_SA_W, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_OPI_NGW, lower = 0, upper = 1, len = arg.length)
@@ -70,7 +68,6 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
                    B_GWL_CLASS = B_GWL_CLASS,
                    A_P_SG = A_P_SG,
                    B_SLOPE_DEGREE = B_SLOPE_DEGREE,
-                   B_LU_BRP = B_LU_BRP,
                    B_LU_BBWP = B_LU_BBWP,
                    B_AER_CBS = B_AER_CBS,
                    M_DRAIN = M_DRAIN,
@@ -101,12 +98,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
     dt[A_P_SG >= 50 & A_P_SG < 75, effect_psw := effect_psw + psw_psg_medium]
     dt[A_P_SG >= 75, effect_psw := effect_psw + psw_psg_high]
     dt[B_SLOPE_DEGREE <= 2, effect_psw := effect_psw + psw_noslope]
-    dt[B_LU_BRP %in% c(176, 964, 965, 967, 968, 970,
-                       971, 973, 976, 979, 982, 983,
-                       985, 986, 997, 998, 999, 1000,
-                       1001, 1002, 1003, 1004, 1005,
-                       1006, 1007, 1012, 1015, 1027,
-                       1051, 1052), effect_psw := effect_psw + psw_bulbs]
+    dt[B_LU_BBWP == 6, effect_psw := effect_psw + psw_bulbs]
     
     # Add bonus points for nsw
     dt[M_DRAIN == TRUE, effect_nsw := effect_nsw + nsw_drains]
@@ -114,7 +106,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
     dt[! B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_high]
     
     # Add bonus points for grassland
-    dt[B_LU_BRP %in% c(265, 266, 331, 332, 336,383), effect_ngw := effect_ngw + ngw_grassland]
+    dt[B_LU_BBWP %in% c(1,2), effect_ngw := effect_ngw + ngw_grassland]
  
   # set scores to zero when measures are not applicable given the crop type
   
