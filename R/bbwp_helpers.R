@@ -154,7 +154,6 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
 #' @param a_lat (numeric) Latitude of the field (required if no LSW is submitted)
 #' 
 #' @import data.table
-#' @import sf
 #' 
 #' @details 
 #' Due to high memory use, the spatial LSW gpkg is moved to "dev" directory of the package.
@@ -191,16 +190,16 @@ bbwp_check_lsw <- function(LSW, a_lat = NULL, a_lon = NULL,lsw.sf = NULL){
     checkmate::assert_numeric(a_lat, lower = 50.5, upper = 53.5, len = arg.length)
       
     # load internal LSW
-    lsw.sf <- st_as_sf(lsw.sf)
+    lsw.sf <- sf::st_as_sf(lsw.sf)
     
     # make sf object of field location(s)
     loc <- sf::st_sf(geom = st_sfc(st_multipoint(matrix(c(a_lon,a_lat),ncol=2))), crs = 4326)
     
     # crop lsw.sf by an extend slightly bigger than the points
-    suppressWarnings(lsw.crop <- st_crop(lsw.sf,st_bbox(loc) + c(-0.005,-0.0025,0.005,0.0025)))
+    suppressWarnings(lsw.crop <- sf::st_crop(lsw.sf,sf::st_bbox(loc) + c(-0.005,-0.0025,0.005,0.0025)))
       
     # intersect with the package lsw object
-    suppressWarnings(dt <- as.data.table(st_intersection(loc, lsw.crop)))
+    suppressWarnings(dt <- as.data.table(sf::st_intersection(loc, lsw.crop)))
     
     # add id in the same order as the input
     dt[,id := 1:arg.length]

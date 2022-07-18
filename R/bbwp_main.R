@@ -32,7 +32,7 @@
 #' @param D_RO_R (numeric) The risk that surface water runs off the parcel
 #' @param B_AREA (numeric) the area of the field (m2) 
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
-#' @param LSW (data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)
+#' @param LSW (data.table) A data.table with the LSW properties including oow_id. See details. 
 #' @param a_lat (numeric) Latitude of the field (required if no LSW is submitted)
 #' @param a_lon (numeric) Longitude of the field (required if no LSW is submitted)
 #' @param measures (data.table) the measures planned / done per fields
@@ -41,6 +41,8 @@
 #' 
 #' @details 
 #' B_SLOPE respresents the slope of the field as a boolean variable (is the slope bigger than 2\% or not) and was used in previous versions of BBWP. This has been replaced by B_SLOPE_DEGREE.
+#' LSW is by default a data.table with LSW properties.Sending only oow_id is sufficient to retreive the LSW properties from BBWP internal package table.
+#' If needed, one can also send in a sf object to retreive the LSW properties.
 #' 
 #' @import data.table
 #' @import OBIC
