@@ -1,5 +1,14 @@
 # Changelog BBWPC
 
+## 0.7.0
+
+### Changed
+- add `er_medal` to estimate the medal given score per field and farm
+
+### Fixed
+- error in renaming indicator after melt in `er_meas_score` and `er_crop_rotation`
+- error in `er_crop_rotation` when multiple soils from same soiltype are given
+
 ## 0.6.0
 
 ### Changed
