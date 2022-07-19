@@ -64,23 +64,66 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check ecoregeling", {
     expect_equal(
       object = colnames(test$fields),
-      expected = c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity","s_er_landscape","s_er_tot","s_er_reward"))
+      expected = c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity",
+                   "s_er_landscape","s_er_tot","s_er_reward","s_er_medal"))
   })
   
   test_that("check ecoregeling", {
     expect_equal(
       object = test$fields$s_er_tot,
-      expected = c(9,9,9),
+      expected = c(0,0,0),
       tolerance = 0.01)
   })
   
   test_that("check ecoregeling", {
     expect_equal(
       object = as.character(unlist(test$farm)),
-      expected = c(11,11,6,13,4,9,0,'silver'),
+      expected = c(0,0,0,0,0,0,0,'none'),
       tolerance = 0.01)
   })
 
+  # run example 1 with all soil types and without any measures taken
+  test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','duinzand',
+                                         'zeeklei','maasklei','dalgrond','moerige_klei',
+                                         'veen'),
+                      B_GWL_CLASS = c('GtIII', 'GtI', 'GtV','GtVI','GtV','GtV','GtVI','GtIII','GtI'),
+                      A_P_SG = c(0.4, 0.8, 1,15,20,24,36,28,5),
+                      B_SLOPE_DEGREE = c(1.5,4,1.5,1,rep(1.25,4)),
+                      B_AER_CBS = c('LG05','LG14','LG02','LG03','LG05','LG07','LG11','LG06','LG12'),
+                      B_LU_BBWP = c(1,2,3,4,5,6,7,8,9),
+                      B_LU_ECO1 = c(F,F,F,F,F,F,F,F,F),
+                      B_LU_ECO2 = c(F,F,F,F,F,F,F,F,F),
+                      B_LU_ECO3 = c(F,F,F,F,F,F,F,F,F),
+                      B_LU_ECO4 = c(F,F,F,F,F,F,F,F,F),
+                      B_LU_ECO5 = c(T,T,T,T,T,T,T,T,T),
+                      B_LU_ECO6 = c(F,F,F,F,F,F,F,F,F), 
+                      B_LU_ECO7 = c(F,F,F,F,F,F,F,F,F),
+                      B_LU_ECO8 = c(T,T,T,T,T,T,T,T,T),
+                      B_LU_ECO9 = c(T,T,T,T,T,T,T,T,T),
+                      B_LU_ECO10 = c(T,T,T,T,T,T,T,T,T),
+                      M_DRAIN = c(T,F,T,T,T,T,T,T,F),
+                      D_SA_W = c(0, 0.5, 1,rep(0.3,6)),
+                      B_AREA = c(100,80,2.5,5,38,63,12,4,6),
+                      farmscore = 100,
+                      measures = NULL,
+                      sector = c('dairy', 'arable'),
+                      output = 'scores'
+  )
+  
+  # run tests on format and output values
+  test_that("check ecoregeling", {
+    expect_equal(
+      object = test$fields$s_er_tot,
+      expected = rep(1,9),
+      tolerance = 0.01)
+  })
+  
+  # run tests on format and output values
+  test_that("check ecoregeling", {
+    expect_equal(
+      object = test$farm$s_er_medal,
+      expected = 'none')
+  })
 
   # get internal table with measures
   dt.measures <- as.data.table(BBWPC::bbwp_measures)
@@ -130,7 +173,7 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check ecoregeling", {
     expect_equal(
       object = as.character(unlist(test$farm)),
-      expected = c(100,100,100,100,100,100,90,'silver'),
+      expected = c(100,100,100,100,100,100,90,'bronze'),
       tolerance = 0.01)
   })
 

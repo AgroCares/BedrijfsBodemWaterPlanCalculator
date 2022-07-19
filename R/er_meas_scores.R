@@ -253,7 +253,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                measure = patterns(erscore = "^er_"),
                variable.name = 'indicator',
                value.name = 'value')
-    dt[,indicator := gsub('er_', '',cols[indicator])]
+    dt[,indicator := gsub('er_', '',indicator)]
     
     # merge with urgency table
     dt <- merge(dt,dt.er.urgency, by= c('soiltype','indicator'),all.x = TRUE)

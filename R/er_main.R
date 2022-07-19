@@ -38,6 +38,10 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
                         A_P_SG,D_SA_W, B_AREA,M_DRAIN, farmscore, 
                         measures, sector, output = 'scores', medalscore = 'gold'){
   
+  # add visual bindings
+  S_ER_TOT = S_ER_SOIL = S_ER_WATER = S_ER_CLIMATE = S_ER_BIODIVERSITY = S_ER_LANDSCAPE = S_ER_REWARD = NULL
+  medal = NULL
+  
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
   checkmate::assert_subset(output,choices = c('scores','measures'))
@@ -84,6 +88,28 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
                            S_ER_REWARD = dt.fields$S_ER_REWARD,
                            B_AREA = B_AREA)
  
+  # estimate the medals
+  dt.fields[, medal := er_medal(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
+                                S_ER_TOT = S_ER_TOT,
+                                S_ER_SOIL = S_ER_SOIL,
+                                S_ER_WATER = S_ER_WATER,
+                                S_ER_CLIMATE = S_ER_CLIMATE,
+                                S_ER_BIODIVERSITY = S_ER_BIODIVERSITY,
+                                S_ER_LANDSCAPE = S_ER_LANDSCAPE,
+                                S_ER_REWARD = S_ER_REWARD,
+                                B_AREA = B_AREA, type = 'field')]
+  
+  dt.farm[, medal := er_medal(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
+                              S_ER_TOT = dt.fields$S_ER_TOT,
+                              S_ER_SOIL = dt.fields$S_ER_SOIL,
+                              S_ER_WATER = dt.fields$S_ER_WATER,
+                              S_ER_CLIMATE = dt.fields$S_ER_CLIMATE,
+                              S_ER_BIODIVERSITY = dt.fields$S_ER_BIODIVERSITY,
+                              S_ER_LANDSCAPE = dt.fields$S_ER_LANDSCAPE,
+                              S_ER_REWARD = dt.fields$S_ER_REWARD,
+                              B_AREA = B_AREA, type = 'farm')]
+  
+  
   # return output when preferred measures are requested
   if(output == 'measures'){
     
@@ -137,10 +163,10 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
     setnames(dt.farm, colnames(dt.farm), tolower(colnames(dt.farm)))
     
     # Add field id
-    setnames(dt.fields,'id','field_id')
+    setnames(dt.fields,old = c('id','medal'),new = c('field_id','s_er_medal'))
     
     # add fake medal for the moment
-    dt.farm$s_er_medal <- 'silver'
+    setnames(dt.farm,'medal','s_er_medal')
     
     # set output object
     out <- list(farm = as.list(dt.farm),fields = dt.fields)

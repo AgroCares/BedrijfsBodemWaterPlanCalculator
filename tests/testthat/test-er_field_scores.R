@@ -56,12 +56,12 @@ test_that("check er_field_scores", {
     object = test,
     expected = data.table(
       id = 1:4,
-      S_ER_SOIL = rep(11,4),
-      S_ER_WATER = rep(12,4),
-      S_ER_CLIMATE = rep(5,4),
-      S_ER_BIODIVERSITY = rep(13,4),
-      S_ER_LANDSCAPE = rep(4,4),
-      S_ER_TOT = rep(8,4),
+      S_ER_SOIL = rep(0,4),
+      S_ER_WATER = rep(0,4),
+      S_ER_CLIMATE = rep(0,4),
+      S_ER_BIODIVERSITY = rep(0,4),
+      S_ER_LANDSCAPE = rep(0,4),
+      S_ER_TOT = rep(0,4),
       S_ER_REWARD = rep(0,4)
     ),
     tolerance = 0.01)
