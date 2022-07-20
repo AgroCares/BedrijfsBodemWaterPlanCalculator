@@ -50,7 +50,7 @@ er_meas_rank(
 
 \item{B_AER_CBS}{(character) The agricultural economic region in the Netherlands (CBS, 2016)}
 
-\item{B_LU_BBWP}{(numeric) The BBWP category used for allocation of measures to BBWP crop categories}
+\item{B_LU_BBWP}{(character) The BBWP category used for allocation of measures to BBWP crop categories}
 
 \item{B_LU_ECO1}{(boolean) does the crop belong in Ecoregeling category 1}
 
