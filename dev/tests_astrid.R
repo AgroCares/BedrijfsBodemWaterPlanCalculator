@@ -1,4 +1,5 @@
 
+require(BBWPC)
 # --- test 1 ----------
 
 # this is a test for a single soil
