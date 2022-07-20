@@ -76,7 +76,7 @@ field <- er_field_scores(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
 
 
 # ---- example 2 (verder gecheckt) -------
-
+require(data.table);require(BBWPC)
 # this is an example for the same soil and crop type (tijdelijk grasland) for 3 fields, but then with multiple measures
 aantal = 3
 
@@ -106,11 +106,14 @@ measures = measures
 sector = c('dairy')
 output = 'scores'
 
+# get internal table with measures
+dt.measures <- as.data.table(BBWPC::bbwp_measures)
+dt.measures <- dt.measures[!is.na(eco_id)]
 measures <- rbind(data.table(id = 1, dt.measures[grepl('B138',bbwp_id)]),
                   data.table(id = 2, dt.measures[grepl('EG2B$',eco_id)]),
                   data.table(id = 3, dt.measures[grepl('EG14|EG18',eco_id)])
 )
-measures$bbwp_status <- 'hello check'
+measures$bbwp_status <- 'applied as ANLB'
 
 aim <- er_farm_aim(B_SOILTYPE_AGR = B_SOILTYPE_AGR,B_AREA = B_AREA, medalscore = medalscore)
 
@@ -129,6 +132,13 @@ test <- ecoregeling(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
                     B_LU_ECO6, B_LU_ECO7,B_LU_ECO8, B_LU_ECO9,B_LU_ECO10,
                     A_P_SG,D_SA_W, B_AREA,M_DRAIN, farmscore, 
                     measures, sector, output = 'scores', medalscore = 'gold')
+
+B_CT_SOIL =aim$B_CT_SOIL
+B_CT_WATER = aim$B_CT_WATER
+B_CT_CLIMATE = aim$B_CT_CLIMATE
+B_CT_BIO = aim$B_CT_BIO
+B_CT_LANDSCAPE = aim$B_CT_LANDSCAPE 
+
 #VELD1
 # de maatregel B138 levert de volgende punten op:
 # climate:8, soil: 2, water:8, landscape:3, biodviersity:3, 300 euro per ha
@@ -136,17 +146,17 @@ test <- ecoregeling(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
 # er is sprake van bodemtype gebonden urgency
 # urgency op zand: punten soil 1, water 1.5, climate 1, bio 1.25 en landscape 1
 # dat levert dus op:
-# climate:8, soil: 2, water:12, landscape:3, biodviersity:11.25, 300 euro per ha
+# climate:8, soil: 2, water:12, landscape:3, biodviersity:3.75, 300 euro per ha
 
 # in de testset was aan de maatregel toegevoegd: "applied as ANLB".
 # the measure has the accumulation rule "only score", so reward is set to 0
 
 # compared to the aim:
-# climate = 8 / 7 = 1.14 = 114 % = 100%
+# climate = 8 / 3.5 = 2.28 = 228 % = 100%
 # soil = 2 / 7 = 0.29 = 29 % = 29%
-# water = 12 / 7 = 0 = 0 % = 100%
+# water = 12 / 10.5 = 1.14 = 114 % = 100%
 # landscape = 3 / 7 = 0.42 = 42 % = 42%
-# bio = 11.25 / 7 = 1.43 = 143 % = 100%
+# bio = 3.75 / 7 = 0.54 = 54%
 
 #VELD2
 # de maatregel EG2B levert de volgende punten op:
@@ -192,9 +202,9 @@ test <- ecoregeling(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
 
 
 # compared to the aim:
-# climate = 2 / 7 = 0.29 = 29 % = 29%
+# climate = 2 / 3.5 = 0.57 = 29 % = 29%
 # soil = 4 / 7 = 0.57 = 57 % = 57%
-# water = 10.5 / 7 = 1.5 = 150 % = 100%
+# water = 10.5 / 10.5 = 1 = 100 % = 100%
 # landscape = 3 / 7 = 0.43 = 43 % = 43%
 # bio = 5 / 7 = 0.71 = 71 % = 71%
 
