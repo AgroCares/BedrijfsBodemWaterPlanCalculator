@@ -3,7 +3,7 @@ require(testthat)
   # # default input for testing
   # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
   # B_LU_BRP = c(265,2005,256,259)
-  # B_LU_BBWP = c(1,4,4,9)
+  # B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais')
   # B_GWL_CLASS = 'GtIII' 
   # A_P_SG = rep(25,4) 
   # B_SLOPE_DEGREE = rep(2.5,4)
@@ -19,7 +19,7 @@ require(testthat)
 
 # run example 1 without any measures taken
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                       B_LU_BBWP = c(1,4,4,9),
+                       B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                        B_GWL_CLASS = 'GtIII', 
                        A_P_SG = rep(25,4) ,
                        B_SLOPE_DEGREE = rep(2.5,4),
@@ -52,7 +52,7 @@ test_that("check bbwp_meas_rank", {
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_tot[c(1,2,7,12,15)],
-    expected = c(NA,"G21","G66" ,"G87", "G20"),
+    expected = c(NA,"G21","B117" ,"G87", "G20"),
     tolerance = 0.01)
 })
 
@@ -68,7 +68,7 @@ measures$bbwp_status <- 'given for ANLB'
 
 # run example 2 without any measures taken
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                       B_LU_BBWP = c(1,4,4,9),
+                       B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                        B_GWL_CLASS = c('GtIII', 'GtVII','GtII','GtIV'),
                        A_P_SG = rep(25,4) ,
                        B_SLOPE_DEGREE = rep(2.5,4),
@@ -101,7 +101,7 @@ test_that("check bbwp_meas_rank", {
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_tot[c(1,2,5,9,16)],
-    expected = c("G66" , "G68",  "G20", "B118" , "G87"),
+    expected = c("G68" , "G27",  "G18", "B117" , "G87"),
     tolerance = 0.01)
 })
 

@@ -5,7 +5,7 @@
   # A_P_SG = c(0.4, 0.8, 1)
   # B_SLOPE_DEGREE = c(1.5,4,1.5)
   # B_LU_BRP = c(265, 1932, 266)
-  # B_LU_BBWP = c(1,4,1)
+  # B_LU_BBWP =c('gras_permanent','rooivrucht','gras_permanent')
   # M_DRAIN = c(TRUE, FALSE, TRUE)
   # D_SA_W = c(0, 0.5, 1)
   # D_RISK_NGW = c(0, 0.5 ,1)
@@ -29,7 +29,7 @@ test <- bbwp_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                           A_P_SG = c(0.4, 0.8, 1), 
                           B_SLOPE_DEGREE =  c(1.5,4,1.5),
                           B_AER_CBS = c('LG05','LG14','LG03'),
-                          B_LU_BBWP = c(1,4,1),
+                          B_LU_BBWP = c('gras_permanent','rooivrucht','gras_permanent'),
                           M_DRAIN = c(TRUE, FALSE, TRUE), 
                           D_SA_W = c(0, 0.5, 1), 
                           D_RISK_NGW = c(0, 0.5 ,1), 
@@ -78,7 +78,7 @@ test <- bbwp_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                           B_GWL_CLASS = c('-', 'GtI', 'GtV'), 
                           A_P_SG = c(0.4, 0.8, 1), 
                           B_SLOPE_DEGREE =  c(1.5,4,1.5),
-                          B_LU_BBWP = c(1,4,1),
+                          B_LU_BBWP = c('gras_permanent','rooivrucht','gras_permanent'),
                           B_AER_CBS = c('LG05','LG14','LG03'),
                           M_DRAIN = c(TRUE, FALSE, TRUE), 
                           D_SA_W = c(0, 0.5, 1), 
@@ -102,12 +102,12 @@ test_that("check bbwp_field_scores", {
   expect_equal(
     object = test,
     expected = data.table(
-      S_BBWP_NGW = c(100,58,57),
+      S_BBWP_NGW = c(99,58,57),
       S_BBWP_NSW = c(100,0,38),
-      S_BBWP_PSW = c(100,0,12),
+      S_BBWP_PSW = c(99,0,12),
       S_BBWP_NUE = c(100,53,100),
       S_BBWP_WB = c(99,53,25),
-      S_BBWP_TOT = c(100,16,35)
+      S_BBWP_TOT = c(99,16,35)
     ),
     tolerance = 0.01)
 })
