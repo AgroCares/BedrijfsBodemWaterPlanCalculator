@@ -1,5 +1,6 @@
 require(testthat)
 require(data.table)
+require(BBWPC)
   # # default input for testing
   # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei')
   # B_GWL_CLASS = c('GtIII', 'GtI', 'GtV')
@@ -18,8 +19,7 @@ require(data.table)
   # A_P_AL = c(65, 5,40)
   # A_P_WA = c(52, 5,45)
   # B_SLOPE_DEGREE = c(1.5,4,1.5)
-  # B_LU_BRP = c(265, 1932, 266)
-  # B_LU_BBWP = c(1,4,1)
+  # B_LU_BBWP = c('gras_permanent','rooivrucht','gras_permanent')
   # M_DRAIN = c(TRUE, FALSE, TRUE)
   # D_SA_W = c(0, 0.5, 1)
   # D_RO_R = c(0.5, 0,0.9)
@@ -79,7 +79,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
              A_P_AL = c(65, 5,40),
              A_P_WA = c(52, 5,45),
              B_SLOPE_DEGREE = c(1.5,4,1.5),
-             B_LU_BBWP = c(1,4,1),
+             B_LU_BBWP =  c('gras_permanent','rooivrucht','gras_permanent'),
              M_DRAIN = c(TRUE, FALSE, TRUE),
              D_SA_W = c(0, 0.5, 1),
              D_RO_R = c(0.5, 0,0.9),
@@ -142,7 +142,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
              A_P_AL = c(65, 5,40),
              A_P_WA = c(52, 5,45),
              B_SLOPE_DEGREE = c(1.5,4,1.5),
-             B_LU_BBWP = c(1,4,1),
+             B_LU_BBWP =  c('gras_permanent','rooivrucht','gras_permanent'),
              M_DRAIN = c(TRUE, FALSE, TRUE),
              D_SA_W = c(0, 0.5, 1),
              D_RO_R = c(0.5, 0,0.9),
@@ -169,7 +169,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
     test_that("check bbwp", {
       expect_equal(
         object = test$measures[[1]]$top_bbwp_tot,
-        expected = c("G17","G16", "G18", "G19", "G21"))
+        expected = c("G17","G16", "G18", "G19", "G80"))
     })
 
 
@@ -201,7 +201,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
              A_P_AL = c(65, 5,40),
              A_P_WA = c(52, 5,45),
              B_SLOPE_DEGREE = c(1.5,4,1.5),
-             B_LU_BBWP = c(1,4,1),
+             B_LU_BBWP =  c('gras_permanent','rooivrucht','gras_permanent'),
              M_DRAIN = c(TRUE, FALSE, TRUE),
              D_SA_W = c(0, 0.5, 1),
              D_RO_R = c(0.5, 0,0.9),
@@ -222,14 +222,14 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check bbwp", {
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(92,17,44),
+      expected = c(81,17,44),
       tolerance = 0.01)
   })
   
   test_that("check bbwp", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(58,82,55,54,68,94),
+      expected = c(52,70,55,54,58,93),
       tolerance = 0.01)
   })
 
@@ -252,7 +252,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                A_P_AL = c(65, 5,40),
                A_P_WA = c(52, 5,45),
                B_SLOPE_DEGREE = c(1.5,4,1.5),
-               B_LU_BBWP = c(1,4,1),
+               B_LU_BBWP =  c('gras_permanent','rooivrucht','gras_permanent'),
                M_DRAIN = c(TRUE, FALSE, TRUE),
                D_SA_W = c(0, 0.5, 1),
                D_RO_R = c(0.5, 0,0.9),
