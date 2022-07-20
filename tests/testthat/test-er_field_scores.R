@@ -5,7 +5,7 @@ require(testthat)
 
 # crops: permanent gras, rustgewas, rooivrucht, mais
   B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
-  B_LU_BBWP = c(1,3,4,9)
+  B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais')
   B_LU_ECO1 = c(F,F,F,F)
   B_LU_ECO2 = c(F,F,T,T)
   B_LU_ECO3 = c(F,F,F,F)
@@ -29,7 +29,7 @@ require(testthat)
 
 # run example 1 without any measures taken
 test <- er_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                        B_LU_BBWP = B_LU_BBWP,
+                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                         B_LU_ECO1 = B_LU_ECO1,
                         B_LU_ECO2 = B_LU_ECO2,
                         B_LU_ECO3 = B_LU_ECO3,
@@ -78,7 +78,7 @@ measures$bbwp_status <- 'given for ANLB'
 
 # run example 2 without any measures taken
 test <- er_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                        B_LU_BBWP = B_LU_BBWP,
+                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                         B_LU_ECO1 = B_LU_ECO1,
                         B_LU_ECO2 = B_LU_ECO2,
                         B_LU_ECO3 = B_LU_ECO3,
@@ -129,7 +129,7 @@ measures[,c('description', 'url') := NULL]
 
 # run example 2 without any measures taken
 test <- er_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                        B_LU_BBWP = B_LU_BBWP,
+                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                         B_LU_ECO1 = B_LU_ECO1,
                         B_LU_ECO2 = B_LU_ECO2,
                         B_LU_ECO3 = B_LU_ECO3,
@@ -159,7 +159,7 @@ test_that("check er_field_scores", {
       id = 1:4,
       S_ER_SOIL = rep(100,4),
       S_ER_WATER = rep(100,4),
-      S_ER_CLIMATE = rep(4,4),
+      S_ER_CLIMATE = rep(0,4),
       S_ER_BIODIVERSITY = rep(100,4),
       S_ER_LANDSCAPE = rep(100,4),
       S_ER_TOT = rep(46,4),

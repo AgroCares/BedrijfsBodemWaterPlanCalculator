@@ -3,8 +3,7 @@ require(testthat)
 
   # default input for testing
   B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
-  B_LU_BBWP = c(1,1,1,1)
-  B_LU_BBWP = c(1,1,1,1)
+  B_LU_BBWP = rep('gras_permanent',4)
   B_LU_ECO1 = c(F,F,F,F)
   B_LU_ECO2 = c(F,F,F,F)
   B_LU_ECO3 = c(F,F,F,F)
@@ -33,7 +32,7 @@ require(testthat)
 
 # run example 1 without any measures taken
 test <- er_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                     B_LU_BBWP = c(1,4,4,9),
+                     B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                      B_LU_ECO1 = c(F,F,F,F),
                      B_LU_ECO2 = c(F,F,F,F),
                      B_LU_ECO3 = c(F,F,F,F),
@@ -92,7 +91,7 @@ measures$bbwp_status <- 'given for ANLB'
 
 # run example 2 without any measures taken
 test <- er_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                     B_LU_BBWP = c(1,4,4,9),
+                     B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                      B_LU_ECO1 = c(F,F,F,F),
                      B_LU_ECO2 = c(F,F,F,F),
                      B_LU_ECO3 = c(F,F,F,F),
