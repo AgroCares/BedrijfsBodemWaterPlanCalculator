@@ -4,7 +4,7 @@
 #' A high Ecoregeling score is indicative for the number of opportunities to improve soil quality, water quality, climate biodiversity and landscape.
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil
-#' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
+#' @param B_LU_BBWP (character) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_LU_ECO1 (boolean) does the crop belong in Ecoregeling category 1
 #' @param B_LU_ECO2 (boolean) does the crop belong in Ecoregeling category 2
 #' @param B_LU_ECO3 (boolean) does the crop belong in Ecoregeling category 3
@@ -48,7 +48,6 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
   
   # reformat B_AER_CBS and B_LU_BBWP
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
-  B_LU_BBWP <- as.numeric(gsub('cat_','',B_LU_BBWP))
   
   # Calculate the minimum required ER scores on Farm level for the desired medal
   dt.farm.aim <- er_farm_aim(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 

@@ -3,7 +3,7 @@
 #' Estimate the actual contribution of crop rotation given aims for soil quality, water quality, climate, biodiversity and landscape
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil
-#' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
+#' @param B_LU_BBWP (character) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_LU_ECO1 (boolean) does the crop belong in Ecoregeling category 1
 #' @param B_LU_ECO2 (boolean) does the crop belong in Ecoregeling category 2
 #' @param B_LU_ECO3 (boolean) does the crop belong in Ecoregeling category 3
@@ -57,7 +57,11 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
                                                        'dalgrond','moerige_klei','veen','loess'))
-  checkmate::assert_integerish(B_LU_BBWP, lower = 0, len = arg.length)
+  checkmate::assert_subset(B_LU_BBWP,
+                           choices = c('groenten','bollensierteelt','boomfruitteelt','rustgewas','eiwitgewas',
+                                       'rooivrucht','mais','gras_permanent','gras_tijdelijk','natuur',
+                                       'randensloot','vanggewas'))
+  checkmate::assert_character(B_LU_BBWP, len = arg.length)
   checkmate::assert_numeric(B_CT_SOIL, lower = 0, upper = 1000, min.len = 1)
   checkmate::assert_numeric(B_CT_WATER, lower = 0, upper = 1000, min.len = 1)
   checkmate::assert_numeric(B_CT_CLIMATE, lower = 0, upper = 1000,min.len = 1)
@@ -123,7 +127,8 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                    B_CT_LANDSCAPE = B_CT_LANDSCAPE)
   
   # add regional correction value for price
-  dt <- merge(dt,dt.er.reward[,.(statcode,reward_cf = er_cf)], by.x = 'B_AER_CBS',by.y = 'statcode',all.x = TRUE)
+  dt <- merge(dt,dt.er.reward[,.(statcode,reward_cf = er_cf)], 
+              by.x = 'B_AER_CBS',by.y = 'statcode',all.x = TRUE)
   
   # add soil type for political and environmental urgency
   dt[grepl('klei', B_SOILTYPE_AGR) , soiltype := 'klei']
@@ -141,18 +146,32 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt.field[,c(cols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = cols]
   
     # set the score to zero when not applicable for given BBWP category
-    dt.field[(B_LU_BBWP == 1 & nc1 == 0) | (B_LU_BBWP == 2 & nc2 == 0), c(cols) := 0]
-    dt.field[(B_LU_BBWP == 3 & nc3 == 0) | (B_LU_BBWP == 4 & nc4 == 0), c(cols) := 0]
-    dt.field[(B_LU_BBWP == 5 & nc5 == 0) | (B_LU_BBWP == 6 & nc6 == 0), c(cols) := 0]
-    dt.field[(B_LU_BBWP == 7 & nc7 == 0) | (B_LU_BBWP == 8 & nc8 == 0), c(cols) := 0]
-    dt.field[(B_LU_BBWP == 9 & nc9 == 0) | (B_LU_BBWP == 10 & nc10 == 0), c(cols) := 0]
-    dt.field[(B_LU_BBWP == 11 & nc11 == 0) | (B_LU_BBWP == 12 & nc12 == 0), c(cols) := 0]
+    dt.field[B_LU_BBWP == 'gras_permanent' & nc1 == 0, c(cols) := 0]
+    dt.field[B_LU_BBWP == 'gras_tijdelijk' & nc2 == 0, c(cols) := 0]
+    dt.field[B_LU_BBWP == 'rustgewas' & nc3 == 0, c(cols) := 0]
+    dt.field[B_LU_BBWP == 'rooivrucht' & nc4 == 0, c(cols) := 0]
+    dt.field[B_LU_BBWP == 'groenten' & nc5 == 0, c(cols) := 0]
+    dt.field[B_LU_BBWP == 'bollensierteelt' & nc6 == 0, c(cols) := 0]
+    dt.field[B_LU_BBWP == 'boomfruitteelt' & nc7 == 0, c(cols) := 0]
+    dt.field[B_LU_BBWP == 'natuur' & nc8 == 0, c(cols) := 0]
+    dt.field[B_LU_BBWP == 'mais' & nc9 == 0, c(cols) := 0]
+    dt.field[B_LU_BBWP == 'randensloot' & nc10 == 0, c(cols) := 0]
+    dt.field[B_LU_BBWP == 'vanggewas' & nc11 == 0, c(cols) := 0]
+    dt.field[B_LU_BBWP == 'eiwitgewas' & nc12 == 0, c(cols) := 0]
     
     # set to zero when measure is not applicable at all
-    dt.field[, ec1 := nc1 * (B_LU_BBWP == 1) + nc2 * (B_LU_BBWP == 2) + nc3 * (B_LU_BBWP == 3) +
-                      nc4 * (B_LU_BBWP == 4) + nc5 * (B_LU_BBWP == 5) + nc6 * (B_LU_BBWP == 6) +
-                      nc7 * (B_LU_BBWP == 7) + nc8 * (B_LU_BBWP == 8) + nc9 * (B_LU_BBWP == 9) +
-                      nc10 * (B_LU_BBWP == 10) + nc11 * (B_LU_BBWP == 11) + nc12 * (B_LU_BBWP == 12)]
+    dt.field[, ec1 := nc1 * (B_LU_BBWP == 'gras_permanent') + 
+                      nc2 * (B_LU_BBWP == 'gras_tijdelijk') + 
+                      nc3 * (B_LU_BBWP == 'rustgewas') +
+                      nc4 * (B_LU_BBWP == 'rooivrucht') + 
+                      nc5 * (B_LU_BBWP == 'groenten') + 
+                      nc6 * (B_LU_BBWP == 'bollensierteelt') +
+                      nc7 * (B_LU_BBWP == 'boomfruitteelt') + 
+                      nc8 * (B_LU_BBWP == 'natuur') + 
+                      nc9 * (B_LU_BBWP == 'mais') +
+                      nc10 * (B_LU_BBWP == 'randensloot') + 
+                      nc11 * (B_LU_BBWP == 'vanggewas') + 
+                      nc12 * (B_LU_BBWP == 'eiwitgewas')]
     dt.field[ec1 == 0 & level == 'field', c(cols) := 0]
     
     # set the score to zero when not applicable for a given ER combined category

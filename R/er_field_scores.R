@@ -3,7 +3,7 @@
 #' Estimate the potential to contribute to agronomic and environmental challenges in a region given aims for soil quality, water quality, climate, biodiversity and landscape
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil
-#' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
+#' @param B_LU_BBWP (character) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_LU_ECO1 (boolean) does the crop belong in Ecoregeling category 1
 #' @param B_LU_ECO2 (boolean) does the crop belong in Ecoregeling category 2
 #' @param B_LU_ECO3 (boolean) does the crop belong in Ecoregeling category 3
@@ -55,7 +55,11 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
                                                        'dalgrond','moerige_klei','veen','loess'))
-  checkmate::assert_integerish(B_LU_BBWP, lower = 0, len = arg.length)
+  checkmate::assert_subset(B_LU_BBWP,
+                           choices = c('groenten','bollensierteelt','boomfruitteelt','rustgewas','eiwitgewas',
+                                       'rooivrucht','mais','gras_permanent','gras_tijdelijk','natuur',
+                                       'randensloot','vanggewas'))
+  checkmate::assert_character(B_LU_BBWP, len = arg.length)
   checkmate::assert_numeric(B_CT_SOIL, lower = 0, upper = 5000, min.len = 1)
   checkmate::assert_numeric(B_CT_WATER, lower = 0, upper = 5000, min.len = 1)
   checkmate::assert_numeric(B_CT_CLIMATE, lower = 0, upper = 5000,min.len = 1)
