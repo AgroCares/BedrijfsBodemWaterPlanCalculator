@@ -7,7 +7,7 @@
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param A_P_SG (numeric) 
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
-#' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
+#' @param B_LU_BBWP (character) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
@@ -50,10 +50,14 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
   checkmate::assert_subset(B_SOILTYPE_AGR, 
                            choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
                                         'dalgrond','moerige_klei','veen','loess'))
+  checkmate::assert_subset(B_LU_BBWP,
+                           choices = c('groenten','bollensierteelt','boomfruitteelt','rustgewas','eiwitgewas',
+                                       'rooivrucht','mais','gras_permanent','gras_tijdelijk','natuur',
+                                       'randensloot','vanggewas'))
+  checkmate::assert_character(B_LU_BBWP, len = arg.length)
   checkmate::assert_logical(M_DRAIN)
   checkmate::assert_numeric(A_P_SG, lower = 0, upper = 120,len = arg.length)
   checkmate::assert_numeric(B_SLOPE_DEGREE,lower = 0, upper = 30,len = arg.length)
-  checkmate::assert_integerish(B_LU_BBWP, lower = 0, upper = 9,len = arg.length)
   checkmate::assert_numeric(D_SA_W, lower = 0, upper = 100,len = arg.length)
   checkmate::assert_numeric(D_OPI_NGW, lower = 0, upper = 100,len = arg.length)
   checkmate::assert_numeric(D_OPI_NSW, lower = 0, upper = 100,len = arg.length)
@@ -116,15 +120,18 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     dt[,c(cols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = cols]
     
     # set the score to zero when not applicable for given crop category
-    dt[B_LU_BBWP == 1 & crop_cat1 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 2 & crop_cat2 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 3 & crop_cat3 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 4 & crop_cat4 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 5 & crop_cat5 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 6 & crop_cat6 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 7 & crop_cat7 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 8 & crop_cat8 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 9 & crop_cat9 <= 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_BBWP == 'gras_permanent' & nc1 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_BBWP == 'gras_tijdelijk' & nc2 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_BBWP == 'rustgewas' & nc3 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_BBWP == 'rooivrucht' & nc4 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_BBWP == 'groenten' & nc5 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_BBWP == 'bollensierteelt' & nc6 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_BBWP == 'boomfruitteelt' & nc7 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_BBWP == 'natuur' & nc8 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_BBWP == 'mais' & nc9 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_BBWP == 'randensloot' & nc10 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_BBWP == 'vanggewas' & nc11 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_BBWP == 'eiwitgewas' & nc12 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     
   # set the score to zero when the measure is not applicable
     
