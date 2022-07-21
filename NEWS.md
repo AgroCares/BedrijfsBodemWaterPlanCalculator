@@ -1,3 +1,10 @@
+# BBWPC v0.8.0
+## Changed
+* B_LU_BBWP has been reclassified as a string with 12 crop catogories (linked to pandex)
+
+## Fixed
+* use of B_LU_BBWP in `bbwp_meas_score` and `bbwp_meas_rank` and related measure categories updated
+
 # BBWPC v0.7.0
 ## Changed
 * add `er_medal` to estimate the medal given score per field and farm
