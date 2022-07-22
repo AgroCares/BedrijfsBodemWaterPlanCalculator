@@ -1,3 +1,7 @@
+# BBWPC v0.8.1
+## Fixed
+* Set NA to `ntb` for `description` in `bbwp_measures`
+
 # BBWPC v0.8.0
 ## Changed
 * B_LU_BBWP has been reclassified as a string with 12 crop catogories (linked to pandex)
