@@ -1,3 +1,11 @@
+# BBWPC v0.8.2
+### Changed
+* Use csv as source for bbwp_measures and er_crops instead of binaries
+* Cleaned up /dev folder by removing unused files
+
+## Fixed
+* Fix encoding of `description` in `bbwp_measures`
+
 # BBWPC v0.8.1
 ## Fixed
 * Set NA to `ntb` for `description` in `bbwp_measures`
