@@ -4,7 +4,7 @@ require(data.table);library(usethis)
 # -- prepare measures table -----
 
   # load measures table (under construction)
-  bbwp_measures <- fread('dev/measures.csv')
+  bbwp_measures <- fread('dev/measures.csv', encoding = 'UTF-8')
   
   # setcolorder
   setcolorder(bbwp_measures,'bbwp_id')
