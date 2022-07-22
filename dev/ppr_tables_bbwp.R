@@ -5,6 +5,7 @@ require(data.table);library(usethis)
 
   # load measures table (under construction)
   bbwp_measures <- fread('dev/measures.csv', encoding = 'UTF-8')
+  bbwp_measures[bbwp_measures == ''] <- NA
   
   # setcolorder
   setcolorder(bbwp_measures,'bbwp_id')
@@ -96,6 +97,7 @@ require(data.table);library(usethis)
   
   # load in csv with crop list
   er_crops <- fread('dev/er_crops.csv')
+  er_crops[er_crops == ''] <- NA
   
   # transform old cropcategories in new categories
   # eco1 includes: natuur; (kruidenrijke) rand; vanggewas; wortelspruit gewas; rooivruchten (voorjaar); maiskolvenschroot;
