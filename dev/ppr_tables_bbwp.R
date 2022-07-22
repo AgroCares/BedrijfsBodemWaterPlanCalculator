@@ -95,7 +95,7 @@ require(data.table);library(usethis)
 # -- prepare crop specific tables for Ecoregelingen ---
   
   # load in csv with crop list
-  er_crops <- as.data.table(read_excel("dev/b_lu_brp_GR220707_decast_for_client.xlsx"))
+  er_crops <- fread('dev/er_crops.csv')
   
   # transform old cropcategories in new categories
   # eco1 includes: natuur; (kruidenrijke) rand; vanggewas; wortelspruit gewas; rooivruchten (voorjaar); maiskolvenschroot;
@@ -208,9 +208,9 @@ require(data.table);library(usethis)
   
   # convert to sf object again and save in dev
   lsw <- st_as_sf(lsw)
-  st_write(lsw,'dev/lswproperties.gpkg')
+  # st_write(lsw,'dev/lswproperties.gpkg')
   
-  # convert to data.table and remove geometry
+  # convert to dlata.table and remove geometry
   lsw <- as.data.table(lsw)
   lsw[,geom := NULL]
   
