@@ -1,11 +1,11 @@
 # load packages
-require(data.table);require(readxl);library(usethis)
+require(data.table);library(usethis)
 
 # -- prepare measures table -----
 
   # load measures table (under construction)
-  bbwp_measures <- as.data.table(read_excel("dev/ER_puntenregeling_aan_te_vullen_220706.xlsx"),sheet= '220706_fulldb_v6')
- 
+  bbwp_measures <- fread('dev/measures.csv')
+  
   # setcolorder
   setcolorder(bbwp_measures,'bbwp_id')
   
