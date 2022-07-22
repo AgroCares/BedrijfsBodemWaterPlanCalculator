@@ -96,7 +96,7 @@ require(data.table);library(usethis)
 # -- prepare crop specific tables for Ecoregelingen ---
   
   # load in csv with crop list
-  er_crops <- fread('dev/er_crops.csv')
+  er_crops <- fread('dev/er_crops.csv', encoding = 'UTF-8')
   er_crops[er_crops == ''] <- NA
   
   # transform old cropcategories in new categories
@@ -129,18 +129,18 @@ require(data.table);library(usethis)
   er_crops[,eco7:= fifelse((nc3==1|nc8==1|nc11==1) & (c13==1|c26==1|c27==1),1,0)]
   
   # each BBWP category in one column
-  er_crops[nc1==1, B_LU_BBWP := 1]
-  er_crops[nc2==1, B_LU_BBWP := 2]
-  er_crops[nc3==1, B_LU_BBWP := 3]
-  er_crops[nc4==1, B_LU_BBWP := 4]
-  er_crops[nc5==1, B_LU_BBWP := 5]
-  er_crops[nc6==1, B_LU_BBWP := 6]
-  er_crops[nc7==1, B_LU_BBWP := 7]
-  er_crops[nc8==1, B_LU_BBWP := 8]
-  er_crops[nc9==1, B_LU_BBWP := 9]
-  er_crops[nc10==1, B_LU_BBWP := 10]
-  er_crops[nc11==1, B_LU_BBWP := 11]
-  er_crops[nc12==1, B_LU_BBWP := 12]
+  er_crops[nc1==1, B_LU_BBWP := 'gras_permanent']
+  er_crops[nc2==1, B_LU_BBWP := 'gras_tijdelijk']
+  er_crops[nc3==1, B_LU_BBWP := 'rustgewas']
+  er_crops[nc4==1, B_LU_BBWP := 'rooivrucht']
+  er_crops[nc5==1, B_LU_BBWP := 'groenten']
+  er_crops[nc6==1, B_LU_BBWP := 'bollensierteelt']
+  er_crops[nc7==1, B_LU_BBWP := 'boomfruitteelt']
+  er_crops[nc8==1, B_LU_BBWP := 'natuur']
+  er_crops[nc9==1, B_LU_BBWP := 'mais']
+  er_crops[nc10==1, B_LU_BBWP := 'randensloot']
+  er_crops[nc11==1, B_LU_BBWP := 'vanggewas']
+  er_crops[nc12==1, B_LU_BBWP := 'eiwitgewas']
   
   # remove columns not needed
   cols.rem <- c(paste0('crop_cat',1:9),paste0('c',10:29),paste0('nc',1:12),'SUM')
@@ -148,12 +148,20 @@ require(data.table);library(usethis)
   # keep relevant columns and remove rows without B_LU_BRP code
   er_crops[,c(cols.rem):= NULL]
 
+  # reset to boolean
+  cols <- colnames(er_crops)[grepl('eco',colnames(er_crops))]
+  er_crops[,c(cols) := lapply(.SD,function(x) fifelse(x==1,TRUE,FALSE)),.SDcols = cols]
+  er_crops[,B_LU_NAME := NULL]
+  
   # rename
   setnames(er_crops, 
            old = c('bouwland','productive','beteelbaar'),
            new = c('eco8','eco9','eco10'))
   
   setcolorder(er_crops,c('B_LU_BRP','B_LU_NAME','B_LU_BBWP',paste0('eco',1:10)))
+  
+  # rename columns
+  setnames(er_crops,old = paste0('eco',1:10),new = paste0('B_LU_ECO',1:10))
   
   # save measures as bbwp table
   use_data(er_crops, overwrite = TRUE)
