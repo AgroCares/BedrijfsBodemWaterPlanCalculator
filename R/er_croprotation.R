@@ -42,7 +42,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   ecocheck = eco1 = eco2 = eco3 = eco4 = eco5 = eco6 = eco7 = eco8 = eco9 = eco10 = NULL
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = patterns = fbulbs = bulbs = NULL
   clay = sand = silt = peat = bbwp_id = B_AREA_REL = S_ER_REWARD = euro_farm = NULL
-  fr_soil = er_reward = fr_soil = reward_cf = euro_ha = oid = water = soil = climate = biodiversity = landscape = climate = total = NULL
+  fr_soil = er_reward = fr_soil = reward_cf = regio_factor = euro_ha = oid = water = soil = climate = biodiversity = landscape = climate = total = NULL
   er_total = er_climate = er_soil = er_water = er_landscape = er_biodiversity = NULL
   
   # reformat B_AER_CBS
@@ -228,7 +228,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     
       # melt dt
       dt.field <- melt(dt.field,
-               id.vars = c('id','bbwp_id','soiltype','bbwp_conflict','reward_cf'),
+               id.vars = c('id','bbwp_id','soiltype','bbwp_conflict','reward_cf','regio_factor'),
                measure = patterns(erscore = "^er_"),
                variable.name = 'indicator',
                value.name = 'value')
@@ -245,15 +245,18 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     
     # dcast to add totals, to be used to update scores when measures are conflicting
     cols <- c('biodiversity', 'climate', 'landscape', 'soil','water','total')
-    dt2 <- dcast(dt.field, id + soiltype + bbwp_id + bbwp_conflict + reward_cf + B_AREA ~ indicator, value.var = 'value')
+    dt2 <- dcast(dt.field, id + soiltype + bbwp_id + bbwp_conflict + reward_cf + B_AREA + regio_factor ~ indicator, value.var = 'value')
     dt2[, total := biodiversity + climate + landscape + soil + water]
     dt2[, oid := frank(-total, ties.method = 'first',na.last = 'keep'),by = c('id','bbwp_conflict')]
     dt2[oid > 1, c(cols) := 0]
     
     # calculate the weighed average ER score (points/ ha) for the whole farm due to measures taken
     dt.field.score <- dt2[,lapply(.SD,function(x) weighted.mean(x,w = B_AREA)), .SDcols = cols]
-    dt.field.reward <- dt2[,list(er_reward = max(euro_ha[total>0] * reward_cf,0),
-                                        B_AREA = B_AREA[1]),by=id]
+    dt.field.reward <- dt2[,list(er_reward = max(euro_ha[total>0],0),
+                                 B_AREA = B_AREA[1],
+                                 reward_cf = reward_cf[1],
+                                 regio_factor = regio_factor[1]),by=id]
+    dt.field.reward <- dt.field.reward[, er_reward := fifelse(regio_factor== 1, er_reward*reward_cf, er_reward)]
     dt.field.reward <- dt.field.reward[,list(er_reward = weighted.mean(x = er_reward,w=B_AREA))]
     
     # calculate the total score for farm measures
