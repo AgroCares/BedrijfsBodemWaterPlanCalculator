@@ -124,7 +124,7 @@ require(data.table);library(usethis)
   er_crops[,eco2:= fifelse((nc4==1|nc9==1|nc10==1|nc11==1) & (c16==1|c19==1),1,0)]
   er_crops[,eco3:= fifelse((nc8==1|nc10==1) & (c20==1|c24==1),1,0)] 
   er_crops[,eco4:= fifelse((nc8==1|nc10==1|nc12==1) & (c12==1|c22==1|c29),1,0)]
-  er_crops[,eco5:= fifelse((nc8==1|nc12==1) & (c18==1|c23==1),1,0)] 
+  er_crops[,eco5:= fifelse((nc1==1|nc2==1|nc9==1|nc8==1|nc12==1) & (c18==1|c23==1),1,0)] 
   er_crops[,eco6:= fifelse((nc3==1|nc8==1|nc10==1) & (c14==1|c25==1|c28)==1,1,0)]
   er_crops[,eco7:= fifelse((nc3==1|nc8==1|nc11==1) & (c13==1|c26==1|c27==1),1,0)]
   
