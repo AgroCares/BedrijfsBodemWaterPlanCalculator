@@ -205,57 +205,60 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     # columns to be updated
     cols.sel <- c('er_climate','er_soil','er_water','er_landscape','er_biodiversity')
     
+    # column to avoid assignation of points when measure is not applicable regarding crop category
+    dt[, er_total := er_climate + er_soil + er_water + er_landscape + er_biodiversity]
+    
     # measure EB1. Cultivate rustgewas on a field (already in er_croprotation)
     # cols.ad1 <- c(3,3,3,0,1)
     # cols.ad2 <- c(4,4,4,1,1)
     # dt[bbwp_id == 'G54', B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_arable]
-    # dt[bbwp_id == 'G54' & B_AREA_REL <= 20, c(cols.sel) := 0]
-    # dt[bbwp_id == 'G54' & B_AREA_REL > 35 & B_AREA_REL <= 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
-    # dt[bbwp_id == 'G54' & B_AREA_REL > 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+    # dt[bbwp_id == 'G54' & B_AREA_REL <= 20 & er_total > 0, c(cols.sel) := 0]
+    # dt[bbwp_id == 'G54' & B_AREA_REL > 35 & B_AREA_REL <= 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    # dt[bbwp_id == 'G54' & B_AREA_REL > 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
   
     # measure EB12. Green cultivation on the field
     cols.ad1 <- c(2,3,3,1,1)
     cols.ad2 <- c(5,6,6,1,2)
     dt[grepl('^EB12',eco_id),B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_farm]
-    dt[grepl('^EB12',eco_id) & B_AREA_REL <= 51, c(cols.sel) := 0]
-    dt[grepl('^EB12',eco_id) & B_AREA_REL > 71 & B_AREA_REL <= 85, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
-    dt[grepl('^EB12',eco_id) & B_AREA_REL > 85, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+    dt[grepl('^EB12',eco_id) & B_AREA_REL <= 51 & er_total > 0, c(cols.sel) := 0]
+    dt[grepl('^EB12',eco_id) & B_AREA_REL > 71 & B_AREA_REL <= 85 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    dt[grepl('^EB12',eco_id) & B_AREA_REL > 85 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
     
     # measure EB13. no till and reduced till
     cols.ad1 <- c(1,1,0,0,0)
     cols.ad2 <- c(2,2,0,0,0)
     dt[grepl('^EB13',eco_id), B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_arable]
-    dt[grepl('^EB13',eco_id) & B_AREA_REL <= 50, c(cols.sel) := 0]
-    dt[grepl('^EB13',eco_id) & B_AREA_REL > 65 & B_AREA_REL <= 80, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
-    dt[grepl('^EB13',eco_id) & B_AREA_REL > 80, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+    dt[grepl('^EB13',eco_id) & B_AREA_REL <= 50 & er_total > 0, c(cols.sel) := 0]
+    dt[grepl('^EB13',eco_id) & B_AREA_REL > 65 & B_AREA_REL <= 80 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    dt[grepl('^EB13',eco_id) & B_AREA_REL > 80 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
 
     # measure EG11. Apply treated manure from other stable systems
     cols.ad1 <- c(0,2,1,0,2)
     cols.ad2 <- c(0,5,2,0,3)
     dt[grepl('^EG11',eco_id),B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_farm]
-    dt[grepl('^EG11',eco_id) & B_AREA_REL <= 10, c(cols.sel) := 0]
-    dt[grepl('^EG11',eco_id) & B_AREA_REL > 25 & B_AREA_REL <= 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
-    dt[grepl('^EG11',eco_id) & B_AREA_REL > 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+    dt[grepl('^EG11',eco_id) & B_AREA_REL <= 10 & er_total > 0, c(cols.sel) := 0]
+    dt[grepl('^EG11',eco_id) & B_AREA_REL > 25 & B_AREA_REL <= 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    dt[grepl('^EG11',eco_id) & B_AREA_REL > 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
     
     # measure EG20. Not productive land
     cols.ad1 <- c(1,0,1,3,5)
     cols.ad2 <- c(2,0,2,6,10)
     dt[grepl('^EG20',eco_id),B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_farm]
-    dt[grepl('^EG20',eco_id) & B_AREA_REL <= 1, c(cols.sel) := 0]
-    dt[grepl('^EG20',eco_id) & B_AREA_REL > 3 & B_AREA_REL <= 5, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
-    dt[grepl('^EG20',eco_id) & B_AREA_REL > 5, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+    dt[grepl('^EG20',eco_id) & B_AREA_REL <= 1 & er_total > 0, c(cols.sel) := 0]
+    dt[grepl('^EG20',eco_id) & B_AREA_REL > 3 & B_AREA_REL <= 5 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    dt[grepl('^EG20',eco_id) & B_AREA_REL > 5 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
     
     # measure EG13. inzet baggerspuit (check na update maatregelentabel, EG13 kan 1 keer per perceel voorkomen)
     cols.ad1 <- c(0,0,5,0,5)
     dt[grepl('EG13',eco_id), B_AREA_REL := sum(B_AREA) / dt.farm$area_farm]
-    dt[grepl('EG13',eco_id) & B_AREA_REL < 25, c(cols.score) := 0]
-    dt[grepl('EG13',eco_id) & B_AREA_REL > 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    dt[grepl('EG13',eco_id) & B_AREA_REL < 25 & er_total > 0, c(cols.score) := 0]
+    dt[grepl('EG13',eco_id) & B_AREA_REL > 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
 
     # measure EG14. slootkanten ecologische maaien (check na update maatregelentabel, EG14 kan 1 keer per perceel voorkomen)
     cols.ad1 <- c(0,2,2,1,5)
     dt[grepl('EG14',eco_id), B_AREA_REL := sum(B_AREA) / dt.farm$area_farm]
-    dt[grepl('EG14',eco_id) & B_AREA_REL < 25, c(cols.score) := 0]
-    dt[grepl('EG14',eco_id) & B_AREA_REL > 50, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    dt[grepl('EG14',eco_id) & B_AREA_REL < 25 & er_total > 0, c(cols.score) := 0]
+    dt[grepl('EG14',eco_id) & B_AREA_REL > 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
     
   # multiply by (political) urgency
   
