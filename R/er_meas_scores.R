@@ -67,6 +67,9 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   
   # get the measurement data.table
   dt.meas.taken <- bbwp_check_meas(dt = measures, eco = TRUE, score = TRUE)
+  
+  # filter out measures already receiving points from crop rotation 
+  dt.meas.taken <- dt.meas.taken[!(grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field'),]
       
   # get internal table with importance of environmental challenges
   dt.er.scoring <- as.data.table(BBWPC::er_scoring)
