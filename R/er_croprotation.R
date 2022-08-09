@@ -267,6 +267,26 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     # add farm measures when present
     if(nrow(dt.meas.farm) > 0){
       
+      # columns with the Ecoregelingen ranks and reward
+      cols <- c('er_soil','er_water','er_biodiversity','er_climate','er_landscape','er_euro_ha', 'er_euro_farm')
+      
+      # set first all missing data impacts to 0
+      dt.meas.farm[,c(cols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = cols]
+      
+      # add columns for the sector to which the farms belong
+      fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
+      fs1 <- paste0('f',sector)
+      fs2 <- fs0[!fs0 %in% fs1]
+      dt.meas.farm[,c(fs1) := 1]
+      dt.meas.farm[,c(fs2) := 0]
+      
+      # estimate whether sector allows applicability
+      dt.meas.farm[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs] 
+      
+      # adapt the score when measure is not applicable
+      dt.meas.farm[fsector == 0, c(cols) := 0]
+      
+      # multiply by (political) urgency
       dt3 <- melt(dt.meas.farm, 
                   id.vars = c('bbwp_id','bbwp_conflict'),
                   measure = patterns(erscore = "^er_"),
