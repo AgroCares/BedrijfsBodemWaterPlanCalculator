@@ -108,6 +108,18 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
                               S_ER_REWARD = dt.fields$S_ER_REWARD,
                               B_AREA = B_AREA, type = 'farm')]
   
+  # correct total reward in dt.fields after medal is awarded 
+  dt.fields[, S_ER_REWARD := fifelse(medal == "bronze",70,S_ER_REWARD)]
+  dt.fields[, S_ER_REWARD := fifelse(medal == "silver",110,S_ER_REWARD)]
+  dt.fields[, S_ER_REWARD := fifelse(medal == "gold",175,S_ER_REWARD)]
+  dt.fields[, S_ER_REWARD := fifelse(medal == "none",0,S_ER_REWARD)]
+  
+  # correct total reward in dt.farm after medal is awarded
+  dt.farm[, S_ER_REWARD := fifelse(medal == "bronze",70,S_ER_REWARD)]
+  dt.farm[, S_ER_REWARD := fifelse(medal == "silver",110,S_ER_REWARD)]
+  dt.farm[, S_ER_REWARD := fifelse(medal == "gold",175,S_ER_REWARD)]
+  dt.farm[, S_ER_REWARD := fifelse(medal == "none",0,S_ER_REWARD)]
+  
   
   # return output when preferred measures are requested
   if(output == 'measures'){
