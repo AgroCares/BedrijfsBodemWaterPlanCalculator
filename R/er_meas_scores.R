@@ -150,13 +150,13 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     
     # this is the other way around: if measure can not be applied: set to zero ONLY when eco is TRUE
     # since eco measures can overlap, setting scores 0 is not done when ec2 > 0
-    dt[ec2 == 0 & eco1 == TRUE, c(cols) := 0]
-    dt[ec2 == 0 & eco2 == TRUE, c(cols) := 0]
-    dt[ec2 == 0 & eco3 == TRUE, c(cols) := 0]
-    dt[ec2 == 0 & eco4 == TRUE, c(cols) := 0]
-    dt[ec2 == 0 & eco5 == TRUE, c(cols) := 0]
-    dt[ec2 == 0 & eco6 == TRUE, c(cols) := 0]
-    dt[ec2 == 0 & eco7 == TRUE, c(cols) := 0]
+    dt[ec2 == 0 & eco1 == TRUE & B_LU_ECO1 == FALSE, c(cols) := 0]
+    dt[ec2 == 0 & eco2 == TRUE & B_LU_ECO2 == FALSE, c(cols) := 0]
+    dt[ec2 == 0 & eco3 == TRUE & B_LU_ECO3 == FALSE, c(cols) := 0]
+    dt[ec2 == 0 & eco4 == TRUE & B_LU_ECO4 == FALSE, c(cols) := 0]
+    dt[ec2 == 0 & eco5 == TRUE & B_LU_ECO5 == FALSE, c(cols) := 0]
+    dt[ec2 == 0 & eco6 == TRUE & B_LU_ECO7 == FALSE, c(cols) := 0]
+    dt[ec2 == 0 & eco7 == TRUE & B_LU_ECO1 == FALSE, c(cols) := 0]
     
     # set the score to zero when not applicable as arable/productive/cultivated measure
     dt[B_LU_ECO8 == TRUE & eco8 == 0, c(cols) := 0]
