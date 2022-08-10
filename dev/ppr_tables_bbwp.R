@@ -11,9 +11,10 @@ require(data.table);library(usethis)
   setcolorder(bbwp_measures,'bbwp_id')
   
   # set effect values to 0 when NA
-  scols <- colnames(bbwp_measures)[grepl('^nsw|^ngw|^psw|^p_|^n_|^effect|^er',colnames(bbwp_measures))]
+  scols <- colnames(bbwp_measures)[grepl('^nsw|^ngw|^psw|^p_|^n_|^effect|^er|^regio',colnames(bbwp_measures))]
+  bbwp_measures[,c(scols) := lapply(.SD, as.numeric), .SDcols = scols]
   bbwp_measures[,c(scols) := lapply(.SD,function(x) fifelse(is.na(x),0,x)),.SDcols = scols]
-  
+
   # create new crop categories in new columns bbwp, eco1 and eco2
   
     # set BBWP categories where a measure can be applied
