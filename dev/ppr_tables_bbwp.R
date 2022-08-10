@@ -6,6 +6,11 @@ require(data.table);library(usethis)
   # load measures table (under construction)
   bbwp_measures <- fread('dev/measures_from_main.csv', encoding = 'UTF-8')
   bbwp_measures[bbwp_measures == ''] <- NA
+
+  # load measues table from Astrid, and merge regio_factor
+  bbwp_rf <- fread('dev/measures.csv')
+  bbwp_rf <- bbwp_rf[,.(bbwp_id,regio_factor)]
+  bbwp_measures <- merge(bbwp_measures,bbwp_rf,by='bbwp_id',all.x = TRUE)
   
   # setcolorder
   setcolorder(bbwp_measures,'bbwp_id')
@@ -43,6 +48,11 @@ require(data.table);library(usethis)
     bbwp_measures[,nc11:= fifelse(c11==1,1,0)]
     bbwp_measures[,nc12:= fifelse(c12==1,1,0)]
     
+    # update names
+    setnames(bbwp_measures, 
+             old = c('bouwland', 'productief', 'beteelbaar'), 
+             new = c('b_lu_arable_er','b_lu_productive_er','b_lu_cultivated_er'))
+    
     # columns to remove
     cols.rem <- paste0('c',1:29)
     
@@ -57,6 +67,12 @@ require(data.table);library(usethis)
   # load in csv  
   er_measures <- fread('dev/eco_brp.csv', encoding = 'UTF-8')
 
+  # setnames
+  setnames(er_measures,old = 'brp_code', new = 'B_LU_BRP',skip_absent = TRUE)
+  
+  # add a column with applicability
+  er_measures[, eco_app := 1]
+  
   # save measures as bbwp table
   use_data(er_measures, overwrite = TRUE)
   
