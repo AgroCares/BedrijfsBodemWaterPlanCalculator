@@ -4,7 +4,7 @@ require(data.table);library(usethis)
 # -- prepare measures table -----
 
   # load measures table (under construction)
-  bbwp_measures <- fread('dev/measures.csv', encoding = 'UTF-8')
+  bbwp_measures <- fread('dev/measures_from_main.csv', encoding = 'UTF-8')
   bbwp_measures[bbwp_measures == ''] <- NA
   
   # setcolorder
@@ -43,32 +43,6 @@ require(data.table);library(usethis)
     bbwp_measures[,nc11:= fifelse(c11==1,1,0)]
     bbwp_measures[,nc12:= fifelse(c12==1,1,0)]
     
-    # add ecoregeling categories
-    
-      # eco1 includes: natuur; (kruidenrijke) rand; vanggewas; wortelspruit gewas; rooivruchten (voorjaar); maiskolvenschroot;
-      bbwp_measures[,eco1:= fifelse((nc3==1|nc4==1|nc9==1|nc10==1|nc11==1) & (c11==1|c15==1|c17==1|c21==1),1,0)]
-    
-      # eco2 includes: rooivruchten (najaar); mais; groenbemesters; sloten langs grasland; 
-      bbwp_measures[,eco2:= fifelse((nc4==1|nc9==1|nc10==1|nc11==1) & (c16==1|c19==1),1,0)]
-      
-      # eco3 includes: sloten langs grasland of bouwland; groenebraak;
-      bbwp_measures[,eco3:= fifelse((nc8==1|nc10==1) & (c20==1|c24==1),1,0)] 
-    
-      # eco4 includes: eiwitgewas; heg,haag,struweel; akkerranden,keverbanken;
-      bbwp_measures[,eco4:= fifelse((nc8==1|nc10==1|nc12==1) & (c12==1|c22==1|c29),1,0)]
-      
-      # eco5 includes: voedergewas; overig hout;
-      bbwp_measures[,eco5:= fifelse((nc1==1|nc2==1|nc9==1|nc8==1|nc12==1) & (c18==1|c23==1),1,0)] 
-    
-      # eco6 includes: meerjarig gewas; riet,poelen; bufferstrook langs bouwland;
-      bbwp_measures[,eco6:= fifelse((nc3==1|nc8==1|nc10==1) & (c14==1|c25==1|c28)==1,1,0)]
-      
-      # eco7 includes: diepwortelend; natte teelten; vogelgranen en arenstripper;
-      bbwp_measures[,eco7:= fifelse((nc3==1|nc8==1|nc11==1) & (c13==1|c26==1|c27==1),1,0)]
-      
-    # setnames
-    setnames(bbwp_measures,old = c('bouwland','productief','beteelbaar'),new = c('eco8','eco9','eco10'))
-    
     # columns to remove
     cols.rem <- paste0('c',1:29)
     
@@ -78,6 +52,15 @@ require(data.table);library(usethis)
   # save measures as bbwp table
   use_data(bbwp_measures, overwrite = TRUE)
   
+# -- prepare table for which ER measures can be used on which crops ---
+
+  # load in csv  
+  er_measures <- fread('dev/eco_brp.csv', encoding = 'UTF-8')
+
+  # save measures as bbwp table
+  use_data(er_measures, overwrite = TRUE)
+  
+    
 # -- prepare ecoregeling objectives ---
   
   # load in csv
