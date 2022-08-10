@@ -4,16 +4,10 @@
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil
 #' @param B_LU_BBWP (character) The BBWP category used for allocation of measures to BBWP crop categories
-#' @param B_LU_ECO1 (boolean) does the crop belong in Ecoregeling category 1
-#' @param B_LU_ECO2 (boolean) does the crop belong in Ecoregeling category 2
-#' @param B_LU_ECO3 (boolean) does the crop belong in Ecoregeling category 3
-#' @param B_LU_ECO4 (boolean) does the crop belong in Ecoregeling category 4
-#' @param B_LU_ECO5 (boolean) does the crop belong in Ecoregeling category 5
-#' @param B_LU_ECO6 (boolean) does the crop belong in Ecoregeling category 6
-#' @param B_LU_ECO7 (boolean) does the crop belong in Ecoregeling category 7
-#' @param B_LU_ECO8 (boolean) does the crop fall within the category "arable"
-#' @param B_LU_ECO9 (boolean) does the crop fall within the category "productive"
-#' @param B_LU_ECO10 (boolean) does the crop fall within the category "cultivated"
+#' @param B_LU_BRP (numeric) The crop code (gewascode) from the BRP
+#' @param B_LU_ARABLE_ER (boolean) does the crop fall within the ER category "arable"
+#' @param B_LU_PRODUCTIVE_ER (boolean) does the crop fall within the ER category "productive"
+#' @param B_LU_CULTIVATED_ER (boolean) does the crop fall within the ER category "cultivated"
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param B_CT_SOIL (numeric) the target value for soil quality conform Ecoregeling scoring  (score / ha)
 #' @param B_CT_WATER (numeric) the target value for water quality conform Ecoregeling scoring (score / ha)
@@ -30,8 +24,8 @@
 #' @export
 # calculate the opportunities for a set of fields
 er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
-                            B_LU_BBWP,B_LU_ECO1,B_LU_ECO2, B_LU_ECO3, B_LU_ECO4, B_LU_ECO5, 
-                            B_LU_ECO6, B_LU_ECO7,B_LU_ECO8, B_LU_ECO9,B_LU_ECO10,
+                            B_LU_BBWP,B_LU_BRP, 
+                            B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER,B_LU_CULTIVATED_ER,
                             B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE,
                             measures, sector){
   
@@ -39,7 +33,6 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   . = eco_id = farmid = b_lu_brp = type = erscore = B_AREA_RR = indicator = NULL
   urgency = soiltype = er_profit = statcode = er_cf = id = value = reward = ec1 = ec2 = NULL
   level = nc1 = nc2 = nc3 = nc4 = nc5 = nc6 = nc7 = nc8 = nc9 = nc10 = nc11 = nc12 = NULL
-  ecocheck = eco1 = eco2 = eco3 = eco4 = eco5 = eco6 = eco7 = eco8 = eco9 = eco10 = NULL
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = patterns = fbulbs = bulbs = NULL
   clay = sand = silt = peat = bbwp_id = B_AREA_REL = S_ER_REWARD = euro_farm = NULL
   fr_soil = er_reward = fr_soil = reward_cf = regio_factor = euro_ha = oid = water = soil = climate = biodiversity = landscape = climate = total = NULL
@@ -49,10 +42,8 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
   
   # check length of the inputs
-  arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BBWP),length(B_AER_CBS),
-                    length(B_LU_ECO1),length(B_LU_ECO2),length(B_LU_ECO3),length(B_LU_ECO4),
-                    length(B_LU_ECO5),length(B_LU_ECO6),length(B_LU_ECO7),length(B_LU_ECO8),
-                    length(B_LU_ECO9),length(B_LU_ECO10))
+  arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BBWP),length(B_LU_BRP),length(B_AER_CBS),
+                    length(B_LU_ARABLE_ER),length(B_LU_PRODUCTIVE_ER),length(B_LU_CULTIVATED_ER))
   
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
@@ -62,26 +53,21 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                                        'rooivrucht','mais','gras_permanent','gras_tijdelijk','natuur',
                                        'randensloot','vanggewas'))
   checkmate::assert_character(B_LU_BBWP, len = arg.length)
+  checkmate::assert_integerish(B_LU_BRP, len = arg.length)
   checkmate::assert_numeric(B_CT_SOIL, lower = 0, upper = 1000, min.len = 1)
   checkmate::assert_numeric(B_CT_WATER, lower = 0, upper = 1000, min.len = 1)
   checkmate::assert_numeric(B_CT_CLIMATE, lower = 0, upper = 1000,min.len = 1)
   checkmate::assert_numeric(B_CT_BIO, lower = 0, upper = 1000, min.len = 1)
   checkmate::assert_numeric(B_CT_LANDSCAPE, lower = 0, upper = 1000,min.len = 1)
-  checkmate::assert_logical(B_LU_ECO1,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO2,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO3,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO4,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO5,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO6,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO7,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO8,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO9,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO10,len = arg.length)
+  checkmate::assert_logical(B_LU_ARABLE_ER,len = arg.length)
+  checkmate::assert_logical(B_LU_PRODUCTIVE_ER,len = arg.length)
+  checkmate::assert_logical(B_LU_CULTIVATED_ER,len = arg.length)
   
   # check and update the measure table
   dt.meas.farm <- bbwp_check_meas(dt = measures, eco = TRUE, score = TRUE)
   dt.meas.field <- bbwp_check_meas(dt = NULL, eco = TRUE, score = FALSE)
-
+  dt.meas.eco <- as.data.table(BBWPC::er_measures)
+    
   # subset both measurement tables
   dt.meas.field <- dt.meas.field[grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field',]
   dt.meas.farm <- dt.meas.farm[level == 'farm']
@@ -100,25 +86,19 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   
   # collect total areas on farm level
   dt.farm <- data.table(area_farm = sum(B_AREA),
-                        area_arable = sum(B_AREA * B_LU_ECO8),
-                        area_productive = sum(B_AREA * B_LU_ECO9),
-                        area_cultivated = sum(B_AREA * B_LU_ECO10))
+                        area_arable = sum(B_AREA * B_LU_ARABLE_ER),
+                        area_productive = sum(B_AREA * B_LU_PRODUCTIVE_ER),
+                        area_cultivated = sum(B_AREA * B_LU_CULTIVATED_ER))
   
   # collect data in one data.table
   dt <- data.table(id = 1:arg.length,
                    B_AER_CBS = B_AER_CBS,
                    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                    B_LU_BBWP = B_LU_BBWP,
-                   B_LU_ECO1 = B_LU_ECO1,
-                   B_LU_ECO2 = B_LU_ECO2,
-                   B_LU_ECO3 = B_LU_ECO3,
-                   B_LU_ECO4 = B_LU_ECO4,
-                   B_LU_ECO5 = B_LU_ECO5,
-                   B_LU_ECO6 = B_LU_ECO6,
-                   B_LU_ECO7 = B_LU_ECO7,
-                   B_LU_ECO8 = B_LU_ECO8,
-                   B_LU_ECO9 = B_LU_ECO9,
-                   B_LU_ECO10 = B_LU_ECO10,
+                   B_LU_BRP = B_LU_BRP,
+                   B_LU_ARABLE_ER = B_LU_ARABLE_ER, 
+                   B_LU_PRODUCTIVE_ER = B_LU_PRODUCTIVE_ER,
+                   B_LU_CULTIVATED_ER = B_LU_CULTIVATED_ER,
                    B_AREA = B_AREA,
                    B_CT_SOIL = B_CT_SOIL, 
                    B_CT_WATER = B_CT_WATER,
@@ -136,8 +116,15 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt[grepl('veen', B_SOILTYPE_AGR), soiltype := 'veen']
   dt[grepl('loess', B_SOILTYPE_AGR), soiltype := 'loess']
   
-  # merge with the measures
+  # merge with the measures taken
   dt.field <- dt[,as.list(dt.meas.field),by=names(dt)]
+  
+  # merge with the Ecoregeling ~ Measure list to evaluate applicability
+  dt.field <- merge(dt.field,
+                    dt.meas.eco, 
+                    by = c('B_LU_BRP','eco_id'),
+                    all.x = TRUE)
+  dt.field[is.na(eco_app),eco_app := 0]
   
     # columns with the Ecoregelingen ranks and reward
     cols <- c('er_soil','er_water','er_biodiversity','er_climate','er_landscape','er_euro_ha', 'er_euro_farm')
@@ -159,39 +146,13 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt.field[B_LU_BBWP == 'vanggewas' & nc11 == 0, c(cols) := 0]
     dt.field[B_LU_BBWP == 'eiwitgewas' & nc12 == 0, c(cols) := 0]
     
-    # set to zero when measure is not applicable at all
-    dt.field[, ec1 := nc1 * (B_LU_BBWP == 'gras_permanent') + 
-                      nc2 * (B_LU_BBWP == 'gras_tijdelijk') + 
-                      nc3 * (B_LU_BBWP == 'rustgewas') +
-                      nc4 * (B_LU_BBWP == 'rooivrucht') + 
-                      nc5 * (B_LU_BBWP == 'groenten') + 
-                      nc6 * (B_LU_BBWP == 'bollensierteelt') +
-                      nc7 * (B_LU_BBWP == 'boomfruitteelt') + 
-                      nc8 * (B_LU_BBWP == 'natuur') + 
-                      nc9 * (B_LU_BBWP == 'mais') +
-                      nc10 * (B_LU_BBWP == 'randensloot') + 
-                      nc11 * (B_LU_BBWP == 'vanggewas') + 
-                      nc12 * (B_LU_BBWP == 'eiwitgewas')]
-    dt.field[ec1 == 0 & level == 'field', c(cols) := 0]
-    
     # set the score to zero when not applicable for a given ER combined category
-    dt.field[,ec2 := eco1 * B_LU_ECO1 + eco2 * B_LU_ECO2 + eco3 * B_LU_ECO3 + eco4 * B_LU_ECO4 + 
-                     eco5 * B_LU_ECO5 + eco6 * B_LU_ECO6 + eco7 * B_LU_ECO7]
-    
-    # this is the other way around: if measure can not be applied: set to zero ONLY when eco is TRUE
-    # since eco measures can overlap, setting scores 0 is not done when ec2 > 0
-    dt.field[ec2 == 0 & eco1 == TRUE & B_LU_ECO1 == FALSE, c(cols) := 0]
-    dt.field[ec2 == 0 & eco2 == TRUE & B_LU_ECO2 == FALSE, c(cols) := 0]
-    dt.field[ec2 == 0 & eco3 == TRUE & B_LU_ECO3 == FALSE, c(cols) := 0]
-    dt.field[ec2 == 0 & eco4 == TRUE & B_LU_ECO4 == FALSE, c(cols) := 0]
-    dt.field[ec2 == 0 & eco5 == TRUE & B_LU_ECO5 == FALSE, c(cols) := 0]
-    dt.field[ec2 == 0 & eco6 == TRUE & B_LU_ECO6 == FALSE, c(cols) := 0]
-    dt.field[ec2 == 0 & eco7 == TRUE & B_LU_ECO7 == FALSE, c(cols) := 0]
-
+    dt.field[eco_app == 0, c(cols) := 0]
+   
     # set measures not applicable on arable, cultivated or productive land
-    dt.field[B_LU_ECO8 == TRUE & eco8 == 0, c(cols) := 0]
-    dt.field[B_LU_ECO9 == TRUE & eco9 == 0, c(cols) := 0]
-    dt.field[B_LU_ECO10 == TRUE & eco10 == 0, c(cols) := 0]
+    dt.field[B_LU_ARABLE_ER  == TRUE & b_lu_arable_er  == 0, c(cols) := 0]
+    dt.field[B_LU_PRODUCTIVE_ER == TRUE & b_lu_productive_er == 0, c(cols) := 0]
+    dt.field[B_LU_CULTIVATED_ER  == TRUE & b_lu_cultivated_er == 0, c(cols) := 0]
     
     # add columns for the sector to which the farms belong
     fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
@@ -256,7 +217,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                                  B_AREA = B_AREA[1],
                                  reward_cf = reward_cf[1],
                                  regio_factor = regio_factor[1]),by=id]
-    dt.field.reward <- dt.field.reward[, er_reward := fifelse(regio_factor== 1, er_reward*reward_cf, er_reward)]
+    dt.field.reward[regio_factor== 1, er_reward := er_reward * reward_cf]
     dt.field.reward <- dt.field.reward[,list(er_reward = weighted.mean(x = er_reward,w=B_AREA))]
     
     # calculate the total score for farm measures
