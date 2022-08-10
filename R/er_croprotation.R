@@ -37,6 +37,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   clay = sand = silt = peat = bbwp_id = B_AREA_REL = S_ER_REWARD = euro_farm = NULL
   fr_soil = er_reward = fr_soil = reward_cf = regio_factor = euro_ha = oid = water = soil = climate = biodiversity = landscape = climate = total = NULL
   er_total = er_climate = er_soil = er_water = er_landscape = er_biodiversity = NULL
+  eco_app = b_lu_arable_er = b_lu_productive_er = b_lu_cultivated_er = NULL
   
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)

@@ -59,6 +59,18 @@
 #' }
 "er_farm_measure"
 
+#' The applicability of Ecoregeling Measures per crop type
+#' 
+#' This table contains the crops for which the Ecoregeling method counts scores and rewards
+#' 
+#' @format A data.table with 6731 rows and 3 columns:
+#' \describe{
+#'   \item{eco_id}{ecoregeling measure id}
+#'   \item{B_lU_BRP}{dutch crop id from the BRP}
+#'   \item{eco_app}{a helper variable telling that the measure is applicable for that crop}
+#' }
+"er_measures"
+
 #' An overview of crop lists used in Ecoregelingen
 #' 
 #' This table contains the crop ids (b_lu_brp) for specific Ecoregelingen measures
