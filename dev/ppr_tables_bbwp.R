@@ -58,7 +58,7 @@ require(data.table);library(usethis)
       bbwp_measures[,eco4:= fifelse((nc8==1|nc10==1|nc12==1) & (c12==1|c22==1|c29),1,0)]
       
       # eco5 includes: voedergewas; overig hout;
-      bbwp_measures[,eco5:= fifelse((nc8==1|nc12==1) & (c18==1|c23==1),1,0)] 
+      bbwp_measures[,eco5:= fifelse((nc1==1|nc2==1|nc9==1|nc8==1|nc12==1) & (c18==1|c23==1),1,0)] 
     
       # eco6 includes: meerjarig gewas; riet,poelen; bufferstrook langs bouwland;
       bbwp_measures[,eco6:= fifelse((nc3==1|nc8==1|nc10==1) & (c14==1|c25==1|c28)==1,1,0)]
