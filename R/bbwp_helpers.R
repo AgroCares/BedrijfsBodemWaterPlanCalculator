@@ -125,10 +125,15 @@ bbwp_check_meas <- function(dt,eco = FALSE, score = TRUE){
     cols.use <- unique(c('id','bbwp_status', cols.use))
   }
   
-  # set all scoring, applicabilility and effects to zero when data is missing
+  # set all scoring, applicability and effects to zero when data is missing
     
-    # get relevant colums to be converted
-    scols <- colnames(dt)[grepl('^nsw|^ngw|^psw|^p_|^n_|^effect|^er',colnames(dt))]
+
+  
+  # get relevant column to be converted
+    scols <- colnames(dt)[grepl('^nsw|^ngw|^psw|^p_|^n_|^effect|^er|^regio',colnames(dt))]
+    
+    # set columns to numeric
+    dt[,c(scols) := lapply(.SD, as.numeric), .SDcols = scols]
     
     # update the columns
     dt[,c(scols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = scols]
