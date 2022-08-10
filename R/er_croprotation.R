@@ -251,7 +251,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt2[oid > 1, c(cols) := 0]
     
     # calculate the weighed average ER score (points/ ha) for the whole farm due to measures taken
-    dt.field.score <- dt2[,lapply(.SD,function(x) weighted.mean(x,w = B_AREA)), .SDcols = cols]
+    dt.field.score <- dt2[,lapply(.SD,function(x) sum(x*B_AREA)/dt.farm$area_farm), .SDcols = cols]
     dt.field.reward <- dt2[,list(er_reward = max(euro_ha[total>0],0),
                                  B_AREA = B_AREA[1],
                                  reward_cf = reward_cf[1],
