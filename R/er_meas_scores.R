@@ -155,8 +155,8 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt[ec2 == 0 & eco3 == TRUE & B_LU_ECO3 == FALSE, c(cols) := 0]
     dt[ec2 == 0 & eco4 == TRUE & B_LU_ECO4 == FALSE, c(cols) := 0]
     dt[ec2 == 0 & eco5 == TRUE & B_LU_ECO5 == FALSE, c(cols) := 0]
-    dt[ec2 == 0 & eco6 == TRUE & B_LU_ECO7 == FALSE, c(cols) := 0]
-    dt[ec2 == 0 & eco7 == TRUE & B_LU_ECO1 == FALSE, c(cols) := 0]
+    dt[ec2 == 0 & eco6 == TRUE & B_LU_ECO6 == FALSE, c(cols) := 0]
+    dt[ec2 == 0 & eco7 == TRUE & B_LU_ECO7 == FALSE, c(cols) := 0]
     
     # set the score to zero when not applicable as arable/productive/cultivated measure
     dt[B_LU_ECO8 == TRUE & eco8 == 0, c(cols) := 0]
