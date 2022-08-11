@@ -125,7 +125,10 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt[B_LU_ARABLE_ER  == TRUE & b_lu_arable_er  == 0, c(cols) := 0]
     dt[B_LU_PRODUCTIVE_ER == TRUE & b_lu_productive_er == 0, c(cols) := 0]
     dt[B_LU_CULTIVATED_ER  == TRUE & b_lu_cultivated_er == 0, c(cols) := 0]
-
+    dt[B_LU_ARABLE_ER  == FALSE & b_lu_arable_er  == 1, c(cols) := 0]
+    dt[B_LU_PRODUCTIVE_ER == FALSE & b_lu_productive_er == 1, c(cols) := 0]
+    dt[B_LU_CULTIVATED_ER  == FALSE & b_lu_cultivated_er == 1, c(cols) := 0]
+    
   # set the score and profit to zero when the measure is not applicable given sector or soil type
   
     # add columns for the sector to which the farms belong
