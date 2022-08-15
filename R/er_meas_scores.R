@@ -32,7 +32,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   total = biodiversity = climate = landscape = soil = water = oid = NULL
   eco_app = b_lu_arable_er = b_lu_productive_er = b_lu_cultivated_er = NULL
   er_total = er_climate = er_soil = er_measure = er_water = er_landscape = er_biodiversity = NULL
-  reward_cf = regio_factor = NULL
+  reward_cf = regio_factor = . = er_cf = statcode = NULL
   
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
