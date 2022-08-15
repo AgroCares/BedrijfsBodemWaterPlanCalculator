@@ -32,6 +32,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   total = biodiversity = climate = landscape = soil = water = oid = NULL
   eco_app = b_lu_arable_er = b_lu_productive_er = b_lu_cultivated_er = NULL
   er_total = er_climate = er_soil = er_measure = er_water = er_landscape = er_biodiversity = NULL
+  reward_cf = regio_factor = NULL
   
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
@@ -58,7 +59,10 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   
   # filter out measures already receiving points from crop rotation 
   dt.meas.taken <- dt.meas.taken[!(grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field'),]
-      
+  
+  # add bbwp table for financial reward correction factor per AER
+  dt.er.reward <- as.data.table(BBWPC::er_aer_reward)
+  
   # get internal table with importance of environmental challenges
   dt.er.scoring <- as.data.table(BBWPC::er_scoring)
   setnames(dt.er.scoring,gsub('cf_','',colnames(dt.er.scoring)))
@@ -237,9 +241,13 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt[grepl('veen', B_SOILTYPE_AGR), soiltype := 'veen']
     dt[grepl('loess', B_SOILTYPE_AGR), soiltype := 'loess']
     
+    # add regional correction value for price
+    dt<- merge(dt,dt.er.reward[,.(statcode,reward_cf = er_cf)], 
+                       by.x = 'B_AER_CBS',by.y = 'statcode',all.x = TRUE)
+    
     # melt dt
     dt <- melt(dt,
-               id.vars = c('id','bbwp_id','soiltype','bbwp_conflict','B_AREA'),
+               id.vars = c('id','bbwp_id','soiltype','bbwp_conflict','B_AREA','reward_cf','regio_factor'),
                measure = patterns(erscore = "^er_"),
                variable.name = 'indicator',
                value.name = 'value')
@@ -252,7 +260,6 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt[!grepl('euro',indicator), value := value * urgency]
     
   # dcast to add totals, to be used to update scores when measures are conflicting
-  
     cols <- c('biodiversity', 'climate', 'landscape', 'soil','water','total')
     dt2 <- dcast(dt, id + soiltype + bbwp_id + bbwp_conflict + B_AREA ~ indicator, value.var = 'value')
     dt2[, total := biodiversity + climate + landscape + soil + water]
@@ -263,10 +270,15 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt.field <- dt2[,lapply(.SD,sum), .SDcols = cols, by = 'id']
     
   # select total reward per field which is equal to the reward from the measure with the highest er_euro_ha (euro / ha)
-  dt.reward <- dt[grepl('euro_ha',indicator),list(S_ER_REWARD = max(value,na.rm=T)),by = 'id']
-  
+  dt.reward <- dt[grepl('euro_ha',indicator),list(S_ER_REWARD = max(value,na.rm=T),
+                                                  reward_cf = reward_cf[1],
+                                                  regio_factor = regio_factor[1]),by = 'id']
+
+  # regional correction for the agricultural economic region when region factor is true
+  dt.reward[regio_factor== 1, S_ER_REWARD := S_ER_REWARD * reward_cf]
+
   # add reward to the field
-  dt.field <- merge(dt.field,dt.reward,by='id')
+  dt.field <- merge(dt.field,dt.reward[,.(id,S_ER_REWARD)],by='id')
    
   # setnames
   setnames(dt.field,
