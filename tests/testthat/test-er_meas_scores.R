@@ -72,12 +72,12 @@ test_that("check er_meas_scores", {
     object = test,
     expected = data.table(
       id = 1:4,
-      D_MEAS_BIO = c(0,0,5,0),
+      D_MEAS_BIO = c(0,0,10,0),
       D_MEAS_CLIM = c(7,0,0,0),
       D_MEAS_LAND = c(0,0,5,0),
-      D_MEAS_SOIL = c(7,0,7.5,0),
-      D_MEAS_WAT = c(0,0,6.25,0),
-      D_MEAS_TOT = c(14,0,23.75,0),
+      D_MEAS_SOIL = c(7,0,22,0),
+      D_MEAS_WAT = c(0,0,12,0),
+      D_MEAS_TOT = c(14,0,50,0),
       reward = c(100,0,0,0)
     ),
     tolerance = 1,
