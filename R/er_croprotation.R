@@ -275,7 +275,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       
       # sum total score (score per hectare)
       dt.farm.score <- dt4[,lapply(.SD,sum), .SDcols = cols]
-      dt.farm.reward <- dt4[,list(er_reward = fifelse(total>0, cfr * (max(euro_ha[total>0]) + max(euro_farm[total>0]) / dt.farm$area_farm), 0))]
+      dt.farm.reward <- dt4[,list(er_reward = cfr * (max(euro_ha[total>0],0) + max(euro_farm[total>0],0) / dt.farm$area_farm))]
       
     } else {
       
