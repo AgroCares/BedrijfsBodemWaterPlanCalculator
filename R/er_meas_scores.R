@@ -38,7 +38,6 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
   
-  
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
   
@@ -50,6 +49,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   checkmate::assert_character(B_SOILTYPE_AGR,len = arg.length)
   checkmate::assert_subset(B_LU_BBWP, choices = unlist(bbwp_parms[code == "B_LU_BBWP", choices]))
   checkmate::assert_character(B_LU_BBWP, len = arg.length)
+  checkmate::assert_subset(B_LU_BRP, choices = unlist(bbwp_parms[code == "B_LU_BRP", choices]))
   checkmate::assert_integerish(B_LU_BRP, len = arg.length)
   checkmate::assert_logical(B_LU_ARABLE_ER,len = arg.length)
   checkmate::assert_logical(B_LU_PRODUCTIVE_ER,len = arg.length)

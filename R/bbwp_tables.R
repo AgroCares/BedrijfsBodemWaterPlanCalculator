@@ -143,7 +143,7 @@
 #' 
 #' This table contains the BBWP variables and their possible values according to pandex to standardize checks
 #' 
-#' @format A data.table with 20 rows and 14 columns:
+#' @format A data.table with 21 rows and 14 columns:
 #' \describe{
 #'  \item{code}{The parameter code}
 #'  \item{parameter}{Brief description of the parameter}

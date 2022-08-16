@@ -75,6 +75,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, M_
   checkmate::assert_character(B_SOILTYPE_AGR,len = arg.length)
   checkmate::assert_subset(B_LU_BBWP, choices = unlist(bbwp_parms[code == "B_LU_BBWP", choices]))
   checkmate::assert_character(B_LU_BBWP, len = arg.length)
+  checkmate::assert_subset(B_LU_BRP, choices = unlist(bbwp_parms[code == "B_LU_BRP", choices]))
   checkmate::assert_integerish(B_LU_BRP, len = arg.length)
   checkmate::assert_numeric(B_SLOPE_DEGREE,lower = bbwp_parms[code == "B_SLOPE_DEGREE", value_min], upper = bbwp_parms[code == "B_SLOPE_DEGREE", value_max],len = arg.length)
   checkmate::assert_logical(B_LU_ARABLE_ER,len = arg.length)
