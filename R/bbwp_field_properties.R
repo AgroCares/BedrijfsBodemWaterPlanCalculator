@@ -60,7 +60,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   # check inputs B parameters
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
   checkmate::assert_subset(B_SC_WENR, choices = unlist(bbwp_parms[code == "B_SC_WENR", choices]))
-  checkmate::assert_subset(B_HELP_WENR, choices = unlist(c(bbwp_parms[code == "B_HELP_WENR", choices], "unknown")), empty.ok = FALSE)
+  checkmate::assert_subset(B_HELP_WENR, choices = c(unique(OBIC::waterstress.obic$soilunit), "unknown"), empty.ok = FALSE)
   checkmate::assert_numeric(B_SLOPE_DEGREE, lower = bbwp_parms[code == "B_SLOPE_DEGREE", value_min], upper = bbwp_parms[code == "B_SLOPE_DEGREE", value_max],len = arg.length)
   checkmate::assert_subset(B_LU_BBWP, choices = unlist(bbwp_parms[code == "B_LU_BBWP", choices]))
   checkmate::assert_character(B_LU_BBWP, len = arg.length)

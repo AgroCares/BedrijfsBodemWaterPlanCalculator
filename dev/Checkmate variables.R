@@ -2,9 +2,6 @@
 library(pandex);library(data.table);library(stringr)
 
   
-  # M_DRAIN, LSW, a_lat = NULL, a_lon = NULL,
-  # measures, sector
-  
   # Load table and select parameters
   bbwp_parms <- pandex::nmi_parameters
   bbwp_parms <- bbwp_parms[code %in% c("B_SOILTYPE_AGR","B_LU_BBWP","B_GWL_CLASS","B_SC_WENR","B_HELP_WENR","B_SLOPE_DEGREE","B_AER_CBS",
@@ -14,7 +11,7 @@ library(pandex);library(data.table);library(stringr)
   # Unpack options
   bbwp_parms[code == 'B_AER_CBS', choices := list(pandex::enum_opts("B_AER_CBS"))]
   bbwp_parms[code == 'B_SOILTYPE_AGR', choices := list(pandex::enum_opts("B_SOILTYPE_AGR"))]
-  bbwp_parms[code == 'B_GWL_CLASS', choices := list(pandex::enum_opts("B_GWL_CLASS"))]
+  bbwp_parms[code == 'B_GWL_CLASS', choices := list(paste0('Gt',pandex::enum_opts("B_GWL_CLASS")))]
   bbwp_parms[code == 'B_HELP_WENR', choices := list(pandex::enum_opts("B_HELP_WENR"))]
   bbwp_parms[code == 'B_LU_BBWP', choices := list(pandex::enum_opts("B_LU_BBWP"))]
   bbwp_parms[code == 'B_SC_WENR', choices := list(pandex::enum_opts("B_SC_WENR"))]

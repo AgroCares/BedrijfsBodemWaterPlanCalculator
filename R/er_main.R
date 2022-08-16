@@ -45,6 +45,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
   checkmate::assert_subset(output,choices = c('scores','measures'))
+  checkmate::assert_subset(sector, choices = c('dairy', 'arable', 'tree_nursery', 'bulbs'))
   
   # reformat B_AER_CBS and B_LU_BBWP
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
