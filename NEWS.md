@@ -1,17 +1,18 @@
-# BBWPC v0.9.9000
+# BBWPC v0.9.0
 ## Changed
-* delete `B_LU_ECO_x` as input of `er_main`, `er_meas_rank`, `er_meas_score`, and `er_field_score`.
+* delete `B_LU_ECO_x` as input of `er_main`, `er_meas_rank`, `er_meas_scores`, and `er_field_score`.
 * inputs `B_LU_ECO8`, `B_LU_ECO9`, `B_LU_ECO10` renamed to `B_LU_ARABLE_ER`, `B_LU_PRODUCTIVE_ER`,and `B_LU_CULTIVATED_ER`
 * reward is now fixed to the medal earned
+* scores and applicability of several measures is updated according to comments of Boerennatuur in `bbwp_measures`
 
 ## Fixed
-* selection criteria for Ecoregeling scoring is updated given applicability criteria from `er_measures`
+* selection criteria for Ecoregeling scoring is updated given applicability criteria from `bbwp_measures`
 * correction farm weighted mean of ER scores in `er_crop_rotation`
 
 ## Added
 * new package table with data.table of measures and which crops belong to these measures: `er_measures`
 * regional weighing factor for scoring, in `er_measures` as well as `er_crop_rotation`
-
+* added financial reward correction based on the agricultural economic region in the Netherlands, in `er_crop_rotation` and `er_measure_scores`
 
 # BBWPC v0.8.2
 ## Changed
