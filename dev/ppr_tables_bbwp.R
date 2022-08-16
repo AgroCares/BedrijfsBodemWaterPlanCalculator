@@ -100,14 +100,6 @@ require(data.table);library(usethis)
   er_crops[er_crops == ''] <- NA
   
   # transform old cropcategories in new categories
-  # eco1 includes: natuur; (kruidenrijke) rand; vanggewas; wortelspruit gewas; rooivruchten (voorjaar); maiskolvenschroot;
-  # eco2 includes: rooivruchten (najaar); mais; groenbemesters; sloten langs grasland; 
-  # eco3 includes: sloten langs grasland of bouwland; groenebraak;
-  # eco4 includes: eiwitgewas; heg,haag,struweel; akkerranden,keverbanken;
-  # eco5 includes: voedergewas; overig hout;
-  # eco6 includes: meerjarig gewas; riet,poelen; bufferstrook langs bouwland;
-  # eco7 includes: diepwortelend; natte teelten; granen;
-  # example: luzerne is C3 (rustgewas,bbwp), C11 (vanggewas,eco1), C12 (eiwt,eco4), C13 (diepwortelend,exo7), C14 (meerjarig, eco6),C18 (voedergewas,eco5)
   er_crops[,nc1:= fifelse(crop_cat1==1,1,0)]
   er_crops[,nc2:= fifelse(crop_cat2==1,1,0)]
   er_crops[,nc3:= fifelse(crop_cat3==1,1,0)]
@@ -120,13 +112,6 @@ require(data.table);library(usethis)
   er_crops[,nc10:= fifelse(c10==1,1,0)] 
   er_crops[,nc11:= fifelse(c11==1,1,0)] 
   er_crops[,nc12:= fifelse(c12==1,1,0)] 
-  er_crops[,eco1:= fifelse((nc3==1|nc4==1|nc9==1|nc10==1|nc11==1) & (c11==1|c15==1|c17==1|c21==1),1,0)]
-  er_crops[,eco2:= fifelse((nc4==1|nc9==1|nc10==1|nc11==1) & (c16==1|c19==1),1,0)]
-  er_crops[,eco3:= fifelse((nc8==1|nc10==1) & (c20==1|c24==1),1,0)] 
-  er_crops[,eco4:= fifelse((nc8==1|nc10==1|nc12==1) & (c12==1|c22==1|c29),1,0)]
-  er_crops[,eco5:= fifelse((nc1==1|nc2==1|nc9==1|nc8==1|nc12==1) & (c18==1|c23==1),1,0)] 
-  er_crops[,eco6:= fifelse((nc3==1|nc8==1|nc10==1) & (c14==1|c25==1|c28)==1,1,0)]
-  er_crops[,eco7:= fifelse((nc3==1|nc8==1|nc11==1) & (c13==1|c26==1|c27==1),1,0)]
   
   # each BBWP category in one column
   er_crops[nc1==1, B_LU_BBWP := 'gras_permanent']
@@ -148,20 +133,8 @@ require(data.table);library(usethis)
   # keep relevant columns and remove rows without B_LU_BRP code
   er_crops[,c(cols.rem):= NULL]
 
-  # reset to boolean
-  cols <- colnames(er_crops)[grepl('eco',colnames(er_crops))]
-  er_crops[,c(cols) := lapply(.SD,function(x) fifelse(x==1,TRUE,FALSE)),.SDcols = cols]
-  er_crops[,B_LU_NAME := NULL]
-  
-  # rename
-  setnames(er_crops, 
-           old = c('bouwland','productive','beteelbaar'),
-           new = c('eco8','eco9','eco10'))
-  
-  setcolorder(er_crops,c('B_LU_BRP','B_LU_NAME','B_LU_BBWP',paste0('eco',1:10)))
-  
-  # rename columns
-  setnames(er_crops,old = paste0('eco',1:10),new = paste0('B_LU_ECO',1:10))
+  # reorder
+  setcolorder(er_crops,c('B_LU_BRP','B_LU_NAME','B_LU_BBWP'))
   
   # save measures as bbwp table
   use_data(er_crops, overwrite = TRUE)
