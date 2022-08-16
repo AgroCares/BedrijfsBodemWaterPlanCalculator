@@ -4,16 +4,10 @@ require(testthat)
 # default input for testing
   B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
   B_LU_BBWP = rep('gras_permanent',4)
-  B_LU_ECO1 = c(F,F,F,F)
-  B_LU_ECO2 = c(F,F,F,F)
-  B_LU_ECO3 = c(F,F,F,F)
-  B_LU_ECO4 = c(F,F,F,F)
-  B_LU_ECO5 = c(T,T,T,T)
-  B_LU_ECO6 = c(F,F,F,F)  
-  B_LU_ECO7 = c(F,F,F,F)
-  B_LU_ECO8 = c(T,T,T,T)
-  B_LU_ECO9 = c(T,T,T,T)
-  B_LU_ECO10 = c(T,T,T,T)
+  B_LU_BRP = rep(265,4)
+  B_LU_ARABLE_ER = c(T,T,T,T)
+  B_LU_PRODUCTIVE_ER = c(T,T,T,T)
+  B_LU_CULTIVATED_ER = c(T,T,T,T)
   B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland")
   B_AREA = c(45,18,0.8,6)
   measures = NULL
@@ -22,16 +16,10 @@ require(testthat)
 # run example 1 without any measures taken
 test <- er_meas_score(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                       B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
-                      B_LU_ECO1 = c(F,F,F,F),
-                      B_LU_ECO2 = c(F,F,F,F),
-                      B_LU_ECO3 = c(F,F,F,F),
-                      B_LU_ECO4 = c(F,F,F,F),
-                      B_LU_ECO5 = c(T,T,T,T),
-                      B_LU_ECO6 = c(F,F,F,F) , 
-                      B_LU_ECO7 = c(F,F,F,F),
-                      B_LU_ECO8 = c(T,T,T,T),
-                      B_LU_ECO9 = c(T,T,T,T),
-                      B_LU_ECO10 = c(T,T,T,T),
+                      B_LU_BRP = c(265,2741,2741,259),
+                      B_LU_ARABLE_ER = c(T,T,T,T),
+                      B_LU_PRODUCTIVE_ER = c(T,T,T,T),
+                      B_LU_CULTIVATED_ER = c(T,T,T,T),
                       B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland"),
                       B_AREA = c(45,18,0.8,6),
                       measures = NULL,
@@ -67,17 +55,11 @@ measures$bbwp_status <- 'given for ANLB'
 
 # run example 2 without any measures taken
 test <- er_meas_score(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                      B_LU_BBWP = rep('gras_permanent',4),
-                      B_LU_ECO1 = c(F,F,F,F),
-                      B_LU_ECO2 = c(F,F,F,F),
-                      B_LU_ECO3 = c(F,F,F,F),
-                      B_LU_ECO4 = c(F,F,F,F),
-                      B_LU_ECO5 = c(T,T,T,T),
-                      B_LU_ECO6 = c(F,F,F,F) , 
-                      B_LU_ECO7 = c(F,F,F,F),
-                      B_LU_ECO8 = c(T,T,T,T),
-                      B_LU_ECO9 = c(T,T,T,T),
-                      B_LU_ECO10 = c(T,T,T,T),
+                      B_LU_BBWP = rep('rooivrucht',4),
+                      B_LU_BRP = rep(2741,4),
+                      B_LU_ARABLE_ER = c(T,T,T,T),
+                      B_LU_PRODUCTIVE_ER = c(T,T,T,T),
+                      B_LU_CULTIVATED_ER = c(T,T,T,T),
                       B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland"),
                       B_AREA = c(45,18,0.8,6),
                       measures = measures,
@@ -90,13 +72,13 @@ test_that("check er_meas_scores", {
     object = test,
     expected = data.table(
       id = 1:4,
-      D_MEAS_BIO = c(12.5,0,0,0),
-      D_MEAS_CLIM = c(2,0,0,0),
-      D_MEAS_LAND = c(6,0,0,0),
-      D_MEAS_SOIL = c(0,0,0,0),
-      D_MEAS_WAT = c(3,0,0,0),
-      D_MEAS_TOT = c(23.5,0,0,0),
-      reward = c(0,0,0,0)
+      D_MEAS_BIO = c(0,0,10,0),
+      D_MEAS_CLIM = c(7,0,0,0),
+      D_MEAS_LAND = c(0,0,5,0),
+      D_MEAS_SOIL = c(7,0,22,0),
+      D_MEAS_WAT = c(0,0,12,0),
+      D_MEAS_TOT = c(14,0,50,0),
+      reward = c(100,0,0,0)
     ),
     tolerance = 1,
     ignore_attr = TRUE)
