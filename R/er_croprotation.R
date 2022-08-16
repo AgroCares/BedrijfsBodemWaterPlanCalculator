@@ -154,9 +154,9 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt.field[B_LU_ARABLE_ER  == TRUE & b_lu_arable_er  == 0, c(cols) := 0]
     dt.field[B_LU_PRODUCTIVE_ER == TRUE & b_lu_productive_er == 0, c(cols) := 0]
     dt.field[B_LU_CULTIVATED_ER  == TRUE & b_lu_cultivated_er == 0, c(cols) := 0]
-    dt[B_LU_ARABLE_ER  == FALSE & b_lu_arable_er  == 1, c(cols) := 0]
-    dt[B_LU_PRODUCTIVE_ER == FALSE & b_lu_productive_er == 1, c(cols) := 0]
-    dt[B_LU_CULTIVATED_ER  == FALSE & b_lu_cultivated_er == 1, c(cols) := 0]
+    dt.field[B_LU_ARABLE_ER  == FALSE & b_lu_arable_er  == 1, c(cols) := 0]
+    dt.field[B_LU_PRODUCTIVE_ER == FALSE & b_lu_productive_er == 1, c(cols) := 0]
+    dt.field[B_LU_CULTIVATED_ER  == FALSE & b_lu_cultivated_er == 1, c(cols) := 0]
     
     # add columns for the sector to which the farms belong
     fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
