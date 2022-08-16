@@ -5,7 +5,7 @@ require(testthat)
   B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
   B_LU_BBWP = rep('gras_permanent',4)
   B_LU_BRP = rep(265,4)
-  B_LU_ARABLE_ER = c(T,T,T,T)
+  B_LU_ARABLE_ER = c(F,F,F,F)
   B_LU_PRODUCTIVE_ER = c(T,T,T,T)
   B_LU_CULTIVATED_ER = c(T,T,T,T)
   B_GWL_CLASS = rep('GtIII',4)
@@ -28,7 +28,7 @@ require(testthat)
 test <- er_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                      B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                      B_LU_BRP = c(265,2741,2741,259),
-                     B_LU_ARABLE_ER = c(T,T,T,T),
+                     B_LU_ARABLE_ER = c(F,T,T,T),
                      B_LU_PRODUCTIVE_ER = c(T,T,T,T),
                      B_LU_CULTIVATED_ER = c(T,T,T,T),
                      B_GWL_CLASS = 'GtIII', 
@@ -64,7 +64,7 @@ test_that("check er_meas_rank", {
 test_that("check er_meas_rank", {
   expect_equal(
     object = test$top_er_tot[c(1,4,9,15)],
-    expected = c("B166",'B132','G60','B155'),
+    expected = c("B162",'B114','B166','G20'),
     tolerance = 0.01)
 })
 
@@ -81,7 +81,7 @@ measures$bbwp_status <- 'given for ANLB'
 test <- er_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                      B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                      B_LU_BRP = c(265,2741,2741,259),
-                     B_LU_ARABLE_ER = c(T,T,T,T),
+                     B_LU_ARABLE_ER = c(F,T,T,T),
                      B_LU_PRODUCTIVE_ER = c(T,T,T,T),
                      B_LU_CULTIVATED_ER = c(T,T,T,T),
                      B_GWL_CLASS = 'GtIII', 
@@ -117,7 +117,7 @@ test_that("check er_meas_rank", {
 test_that("check er_meas_rank", {
   expect_equal(
     object = test$top_er_tot[c(1,4,8,15)],
-    expected = c("B166", "B132", "G55", "B155"),
+    expected = c("B162", "B114", "B145", "G20"),
     tolerance = 0.01)
 })
 
