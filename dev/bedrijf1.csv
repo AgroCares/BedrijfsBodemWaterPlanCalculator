@@ -1,0 +1,20 @@
+Scores zijn relatief tot de aim ;;;;;;;;
+3 velden van elk 10 ha;;;;;;;;
+bodemtype: zand;;;;;;;;
+hoofdgewas op percelen: brp code 266 ;;;;;;;;
+sector: melkveehouderij;;;;;;;;
+CBS-landbouwgebied: LG05 (Centraal Veehouderijgebied);;;;;;;;
+bbwp-status: geen;;;;;;;;
+maatregelen veld 1: EG16B;;;;;;;;
+maatregelen veld 2: EG2B;;;;;;;;
+maatregelen veld 3: EG14 & EG18;;;;;;;;
+;;;;;;;;
+;;;;;;;;
+;farm.s_er_soil;farm.s_er_water;farm.s_er_climate;farm.s_er_biodiversity;farm.s_er_landscape;farm.s_er_tot;farm.s_er_reward;farm.s_er_medal
+1;10;33;33;51;33;21;0;none
+;;;;;;;;
+;;;;;;;;
+fields.field_id;fields.s_er_soil;fields.s_er_water;fields.s_er_climate;fields.s_er_biodiversity;fields.s_er_landscape;fields.s_er_tot;fields.s_er_reward;fields.s_er_medal
+1;29;100;100;54;43;55;0;none
+2;0;0;0;100;57;9;0;none
+3;0;0;0;0;0;0;0;none
