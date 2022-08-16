@@ -46,6 +46,10 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, M_
   er_climate_scaled = er_biodiversity_scaled = er_landscape_scaled= NULL
   er_euro_combi = er_euro_ha = er_euro_farm = er_reward_scaled = oid = NULL
   eco_app = b_lu_arable_er = b_lu_productive_er = b_lu_cultivated_er = NULL
+  code = value_min = value_max = choices = NULL
+  
+  # Load bbwp_parms
+  bbwp_parms <- BBWPC::bbwp_parms
   
   # derive a table with all possible field measurements
   dt.meas.av <- bbwp_check_meas(dt = NULL,eco = TRUE, score = FALSE)
@@ -67,19 +71,17 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, M_
                     length(B_LU_ARABLE_ER),length(B_LU_PRODUCTIVE_ER),length(B_LU_CULTIVATED_ER))
   
   # check inputs
-  checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
-                                                       'dalgrond','moerige_klei','veen','loess'))
+  checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
   checkmate::assert_character(B_SOILTYPE_AGR,len = arg.length)
-  checkmate::assert_subset(B_LU_BBWP,
-                           choices = c('groenten','bollensierteelt','boomfruitteelt','rustgewas','eiwitgewas',
-                                       'rooivrucht','mais','gras_permanent','gras_tijdelijk','natuur',
-                                       'randensloot','vanggewas'))
+  checkmate::assert_subset(B_LU_BBWP, choices = unlist(bbwp_parms[code == "B_LU_BBWP", choices]))
   checkmate::assert_character(B_LU_BBWP, len = arg.length)
+  checkmate::assert_subset(B_LU_BRP, choices = unlist(bbwp_parms[code == "B_LU_BRP", choices]))
   checkmate::assert_integerish(B_LU_BRP, len = arg.length)
-  checkmate::assert_numeric(B_SLOPE_DEGREE, lower = 0, upper = 30, any.missing = FALSE, len = arg.length)
+  checkmate::assert_numeric(B_SLOPE_DEGREE,lower = bbwp_parms[code == "B_SLOPE_DEGREE", value_min], upper = bbwp_parms[code == "B_SLOPE_DEGREE", value_max],len = arg.length)
   checkmate::assert_logical(B_LU_ARABLE_ER,len = arg.length)
   checkmate::assert_logical(B_LU_PRODUCTIVE_ER,len = arg.length)
   checkmate::assert_logical(B_LU_CULTIVATED_ER,len = arg.length)
+  
   
   # collect data in one data.table
   dt <- data.table(id = 1:arg.length,

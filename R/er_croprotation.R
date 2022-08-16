@@ -38,6 +38,10 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   fr_soil = er_reward = fr_soil = reward_cf = regio_factor = euro_ha = oid = water = soil = climate = biodiversity = landscape = climate = total = NULL
   er_total = er_climate = er_soil = er_water = er_landscape = er_biodiversity = NULL
   eco_app = b_lu_arable_er = b_lu_productive_er = b_lu_cultivated_er = NULL
+  code = choices = NULL
+  
+  # Load bbwp_parms
+  bbwp_parms <- BBWPC::bbwp_parms
   
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
@@ -47,22 +51,19 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                     length(B_LU_ARABLE_ER),length(B_LU_PRODUCTIVE_ER),length(B_LU_CULTIVATED_ER))
   
   # check inputs
-  checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
-                                                       'dalgrond','moerige_klei','veen','loess'))
-  checkmate::assert_subset(B_LU_BBWP,
-                           choices = c('groenten','bollensierteelt','boomfruitteelt','rustgewas','eiwitgewas',
-                                       'rooivrucht','mais','gras_permanent','gras_tijdelijk','natuur',
-                                       'randensloot','vanggewas'))
+  checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
+  checkmate::assert_subset(B_LU_BBWP, choices = unlist(bbwp_parms[code == "B_LU_BBWP", choices]))
   checkmate::assert_character(B_LU_BBWP, len = arg.length)
+  checkmate::assert_subset(B_LU_BRP, choices = unlist(bbwp_parms[code == "B_LU_BRP", choices]))
   checkmate::assert_integerish(B_LU_BRP, len = arg.length)
-  checkmate::assert_numeric(B_CT_SOIL, lower = 0, upper = 1000, min.len = 1)
-  checkmate::assert_numeric(B_CT_WATER, lower = 0, upper = 1000, min.len = 1)
-  checkmate::assert_numeric(B_CT_CLIMATE, lower = 0, upper = 1000,min.len = 1)
-  checkmate::assert_numeric(B_CT_BIO, lower = 0, upper = 1000, min.len = 1)
-  checkmate::assert_numeric(B_CT_LANDSCAPE, lower = 0, upper = 1000,min.len = 1)
   checkmate::assert_logical(B_LU_ARABLE_ER,len = arg.length)
   checkmate::assert_logical(B_LU_PRODUCTIVE_ER,len = arg.length)
   checkmate::assert_logical(B_LU_CULTIVATED_ER,len = arg.length)
+  checkmate::assert_numeric(B_CT_SOIL, lower = 0, min.len = 1)
+  checkmate::assert_numeric(B_CT_WATER, lower = 0, min.len = 1)
+  checkmate::assert_numeric(B_CT_CLIMATE, lower = 0, min.len = 1)
+  checkmate::assert_numeric(B_CT_BIO, lower = 0, min.len = 1)
+  checkmate::assert_numeric(B_CT_LANDSCAPE, lower = 0, min.len = 1)
   
   # check and update the measure table
   dt.meas.farm <- bbwp_check_meas(dt = measures, eco = TRUE, score = TRUE)

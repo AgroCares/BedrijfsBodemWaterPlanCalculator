@@ -1,3 +1,7 @@
+# BBWPC v0.9.1
+## Added
+* Added table with BBWPC variable from pandex to standardise parameter checks
+
 # BBWPC v0.9.0
 ## Changed
 * delete `B_LU_ECO_x` as input of `er_main`, `er_meas_rank`, `er_meas_scores`, and `er_field_score`.

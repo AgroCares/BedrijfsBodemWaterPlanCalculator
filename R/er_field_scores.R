@@ -34,7 +34,11 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_LU_BRP, B_AER_CBS,B_ARE
   D_OPI_SOIL = D_OPI_WATER = D_OPI_CLIMATE = D_OPI_BIO = D_OPI_LANDSCAPE = NULL
   D_MEAS_BIO = D_MEAS_CLIM = D_MEAS_LAND = D_MEAS_SOIL = D_MEAS_WAT = ec1 = ec2 = NULL
   cfSOIL = cfWAT = cfCLIM = cfBIO = cfLAND = D_OPI_TOT = id = S_ER_REWARD = NULL
- 
+  code = choices = NULL
+  
+  # Load bbwp_parms
+  bbwp_parms <- BBWPC::bbwp_parms
+  
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
   
@@ -44,19 +48,16 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_LU_BRP, B_AER_CBS,B_ARE
                     length(B_LU_ARABLE_ER),length(B_LU_PRODUCTIVE_ER),length(B_LU_CULTIVATED_ER))
   
   # check inputs
-  checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
-                                                       'dalgrond','moerige_klei','veen','loess'))
-  checkmate::assert_subset(B_LU_BBWP,
-                           choices = c('groenten','bollensierteelt','boomfruitteelt','rustgewas','eiwitgewas',
-                                       'rooivrucht','mais','gras_permanent','gras_tijdelijk','natuur',
-                                       'randensloot','vanggewas'))
+  checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
+  checkmate::assert_subset(B_LU_BBWP, choices = unlist(bbwp_parms[code == "B_LU_BBWP", choices]))
   checkmate::assert_character(B_LU_BBWP, len = arg.length)
+  checkmate::assert_subset(B_LU_BRP, choices = unlist(bbwp_parms[code == "B_LU_BRP", choices]))
   checkmate::assert_integerish(B_LU_BRP, len = arg.length)
-  checkmate::assert_numeric(B_CT_SOIL, lower = 0, upper = 5000, min.len = 1)
-  checkmate::assert_numeric(B_CT_WATER, lower = 0, upper = 5000, min.len = 1)
-  checkmate::assert_numeric(B_CT_CLIMATE, lower = 0, upper = 5000,min.len = 1)
-  checkmate::assert_numeric(B_CT_BIO, lower = 0, upper = 5000, min.len = 1)
-  checkmate::assert_numeric(B_CT_LANDSCAPE, lower = 0, upper = 5000,min.len = 1)
+  checkmate::assert_numeric(B_CT_SOIL, lower = 0, min.len = 1)
+  checkmate::assert_numeric(B_CT_WATER, lower = 0, min.len = 1)
+  checkmate::assert_numeric(B_CT_CLIMATE, lower = 0, min.len = 1)
+  checkmate::assert_numeric(B_CT_BIO, lower = 0, min.len = 1)
+  checkmate::assert_numeric(B_CT_LANDSCAPE, lower = 0, min.len = 1)
   checkmate::assert_logical(B_LU_ARABLE_ER,len = arg.length)
   checkmate::assert_logical(B_LU_PRODUCTIVE_ER,len = arg.length)
   checkmate::assert_logical(B_LU_CULTIVATED_ER,len = arg.length)
