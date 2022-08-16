@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BBWPC</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -47,6 +47,34 @@
       <small>Source: <a href="https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.9.0" id="bbwpc-v090">BBWPC v0.9.0<a class="anchor" aria-label="anchor" href="#bbwpc-v090"></a></h2>
+<div class="section level3">
+<h3 id="changed-0-9-0">Changed<a class="anchor" aria-label="anchor" href="#changed-0-9-0"></a></h3>
+<ul><li>delete <code>B_LU_ECO_x</code> as input of <code>er_main</code>, <code>er_meas_rank</code>, <code>er_meas_scores</code>, and <code>er_field_score</code>.</li>
+<li>inputs <code>B_LU_ECO8</code>, <code>B_LU_ECO9</code>, <code>B_LU_ECO10</code> renamed to <code>B_LU_ARABLE_ER</code>, <code>B_LU_PRODUCTIVE_ER</code>,and <code>B_LU_CULTIVATED_ER</code>
+</li>
+<li>reward is now fixed to the medal earned</li>
+<li>scores and applicability of several measures is updated according to comments of Boerennatuur in <code>bbwp_measures</code>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="fixed-0-9-0">Fixed<a class="anchor" aria-label="anchor" href="#fixed-0-9-0"></a></h3>
+<ul><li>selection criteria for Ecoregeling scoring is updated given applicability criteria from <code>bbwp_measures</code>
+</li>
+<li>correction farm weighted mean of ER scores in <code>er_crop_rotation</code>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="added-0-9-0">Added<a class="anchor" aria-label="anchor" href="#added-0-9-0"></a></h3>
+<ul><li>new package table with data.table of measures and which crops belong to these measures: <code>er_measures</code>
+</li>
+<li>regional weighing factor for scoring, in <code>er_measures</code> as well as <code>er_crop_rotation</code>
+</li>
+<li>added financial reward correction based on the agricultural economic region in the Netherlands, in <code>er_crop_rotation</code> and <code>er_measure_scores</code>
+</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.8.2" id="bbwpc-v082">BBWPC v0.8.2<a class="anchor" aria-label="anchor" href="#bbwpc-v082"></a></h2>
 <div class="section level3">
