@@ -29,6 +29,7 @@ Other contributors:
   \item Job de Pater \email{job.depater@nmi-agro.nl} [contributor]
   \item Yuki Fujita \email{yuki.fujita@nmi-agro.nl} [contributor]
   \item Kees van den Dool \email{kees.vandendool@nmi-agro.nl} [contributor]
+  \item Astrid Berndsen \email{astrid.berndsen@nmi-agro.nl} [contributor]
   \item Nutriënten Managment Instituut \email{nmi@nmi-agro.nl} [copyright holder]
 }
 
