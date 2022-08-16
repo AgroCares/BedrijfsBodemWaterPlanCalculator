@@ -205,6 +205,7 @@ dt3 <- rbindlist(list3)
                                 output = 'scores'
                                 )
   
+  write.csv2(bedrijfsscore1,"dev/bedrijf1.csv")
   
 ### total farm with four fields ###
   
@@ -258,3 +259,6 @@ dt3 <- rbindlist(list3)
                                medalscore = medalscore,
                                output = 'scores'
   )
+  
+  write.csv2(bedrijfsscore2,"dev/bedrijf2.csv")
+  
