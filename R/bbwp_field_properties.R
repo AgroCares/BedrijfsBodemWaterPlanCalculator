@@ -45,6 +45,10 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   mean_n_rt = sd_n_rt = sd_ro_r = sd_sa_w = sd_p_cc = mean_p_sg = mean_al_ox = NULL
   mean_fe_ox = sd_fe_ox = crop_category = B_GT = mean_ro_r = mean_sa_w = mean_p_cc = psw_psg = sd_p_sg = NULL
   sd_al_ox = id = NULL
+  code = value_min = value_max = choices = NULL
+  
+  # Load bbwp_parms
+  bbwp_parms <- BBWPC::bbwp_parms
   
   # check length inputs
   arg.length <- max(

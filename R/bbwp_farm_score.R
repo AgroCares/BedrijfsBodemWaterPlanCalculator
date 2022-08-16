@@ -16,6 +16,11 @@
 # calculate the opportunities for a set of fields
 bbwp_farm_score <- function(S_BBWP_TOT,S_BBWP_NGW,S_BBWP_NSW,S_BBWP_PSW,S_BBWP_NUE,S_BBWP_WB, B_AREA){
 
+  code = value_min = value_max = NULL
+  
+  # Load bbwp_parms
+  bbwp_parms <- BBWPC::bbwp_parms
+  
   # check length of the inputs
   arg.length <- max(length(S_BBWP_TOT),length(S_BBWP_NGW),length(S_BBWP_NSW),length(S_BBWP_PSW),
                     length(S_BBWP_NUE),length(S_BBWP_WB),length(B_AREA))

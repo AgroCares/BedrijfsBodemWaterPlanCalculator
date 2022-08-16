@@ -25,6 +25,11 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
   . = medal = c_bronze = c_silver = c_gold = er_bronze = er_silver = er_gold = er_medal =  NULL
   B_CT_BIO = B_CT_CLIMATE = B_CT_WATER = B_CT_SOIL = B_CT_TOTAL = B_CT_LANDSCAPE = REWARD = NULL
   indicator = score = value = NULL
+  code = value_min = value_max = choices = NULL
+  
+  # Load bbwp_parms
+  bbwp_parms <- BBWPC::bbwp_parms
+  
   
   # check length of the inputs
   arg.length <- max(length(B_SOILTYPE_AGR), length(B_AREA),

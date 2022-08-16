@@ -37,6 +37,11 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   soiltype = peat = clay = sand = silt = loess = ec1 = ec2 = NULL
   patterns = indicator = erscore = urgency = S_ER_REWARD = value = NULL
   total = biodiversity = climate = landscape = soil = water = oid = NULL
+  code = choices = NULL
+  
+  # Load bbwp_parms
+  bbwp_parms <- BBWPC::bbwp_parms
+  
   
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)

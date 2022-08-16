@@ -52,6 +52,10 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, M_
   er_total = B_AREA_FARM = er_reward = er_total_scaled = er_soil_scaled = er_water_scaled = NULL
   er_climate_scaled = er_biodiversity_scaled = er_landscape_scaled= NULL
   er_euro_combi = er_euro_ha = er_euro_farm = er_reward_scaled = oid = NULL
+  code = value_min = value_max = choices = NULL
+  
+  # Load bbwp_parms
+  bbwp_parms <- BBWPC::bbwp_parms
   
   # derive a table with all possible field measurements
   dt.meas.av <- bbwp_check_meas(dt = NULL,eco = TRUE, score = FALSE)

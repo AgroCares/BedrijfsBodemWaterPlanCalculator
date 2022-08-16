@@ -15,6 +15,10 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
   
   # add visual bindings
   . = type = soiltype = value.mis = value = farmid = NULL
+  code = value_min = value_max =  choices = NULL
+  
+  # Load bbwp_parms
+  bbwp_parms <- BBWPC::bbwp_parms
   
   # check length of the inputs
   arg.length <- max(length(B_SOILTYPE_AGR),length(B_AREA))
