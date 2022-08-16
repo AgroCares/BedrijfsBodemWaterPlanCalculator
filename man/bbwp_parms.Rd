@@ -5,7 +5,7 @@
 \alias{bbwp_parms}
 \title{A table with the BBWP parameters}
 \format{
-A data.table with 20 rows and 14 columns:
+A data.table with 21 rows and 14 columns:
 \describe{
  \item{code}{The parameter code}
  \item{parameter}{Brief description of the parameter}
