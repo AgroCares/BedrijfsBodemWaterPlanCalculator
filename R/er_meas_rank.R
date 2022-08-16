@@ -168,6 +168,9 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, M_
     dt[B_LU_ARABLE_ER  == TRUE & b_lu_arable_er  == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     dt[B_LU_PRODUCTIVE_ER == TRUE & b_lu_productive_er == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     dt[B_LU_CULTIVATED_ER  == TRUE & b_lu_cultivated_er == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_ARABLE_ER  == FALSE & b_lu_arable_er  == 1, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_PRODUCTIVE_ER == FALSE & b_lu_productive_er == 1, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_CULTIVATED_ER  == FALSE & b_lu_cultivated_er == 1, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     
     # lower the score when the sector limits the applicability of measures
     
