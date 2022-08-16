@@ -46,13 +46,10 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                     length(B_LU_ECO1),length(B_LU_ECO2),length(B_LU_ECO3),length(B_LU_ECO4),
                     length(B_LU_ECO5),length(B_LU_ECO6),length(B_LU_ECO7),length(B_LU_ECO8),
                     length(B_LU_ECO9),length(B_LU_ECO10))
-  checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
-                                                       'dalgrond','moerige_klei','veen','loess'))
+  
+  checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
   checkmate::assert_character(B_SOILTYPE_AGR,len = arg.length)
-  checkmate::assert_subset(B_LU_BBWP,
-                           choices = c('groenten','bollensierteelt','boomfruitteelt','rustgewas','eiwitgewas',
-                                       'rooivrucht','mais','gras_permanent','gras_tijdelijk','natuur',
-                                       'randensloot','vanggewas'))
+  checkmate::assert_subset(B_LU_BBWP, choices = unlist(bbwp_parms[code == "B_LU_BBWP", choices]))
   checkmate::assert_character(B_LU_BBWP, len = arg.length)
   checkmate::assert_logical(B_LU_ECO1,len = arg.length)
   checkmate::assert_logical(B_LU_ECO2,len = arg.length)

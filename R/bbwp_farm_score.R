@@ -27,7 +27,8 @@ bbwp_farm_score <- function(S_BBWP_TOT,S_BBWP_NGW,S_BBWP_NSW,S_BBWP_PSW,S_BBWP_N
   checkmate::assert_numeric(S_BBWP_PSW, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(S_BBWP_NUE, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(S_BBWP_WB, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(B_AREA, lower = 0, upper = 500000000, len = arg.length)
+  checkmate::assert_numeric(B_AREA, lower = bbwp_parms[code == "B_AREA", value_min], upper = bbwp_parms[code == "B_AREA", value_max], len = arg.length)
+  
   
   # collect data in one data.table
   dt <- data.table(id = 1:arg.length,

@@ -20,9 +20,8 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
   arg.length <- max(length(B_SOILTYPE_AGR),length(B_AREA))
   
   # check inputs
-  checkmate::assert_numeric(B_AREA, lower = 0, upper = 500000000)
-  checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
-                                                       'dalgrond','moerige_klei','veen','loess'))
+  checkmate::assert_numeric(B_AREA, lower = bbwp_parms[code == "B_AREA", value_min], upper = bbwp_parms[code == "B_AREA", value_max], len = arg.length)
+  checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
   checkmate::assert_subset(medalscore, choices = c('bronze','silver','gold'))
   
   # get internal table for minimum scores on farm level

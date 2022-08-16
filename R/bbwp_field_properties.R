@@ -58,31 +58,28 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
   
   # check inputs B parameters
-  checkmate::assert_subset(B_SOILTYPE_AGR, choices = unique(OBIC::soils.obic$soiltype))
-  checkmate::assert_subset(B_SC_WENR, choices = c(3, 4, 1, 401, 902, 2, 901, 5, 11, 10))
-  checkmate::assert_subset(B_HELP_WENR, choices = c(unique(OBIC::waterstress.obic$soilunit), "unknown"), empty.ok = FALSE)
-  checkmate::assert_numeric(B_SLOPE_DEGREE, lower = 0, upper = 30, any.missing = FALSE, len = arg.length)
-  checkmate::assert_subset(B_LU_BBWP,
-                           choices = c('groenten','bollensierteelt','boomfruitteelt','rustgewas','eiwitgewas',
-                                       'rooivrucht','mais','gras_permanent','gras_tijdelijk','natuur',
-                                       'randensloot','vanggewas'))
+  checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
+  checkmate::assert_subset(B_SC_WENR, choices = unlist(bbwp_parms[code == "B_SC_WENR", choices]))
+  checkmate::assert_subset(B_HELP_WENR, choices = unlist(c(bbwp_parms[code == "B_HELP_WENR", choices], "unknown")), empty.ok = FALSE)
+  checkmate::assert_numeric(B_SLOPE_DEGREE, lower = bbwp_parms[code == "B_SLOPE_DEGREE", value_min], upper = bbwp_parms[code == "B_SLOPE_DEGREE", value_max],len = arg.length)
+  checkmate::assert_subset(B_LU_BBWP, choices = unlist(bbwp_parms[code == "B_LU_BBWP", choices]))
   checkmate::assert_character(B_LU_BBWP, len = arg.length)
   # check inputs A parameters
-  checkmate::assert_numeric(A_CLAY_MI, lower = 0, upper = 100, any.missing = FALSE,len = arg.length)
-  checkmate::assert_numeric(A_SAND_MI, lower = 0, upper = 100, any.missing = FALSE,len = arg.length)
-  checkmate::assert_numeric(A_SILT_MI, lower = 0, upper = 100, any.missing = FALSE,len = arg.length)
-  checkmate::assert_numeric(A_SOM_LOI, lower = 0, upper = 100, any.missing = FALSE,len = arg.length)
-  checkmate::assert_numeric(A_N_RT, lower = 0, upper = 100000, any.missing = FALSE,len = arg.length)
-  checkmate::assert_numeric(A_AL_OX, lower = 0, upper = 1000, any.missing = FALSE, len = arg.length)
-  checkmate::assert_numeric(A_FE_OX, lower = 0, upper = 1000, any.missing = FALSE, len = arg.length)
-  checkmate::assert_numeric(A_P_SG, lower = 0, upper = 100, any.missing = FALSE, len = arg.length)
-  checkmate::assert_numeric(A_P_CC, lower = 0, upper = 50, any.missing = FALSE, len = arg.length)
-  checkmate::assert_numeric(A_P_AL, lower = 0, upper = 200, any.missing = FALSE, len = arg.length)
-  checkmate::assert_numeric(A_P_WA, lower = 0, upper = 200, any.missing = FALSE, len = arg.length)
+  checkmate::assert_numeric(A_CLAY_MI, lower = bbwp_parms[code == "A_CLAY_MI", value_min], upper = bbwp_parms[code == "A_CLAY_MI", value_max],len = arg.length)
+  checkmate::assert_numeric(A_SAND_MI, lower = bbwp_parms[code == "A_SAND_MI", value_min], upper = bbwp_parms[code == "A_SAND_MI", value_max],len = arg.length)
+  checkmate::assert_numeric(A_SILT_MI, lower = bbwp_parms[code == "A_SILT_MI", value_min], upper = bbwp_parms[code == "A_SILT_MI", value_max],len = arg.length)
+  checkmate::assert_numeric(A_SOM_LOI, lower = bbwp_parms[code == "A_SOM_LOI", value_min], upper = bbwp_parms[code == "A_SOM_LOI", value_max],len = arg.length)
+  checkmate::assert_numeric(A_N_RT, lower = bbwp_parms[code == "A_N_RT", value_min], upper = bbwp_parms[code == "A_N_RT", value_max],len = arg.length)
+  checkmate::assert_numeric(A_AL_OX, lower = bbwp_parms[code == "A_AL_OX", value_min], upper = bbwp_parms[code == "A_AL_OX", value_max],len = arg.length)
+  checkmate::assert_numeric(A_FE_OX, lower = bbwp_parms[code == "A_FE_OX", value_min], upper = bbwp_parms[code == "A_FE_OX", value_max],len = arg.length)
+  checkmate::assert_numeric(A_P_SG, lower = bbwp_parms[code == "A_P_SG", value_min], upper = bbwp_parms[code == "A_P_SG", value_max],len = arg.length)
+  checkmate::assert_numeric(A_P_CC, lower = bbwp_parms[code == "A_P_CC", value_min], upper = bbwp_parms[code == "A_P_CC", value_max],len = arg.length)
+  checkmate::assert_numeric(A_P_AL, lower = bbwp_parms[code == "A_P_AL", value_min], upper = bbwp_parms[code == "A_P_AL", value_max],len = arg.length)
+  checkmate::assert_numeric(A_P_WA, lower = bbwp_parms[code == "A_P_WA", value_min], upper = bbwp_parms[code == "A_P_WA", value_max],len = arg.length)
   
   # check inputs D parameters
   checkmate::assert_numeric(D_SA_W, lower = 0, upper = 1, len = arg.length)
-  checkmate::assert_numeric(D_RO_R, lower = 0, upper = 1, len = arg.length)
+  checkmate::assert_numeric(D_RO_R, lower = bbwp_parms[code == "D_RO_R", value_min], upper = bbwp_parms[code == "D_RO_R", value_max],len = arg.length)
 
   # check lsw and replace based on location if lsw is not provided
   LSW.dt = bbwp_check_lsw(LSW = LSW, a_lat = a_lat, a_lon = a_lon)
