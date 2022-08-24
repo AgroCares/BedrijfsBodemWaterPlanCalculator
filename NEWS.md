@@ -1,3 +1,8 @@
+# BBWPC v0.9.2
+## Fixed
+* threshold of scores for medals are set to zero for indicators climate and water (only on peat soils)
+* the absolute total score is used for medal check instead of the integrative total score 
+
 # BBWPC v0.9.1
 ## Added
 * Added table with BBWPC variable from pandex to standardise parameter checks
