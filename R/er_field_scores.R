@@ -31,9 +31,9 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_LU_BRP, B_AER_CBS,B_ARE
   # add visual bindings
   value = . = eco_id = b_lu_brp = type = erscore = EG15 = EG22 = cf = EB1A = EB1B = EB1C = NULL
   B_AREA_RR = EB2 = EB3 = EB8 = EB9 = soiltype = urgency = indicator = farmid = NULL
-  D_OPI_SOIL = D_OPI_WATER = D_OPI_CLIMATE = D_OPI_BIO = D_OPI_LANDSCAPE = NULL
-  D_MEAS_BIO = D_MEAS_CLIM = D_MEAS_LAND = D_MEAS_SOIL = D_MEAS_WAT = ec1 = ec2 = NULL
-  cfSOIL = cfWAT = cfCLIM = cfBIO = cfLAND = D_OPI_TOT = id = S_ER_REWARD = NULL
+  D_OPI_SOIL = D_OPI_WATER = D_OPI_CLIMATE = D_OPI_BIO = D_OPI_LANDSCAPE =  NULL
+  D_MEAS_BIO = D_MEAS_CLIM = D_MEAS_LAND = D_MEAS_SOIL = D_MEAS_WAT = D_MEAS_TOT = ec1 = ec2 = NULL
+  cfSOIL = cfWAT = cfCLIM = cfBIO = cfLAND = D_OPI_TOT =  D_OPI_TOT_WEIGHTED = id = S_ER_REWARD = NULL
   code = choices = NULL
   
   # Load bbwp_parms
@@ -121,7 +121,7 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_LU_BRP, B_AER_CBS,B_ARE
   # these are not yet converted to a 0-1 scale
     
     # set colnames for the impact of measures
-    mcols <- c('D_MEAS_BIO', 'D_MEAS_CLIM', 'D_MEAS_LAND', 'D_MEAS_SOIL', 'D_MEAS_WAT','S_ER_REWARD')
+    mcols <- c('D_MEAS_BIO', 'D_MEAS_CLIM', 'D_MEAS_LAND', 'D_MEAS_SOIL', 'D_MEAS_WAT','D_MEAS_TOT','S_ER_REWARD')
   
     # calculate the total score per indicator 
     if(nrow(dt.er.meas) > 0){
@@ -149,7 +149,7 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_LU_BRP, B_AER_CBS,B_ARE
     } else {
       
       # set impact of management to zero when no measures are applied
-      dt[,c(mcols) := list(0,0,0,0,0,0)]
+      dt[,c(mcols) := list(0,0,0,0,0,0,0)]
     }
     
     
@@ -163,6 +163,7 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_LU_BRP, B_AER_CBS,B_ARE
     dt[, D_OPI_CLIMATE :=  (dt.farm$climate + D_MEAS_CLIM)/ B_CT_CLIMATE]
     dt[, D_OPI_BIO :=  (dt.farm$biodiversity + D_MEAS_BIO) / B_CT_BIO]
     dt[, D_OPI_LANDSCAPE :=  (dt.farm$landscape + D_MEAS_LAND) / B_CT_LANDSCAPE]
+    dt[, D_OPI_TOT := dt.farm$total + D_MEAS_TOT]
     
     # ensure score is between 0 and 1
     dt[, D_OPI_SOIL := 100 * pmax(0,pmin(1,D_OPI_SOIL))]
@@ -181,18 +182,18 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_LU_BRP, B_AER_CBS,B_ARE
       dt[,cfLAND := wf(D_OPI_LANDSCAPE, type="score")]
     
       # weighted mean
-      dt[,D_OPI_TOT := (D_OPI_SOIL * cfSOIL + D_OPI_WATER * cfWAT + D_OPI_CLIMATE * cfCLIM +D_OPI_BIO * cfBIO + D_OPI_LANDSCAPE * cfLAND) / 
+      dt[,D_OPI_TOT_WEIGHTED := (D_OPI_SOIL * cfSOIL + D_OPI_WATER * cfWAT + D_OPI_CLIMATE * cfCLIM +D_OPI_BIO * cfBIO + D_OPI_LANDSCAPE * cfLAND) / 
                        (cfSOIL + cfWAT + cfCLIM + cfBIO + cfLAND)]
       
   # order the fields
   setorder(dt, id)
   
   # rename the opportunity indexes to the final score
-  setnames(dt,c('D_OPI_SOIL','D_OPI_WATER','D_OPI_CLIMATE','D_OPI_BIO','D_OPI_LANDSCAPE','D_OPI_TOT'),
-              c('S_ER_SOIL','S_ER_WATER','S_ER_CLIMATE','S_ER_BIODIVERSITY','S_ER_LANDSCAPE','S_ER_TOT'))
+  setnames(dt,c('D_OPI_SOIL','D_OPI_WATER','D_OPI_CLIMATE','D_OPI_BIO','D_OPI_LANDSCAPE','D_OPI_TOT_WEIGHTED','D_OPI_TOT'),
+              c('S_ER_SOIL','S_ER_WATER','S_ER_CLIMATE','S_ER_BIODIVERSITY','S_ER_LANDSCAPE','S_ER_TOT_WEIGHTED','S_ER_TOT'))
   
   # round the values and get the field scores
-  cols <- c('S_ER_SOIL','S_ER_WATER','S_ER_CLIMATE','S_ER_BIODIVERSITY','S_ER_LANDSCAPE','S_ER_TOT','S_ER_REWARD')
+  cols <- c('S_ER_SOIL','S_ER_WATER','S_ER_CLIMATE','S_ER_BIODIVERSITY','S_ER_LANDSCAPE','S_ER_TOT_WEIGHTED','S_ER_REWARD','S_ER_TOT')
   dt <- dt[, c(cols) := lapply(.SD, round, digits = 0),.SDcols = cols]
   
   # update the field-reward with the farm-reward (in euro/ha)
