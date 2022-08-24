@@ -19,7 +19,7 @@ er_farm_score <- function(S_ER_TOT,S_ER_SOIL,S_ER_WATER,S_ER_CLIMATE,S_ER_BIODIV
                           S_ER_REWARD, B_AREA){
   
   code = value_min = value_max = NULL
-  cfSOIL = cfWAT = cfCLIM = cfBIO = cfLAND = S_ERTOT_WEIGHTED = NULL
+  cfSOIL = cfWAT = cfCLIM = cfBIO = cfLAND = S_ER_TOT_WEIGHTED = NULL
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
@@ -65,7 +65,7 @@ er_farm_score <- function(S_ER_TOT,S_ER_SOIL,S_ER_WATER,S_ER_CLIMATE,S_ER_BIODIV
   
   # keep relevant columns 
   cols <- c('id','S_ER_SOIL','S_ER_WATER','S_ER_CLIMATE','S_ER_BIODIVERSITY','S_ER_LANDSCAPE','S_ER_TOT_WEIGHTED','S_ER_REWARD')
-  dt[, mget(cols)]
+  dt <- dt[, mget(cols)]
   
   # rename the opportunity index in order that the output name of variable that will be returned stays the same
   setnames(dt,'S_ER_TOT_WEIGHTED','S_ER_TOT')
