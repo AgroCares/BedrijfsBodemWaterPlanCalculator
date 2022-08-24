@@ -103,6 +103,9 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
   dt.fields[medal == "gold", S_ER_REWARD := 175]
   dt.fields[medal == "none", S_ER_REWARD := 0]
   
+  # remove column absolute total score from dt.fields
+  dt.fields[, S_ER_TOT := NULL]
+  
   # correct total reward in dt.farm after medal is awarded
   dt.farm[medal == "bronze", S_ER_REWARD := 70]
   dt.farm[medal == "silver", S_ER_REWARD := 110]
@@ -154,6 +157,9 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     # Set the column names to lowercase
     setnames(dt.fields, colnames(dt.fields), tolower(colnames(dt.fields)))
     setnames(dt.farm, colnames(dt.farm), tolower(colnames(dt.farm)))
+    
+    # set names total scores
+    setnames(dt.fields,"s_er_tot_weighted","s_er_tot")
     
     # Add field id
     setnames(dt.fields,old = c('id','medal'),new = c('field_id','s_er_medal'))
