@@ -49,8 +49,9 @@ test_that("check er_field_scores", {
       S_ER_CLIMATE = rep(0,4),
       S_ER_BIODIVERSITY = rep(0,4),
       S_ER_LANDSCAPE = rep(0,4),
-      S_ER_TOT = rep(0,4),
-      S_ER_REWARD = rep(0,4)
+      S_ER_TOT_WEIGHTED = rep(0,4),
+      S_ER_REWARD = rep(0,4),
+      S_ER_TOT = rep(0,4)
     ),
     tolerance = 0.01)
 })
@@ -93,6 +94,7 @@ test_that("check er_field_scores", {
       S_ER_CLIMATE = rep(100,4),
       S_ER_BIODIVERSITY = rep(100,4),
       S_ER_LANDSCAPE = rep(100,4),
+      S_ER_TOT_WEIGHTED = rep(100,4),
       S_ER_TOT = rep(100,4),
       S_ER_REWARD = rep(113.4145,4)
     ),
@@ -138,8 +140,9 @@ test_that("check er_field_scores", {
       S_ER_CLIMATE = rep(0,4),
       S_ER_BIODIVERSITY = rep(100,4),
       S_ER_LANDSCAPE = rep(100,4),
+      S_ER_TOT_WEIGHTED = rep(194,4),
       S_ER_TOT = rep(40,4),
-      S_ER_REWARD = rep(49.08,4)
+      S_ER_REWARD = c(301,301,328,301)
     ),
     tolerance = 1,
     ignore_attr = TRUE)
