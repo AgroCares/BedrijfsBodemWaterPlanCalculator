@@ -45,7 +45,7 @@ bbwp(
 \arguments{
 \item{B_SOILTYPE_AGR}{(character) The type of soil, using agronomic classification}
 
-\item{B_LU_BBWP}{(numeric) The BBWP category used for allocation of measures to BBWP crop categories}
+\item{B_LU_BBWP}{(character) The BBWP category used for allocation of measures to BBWP crop categories}
 
 \item{B_GWL_CLASS}{(character) The groundwater table class}
 

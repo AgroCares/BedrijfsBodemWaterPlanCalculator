@@ -4,17 +4,11 @@
 #' A high Ecoregeling score is indicative for the number of opportunities to improve soil quality, water quality, climate biodiversity and landscape.
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil
-#' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
-#' @param B_LU_ECO1 (boolean) does the crop belong in Ecoregeling category 1
-#' @param B_LU_ECO2 (boolean) does the crop belong in Ecoregeling category 2
-#' @param B_LU_ECO3 (boolean) does the crop belong in Ecoregeling category 3
-#' @param B_LU_ECO4 (boolean) does the crop belong in Ecoregeling category 4
-#' @param B_LU_ECO5 (boolean) does the crop belong in Ecoregeling category 5
-#' @param B_LU_ECO6 (boolean) does the crop belong in Ecoregeling category 6
-#' @param B_LU_ECO7 (boolean) does the crop belong in Ecoregeling category 7
-#' @param B_LU_ECO8 (boolean) does the crop fall within the category "arable"
-#' @param B_LU_ECO9 (boolean) does the crop fall within the category "productive"
-#' @param B_LU_ECO10 (boolean) does the crop fall within the category "cultivated"
+#' @param B_LU_BBWP (character) The BBWP category used for allocation of measures to BBWP crop categories
+#' @param B_LU_BRP (numeric) The crop code (gewascode) from the BRP
+#' @param B_LU_ARABLE_ER (boolean) does the crop fall within the ER category "arable"
+#' @param B_LU_PRODUCTIVE_ER (boolean) does the crop fall within the ER category "productive"
+#' @param B_LU_CULTIVATED_ER (boolean) does the crop fall within the ER category "cultivated"
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
@@ -32,9 +26,9 @@
 #' @import OBIC
 #'
 #' @export
-ecoregeling <- function(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
-                        B_LU_BBWP,B_LU_ECO1,B_LU_ECO2, B_LU_ECO3, B_LU_ECO4, B_LU_ECO5, 
-                        B_LU_ECO6, B_LU_ECO7,B_LU_ECO8, B_LU_ECO9,B_LU_ECO10,
+ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
+                        B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
+                        B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER,B_LU_CULTIVATED_ER,
                         A_P_SG,D_SA_W, B_AREA,M_DRAIN, farmscore, 
                         measures, sector, output = 'scores', medalscore = 'gold'){
   
@@ -45,10 +39,10 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
   checkmate::assert_subset(output,choices = c('scores','measures'))
+  checkmate::assert_subset(sector, choices = c('dairy', 'arable', 'tree_nursery', 'bulbs'))
   
   # reformat B_AER_CBS and B_LU_BBWP
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
-  B_LU_BBWP <- as.numeric(gsub('cat_','',B_LU_BBWP))
   
   # Calculate the minimum required ER scores on Farm level for the desired medal
   dt.farm.aim <- er_farm_aim(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
@@ -58,16 +52,10 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
   # Calculate the aggregated ER scores per field
   dt.fields <- er_field_scores(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
                                B_LU_BBWP = B_LU_BBWP,
-                               B_LU_ECO1 = B_LU_ECO1,
-                               B_LU_ECO2 = B_LU_ECO2,
-                               B_LU_ECO3 = B_LU_ECO3,
-                               B_LU_ECO4 = B_LU_ECO4,
-                               B_LU_ECO5 = B_LU_ECO5,
-                               B_LU_ECO6 = B_LU_ECO6,
-                               B_LU_ECO7 = B_LU_ECO7,
-                               B_LU_ECO8 = B_LU_ECO8,
-                               B_LU_ECO9 = B_LU_ECO9,
-                               B_LU_ECO10 = B_LU_ECO10,
+                               B_LU_BRP = B_LU_BRP,
+                               B_LU_ARABLE_ER = B_LU_ARABLE_ER, 
+                               B_LU_PRODUCTIVE_ER = B_LU_PRODUCTIVE_ER,
+                               B_LU_CULTIVATED_ER = B_LU_CULTIVATED_ER,
                                B_AREA = B_AREA,
                                B_AER_CBS = B_AER_CBS,
                                B_CT_SOIL = dt.farm.aim$B_CT_SOIL, 
@@ -109,7 +97,18 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
                               S_ER_REWARD = dt.fields$S_ER_REWARD,
                               B_AREA = B_AREA, type = 'farm')]
   
+  # correct total reward in dt.fields after medal is awarded 
+  dt.fields[medal == "bronze", S_ER_REWARD := 70]
+  dt.fields[medal == "silver", S_ER_REWARD := 110]
+  dt.fields[medal == "gold", S_ER_REWARD := 175]
+  dt.fields[medal == "none", S_ER_REWARD := 0]
   
+  # correct total reward in dt.farm after medal is awarded
+  dt.farm[medal == "bronze", S_ER_REWARD := 70]
+  dt.farm[medal == "silver", S_ER_REWARD := 110]
+  dt.farm[medal == "gold", S_ER_REWARD := 175]
+  dt.farm[medal == "none", S_ER_REWARD := 0]
+
   # return output when preferred measures are requested
   if(output == 'measures'){
     
@@ -119,16 +118,10 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
                             A_P_SG = A_P_SG,
                             B_SLOPE_DEGREE = B_SLOPE_DEGREE,
                             B_LU_BBWP = B_LU_BBWP,
-                            B_LU_ECO1 = B_LU_ECO1,
-                            B_LU_ECO2 = B_LU_ECO2,
-                            B_LU_ECO3 = B_LU_ECO3,
-                            B_LU_ECO4 = B_LU_ECO4,
-                            B_LU_ECO5 = B_LU_ECO5,
-                            B_LU_ECO6 = B_LU_ECO6,
-                            B_LU_ECO7 = B_LU_ECO7,
-                            B_LU_ECO8 = B_LU_ECO8,
-                            B_LU_ECO9 = B_LU_ECO9,
-                            B_LU_ECO10 = B_LU_ECO10,
+                            B_LU_BRP = B_LU_BRP,
+                            B_LU_ARABLE_ER = B_LU_ARABLE_ER, 
+                            B_LU_PRODUCTIVE_ER = B_LU_PRODUCTIVE_ER,
+                            B_LU_CULTIVATED_ER = B_LU_CULTIVATED_ER,
                             B_AER_CBS = B_AER_CBS,
                             M_DRAIN = M_DRAIN,
                             D_SA_W = D_SA_W,

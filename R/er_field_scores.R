@@ -3,17 +3,11 @@
 #' Estimate the potential to contribute to agronomic and environmental challenges in a region given aims for soil quality, water quality, climate, biodiversity and landscape
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil
-#' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
-#' @param B_LU_ECO1 (boolean) does the crop belong in Ecoregeling category 1
-#' @param B_LU_ECO2 (boolean) does the crop belong in Ecoregeling category 2
-#' @param B_LU_ECO3 (boolean) does the crop belong in Ecoregeling category 3
-#' @param B_LU_ECO4 (boolean) does the crop belong in Ecoregeling category 4
-#' @param B_LU_ECO5 (boolean) does the crop belong in Ecoregeling category 5
-#' @param B_LU_ECO6 (boolean) does the crop belong in Ecoregeling category 6
-#' @param B_LU_ECO7 (boolean) does the crop belong in Ecoregeling category 7
-#' @param B_LU_ECO8 (boolean) does the crop fall within the category "arable"
-#' @param B_LU_ECO9 (boolean) does the crop fall within the category "productive"
-#' @param B_LU_ECO10 (boolean) does the crop fall within the category "cultivated"
+#' @param B_LU_BBWP (character) The BBWP category used for allocation of measures to BBWP crop categories
+#' @param B_LU_BRP (numeric) The crop code (gewascode) from the BRP
+#' @param B_LU_ARABLE_ER (boolean) does the crop fall within the ER category "arable"
+#' @param B_LU_PRODUCTIVE_ER (boolean) does the crop fall within the ER category "productive"
+#' @param B_LU_CULTIVATED_ER (boolean) does the crop fall within the ER category "cultivated"
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param B_CT_SOIL (numeric) the target value for soil quality conform Ecoregeling scoring
 #' @param B_CT_WATER (numeric) the target value for water quality conform Ecoregeling scoring
@@ -29,9 +23,8 @@
 #'
 #' @export
 # calculate the opportunity indices for a set of fields
-er_field_scores <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
-                            B_LU_BBWP,B_LU_ECO1,B_LU_ECO2, B_LU_ECO3, B_LU_ECO4, B_LU_ECO5, 
-                            B_LU_ECO6, B_LU_ECO7,B_LU_ECO8, B_LU_ECO9,B_LU_ECO10,
+er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_LU_BRP, B_AER_CBS,B_AREA,
+                            B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER,B_LU_CULTIVATED_ER,
                             B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE, 
                             measures = NULL, sector){
   
@@ -41,39 +34,37 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   D_OPI_SOIL = D_OPI_WATER = D_OPI_CLIMATE = D_OPI_BIO = D_OPI_LANDSCAPE = NULL
   D_MEAS_BIO = D_MEAS_CLIM = D_MEAS_LAND = D_MEAS_SOIL = D_MEAS_WAT = ec1 = ec2 = NULL
   cfSOIL = cfWAT = cfCLIM = cfBIO = cfLAND = D_OPI_TOT = id = S_ER_REWARD = NULL
- 
+  code = choices = NULL
+  
+  # Load bbwp_parms
+  bbwp_parms <- BBWPC::bbwp_parms
+  
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
   
   # check length of the inputs
-  arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BBWP),
+  arg.length <- max(length(B_SOILTYPE_AGR),length(B_LU_BBWP),length(B_LU_BRP),
                     length(B_AREA),length(B_AER_CBS),
-                    length(B_LU_ECO1),length(B_LU_ECO2),length(B_LU_ECO3),length(B_LU_ECO4),
-                    length(B_LU_ECO5),length(B_LU_ECO6),length(B_LU_ECO7),length(B_LU_ECO8),
-                    length(B_LU_ECO9),length(B_LU_ECO10))
+                    length(B_LU_ARABLE_ER),length(B_LU_PRODUCTIVE_ER),length(B_LU_CULTIVATED_ER))
   
   # check inputs
-  checkmate::assert_subset(B_SOILTYPE_AGR, choices = c('duinzand','dekzand','zeeklei','rivierklei','maasklei',
-                                                       'dalgrond','moerige_klei','veen','loess'))
-  checkmate::assert_integerish(B_LU_BBWP, lower = 0, len = arg.length)
-  checkmate::assert_numeric(B_CT_SOIL, lower = 0, upper = 5000, min.len = 1)
-  checkmate::assert_numeric(B_CT_WATER, lower = 0, upper = 5000, min.len = 1)
-  checkmate::assert_numeric(B_CT_CLIMATE, lower = 0, upper = 5000,min.len = 1)
-  checkmate::assert_numeric(B_CT_BIO, lower = 0, upper = 5000, min.len = 1)
-  checkmate::assert_numeric(B_CT_LANDSCAPE, lower = 0, upper = 5000,min.len = 1)
-  checkmate::assert_logical(B_LU_ECO1,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO2,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO3,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO4,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO5,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO6,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO7,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO8,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO9,len = arg.length)
-  checkmate::assert_logical(B_LU_ECO10,len = arg.length)
+  checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
+  checkmate::assert_subset(B_LU_BBWP, choices = unlist(bbwp_parms[code == "B_LU_BBWP", choices]))
+  checkmate::assert_character(B_LU_BBWP, len = arg.length)
+  checkmate::assert_subset(B_LU_BRP, choices = unlist(bbwp_parms[code == "B_LU_BRP", choices]))
+  checkmate::assert_integerish(B_LU_BRP, len = arg.length)
+  checkmate::assert_numeric(B_CT_SOIL, lower = 0, min.len = 1)
+  checkmate::assert_numeric(B_CT_WATER, lower = 0, min.len = 1)
+  checkmate::assert_numeric(B_CT_CLIMATE, lower = 0, min.len = 1)
+  checkmate::assert_numeric(B_CT_BIO, lower = 0, min.len = 1)
+  checkmate::assert_numeric(B_CT_LANDSCAPE, lower = 0, min.len = 1)
+  checkmate::assert_logical(B_LU_ARABLE_ER,len = arg.length)
+  checkmate::assert_logical(B_LU_PRODUCTIVE_ER,len = arg.length)
+  checkmate::assert_logical(B_LU_CULTIVATED_ER,len = arg.length)
   
   # check and update the measure table
   dt.er.meas <- bbwp_check_meas(measures, eco = TRUE, score = TRUE)
+  dt.meas.eco <- as.data.table(BBWPC::er_measures)
   
   # get internal table with importance of environmental challenges
   dt.er.scoring <- as.data.table(BBWPC::er_scoring)
@@ -88,16 +79,10 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt <- data.table(id = 1:arg.length,
                    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                    B_LU_BBWP = B_LU_BBWP,
-                   B_LU_ECO1 = B_LU_ECO1,
-                   B_LU_ECO2 = B_LU_ECO2,
-                   B_LU_ECO3 = B_LU_ECO3,
-                   B_LU_ECO4 = B_LU_ECO4,
-                   B_LU_ECO5 = B_LU_ECO5,
-                   B_LU_ECO6 = B_LU_ECO6,
-                   B_LU_ECO7 = B_LU_ECO7,
-                   B_LU_ECO8 = B_LU_ECO8,
-                   B_LU_ECO9 = B_LU_ECO9,
-                   B_LU_ECO10 = B_LU_ECO10,
+                   B_LU_BRP = B_LU_BRP,
+                   B_LU_ARABLE_ER = B_LU_ARABLE_ER, 
+                   B_LU_PRODUCTIVE_ER = B_LU_PRODUCTIVE_ER,
+                   B_LU_CULTIVATED_ER = B_LU_CULTIVATED_ER,
                    B_AER_CBS = B_AER_CBS,
                    B_AREA = B_AREA,
                    B_CT_SOIL = B_CT_SOIL, 
@@ -114,16 +99,10 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   # this gives the averaged ER score based on the crops in crop rotation plan
   dt.farm <- er_croprotation(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR,
                              B_LU_BBWP = dt$B_LU_BBWP,
-                             B_LU_ECO1 = dt$B_LU_ECO1,
-                             B_LU_ECO2 = dt$B_LU_ECO2,
-                             B_LU_ECO3 = dt$B_LU_ECO3,
-                             B_LU_ECO4 = dt$B_LU_ECO4,
-                             B_LU_ECO5 = dt$B_LU_ECO5,
-                             B_LU_ECO6 = dt$B_LU_ECO6,
-                             B_LU_ECO7 = dt$B_LU_ECO7,
-                             B_LU_ECO8 = dt$B_LU_ECO8,
-                             B_LU_ECO9 = dt$B_LU_ECO9,
-                             B_LU_ECO10 = dt$B_LU_ECO10,
+                             B_LU_BRP = dt$B_LU_BRP,
+                             B_LU_ARABLE_ER = dt$B_LU_ARABLE_ER,
+                             B_LU_PRODUCTIVE_ER = dt$B_LU_PRODUCTIVE_ER,
+                             B_LU_CULTIVATED_ER = dt$B_LU_CULTIVATED_ER,
                              B_AER_CBS = dt$B_AER_CBS,
                              B_AREA = dt$B_AREA,
                              B_CT_SOIL = dt$B_CT_SOIL,
@@ -150,16 +129,10 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       # calculate
       dt.meas.impact <- er_meas_score(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
                                       B_LU_BBWP = B_LU_BBWP,
-                                      B_LU_ECO1 = B_LU_ECO1,
-                                      B_LU_ECO2 = B_LU_ECO2,
-                                      B_LU_ECO3 = B_LU_ECO3,
-                                      B_LU_ECO4 = B_LU_ECO4,
-                                      B_LU_ECO5 = B_LU_ECO5,
-                                      B_LU_ECO6 = B_LU_ECO6,
-                                      B_LU_ECO7 = B_LU_ECO7,
-                                      B_LU_ECO8 = B_LU_ECO8,
-                                      B_LU_ECO9 = B_LU_ECO9,
-                                      B_LU_ECO10 = B_LU_ECO10,
+                                      B_LU_BRP = B_LU_BRP,
+                                      B_LU_ARABLE_ER = B_LU_ARABLE_ER,
+                                      B_LU_PRODUCTIVE_ER = B_LU_PRODUCTIVE_ER,
+                                      B_LU_CULTIVATED_ER = B_LU_CULTIVATED_ER,
                                       B_AER_CBS = B_AER_CBS,
                                       B_AREA = B_AREA,
                                       measures = measures, 

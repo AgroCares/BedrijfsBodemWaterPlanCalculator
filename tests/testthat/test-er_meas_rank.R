@@ -3,18 +3,11 @@ require(testthat)
 
   # default input for testing
   B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
-  B_LU_BBWP = c(1,1,1,1)
-  B_LU_BBWP = c(1,1,1,1)
-  B_LU_ECO1 = c(F,F,F,F)
-  B_LU_ECO2 = c(F,F,F,F)
-  B_LU_ECO3 = c(F,F,F,F)
-  B_LU_ECO4 = c(F,F,F,F)
-  B_LU_ECO5 = c(T,T,T,T)
-  B_LU_ECO6 = c(F,F,F,F)
-  B_LU_ECO7 = c(F,F,F,F)
-  B_LU_ECO8 = c(T,T,T,T)
-  B_LU_ECO9 = c(T,T,T,T)
-  B_LU_ECO10 = c(T,T,T,T)
+  B_LU_BBWP = rep('gras_permanent',4)
+  B_LU_BRP = rep(265,4)
+  B_LU_ARABLE_ER = c(F,F,F,F)
+  B_LU_PRODUCTIVE_ER = c(T,T,T,T)
+  B_LU_CULTIVATED_ER = c(T,T,T,T)
   B_GWL_CLASS = rep('GtIII',4)
   B_AREA = c(45,18,0.8,6)
   B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland")
@@ -33,17 +26,11 @@ require(testthat)
 
 # run example 1 without any measures taken
 test <- er_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                     B_LU_BBWP = c(1,4,4,9),
-                     B_LU_ECO1 = c(F,F,F,F),
-                     B_LU_ECO2 = c(F,F,F,F),
-                     B_LU_ECO3 = c(F,F,F,F),
-                     B_LU_ECO4 = c(F,F,F,F),
-                     B_LU_ECO5 = c(T,T,T,T),
-                     B_LU_ECO6 = c(F,F,F,F) , 
-                     B_LU_ECO7 = c(F,F,F,F),
-                     B_LU_ECO8 = c(T,T,T,T),
-                     B_LU_ECO9 = c(T,T,T,T),
-                     B_LU_ECO10 = c(T,T,T,T),
+                     B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
+                     B_LU_BRP = c(265,2741,2741,259),
+                     B_LU_ARABLE_ER = c(F,T,T,T),
+                     B_LU_PRODUCTIVE_ER = c(T,T,T,T),
+                     B_LU_CULTIVATED_ER = c(T,T,T,T),
                      B_GWL_CLASS = 'GtIII', 
                      A_P_SG = 25, 
                      B_SLOPE_DEGREE = rep(2.5,4),
@@ -77,7 +64,7 @@ test_that("check er_meas_rank", {
 test_that("check er_meas_rank", {
   expect_equal(
     object = test$top_er_tot[c(1,4,9,15)],
-    expected = c("B155",'B175','G55','G55'),
+    expected = c("B162",'B114','B166','G20'),
     tolerance = 0.01)
 })
 
@@ -92,17 +79,11 @@ measures$bbwp_status <- 'given for ANLB'
 
 # run example 2 without any measures taken
 test <- er_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                     B_LU_BBWP = c(1,4,4,9),
-                     B_LU_ECO1 = c(F,F,F,F),
-                     B_LU_ECO2 = c(F,F,F,F),
-                     B_LU_ECO3 = c(F,F,F,F),
-                     B_LU_ECO4 = c(F,F,F,F),
-                     B_LU_ECO5 = c(T,T,T,T),
-                     B_LU_ECO6 = c(F,F,F,F) , 
-                     B_LU_ECO7 = c(F,F,F,F),
-                     B_LU_ECO8 = c(T,T,T,T),
-                     B_LU_ECO9 = c(T,T,T,T),
-                     B_LU_ECO10 = c(T,T,T,T),
+                     B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
+                     B_LU_BRP = c(265,2741,2741,259),
+                     B_LU_ARABLE_ER = c(F,T,T,T),
+                     B_LU_PRODUCTIVE_ER = c(T,T,T,T),
+                     B_LU_CULTIVATED_ER = c(T,T,T,T),
                      B_GWL_CLASS = 'GtIII', 
                      A_P_SG = 25, 
                      B_SLOPE_DEGREE = rep(2.5,4),
@@ -136,7 +117,7 @@ test_that("check er_meas_rank", {
 test_that("check er_meas_rank", {
   expect_equal(
     object = test$top_er_tot[c(1,4,8,15)],
-    expected = c("B155", "B175", "B145", "G55"),
+    expected = c("B162", "B114", "B145", "G20"),
     tolerance = 0.01)
 })
 

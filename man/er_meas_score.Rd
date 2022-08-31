@@ -9,16 +9,10 @@ er_meas_score(
   B_AER_CBS,
   B_AREA,
   B_LU_BBWP,
-  B_LU_ECO1,
-  B_LU_ECO2,
-  B_LU_ECO3,
-  B_LU_ECO4,
-  B_LU_ECO5,
-  B_LU_ECO6,
-  B_LU_ECO7,
-  B_LU_ECO8,
-  B_LU_ECO9,
-  B_LU_ECO10,
+  B_LU_BRP,
+  B_LU_ARABLE_ER,
+  B_LU_PRODUCTIVE_ER,
+  B_LU_CULTIVATED_ER,
   measures,
   sector
 )
@@ -30,27 +24,15 @@ er_meas_score(
 
 \item{B_AREA}{(numeric) the area of the field (m2)}
 
-\item{B_LU_BBWP}{(numeric) The BBWP category used for allocation of measures to BBWP crop categories}
+\item{B_LU_BBWP}{(character) The BBWP category used for allocation of measures to BBWP crop categories}
 
-\item{B_LU_ECO1}{(boolean) does the crop belong in Ecoregeling category 1}
+\item{B_LU_BRP}{(numeric) The crop code (gewascode) from the BRP}
 
-\item{B_LU_ECO2}{(boolean) does the crop belong in Ecoregeling category 2}
+\item{B_LU_ARABLE_ER}{(boolean) does the crop fall within the ER category "arable"}
 
-\item{B_LU_ECO3}{(boolean) does the crop belong in Ecoregeling category 3}
+\item{B_LU_PRODUCTIVE_ER}{(boolean) does the crop fall within the ER category "productive"}
 
-\item{B_LU_ECO4}{(boolean) does the crop belong in Ecoregeling category 4}
-
-\item{B_LU_ECO5}{(boolean) does the crop belong in Ecoregeling category 5}
-
-\item{B_LU_ECO6}{(boolean) does the crop belong in Ecoregeling category 6}
-
-\item{B_LU_ECO7}{(boolean) does the crop belong in Ecoregeling category 7}
-
-\item{B_LU_ECO8}{(boolean) does the crop fall within the category "arable"}
-
-\item{B_LU_ECO9}{(boolean) does the crop fall within the category "productive"}
-
-\item{B_LU_ECO10}{(boolean) does the crop fall within the category "cultivated"}
+\item{B_LU_CULTIVATED_ER}{(boolean) does the crop fall within the ER category "cultivated"}
 
 \item{measures}{(list) The measures planned / done per fields}
 

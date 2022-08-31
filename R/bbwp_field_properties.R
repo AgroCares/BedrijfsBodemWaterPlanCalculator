@@ -4,7 +4,7 @@
 #' A high rank is indicative for the number of opportunities to improve soil quality and land use.
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil, using agronomic classification
-#' @param B_LU_BBWP (numeric) The BBWP category used for allocation of measures to BBWP crop categories
+#' @param B_LU_BBWP (character) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param B_SC_WENR (character) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006)
 #' @param B_HELP_WENR (character) The soil type abbreviation, derived from 1:50.000 soil map
@@ -45,6 +45,10 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   mean_n_rt = sd_n_rt = sd_ro_r = sd_sa_w = sd_p_cc = mean_p_sg = mean_al_ox = NULL
   mean_fe_ox = sd_fe_ox = crop_category = B_GT = mean_ro_r = mean_sa_w = mean_p_cc = psw_psg = sd_p_sg = NULL
   sd_al_ox = id = NULL
+  code = value_min = value_max = choices = NULL
+  
+  # Load bbwp_parms
+  bbwp_parms <- BBWPC::bbwp_parms
   
   # check length inputs
   arg.length <- max(
@@ -58,27 +62,28 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
   
   # check inputs B parameters
-  checkmate::assert_subset(B_SOILTYPE_AGR, choices = unique(OBIC::soils.obic$soiltype))
-  checkmate::assert_subset(B_SC_WENR, choices = c(3, 4, 1, 401, 902, 2, 901, 5, 11, 10))
+  checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
+  checkmate::assert_subset(B_SC_WENR, choices = unlist(bbwp_parms[code == "B_SC_WENR", choices]))
   checkmate::assert_subset(B_HELP_WENR, choices = c(unique(OBIC::waterstress.obic$soilunit), "unknown"), empty.ok = FALSE)
-  checkmate::assert_numeric(B_SLOPE_DEGREE, lower = 0, upper = 30, any.missing = FALSE, len = arg.length)
-  
+  checkmate::assert_numeric(B_SLOPE_DEGREE, lower = bbwp_parms[code == "B_SLOPE_DEGREE", value_min], upper = bbwp_parms[code == "B_SLOPE_DEGREE", value_max],len = arg.length)
+  checkmate::assert_subset(B_LU_BBWP, choices = unlist(bbwp_parms[code == "B_LU_BBWP", choices]))
+  checkmate::assert_character(B_LU_BBWP, len = arg.length)
   # check inputs A parameters
-  checkmate::assert_numeric(A_CLAY_MI, lower = 0, upper = 100, any.missing = FALSE,len = arg.length)
-  checkmate::assert_numeric(A_SAND_MI, lower = 0, upper = 100, any.missing = FALSE,len = arg.length)
-  checkmate::assert_numeric(A_SILT_MI, lower = 0, upper = 100, any.missing = FALSE,len = arg.length)
-  checkmate::assert_numeric(A_SOM_LOI, lower = 0, upper = 100, any.missing = FALSE,len = arg.length)
-  checkmate::assert_numeric(A_N_RT, lower = 0, upper = 100000, any.missing = FALSE,len = arg.length)
-  checkmate::assert_numeric(A_AL_OX, lower = 0, upper = 1000, any.missing = FALSE, len = arg.length)
-  checkmate::assert_numeric(A_FE_OX, lower = 0, upper = 1000, any.missing = FALSE, len = arg.length)
-  checkmate::assert_numeric(A_P_SG, lower = 0, upper = 100, any.missing = FALSE, len = arg.length)
-  checkmate::assert_numeric(A_P_CC, lower = 0, upper = 50, any.missing = FALSE, len = arg.length)
-  checkmate::assert_numeric(A_P_AL, lower = 0, upper = 200, any.missing = FALSE, len = arg.length)
-  checkmate::assert_numeric(A_P_WA, lower = 0, upper = 200, any.missing = FALSE, len = arg.length)
+  checkmate::assert_numeric(A_CLAY_MI, lower = bbwp_parms[code == "A_CLAY_MI", value_min], upper = bbwp_parms[code == "A_CLAY_MI", value_max],len = arg.length)
+  checkmate::assert_numeric(A_SAND_MI, lower = bbwp_parms[code == "A_SAND_MI", value_min], upper = bbwp_parms[code == "A_SAND_MI", value_max],len = arg.length)
+  checkmate::assert_numeric(A_SILT_MI, lower = bbwp_parms[code == "A_SILT_MI", value_min], upper = bbwp_parms[code == "A_SILT_MI", value_max],len = arg.length)
+  checkmate::assert_numeric(A_SOM_LOI, lower = bbwp_parms[code == "A_SOM_LOI", value_min], upper = bbwp_parms[code == "A_SOM_LOI", value_max],len = arg.length)
+  checkmate::assert_numeric(A_N_RT, lower = bbwp_parms[code == "A_N_RT", value_min], upper = bbwp_parms[code == "A_N_RT", value_max],len = arg.length)
+  checkmate::assert_numeric(A_AL_OX, lower = bbwp_parms[code == "A_AL_OX", value_min], upper = bbwp_parms[code == "A_AL_OX", value_max],len = arg.length)
+  checkmate::assert_numeric(A_FE_OX, lower = bbwp_parms[code == "A_FE_OX", value_min], upper = bbwp_parms[code == "A_FE_OX", value_max],len = arg.length)
+  checkmate::assert_numeric(A_P_SG, lower = bbwp_parms[code == "A_P_SG", value_min], upper = bbwp_parms[code == "A_P_SG", value_max],len = arg.length)
+  checkmate::assert_numeric(A_P_CC, lower = bbwp_parms[code == "A_P_CC", value_min], upper = bbwp_parms[code == "A_P_CC", value_max],len = arg.length)
+  checkmate::assert_numeric(A_P_AL, lower = bbwp_parms[code == "A_P_AL", value_min], upper = bbwp_parms[code == "A_P_AL", value_max],len = arg.length)
+  checkmate::assert_numeric(A_P_WA, lower = bbwp_parms[code == "A_P_WA", value_min], upper = bbwp_parms[code == "A_P_WA", value_max],len = arg.length)
   
   # check inputs D parameters
   checkmate::assert_numeric(D_SA_W, lower = 0, upper = 1, len = arg.length)
-  checkmate::assert_numeric(D_RO_R, lower = 0, upper = 1, len = arg.length)
+  checkmate::assert_numeric(D_RO_R, lower = bbwp_parms[code == "D_RO_R", value_min], upper = bbwp_parms[code == "D_RO_R", value_max],len = arg.length)
 
   # check lsw and replace based on location if lsw is not provided
   LSW.dt = bbwp_check_lsw(LSW = LSW, a_lat = a_lat, a_lon = a_lon)
@@ -120,24 +125,24 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   dt <- merge(dt, soils.obic[, list(soiltype, soiltype.n)], by.x = "B_SOILTYPE_AAGR", by.y = "soiltype")
   
   # add crop categories
-  dt[B_LU_BBWP %in% c(1,2), crop_category := 'grasland']
-  dt[B_LU_BBWP %in% c(9), crop_category := 'mais']
-  dt[B_LU_BBWP %in% c(3,4,5,6,7,11,12), crop_category := 'akkerbouw']
-  dt[B_LU_BBWP %in% c(8,10), crop_category := 'natuur']
+  dt[B_LU_BBWP %in% c('gras_permanent','gras_tijdelijk'), crop_category := 'grasland']
+  dt[B_LU_BBWP %in% c('mais'), crop_category := 'mais']
+  dt[B_LU_BBWP %in% c('rustgewas','rooivrucht','groenten','bollensierteelt','boomfruitteelt','vanggewas','eiwitgewas'), crop_category := 'akkerbouw']
+  dt[B_LU_BBWP %in% c('natuur','randensloot'), crop_category := 'natuur']
   
   # set a  default crop for estimating water stress per B_LU_BBWP category
-  dt[B_LU_BBWP == 1, B_LU_BRP := 265] # permanent gras
-  dt[B_LU_BBWP == 2, B_LU_BRP := 266] # tijdelijk grasland
-  dt[B_LU_BBWP == 3, B_LU_BRP := 233] # wintertarwe
-  dt[B_LU_BBWP == 4, B_LU_BRP := 2014] # aardappel
-  dt[B_LU_BBWP == 5, B_LU_BRP := 2759] # rode kool
-  dt[B_LU_BBWP == 6, B_LU_BRP := 176] # bloembol 
-  dt[B_LU_BBWP == 7, B_LU_BRP := 1096] # appelboom 
-  dt[B_LU_BBWP == 8, B_LU_BRP := 335] # natuur
-  dt[B_LU_BBWP == 9, B_LU_BRP := 259] # mais
-  dt[B_LU_BBWP == 10, B_LU_BRP := 372] # rand langs bouwland
-  dt[B_LU_BBWP == 11, B_LU_BRP := 3504] # bladrammenas
-  dt[B_LU_BBWP == 12, B_LU_BRP := 258] # luzerne
+  dt[B_LU_BBWP == 'gras_permanent', B_LU_BRP := 265] # permanent gras
+  dt[B_LU_BBWP == 'gras_tijdelijk', B_LU_BRP := 266] # tijdelijk grasland
+  dt[B_LU_BBWP == 'rustgewas', B_LU_BRP := 233] # wintertarwe
+  dt[B_LU_BBWP == 'rooivrucht', B_LU_BRP := 2014] # aardappel
+  dt[B_LU_BBWP == 'groenten', B_LU_BRP := 2759] # rode kool
+  dt[B_LU_BBWP == 'bollensierteelt', B_LU_BRP := 176] # bloembol 
+  dt[B_LU_BBWP == 'boomfruitteelt', B_LU_BRP := 1096] # appelboom 
+  dt[B_LU_BBWP == 'natuur', B_LU_BRP := 335] # natuur
+  dt[B_LU_BBWP == 'mais', B_LU_BRP := 259] # mais
+  dt[B_LU_BBWP == 'randensloot', B_LU_BRP := 372] # rand langs bouwland
+  dt[B_LU_BBWP == 'vanggewas', B_LU_BRP := 3504] # bladrammenas
+  dt[B_LU_BBWP == 'eiwitgewas', B_LU_BRP := 258] # luzerne
   
   # estimate field properties that contribute to the risk to N losses to groundwater -------
   

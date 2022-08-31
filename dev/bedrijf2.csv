@@ -1,0 +1,20 @@
+Scores zijn relatief tot de aim ;;;;;;;;
+4 velden van elk 10 ha;;;;;;;;
+bodemtype: zand;;;;;;;;
+hoofdgewas op percelen: brp code 258;;;;;;;;
+sector: akkerbouw;;;;;;;;
+CBS-landbouwgebied: LG01;;;;;;;;
+bbwp-status: geen;;;;;;;;
+maatregelen veld 1: EG16B & EB13A;;;;;;;;
+maatregelen veld 2: EG2B & EB8;;;;;;;;
+maatregelen veld 3: EG14 & EB18;;;;;;;;
+maatregelen veld 4: EB15 & EB3 & EB23A & EB11;;;;;;;;
+;;;;;;;;
+;farm.s_er_soil;farm.s_er_water;farm.s_er_climate;farm.s_er_biodiversity;farm.s_er_landscape;farm.s_er_tot;farm.s_er_reward;farm.s_er_medal
+1;100;100;100;100;71;93;110;silver
+;;;;;;;;
+fields.field_id;fields.s_er_soil;fields.s_er_water;fields.s_er_climate;fields.s_er_biodiversity;fields.s_er_landscape;fields.s_er_tot;fields.s_er_reward;fields.s_er_medal
+1;100;100;100;100;71;93;110;silver
+2;100;100;100;100;71;93;110;silver
+3;100;100;100;100;71;93;110;silver
+4;100;100;100;100;71;93;110;silver

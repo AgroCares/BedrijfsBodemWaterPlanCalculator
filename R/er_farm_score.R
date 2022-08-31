@@ -18,6 +18,11 @@
 er_farm_score <- function(S_ER_TOT,S_ER_SOIL,S_ER_WATER,S_ER_CLIMATE,S_ER_BIODIVERSITY,S_ER_LANDSCAPE, 
                           S_ER_REWARD, B_AREA){
   
+  code = value_min = value_max = NULL
+  
+  # Load bbwp_parms
+  bbwp_parms <- BBWPC::bbwp_parms
+  
   # check length of the inputs
   arg.length <- max(length(S_ER_TOT),length(S_ER_SOIL),length(S_ER_WATER),length(S_ER_CLIMATE),
                     length(S_ER_BIODIVERSITY),length(S_ER_LANDSCAPE),length(B_AREA))
@@ -29,7 +34,7 @@ er_farm_score <- function(S_ER_TOT,S_ER_SOIL,S_ER_WATER,S_ER_CLIMATE,S_ER_BIODIV
   checkmate::assert_numeric(S_ER_CLIMATE, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(S_ER_BIODIVERSITY, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(S_ER_LANDSCAPE, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(B_AREA, lower = 0, upper = 500000000, len = arg.length)
+  checkmate::assert_numeric(B_AREA, lower = bbwp_parms[code == "B_AREA", value_min], upper = bbwp_parms[code == "B_AREA", value_max], len = arg.length)
   checkmate::assert_numeric(S_ER_REWARD, lower = 0, upper = 10000, len = arg.length)
   
   # collect data in one data.table

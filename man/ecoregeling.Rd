@@ -6,20 +6,14 @@
 \usage{
 ecoregeling(
   B_SOILTYPE_AGR,
+  B_LU_BRP,
+  B_LU_BBWP,
   B_GWL_CLASS,
   B_SLOPE_DEGREE,
   B_AER_CBS,
-  B_LU_BBWP,
-  B_LU_ECO1,
-  B_LU_ECO2,
-  B_LU_ECO3,
-  B_LU_ECO4,
-  B_LU_ECO5,
-  B_LU_ECO6,
-  B_LU_ECO7,
-  B_LU_ECO8,
-  B_LU_ECO9,
-  B_LU_ECO10,
+  B_LU_ARABLE_ER,
+  B_LU_PRODUCTIVE_ER,
+  B_LU_CULTIVATED_ER,
   A_P_SG,
   D_SA_W,
   B_AREA,
@@ -34,33 +28,21 @@ ecoregeling(
 \arguments{
 \item{B_SOILTYPE_AGR}{(character) The type of soil}
 
+\item{B_LU_BRP}{(numeric) The crop code (gewascode) from the BRP}
+
+\item{B_LU_BBWP}{(character) The BBWP category used for allocation of measures to BBWP crop categories}
+
 \item{B_GWL_CLASS}{(character) The groundwater table class}
 
 \item{B_SLOPE_DEGREE}{(numeric) The slope of the field (degrees)}
 
 \item{B_AER_CBS}{(character) The agricultural economic region in the Netherlands (CBS, 2016)}
 
-\item{B_LU_BBWP}{(numeric) The BBWP category used for allocation of measures to BBWP crop categories}
+\item{B_LU_ARABLE_ER}{(boolean) does the crop fall within the ER category "arable"}
 
-\item{B_LU_ECO1}{(boolean) does the crop belong in Ecoregeling category 1}
+\item{B_LU_PRODUCTIVE_ER}{(boolean) does the crop fall within the ER category "productive"}
 
-\item{B_LU_ECO2}{(boolean) does the crop belong in Ecoregeling category 2}
-
-\item{B_LU_ECO3}{(boolean) does the crop belong in Ecoregeling category 3}
-
-\item{B_LU_ECO4}{(boolean) does the crop belong in Ecoregeling category 4}
-
-\item{B_LU_ECO5}{(boolean) does the crop belong in Ecoregeling category 5}
-
-\item{B_LU_ECO6}{(boolean) does the crop belong in Ecoregeling category 6}
-
-\item{B_LU_ECO7}{(boolean) does the crop belong in Ecoregeling category 7}
-
-\item{B_LU_ECO8}{(boolean) does the crop fall within the category "arable"}
-
-\item{B_LU_ECO9}{(boolean) does the crop fall within the category "productive"}
-
-\item{B_LU_ECO10}{(boolean) does the crop fall within the category "cultivated"}
+\item{B_LU_CULTIVATED_ER}{(boolean) does the crop fall within the ER category "cultivated"}
 
 \item{A_P_SG}{(numeric) The P-saturation index (\%)}
 
