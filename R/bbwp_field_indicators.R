@@ -30,6 +30,7 @@
 #' @param D_WUE_WWRI (numeric) The relative score of soil wetness stress for improved eficiency of water
 #' @param D_WUE_WDRI (numeric) The relative score of drought stress for improved eficiency of water
 #' @param D_WUE_WHC (numeric) The relative score of drought stress for improved eficiency of water
+#' @param penalty (boolean) Whether penalty for high risk is applied (TRUE) or not (FALSE)
 #' 
 #' @import data.table
 #' @import OBIC
@@ -40,7 +41,7 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
                                   D_NSW_SCR,D_NSW_GWT,D_NSW_RO,D_NSW_SLOPE, D_NSW_WS,D_NSW_NLV,
                                   D_PSW_SCR,D_PSW_GWT,D_PSW_RO,D_PSW_SLOPE,D_PSW_WS,D_PSW_PCC,D_PSW_PSG,D_PSW_PRET,
                                   D_NUE_WRI,D_NUE_PBI,D_NUE_WDRI,D_NUE_NLV,
-                                  D_WUE_WWRI,D_WUE_WDRI,D_WUE_WHC){
+                                  D_WUE_WWRI,D_WUE_WDRI,D_WUE_WHC, penalty = TRUE){
   
   D_RISK_NGW = D_RISK_NSW = D_RISK_PSW = D_RISK_NUE = D_RISK_WB = id = NULL
   
@@ -92,42 +93,77 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
   
   
   # integrate all relative field risk indicators into one for indictor for N loss to groundwater
-  dt[, D_RISK_NGW := (wf(D_NGW_SCR) * D_NGW_SCR + 
-                  3 * wf(D_NGW_LEA) * D_NGW_LEA + 
-                  2 * wf(D_NGW_NLV) * D_NGW_NLV) /
-       (wf(D_NGW_SCR) + 3 * wf(D_NGW_LEA) + 2 * wf(D_NGW_NLV))]
+  if(isTRUE(penalty)){
+    dt[, D_RISK_NGW := (wf(D_NGW_SCR) * D_NGW_SCR + 
+                          3 * wf(D_NGW_LEA) * D_NGW_LEA + 
+                          2 * wf(D_NGW_NLV) * D_NGW_NLV) /
+         (wf(D_NGW_SCR) + 3 * wf(D_NGW_LEA) + 2 * wf(D_NGW_NLV))]
+  } else {
+    dt[, D_RISK_NGW := (D_NGW_SCR + 
+                          3 * D_NGW_LEA + 
+                          2 * D_NGW_NLV) /(1 + 3 + 2)]
+  }
   
   # integrate all relative field risk indicators into one for indictor for N loss to surface water
-  dt[, D_RISK_NSW := (wf(D_NSW_SCR) * D_NSW_SCR + 
-                      wf(D_NSW_GWT) * D_NSW_GWT + 
-                      wf(D_NSW_SLOPE) * D_NSW_SLOPE +
-                      wf(D_NSW_RO) * D_NSW_RO + 
-                      wf(D_NSW_WS) * D_NSW_WS + 
-                  3 * wf(D_NSW_NLV) * D_NSW_NLV ) /
-       (wf(D_NSW_SCR) + wf(D_NSW_GWT) + wf(D_NSW_SLOPE) + wf(D_NSW_RO) + wf(D_NSW_WS) + 3 * wf(D_NSW_NLV))]
+  if(isTRUE(penalty)){
+    dt[, D_RISK_NSW := (wf(D_NSW_SCR) * D_NSW_SCR + 
+                          wf(D_NSW_GWT) * D_NSW_GWT + 
+                          wf(D_NSW_SLOPE) * D_NSW_SLOPE +
+                          wf(D_NSW_RO) * D_NSW_RO + 
+                          wf(D_NSW_WS) * D_NSW_WS + 
+                          3 * wf(D_NSW_NLV) * D_NSW_NLV ) /
+         (wf(D_NSW_SCR) + wf(D_NSW_GWT) + wf(D_NSW_SLOPE) + wf(D_NSW_RO) + wf(D_NSW_WS) + 3 * wf(D_NSW_NLV))]
+  } else {
+    dt[, D_RISK_NSW := (D_NSW_SCR + 
+                          D_NSW_GWT + 
+                          D_NSW_SLOPE +
+                          D_NSW_RO + 
+                          D_NSW_WS + 
+                          3 * D_NSW_NLV ) /(1 + 1 + 1 + 1 + 1 + 3)]
+  }
   
   # integrate all relative field risk indicators into one for indictor for P loss to surface water
-  dt[, D_RISK_PSW := (2 * wf(D_PSW_SCR) * D_PSW_SCR + 
+  if(isTRUE(penalty)){
+    dt[, D_RISK_PSW := (2 * wf(D_PSW_SCR) * D_PSW_SCR + 
                           wf(D_PSW_GWT) * D_PSW_GWT + 
-                      2 * wf(D_PSW_RO) * D_PSW_RO + 
+                          2 * wf(D_PSW_RO) * D_PSW_RO + 
                           wf(D_PSW_SLOPE) * D_PSW_SLOPE +
-                      2 * wf(D_PSW_WS) * D_PSW_WS + 
+                          2 * wf(D_PSW_WS) * D_PSW_WS + 
                           wf(D_PSW_PCC) * D_PSW_PCC + 
                           wf(D_PSW_PSG) * D_PSW_PSG + 
                           wf(D_PSW_PRET) * D_PSW_PRET) /
-       (2 * wf(D_PSW_SCR) + wf(D_PSW_GWT) + 2 * wf(D_PSW_RO) + wf(D_PSW_SLOPE) * D_PSW_SLOPE + 2 * wf(D_PSW_WS) + wf(D_PSW_PCC) + wf(D_PSW_PSG) + wf(D_PSW_PRET))]
+         (2 * wf(D_PSW_SCR) + wf(D_PSW_GWT) + 2 * wf(D_PSW_RO) + wf(D_PSW_SLOPE) * D_PSW_SLOPE + 2 * wf(D_PSW_WS) + wf(D_PSW_PCC) + wf(D_PSW_PSG) + wf(D_PSW_PRET))]
+  } else {
+    dt[, D_RISK_PSW := (2 * D_PSW_SCR + 
+                          D_PSW_GWT + 
+                          2  * D_PSW_RO + 
+                          D_PSW_SLOPE +
+                          2  * D_PSW_WS + 
+                          D_PSW_PCC + 
+                          D_PSW_PSG + 
+                          D_PSW_PRET) /
+         (2 + 1 + 2 + 1 + 2 + 1+ 1 + 1)]
+  }
   
   # minimize risks when there are no ditches around (wet surrounding fraction < 0.2)
   dt[D_PSW_WS <= 0.2 & D_PSW_SLOPE < 2,D_RISK_PSW := 0.01]
   dt[D_NSW_WS <= 0.2 & D_PSW_SLOPE < 2,D_RISK_NSW := 0.01]
   
   # integrate all relative field risk indicators into one for indictor for N and P efficiency of inputs
+  if(isTRUE(penalty)){
   dt[, D_RISK_NUE := (wf(D_NUE_WRI) * D_NUE_WRI + 2 * wf(D_NUE_PBI) * D_NUE_PBI + wf(D_NUE_NLV) * D_NUE_NLV + wf(D_NUE_WDRI) * D_NUE_WDRI) /
        (wf(D_NUE_WRI) + 2 * wf(D_NUE_PBI) + wf(D_NUE_NLV) + wf(D_NUE_WDRI))]
-  
+  } else {
+    dt[, D_RISK_NUE := (D_NUE_WRI + 2 * D_NUE_PBI + D_NUE_NLV + D_NUE_WDRI) /
+         (1 + 2 + 1 + 1)]
+  }
+    
   # integrate all relative field risk indicators into one for indictor for water retention and efficiency
+  if(isTRUE(penalty)){
   dt[, D_RISK_WB := (wf(D_WUE_WWRI) * D_WUE_WWRI + wf(D_WUE_WDRI) * D_WUE_WDRI + 2 * wf(D_WUE_WHC) * D_WUE_WHC) / (wf(D_WUE_WWRI) + wf(D_WUE_WDRI) + 2 * wf(D_WUE_WHC))]
-  
+  } else {
+    dt[, D_RISK_WB := (D_WUE_WWRI + D_WUE_WDRI + 2 * D_WUE_WHC) / (1 + 1 + 2)]
+  }
   # normalise these indicators ???
   
   setorder(dt, id)
