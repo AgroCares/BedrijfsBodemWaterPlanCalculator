@@ -132,7 +132,7 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
                           wf(D_PSW_PCC) * D_PSW_PCC + 
                           wf(D_PSW_PSG) * D_PSW_PSG + 
                           wf(D_PSW_PRET) * D_PSW_PRET) /
-         (2 * wf(D_PSW_SCR) + wf(D_PSW_GWT) + 2 * wf(D_PSW_RO) + wf(D_PSW_SLOPE) * D_PSW_SLOPE + 2 * wf(D_PSW_WS) + wf(D_PSW_PCC) + wf(D_PSW_PSG) + wf(D_PSW_PRET))]
+         (2 * wf(D_PSW_SCR) + wf(D_PSW_GWT) + 2 * wf(D_PSW_RO) + wf(D_PSW_SLOPE)  + 2 * wf(D_PSW_WS) + wf(D_PSW_PCC) + wf(D_PSW_PSG) + wf(D_PSW_PRET))]
   } else {
     dt[, D_RISK_PSW := (2 * D_PSW_SCR + 
                           D_PSW_GWT + 
