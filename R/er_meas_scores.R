@@ -202,7 +202,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt[grepl('^EB12',eco_id) & B_AREA_REL > 71 & B_AREA_REL <= 85 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
     dt[grepl('^EB12',eco_id) & B_AREA_REL > 85 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
     
-    # measure EB13. no till and reduced till
+    # measure EB13. no till and reduced till 
     cols.ad1 <- c(1,1,0,0,0,0)
     cols.ad2 <- c(2,2,0,0,0,0)
     dt[grepl('^EB13',eco_id), B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_arable]
@@ -218,12 +218,13 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt[grepl('^EG11',eco_id) & B_AREA_REL > 25 & B_AREA_REL <= 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
     dt[grepl('^EG11',eco_id) & B_AREA_REL > 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
     
-    # measure EG20. Not productive land
+    # measure EG20. Not productive land # Does not work in BBWP now # farmers indicate percentage themselves
+    # reken uit per perceel
     cols.ad1 <- c(1,0,1,3,5,0)
     cols.ad2 <- c(2,0,2,6,10,0)
     dt[grepl('^EG20',eco_id),B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_farm]
     dt[grepl('^EG20',eco_id) & B_AREA_REL <= 5 & er_total > 0, c(cols.sel) := 0]
-    dt[grepl('^EG20',eco_id) & B_AREA_REL > 7 & B_AREA_REL <= 9 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    dt[grepl('^EG20',eco_id) & B_AREA_REL > 7 & B_AREA_REL <= 9 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)] 
     dt[grepl('^EG20',eco_id) & B_AREA_REL > 9 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
     
     # measure EG13. inzet baggerspuit (check na update maatregelentabel, EG13 kan 1 keer per perceel voorkomen)

@@ -70,9 +70,9 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt.meas.field <- bbwp_check_meas(dt = NULL, eco = TRUE, score = FALSE)
   dt.meas.eco <- as.data.table(BBWPC::er_measures)
     
-  # subset both measurement tables
+  # subset both measurement tables # Add EB18 here Gerard
   dt.meas.field <- dt.meas.field[grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field',]
-  dt.meas.farm <- dt.meas.farm[level == 'farm']
+  dt.meas.farm <- dt.meas.farm[level == 'farm']# There are measures which need to be calculated per hectare but accounted for per farm [grepl('EB10$|X',eco_id) Gerard
   
   # add bbwp table for financial reward correction factor per AER
   dt.er.reward <- as.data.table(BBWPC::er_aer_reward)

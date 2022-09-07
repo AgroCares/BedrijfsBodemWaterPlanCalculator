@@ -1,4 +1,5 @@
-
+library(data.table)
+library(BBWPC)
 # get internal table with measures
 dt.measures <- as.data.table(BBWPC::bbwp_measures)
 dt.measures <- dt.measures[!is.na(eco_id)]
@@ -262,3 +263,56 @@ dt3 <- rbindlist(list3)
   
   write.csv2(bedrijfsscore2,"dev/bedrijf2.csv")
   
+  
+  ## Bedrijf 3aanpassingen: Boerennatuur willen combinatie van binnen een zone 
+  #2x dekzand, maar andere maatregelen per ceerceel
+  #met niet=prodcutief land
+
+  aantal = 2
+  # input data
+  B_SOILTYPE_AGR = rep('dekzand','dekzand')
+  B_GWL_CLASS = rep('GtIII','GtIII')
+  A_P_SG = rep(12,12)
+  B_SLOPE_DEGREE = rep(1.5,1.5)
+  B_AER_CBS = rep('LG01','LG01')
+  B_LU_BBWP = rep('eiwitgewas','eiwitgewas')
+  B_LU_BRP = rep(258,258)
+  B_LU_ARABLE_ER = rep(T,F)
+  B_LU_PRODUCTIVE_ER = rep(F,T)
+  B_LU_CULTIVATED_ER = rep(F,T)
+  M_DRAIN = rep(T,T)
+  D_SA_W = rep(0.5,0.5)
+  B_AREA = c(10,10)
+  farmscore = 100
+  medalscore = "gold"
+  measures = measures
+  sector = c('arable')
+  output = 'scores'
+  
+  measures <- rbind(data.table(id = 1, dt.measures[grepl('EG16B|EB13A',bbwp_id)]),
+                    data.table(id = 2, dt.measures[grepl('EG20',eco_id)])
+                    )
+  
+  measures$bbwp_status <- 'hello check'
+  
+  bedrijfsscore3 <- ecoregeling(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
+                                B_GWL_CLASS = B_GWL_CLASS,
+                                B_AER_CBS = B_AER_CBS,
+                                A_P_SG = A_P_SG,
+                                B_SLOPE_DEGREE = B_SLOPE_DEGREE,
+                                B_AREA = B_AREA,
+                                B_LU_BBWP = B_LU_BBWP,
+                                B_LU_BRP = B_LU_BRP,
+                                B_LU_ARABLE_ER = B_LU_ARABLE_ER,
+                                B_LU_PRODUCTIVE_ER = B_LU_PRODUCTIVE_ER,
+                                B_LU_CULTIVATED_ER = B_LU_CULTIVATED_ER,
+                                M_DRAIN = M_DRAIN, 
+                                D_SA_W = D_SA_W,
+                                measures = measures, 
+                                sector = sector,
+                                farmscore = farmscore,
+                                medalscore = medalscore,
+                                output = 'scores'
+  )
+  
+  write.csv2(bedrijfsscore3,"dev/bedrijf3.csv")
