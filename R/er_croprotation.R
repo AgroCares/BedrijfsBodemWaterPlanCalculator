@@ -72,7 +72,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     
   # subset both measurement tables # Add EB18 here Gerard
   dt.meas.field <- dt.meas.field[grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field',]
-  dt.meas.farm <- dt.meas.farm[level == 'farm']# There are measures which need to be calculated per hectare but accounted for per farm [grepl('EB10$|X',eco_id) Gerard
+  dt.meas.farm <- dt.meas.farm[level == 'farm']
   
   # add bbwp table for financial reward correction factor per AER
   dt.er.reward <- as.data.table(BBWPC::er_aer_reward)
@@ -272,7 +272,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt4[oid > 1, c(cols) := 0]
       
       # measure index crop diversificaiton (score dependent on cultivated area)
-      dt4[grepl('B189|B190|B191',bbwp_id), c(cols) := lapply(.SD, function (x) x * dt.farm$area_cultivated / dt.farm$area_farm),.SDCols = cols]
+      dt4[grepl('B189|B190|B191',bbwp_id), c(cols) := lapply(.SD, function (x) x * dt.farm$area_cultivated / dt.farm$area_farm),.SDcols = cols]
       
       # add correction reward
       cfr <- weighted.mean(x = dt$reward_cf, w = dt$B_AREA)
