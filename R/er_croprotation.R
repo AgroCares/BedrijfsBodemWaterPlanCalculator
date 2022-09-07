@@ -271,6 +271,9 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt4[, oid := frank(-total, ties.method = 'first',na.last = 'keep'),by = c('bbwp_conflict')]
       dt4[oid > 1, c(cols) := 0]
       
+      # measure index crop diversificaiton (score dependent on cultivated area)
+      dt4[grepl('B189|B190|B191',bbwp_id), c(cols) := lapply(.SD, function (x) x * dt.farm$area_cultivated / dt.farm$area_farm),.SDCols = cols]
+      
       # add correction reward
       cfr <- weighted.mean(x = dt$reward_cf, w = dt$B_AREA)
       
