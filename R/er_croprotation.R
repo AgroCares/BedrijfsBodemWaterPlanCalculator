@@ -152,7 +152,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     # set the score to zero when not applicable for a given ER combined category
     dt.field[eco_app == 0, c(cols) := 0]
    
-    # set measures not applicable on arable, cultivated or productive land
+    # set measures not applicable on arable, cultivated or productive land (only for measures that are crop rotation based)
     dt.field[B_LU_ARABLE_ER  == TRUE & b_lu_arable_er  == 0, c(cols) := 0]
     dt.field[B_LU_PRODUCTIVE_ER == TRUE & b_lu_productive_er == 0, c(cols) := 0]
     dt.field[B_LU_CULTIVATED_ER  == TRUE & b_lu_cultivated_er == 0, c(cols) := 0]
@@ -254,8 +254,8 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt.meas.farm[fsector == 0, c(cols) := 0]
       
       # farm measures do not have a field_id
-      dt.meas.farm[,id := 1]
-      dt.meas.farm <- unique(dt.meas.farm)
+      scols <- colnames(dt.meas.farm)[grepl('^er_|bbwp_id|bbwp_conflict',colnames(dt.meas.farm))]
+      dt.meas.farm <- unique(dt.meas.farm[,mget(scols)])
       
       # multiply by (political) urgency
       dt3 <- melt(dt.meas.farm, 

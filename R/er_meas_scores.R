@@ -61,6 +61,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   
   # filter out measures already receiving points from crop rotation 
   dt.meas.taken <- dt.meas.taken[!(grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field'),]
+  dt.meas.taken <- dt.meas.taken[level != 'farm']
   
   # add bbwp table for financial reward correction factor per AER
   dt.er.reward <- as.data.table(BBWPC::er_aer_reward)
@@ -104,7 +105,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt[is.na(eco_app) & grepl('EG20',eco_id), eco_app := 1]
   
   # measures that apply to crops cultivated after main crop (vanggewassen en groenbemesters) and FAB-stroken are applicable on all main crops 
-  dt <- dt[eco_id  == "EB17|EB10|EB23" & B_LU_BBWP == "gras_tijdelijk|rustgewas|rooivrucht|groenten|bollensierteelt|boomfruitteelt|mais|eiwitgewas", eco_app := 1]
+  dt[eco_id  == "EB17|EB10|EB23" & grepl("gras_tijdelijk|rustgewas|rooivrucht|groenten|bollensierteelt|boomfruitteelt|mais|eiwitgewas",B_LU_BBWP), eco_app := 1]
   
   # set scores to zero when measures are not applicable given the crop type
   
@@ -132,12 +133,13 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt[eco_app == 0, c(cols) := 0]
     
     # set the score to zero when not applicable as arable/productive/cultivated measure
-    dt[B_LU_ARABLE_ER  == TRUE & b_lu_arable_er  == 0, c(cols) := 0]
-    dt[B_LU_PRODUCTIVE_ER == TRUE & b_lu_productive_er == 0, c(cols) := 0]
-    dt[B_LU_CULTIVATED_ER  == TRUE & b_lu_cultivated_er == 0, c(cols) := 0]
-    dt[B_LU_ARABLE_ER  == FALSE & b_lu_arable_er  == 1, c(cols) := 0]
-    dt[B_LU_PRODUCTIVE_ER == FALSE & b_lu_productive_er == 1, c(cols) := 0]
-    dt[B_LU_CULTIVATED_ER  == FALSE & b_lu_cultivated_er == 1, c(cols) := 0]
+    # ensure that measure non-productive area is always applicable
+    dt[B_LU_ARABLE_ER  == TRUE & b_lu_arable_er  == 0 & !grepl('EG20',eco_id), c(cols) := 0]
+    dt[B_LU_PRODUCTIVE_ER == TRUE & b_lu_productive_er == 0 & !grepl('EG20',eco_id), c(cols) := 0]
+    dt[B_LU_CULTIVATED_ER  == TRUE & b_lu_cultivated_er == 0 & !grepl('EG20',eco_id), c(cols) := 0]
+    dt[B_LU_ARABLE_ER  == FALSE & b_lu_arable_er  == 1 & !grepl('EG20',eco_id), c(cols) := 0]
+    dt[B_LU_PRODUCTIVE_ER == FALSE & b_lu_productive_er == 1 & !grepl('EG20',eco_id), c(cols) := 0]
+    dt[B_LU_CULTIVATED_ER  == FALSE & b_lu_cultivated_er == 1 & !grepl('EG20',eco_id), c(cols) := 0]
     
   # set the score and profit to zero when the measure is not applicable given sector or soil type
   
@@ -223,11 +225,12 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     # reken uit per perceel
     cols.ad1 <- c(1,0,1,3,5,0)
     cols.ad2 <- c(2,0,2,6,10,0)
+    dt[,area_fr := 0]
     dt[grepl('^EG20A',eco_id), area_fr := 0.03]
     dt[grepl('^EG20B',eco_id), area_fr := 0.05]
     dt[grepl('^EG20C',eco_id), area_fr := 1.00]
     dt[grepl('^EG20',eco_id),B_AREA_REL := sum(B_AREA * area_fr) * 100 / dt.farm$area_farm]
-    dt[grepl('^EG20',eco_id) & B_AREA_REL <= 5 & er_total > 0, c(cols.sel) := 0]
+    dt[grepl('^EG20',eco_id) & B_AREA_REL < 5 & er_total > 0, c(cols.sel) := 0]
     dt[grepl('^EG20',eco_id) & B_AREA_REL > 7 & B_AREA_REL <= 9 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)] 
     dt[grepl('^EG20',eco_id) & B_AREA_REL > 9 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
     
@@ -276,7 +279,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt2[, oid := frank(-total, ties.method = 'first',na.last = 'keep'),by = c('id','bbwp_conflict')]
     dt2[oid > 1, c(cols) := 0]
     
-  # calculate the weighed average ER score (points/ ha) for the whole farm due to measures taken
+  # calculate the total ER score (points/ ha) per field due to measures taken
   dt.field <- dt2[,lapply(.SD,sum), .SDcols = cols, by = 'id']
     
   # select total reward per field which is equal to the reward from the measure with the highest er_euro_ha (euro / ha)
