@@ -9,11 +9,6 @@
 #' @param B_LU_PRODUCTIVE_ER (boolean) does the crop fall within the ER category "productive"
 #' @param B_LU_CULTIVATED_ER (boolean) does the crop fall within the ER category "cultivated"
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
-#' @param B_CT_SOIL (numeric) the target value for soil quality conform Ecoregeling scoring  (score / ha)
-#' @param B_CT_WATER (numeric) the target value for water quality conform Ecoregeling scoring (score / ha)
-#' @param B_CT_CLIMATE (numeric) the target value for climate conform Ecoregeling scoring (score / ha)
-#' @param B_CT_BIO (numeric) the target value for biodiversity conform Ecoregeling scoring (score / ha)
-#' @param B_CT_LANDSCAPE (numeric) the target value for landscape quality conform Ecoregeling scoring (score / ha)
 #' @param B_AREA (numeric) the area of the field (m2) 
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
 #' @param measures (list) The measures planned / done per fields
@@ -26,7 +21,6 @@
 er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                             B_LU_BBWP,B_LU_BRP, 
                             B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER,B_LU_CULTIVATED_ER,
-                            B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE,
                             measures, sector){
   
   # add visual bindings
@@ -59,12 +53,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   checkmate::assert_logical(B_LU_ARABLE_ER,len = arg.length)
   checkmate::assert_logical(B_LU_PRODUCTIVE_ER,len = arg.length)
   checkmate::assert_logical(B_LU_CULTIVATED_ER,len = arg.length)
-  checkmate::assert_numeric(B_CT_SOIL, lower = 0, min.len = 1)
-  checkmate::assert_numeric(B_CT_WATER, lower = 0, min.len = 1)
-  checkmate::assert_numeric(B_CT_CLIMATE, lower = 0, min.len = 1)
-  checkmate::assert_numeric(B_CT_BIO, lower = 0, min.len = 1)
-  checkmate::assert_numeric(B_CT_LANDSCAPE, lower = 0, min.len = 1)
-  
+
   # check and update the measure table
   dt.meas.farm <- bbwp_check_meas(dt = measures, eco = TRUE, score = TRUE)
   dt.meas.field <- bbwp_check_meas(dt = NULL, eco = TRUE, score = FALSE)
@@ -101,12 +90,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                    B_LU_ARABLE_ER = B_LU_ARABLE_ER, 
                    B_LU_PRODUCTIVE_ER = B_LU_PRODUCTIVE_ER,
                    B_LU_CULTIVATED_ER = B_LU_CULTIVATED_ER,
-                   B_AREA = B_AREA,
-                   B_CT_SOIL = B_CT_SOIL, 
-                   B_CT_WATER = B_CT_WATER,
-                   B_CT_CLIMATE = B_CT_CLIMATE,
-                   B_CT_BIO = B_CT_BIO,
-                   B_CT_LANDSCAPE = B_CT_LANDSCAPE)
+                   B_AREA = B_AREA)
   
   # add regional correction value for price
   dt <- merge(dt,dt.er.reward[,.(statcode,reward_cf = er_cf)], 
