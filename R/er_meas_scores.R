@@ -101,6 +101,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
               by = c('B_LU_BRP','eco_id'),
               all.x = TRUE)
   dt[is.na(eco_app) & !grepl('EG20',eco_id),eco_app := 0]
+  dt[is.na(eco_app) & grepl('EG20',eco_id), eco_app := 1]
   
   # measures that apply to crops cultivated after main crop (vanggewassen en groenbemesters) and FAB-stroken are applicable on all main crops 
   dt <- dt[eco_id  == "EB17|EB10|EB23" & B_LU_BBWP == "gras_tijdelijk|rustgewas|rooivrucht|groenten|bollensierteelt|boomfruitteelt|mais|eiwitgewas", eco_app := 1]

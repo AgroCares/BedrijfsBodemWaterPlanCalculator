@@ -139,7 +139,8 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, M_
                 dt.meas.eco, 
                 by = c('B_LU_BRP','eco_id'),
                 all.x = TRUE)
-    dt[is.na(eco_app),eco_app := 0]
+    dt[is.na(eco_app) & !grepl('EG20',eco_id),eco_app := 0]
+    dt[is.na(eco_app) & grepl('EG20',eco_id), eco_app := 1]
     
   # rank is zero when measures are not applicable given the crop type
   
