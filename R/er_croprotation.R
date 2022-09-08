@@ -252,6 +252,10 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       # adapt the score when measure is not applicable
       dt.meas.farm[fsector == 0, c(cols) := 0]
       
+      # farm measures do not have a field_id
+      dt.meas.farm[,id := 1]
+      dt.meas.farm <- unique(dt.meas.farm)
+      
       # multiply by (political) urgency
       dt3 <- melt(dt.meas.farm, 
                   id.vars = c('bbwp_id','bbwp_conflict'),
