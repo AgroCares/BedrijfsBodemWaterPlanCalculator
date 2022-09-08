@@ -70,7 +70,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt.meas.field <- bbwp_check_meas(dt = NULL, eco = TRUE, score = FALSE)
   dt.meas.eco <- as.data.table(BBWPC::er_measures)
     
-  # subset both measurement tables
+  # subset both measurement tables # Add EB18 here Gerard
   dt.meas.field <- dt.meas.field[grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field',]
   dt.meas.farm <- dt.meas.farm[level == 'farm']
   
@@ -270,6 +270,9 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt4[, total := biodiversity + climate + landscape + soil + water]
       dt4[, oid := frank(-total, ties.method = 'first',na.last = 'keep'),by = c('bbwp_conflict')]
       dt4[oid > 1, c(cols) := 0]
+      
+      # measure index crop diversificaiton (score dependent on cultivated area)
+      dt4[grepl('B189|B190|B191',bbwp_id), c(cols) := lapply(.SD, function (x) x * dt.farm$area_cultivated / dt.farm$area_farm),.SDcols = cols]
       
       # add correction reward
       cfr <- weighted.mean(x = dt$reward_cf, w = dt$B_AREA)
