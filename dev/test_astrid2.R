@@ -2,7 +2,7 @@ library(data.table)
 library(BBWPC)
 
 # LOCATION TO STORE CSV TESTS
-loc <- 'D:/ROSG/TESTS/'
+loc <- 'C:/R_packages_Tessa'
 
 # get internal table with measures
 dt.measures <- as.data.table(BBWPC::bbwp_measures)
@@ -14,7 +14,7 @@ B_GWL_CLASS = c('GtIII')
 A_P_SG = c(12)
 B_SLOPE_DEGREE = c(1.5)
 B_AER_CBS = c('LG01')
-B_LU_BBWP = c('eiwitgewas')
+B_LU_BBWP = c('gras_tijdelijk') #aangepast, was "eiwitgewas". Eiwitgewas voegde overal de punten van EB2 toe.
 B_LU_BRP = c(800)
 B_LU_ARABLE_ER = c(T)
 B_LU_PRODUCTIVE_ER = c(T)
@@ -76,10 +76,8 @@ dt1 <- rbindlist(list1)
 dt2 <- rbindlist(list2)
 
 # write as csv
-#fwrite(dt2,paste0(loc,"farm_800_klei_LG01_akkerbouw.csv"))
-#fwrite(dt3,paste0(loc,"field_800_klei_LG01_akkerbouw.csv"))
-
-
+#(dt2,paste0(loc, "farm_800_klei_LG01_akkerbouw.csv"))
+#fwrite(dt1,paste0(loc, "field_800_klei_LG01_akkerbouw.csv"))
 
 ### total farm with three fields ###
 
@@ -106,7 +104,7 @@ dt2 <- rbindlist(list2)
   sector = c('dairy')
   output = 'scores'
   
-  measures <- rbind(data.table(id = 1, dt.measures[grepl('B138',bbwp_id)]),
+  measures <- rbind(data.table(id = 1, dt.measures[grepl('B138',bbwp_id)]),#EG16B
                     data.table(id = 2, dt.measures[grepl('EG2B$',eco_id)]),
                     data.table(id = 3, dt.measures[grepl('EG14|EG18',eco_id)]))
   
@@ -131,8 +129,12 @@ dt2 <- rbindlist(list2)
                                 medalscore = medalscore,
                                 output = 'scores'
                                 )
+  #quick fix under bedrijfsscore1 farm must also get variable field_id, otherwise dimensions don't match
+  bedrijfsscore1$farm$field_id <- bedrijfsscore1$fields$field_id
   
-  fwrite(bedrijfsscore1,paste0(loc,"bedrijf1.csv"))
+#  fwrite(bedrijfsscore1,paste0(loc, "bedrijf1.csv"))
+  
+#  fwrite(bedrijfsscore1$fields,paste0(loc, "bedrijf1_fields.csv"))
   
 ### total farm with four fields ###
   
@@ -187,11 +189,15 @@ dt2 <- rbindlist(list2)
                                output = 'scores'
   )
   
-  fwrite(bedrijfsscore2,paste0(loc,"bedrijf2.csv"))
+  #quick fix under bedrijfsscore1 farm must also get variable field_id, otherwise dimensions don't match
+  bedrijfsscore2$farm$field_id <- bedrijfsscore2$fields$field_id
+  
+#  fwrite(bedrijfsscore2,paste0(loc, "bedrijf2.csv"))  
+#  fwrite(bedrijfsscore2$fields,paste0(loc, "bedrijf2_field.csv"))
   
   
   ## Bedrijf 3aanpassingen: Boerennatuur willen combinatie van binnen een zone 
-  #2x dekzand, maar andere maatregelen per ceerceel
+  #2x dekzand, maar andere maatregelen per perceel
   #met niet=prodcutief land
 
   aantal = 2
@@ -240,5 +246,7 @@ dt2 <- rbindlist(list2)
                                 medalscore = medalscore,
                                 output = 'scores'
   )
+  #quick fix under bedrijfsscore1 farm must also get variable field_id, otherwise dimensions don't match
+  bedrijfsscore3$farm$field_id <- bedrijfsscore3$fields$field_id
   
-  fwrite(bedrijfsscore3,paste0(loc,"bedrijf3.csv"))
+#  fwrite(bedrijfsscore3,paste0(loc, "bedrijf3.csv"))
