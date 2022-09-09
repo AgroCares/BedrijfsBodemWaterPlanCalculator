@@ -1,6 +1,6 @@
 # BBWPC v0.9.2
 ## Fixed
-# error in the equation to calculate D_RISK_PSW is fixed
+* Fixes error in the equation to calculate D_RISK_PSW
 
 # BBWPC v0.9.1
 ## Added
