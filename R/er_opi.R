@@ -39,7 +39,10 @@ er_opi <- function(B_SOILTYPE_AGR,
   checkmate::assert_numeric(S_ER_LANDSCAPE, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(B_AREA, lower = bbwp_parms[code == "B_AREA", value_min], upper = bbwp_parms[code == "B_AREA", value_max], len = arg.length)
   checkmate::assert_numeric(S_ER_REWARD, lower = 0, upper = 10000, len = arg.length)
+  checkmate::assert_character(B_SOILTYPE_AGR,len = arg.length)
+  checkmate::assert_character(medalscore,len = 1)
   checkmate::assert_subset(medalscore, choices = c('bronze','silver','gold'))
+  checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
   
   # Calculate the minimum required ER scores on Farm level for the desired medal
   dt.farm.aim <- er_farm_aim(B_SOILTYPE_AGR = B_SOILTYPE_AGR, B_AREA = B_AREA, medalscore = medalscore)
