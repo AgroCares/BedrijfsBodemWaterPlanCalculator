@@ -36,12 +36,12 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
                     length(S_ER_TOT),length(S_ER_SOIL),length(S_ER_WATER),length(S_ER_CLIMATE),
                     length(S_ER_BIODIVERSITY),length(S_ER_LANDSCAPE)) 
   # check inputs
-  checkmate::assert_numeric(S_ER_TOT, lower = 0, upper = 500, len = arg.length)
-  checkmate::assert_numeric(S_ER_SOIL, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(S_ER_WATER, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(S_ER_CLIMATE, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(S_ER_BIODIVERSITY, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(S_ER_LANDSCAPE, lower = 0, upper = 100, len = arg.length)
+  checkmate::assert_numeric(S_ER_TOT, lower = 0, upper = 1000, len = arg.length)
+  checkmate::assert_numeric(S_ER_SOIL, lower = 0, upper = 1000, len = arg.length)
+  checkmate::assert_numeric(S_ER_WATER, lower = 0, upper = 1000, len = arg.length)
+  checkmate::assert_numeric(S_ER_CLIMATE, lower = 0, upper = 1000, len = arg.length)
+  checkmate::assert_numeric(S_ER_BIODIVERSITY, lower = 0, upper = 1000, len = arg.length)
+  checkmate::assert_numeric(S_ER_LANDSCAPE, lower = 0, upper = 1000, len = arg.length)
   checkmate::assert_numeric(B_AREA,lower = bbwp_parms[code == "B_AREA", value_min], upper = bbwp_parms[code == "B_AREA", value_max], len = arg.length)
   checkmate::assert_numeric(S_ER_REWARD, lower = 0, upper = 10000, len = arg.length)
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))

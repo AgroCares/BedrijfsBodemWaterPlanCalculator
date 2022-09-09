@@ -14,6 +14,7 @@
 #' @param medalscore (character) The desired medal score expressed as bronze, silver or gold 
 #'  
 #' @import data.table
+#' @import checkmate
 #'
 #' @export
 er_opi <- function(B_SOILTYPE_AGR, 
@@ -22,7 +23,7 @@ er_opi <- function(B_SOILTYPE_AGR,
                    medalscore){
   
   # add visual bindings
-  code = value_min = value_max = S_ER_TOT = patterns = indicator = NULL
+  code = value_min = value_max = S_ER_TOT = patterns = indicator = choices = NULL
   S_ER = S_AIM = D_OPI = cfOPI = D_OPI_SOIL = D_OPI_WATER = D_OPI_CLIMATE = D_OPI_LANDSCAPE = D_OPI_BIO = D_OPI_TOT = D_OPI_REWARD = D_OPI_SCORE = NULL
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
@@ -32,11 +33,11 @@ er_opi <- function(B_SOILTYPE_AGR,
                     length(S_ER_BIODIVERSITY),length(S_ER_LANDSCAPE),length(B_AREA))
   
   # check inputs
-  checkmate::assert_numeric(S_ER_SOIL, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(S_ER_WATER, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(S_ER_CLIMATE, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(S_ER_BIODIVERSITY, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(S_ER_LANDSCAPE, lower = 0, upper = 100, len = arg.length)
+  checkmate::assert_numeric(S_ER_SOIL, lower = 0, upper = 1000, len = arg.length)
+  checkmate::assert_numeric(S_ER_WATER, lower = 0, upper = 1000, len = arg.length)
+  checkmate::assert_numeric(S_ER_CLIMATE, lower = 0, upper = 1000, len = arg.length)
+  checkmate::assert_numeric(S_ER_BIODIVERSITY, lower = 0, upper = 1000, len = arg.length)
+  checkmate::assert_numeric(S_ER_LANDSCAPE, lower = 0, upper = 1000, len = arg.length)
   checkmate::assert_numeric(B_AREA, lower = bbwp_parms[code == "B_AREA", value_min], upper = bbwp_parms[code == "B_AREA", value_max], len = arg.length)
   checkmate::assert_numeric(S_ER_REWARD, lower = 0, upper = 10000, len = arg.length)
   checkmate::assert_character(B_SOILTYPE_AGR,len = arg.length)
