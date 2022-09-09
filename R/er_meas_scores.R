@@ -226,12 +226,12 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     cols.ad1 <- c(1,0,1,3,5,0)
     cols.ad2 <- c(2,0,2,6,10,0)
     dt[,area_fr := 0]
-    dt[grepl('^EG20A',eco_id), area_fr := 0.03]
-    dt[grepl('^EG20B',eco_id), area_fr := 0.05]
-    dt[grepl('^EG20C',eco_id), area_fr := 1.00]
+    dt[grepl('^EG20A',eco_id), area_fr := 0.04 + 0.03]
+    dt[grepl('^EG20B',eco_id), area_fr := 0.04 + 0.05]
+    dt[grepl('^EG20C',eco_id), area_fr := 0.04 + 1.00]
     dt[grepl('^EG20',eco_id),B_AREA_REL := sum(B_AREA * area_fr) * 100 / dt.farm$area_farm]
     dt[grepl('^EG20',eco_id) & B_AREA_REL < 5 & er_total > 0, c(cols.sel) := 0]
-    dt[grepl('^EG20',eco_id) & B_AREA_REL > 7 & B_AREA_REL <= 9 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)] 
+    dt[grepl('^EG20',eco_id) & B_AREA_REL > 7 & B_AREA_REL < 9 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)] 
     dt[grepl('^EG20',eco_id) & B_AREA_REL > 9 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
     
     # measure EG13. inzet baggerspuit (check na update maatregelentabel, EG13 kan 1 keer per perceel voorkomen)
