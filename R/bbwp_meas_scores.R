@@ -35,7 +35,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   D_MEAS_PSW = D_MEAS_NGW = D_MEAS_PSW = effect_wb = NULL
   nc1 = nc2 = nc3 = nc4 = nc5 = nc6 = nc7 = nc8 = nc9 = nc10 = nc11 = nc12 = NULL
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = fbulbs = bulbs = NULL
-  oid = NULL
+  oid = bbwp_id = NULL
   code = value_min = value_max =  choices = NULL
   
   # Load bbwp_parms

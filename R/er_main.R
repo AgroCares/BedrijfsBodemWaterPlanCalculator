@@ -34,7 +34,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
   
   # add visual bindings
   S_ER_TOT = S_ER_SOIL = S_ER_WATER = S_ER_CLIMATE = S_ER_BIODIVERSITY = S_ER_LANDSCAPE = S_ER_REWARD = NULL
-  medal = NULL
+  medal = s_er_medal = NULL
   
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
@@ -148,11 +148,11 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     out.field[, s_er_medal := dt.farm$medal]
     
     # copy the farm output and set to lower case
-    out.farm <- copy(dt.farm)
+    out.farm <- copy(dt.opi$dt.farm.ind.score)
     setnames(out.farm, tolower(colnames(out.farm)))
     
-    # rename medal 
-    setnames(out.farm,'medal','s_er_medal')
+    # add medal 
+    out.farm[, s_er_medal := dt.farm$medal]
     
     # set output object
     out <- list(farm = as.list(out.farm),fields = out.field)

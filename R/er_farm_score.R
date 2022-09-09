@@ -17,6 +17,9 @@
 er_farm_score <- function(S_ER_SOIL,S_ER_WATER,S_ER_CLIMATE,S_ER_BIODIVERSITY,S_ER_LANDSCAPE, 
                           S_ER_REWARD, B_AREA){
   
+  # add visual bindings
+  code = value_min = value_max = S_ER_TOT = NULL
+  
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
   

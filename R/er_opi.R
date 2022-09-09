@@ -21,6 +21,9 @@ er_opi <- function(B_SOILTYPE_AGR,
                    S_ER_REWARD, B_AREA,
                    medalscore){
   
+  # add visual bindings
+  code = value_min = value_max = S_ER_TOT = patterns = indicator = NULL
+  S_ER = S_AIM = D_OPI = cfOPI = D_OPI_SOIL = D_OPI_WATER = D_OPI_CLIMATE = D_OPI_LANDSCAPE = D_OPI_BIO = D_OPI_TOT = D_OPI_REWARD = D_OPI_SCORE = NULL
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
   
@@ -96,7 +99,8 @@ er_opi <- function(B_SOILTYPE_AGR,
     
     # get the distance to target for the five indicators
     dt.farm.ind.score <- dcast(dt.farm,farmid ~ indicator, value.var = 'D_OPI')
-  
+    dt.farm.ind.score[,c('farmid') := NULL]
+    
   # estimate the distance to target for 5 indicators per field
     
     # estimate the total contribution of a single field to the desired score on farm level

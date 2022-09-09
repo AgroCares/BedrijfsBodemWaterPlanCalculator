@@ -26,7 +26,8 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_LU_BRP, B_AER_CBS,B_ARE
   value = . = eco_id = b_lu_brp = type = erscore = EG15 = EG22 = cf = EB1A = EB1B = EB1C = NULL
   B_AREA_RR = EB2 = EB3 = EB8 = EB9 = soiltype = urgency = indicator = farmid = NULL
   D_MEAS_BIO = D_MEAS_CLIM = D_MEAS_LAND = D_MEAS_SOIL = D_MEAS_WAT = D_MEAS_TOT = ec1 = ec2 = NULL
-  cfSOIL = cfWAT = cfCLIM = cfBIO = cfLAND = id = S_ER_REWARD = NULL
+  S_ER_SOIL = S_ER_WATER = S_ER_CLIMATE = S_ER_BIODIVERSITY = S_ER_LANDSCAPE = S_ER_TOT = id = S_ER_REWARD = NULL
+  
   code = choices = NULL
   
   # Load bbwp_parms

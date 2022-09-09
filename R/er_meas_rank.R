@@ -120,11 +120,6 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, M_
                              B_LU_CULTIVATED_ER = dt$B_LU_CULTIVATED_ER,
                              B_AER_CBS = dt$B_AER_CBS,
                              B_AREA = dt$B_AREA,
-                             B_CT_SOIL = dt$B_CT_SOIL,
-                             B_CT_WATER = dt$B_CT_WATER,
-                             B_CT_CLIMATE = dt$B_CT_CLIMATE,
-                             B_CT_BIO = dt$B_CT_BIO,
-                             B_CT_LANDSCAPE = dt$B_CT_LANDSCAPE,
                              measures = measures,
                              sector = sector)
   

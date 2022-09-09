@@ -33,7 +33,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   eco_app = b_lu_arable_er = b_lu_productive_er = b_lu_cultivated_er = NULL
   er_total = er_climate = er_soil = er_measure = er_water = er_landscape = er_biodiversity = NULL
   reward_cf = regio_factor = . = er_cf = statcode = NULL
-  code = choices = NULL
+  code = choices = area_fr = NULL
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms

@@ -87,8 +87,9 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
   dt <- merge(dt,er_aim.bronze[,.(indicator,er_bronze)],by='indicator',all.x = TRUE)
   
   # estimate the absolute ER score
-  dt[, score := fifelse(indicator == 'REWARD',value,value * er_gold * 0.01)]
- 
+  # dt[, score := fifelse(indicator == 'REWARD',value,value * er_gold * 0.01)]
+  dt[, score := value]
+  
   # set output depending on farm or field level
   if(type == 'field'){
     
