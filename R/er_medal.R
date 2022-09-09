@@ -74,7 +74,7 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
                    REWARD = S_ER_REWARD,
                    B_AREA = B_AREA,
                    B_SOILTYPE_AGR = B_SOILTYPE_AGR
-  )
+                   )
   
   # melt the data.table
   dt <- melt(dt,
