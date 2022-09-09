@@ -1,3 +1,7 @@
+# BBWPC v0.9.2
+## Fixed
+# error in the equation to calculate D_RISK_PSW is fixed
+
 # BBWPC v0.9.1
 ## Added
 * Added table with BBWPC variable from pandex to standardise parameter checks
