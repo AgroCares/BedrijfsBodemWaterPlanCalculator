@@ -34,7 +34,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
   
   # add visual bindings
   S_ER_TOT = S_ER_SOIL = S_ER_WATER = S_ER_CLIMATE = S_ER_BIODIVERSITY = S_ER_LANDSCAPE = S_ER_REWARD = NULL
-  medal = s_er_medal = NULL
+  medal = s_er_medal = field_id = NULL
   
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
@@ -142,7 +142,23 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     
     # copy the opportunity indexes on field level (given their contribution to farm score)
     # 90% of score is for the indicator, 10% for the farm reward
-    out.field <- copy(dt.opi$dt.field.ind.score)
+    
+    if (FALSE){
+      
+      # select field output where bars reflect contribution to desired total farm score
+      out.field <- copy(dt.opi$dt.field.ind.score)
+      
+    } else {
+      
+      # reset field scores to be similar to the farm score
+      out.field <- copy(dt.opi$dt.farm.ind.score)[rep(1,max(dt.fields$id))]
+      out.field[,field_id := .I]
+      setnames(out.field, tolower(colnames(out.field)))
+      setcolorder(out.field,
+                  c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity","s_er_landscape","s_er_tot","s_er_reward"))
+      
+      
+    }
     
     # add the farm medal to the field
     out.field[, s_er_medal := dt.farm$medal]
