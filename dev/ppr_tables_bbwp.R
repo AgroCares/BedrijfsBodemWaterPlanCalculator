@@ -48,6 +48,9 @@ require(data.table);library(usethis)
              old = c('bouwland', 'productief', 'beteelbaar'), 
              new = c('b_lu_arable_er','b_lu_productive_er','b_lu_cultivated_er'))
   
+    # remove duplicated columns
+    bbwp_measures[,c(paste0('c',1:12)) := NULL]
+    
   # save measures as bbwp table
   use_data(bbwp_measures, overwrite = TRUE)
   
