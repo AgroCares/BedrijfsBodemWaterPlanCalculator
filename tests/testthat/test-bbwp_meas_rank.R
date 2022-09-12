@@ -52,7 +52,7 @@ test_that("check bbwp_meas_rank", {
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_tot[c(1,2,7,12,15)],
-    expected = c(NA,"G21","G20" ,"G87", "G27"),
+    expected = c(NA,"B131","B131" ,"G5", "G87"),
     tolerance = 0.01)
 })
 
@@ -101,7 +101,7 @@ test_that("check bbwp_meas_rank", {
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_tot[c(1,2,5,9,16)],
-    expected = c("G68" , "G27",  "G18", "G25" , "G87"),
+    expected = c("G3" , "B154",  "G51", "G51" , "G5"),
     tolerance = 0.01)
 })
 
