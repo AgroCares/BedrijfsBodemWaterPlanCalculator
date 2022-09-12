@@ -134,6 +134,14 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, M_
                 dt.meas.eco, 
                 by = c('B_LU_BRP','eco_id'),
                 all.x = TRUE)
+    
+    # remove crop measures when current crop is already used for farm score
+    dt[!is.na(eco_app) & grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id), eco_app := 0]
+    
+    # add crop rotation measures when current crop is not applicable
+    dt[is.na(eco_app) & grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id), eco_app := 1]
+    
+    # ensure that EG20 is always applicable
     dt[is.na(eco_app) & !grepl('EG20',eco_id),eco_app := 0]
     dt[is.na(eco_app) & grepl('EG20',eco_id), eco_app := 1]
     
