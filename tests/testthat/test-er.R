@@ -143,7 +143,7 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check ecoregeling", {
     expect_equal(
       object = test$fields$s_er_tot,
-      expected = c(100,100,19),
+      expected = c(100,100,100),
       tolerance = 0.01)
   })
   
@@ -184,7 +184,7 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check ecoregeling", {
     expect_equal(
       object = test$measures[[1]]$top_er_tot,
-      expected = c("B162" ,"B132", "B144", "B139", "B114"))
+      expected = c("B166" ,"B162", "B132", "B144", "B139"))
   })
   
   
