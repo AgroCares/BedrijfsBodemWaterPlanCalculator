@@ -36,12 +36,12 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
                     length(S_ER_TOT),length(S_ER_SOIL),length(S_ER_WATER),length(S_ER_CLIMATE),
                     length(S_ER_BIODIVERSITY),length(S_ER_LANDSCAPE)) 
   # check inputs
-  checkmate::assert_numeric(S_ER_TOT, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(S_ER_SOIL, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(S_ER_WATER, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(S_ER_CLIMATE, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(S_ER_BIODIVERSITY, lower = 0, upper = 100, len = arg.length)
-  checkmate::assert_numeric(S_ER_LANDSCAPE, lower = 0, upper = 100, len = arg.length)
+  checkmate::assert_numeric(S_ER_TOT, lower = 0, upper = 1000, len = arg.length)
+  checkmate::assert_numeric(S_ER_SOIL, lower = 0, upper = 1000, len = arg.length)
+  checkmate::assert_numeric(S_ER_WATER, lower = 0, upper = 1000, len = arg.length)
+  checkmate::assert_numeric(S_ER_CLIMATE, lower = 0, upper = 1000, len = arg.length)
+  checkmate::assert_numeric(S_ER_BIODIVERSITY, lower = 0, upper = 1000, len = arg.length)
+  checkmate::assert_numeric(S_ER_LANDSCAPE, lower = 0, upper = 1000, len = arg.length)
   checkmate::assert_numeric(B_AREA,lower = bbwp_parms[code == "B_AREA", value_min], upper = bbwp_parms[code == "B_AREA", value_max], len = arg.length)
   checkmate::assert_numeric(S_ER_REWARD, lower = 0, upper = 10000, len = arg.length)
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
@@ -72,12 +72,13 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
                    LANDSCAPE = S_ER_LANDSCAPE,
                    TOTAL = S_ER_TOT,
                    REWARD = S_ER_REWARD,
-                   B_AREA = B_AREA
-  )
+                   B_AREA = B_AREA,
+                   B_SOILTYPE_AGR = B_SOILTYPE_AGR
+                   )
   
   # melt the data.table
   dt <- melt(dt,
-             id.vars = c('id','B_AREA'),
+             id.vars = c('id','B_AREA','B_SOILTYPE_AGR'),
              variable.name = 'indicator')
   
   # add the criteria for gold, silver and bronze
@@ -86,16 +87,24 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
   dt <- merge(dt,er_aim.bronze[,.(indicator,er_bronze)],by='indicator',all.x = TRUE)
   
   # estimate the absolute ER score
-  dt[, score := fifelse(indicator == 'REWARD',value,value * er_gold * 0.01)]
-
+  # dt[, score := fifelse(indicator == 'REWARD',value,value * er_gold * 0.01)]
+  dt[, score := value]
+  
   # set output depending on farm or field level
   if(type == 'field'){
     
+    # indicator landscape passes the threshold for gold, silver, and bronze in any case
+    cols <- c("er_gold", "er_silver", "er_bronze")
+    dt[indicator == "LANDSCAPE", c(cols) := 0]
+    
+    # indicator water passes the threshold for gold, silver, and bronze always when soil type is "veen"
+    dt[indicator == "WATER" & B_SOILTYPE_AGR == "veen", c(cols) := 0]
+
     # set checks for medals score per field
-    dt[,c_gold := fifelse(score>=er_gold,1,0)]
+    dt[,c_gold := fifelse(score>=er_gold,1,0)] 
     dt[,c_silver := fifelse(score>=er_silver,1,0)]
     dt[,c_bronze := fifelse(score>=er_bronze,1,0)]
-    
+  
     # sum the requirement for the medal (total should be 7 per field)
     dt.field <- dt[,lapply(.SD,sum),.SDcols = c('c_gold','c_silver','c_bronze'),by= c('id','B_AREA')]
     
@@ -113,6 +122,13 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
     # estimate weighted mean score for full farm
     dt.farm <- dt[,lapply(.SD,weighted.mean,w = B_AREA),
                   .SDcols = c('score','er_gold','er_silver','er_bronze'), by = 'indicator']
+    
+    # indicator landscape passes the threshold for gold, silver, and bronze in any case
+    cols <- c("er_gold", "er_silver", "er_bronze")
+    dt.farm[indicator == "LANDSCAPE", c(cols) := 0]
+    
+    # indicator water passes the threshold for gold, silver, and bronze always when soil type is "veen"
+    #dt.farm[indicator == "WATER" & B_SOILTYPE_AGR == "veen", c(cols) := 0]
     
     # set checks for medals score per field
     dt.farm[,c_gold := fifelse(score>=er_gold,1,0)]

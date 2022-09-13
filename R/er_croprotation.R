@@ -9,11 +9,6 @@
 #' @param B_LU_PRODUCTIVE_ER (boolean) does the crop fall within the ER category "productive"
 #' @param B_LU_CULTIVATED_ER (boolean) does the crop fall within the ER category "cultivated"
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
-#' @param B_CT_SOIL (numeric) the target value for soil quality conform Ecoregeling scoring  (score / ha)
-#' @param B_CT_WATER (numeric) the target value for water quality conform Ecoregeling scoring (score / ha)
-#' @param B_CT_CLIMATE (numeric) the target value for climate conform Ecoregeling scoring (score / ha)
-#' @param B_CT_BIO (numeric) the target value for biodiversity conform Ecoregeling scoring (score / ha)
-#' @param B_CT_LANDSCAPE (numeric) the target value for landscape quality conform Ecoregeling scoring (score / ha)
 #' @param B_AREA (numeric) the area of the field (m2) 
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
 #' @param measures (list) The measures planned / done per fields
@@ -26,7 +21,6 @@
 er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                             B_LU_BBWP,B_LU_BRP, 
                             B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER,B_LU_CULTIVATED_ER,
-                            B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE,
                             measures, sector){
   
   # add visual bindings
@@ -59,18 +53,13 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   checkmate::assert_logical(B_LU_ARABLE_ER,len = arg.length)
   checkmate::assert_logical(B_LU_PRODUCTIVE_ER,len = arg.length)
   checkmate::assert_logical(B_LU_CULTIVATED_ER,len = arg.length)
-  checkmate::assert_numeric(B_CT_SOIL, lower = 0, min.len = 1)
-  checkmate::assert_numeric(B_CT_WATER, lower = 0, min.len = 1)
-  checkmate::assert_numeric(B_CT_CLIMATE, lower = 0, min.len = 1)
-  checkmate::assert_numeric(B_CT_BIO, lower = 0, min.len = 1)
-  checkmate::assert_numeric(B_CT_LANDSCAPE, lower = 0, min.len = 1)
-  
+
   # check and update the measure table
   dt.meas.farm <- bbwp_check_meas(dt = measures, eco = TRUE, score = TRUE)
   dt.meas.field <- bbwp_check_meas(dt = NULL, eco = TRUE, score = FALSE)
   dt.meas.eco <- as.data.table(BBWPC::er_measures)
     
-  # subset both measurement tables
+  # subset both measurement tables # Add EB18 here Gerard
   dt.meas.field <- dt.meas.field[grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field',]
   dt.meas.farm <- dt.meas.farm[level == 'farm']
   
@@ -101,12 +90,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                    B_LU_ARABLE_ER = B_LU_ARABLE_ER, 
                    B_LU_PRODUCTIVE_ER = B_LU_PRODUCTIVE_ER,
                    B_LU_CULTIVATED_ER = B_LU_CULTIVATED_ER,
-                   B_AREA = B_AREA,
-                   B_CT_SOIL = B_CT_SOIL, 
-                   B_CT_WATER = B_CT_WATER,
-                   B_CT_CLIMATE = B_CT_CLIMATE,
-                   B_CT_BIO = B_CT_BIO,
-                   B_CT_LANDSCAPE = B_CT_LANDSCAPE)
+                   B_AREA = B_AREA)
   
   # add regional correction value for price
   dt <- merge(dt,dt.er.reward[,.(statcode,reward_cf = er_cf)], 
@@ -126,7 +110,8 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                     dt.meas.eco, 
                     by = c('B_LU_BRP','eco_id'),
                     all.x = TRUE)
-  dt.field[is.na(eco_app),eco_app := 0]
+  dt.field[is.na(eco_app) & !grepl('EG20',eco_id),eco_app := 0]
+  dt.field[is.na(eco_app) & grepl('EG20',eco_id), eco_app := 1]
   
     # columns with the Ecoregelingen ranks and reward
     cols <- c('er_soil','er_water','er_biodiversity','er_climate','er_landscape','er_euro_ha', 'er_euro_farm')
@@ -151,7 +136,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     # set the score to zero when not applicable for a given ER combined category
     dt.field[eco_app == 0, c(cols) := 0]
    
-    # set measures not applicable on arable, cultivated or productive land
+    # set measures not applicable on arable, cultivated or productive land (only for measures that are crop rotation based)
     dt.field[B_LU_ARABLE_ER  == TRUE & b_lu_arable_er  == 0, c(cols) := 0]
     dt.field[B_LU_PRODUCTIVE_ER == TRUE & b_lu_productive_er == 0, c(cols) := 0]
     dt.field[B_LU_CULTIVATED_ER  == TRUE & b_lu_cultivated_er == 0, c(cols) := 0]
@@ -252,6 +237,10 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       # adapt the score when measure is not applicable
       dt.meas.farm[fsector == 0, c(cols) := 0]
       
+      # farm measures do not have a field_id
+      scols <- colnames(dt.meas.farm)[grepl('^er_|bbwp_id|bbwp_conflict',colnames(dt.meas.farm))]
+      dt.meas.farm <- unique(dt.meas.farm[,mget(scols)])
+      
       # multiply by (political) urgency
       dt3 <- melt(dt.meas.farm, 
                   id.vars = c('bbwp_id','bbwp_conflict'),
@@ -270,6 +259,9 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt4[, total := biodiversity + climate + landscape + soil + water]
       dt4[, oid := frank(-total, ties.method = 'first',na.last = 'keep'),by = c('bbwp_conflict')]
       dt4[oid > 1, c(cols) := 0]
+      
+      # measure index crop diversificaiton (score dependent on cultivated area)
+      dt4[grepl('B189|B190|B191',bbwp_id), c(cols) := lapply(.SD, function (x) x * dt.farm$area_cultivated / dt.farm$area_farm),.SDcols = cols]
       
       # add correction reward
       cfr <- weighted.mean(x = dt$reward_cf, w = dt$B_AREA)

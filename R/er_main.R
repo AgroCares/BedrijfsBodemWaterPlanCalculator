@@ -34,7 +34,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
   
   # add visual bindings
   S_ER_TOT = S_ER_SOIL = S_ER_WATER = S_ER_CLIMATE = S_ER_BIODIVERSITY = S_ER_LANDSCAPE = S_ER_REWARD = NULL
-  medal = NULL
+  medal = s_er_medal = field_id = NULL
   
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
@@ -58,17 +58,11 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
                                B_LU_CULTIVATED_ER = B_LU_CULTIVATED_ER,
                                B_AREA = B_AREA,
                                B_AER_CBS = B_AER_CBS,
-                               B_CT_SOIL = dt.farm.aim$B_CT_SOIL, 
-                               B_CT_WATER = dt.farm.aim$B_CT_WATER,
-                               B_CT_CLIMATE = dt.farm.aim$B_CT_CLIMATE,
-                               B_CT_BIO = dt.farm.aim$B_CT_BIO,
-                               B_CT_LANDSCAPE = dt.farm.aim$B_CT_LANDSCAPE,
                                measures = measures, 
                                sector = sector)
 
   # Calculate the ER farm score
-  dt.farm <- er_farm_score(S_ER_TOT = dt.fields$S_ER_TOT,
-                           S_ER_SOIL = dt.fields$S_ER_SOIL,
+  dt.farm <- er_farm_score(S_ER_SOIL = dt.fields$S_ER_SOIL,
                            S_ER_WATER = dt.fields$S_ER_WATER,
                            S_ER_CLIMATE = dt.fields$S_ER_CLIMATE,
                            S_ER_BIODIVERSITY = dt.fields$S_ER_BIODIVERSITY,
@@ -76,17 +70,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
                            S_ER_REWARD = dt.fields$S_ER_REWARD,
                            B_AREA = B_AREA)
  
-  # estimate the medals
-  dt.fields[, medal := er_medal(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
-                                S_ER_TOT = S_ER_TOT,
-                                S_ER_SOIL = S_ER_SOIL,
-                                S_ER_WATER = S_ER_WATER,
-                                S_ER_CLIMATE = S_ER_CLIMATE,
-                                S_ER_BIODIVERSITY = S_ER_BIODIVERSITY,
-                                S_ER_LANDSCAPE = S_ER_LANDSCAPE,
-                                S_ER_REWARD = S_ER_REWARD,
-                                B_AREA = B_AREA, type = 'field')]
-  
+  # estimate the medal on farm level
   dt.farm[, medal := er_medal(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                               S_ER_TOT = dt.fields$S_ER_TOT,
                               S_ER_SOIL = dt.fields$S_ER_SOIL,
@@ -97,18 +81,23 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
                               S_ER_REWARD = dt.fields$S_ER_REWARD,
                               B_AREA = B_AREA, type = 'farm')]
   
-  # correct total reward in dt.fields after medal is awarded 
-  dt.fields[medal == "bronze", S_ER_REWARD := 70]
-  dt.fields[medal == "silver", S_ER_REWARD := 110]
-  dt.fields[medal == "gold", S_ER_REWARD := 175]
-  dt.fields[medal == "none", S_ER_REWARD := 0]
-  
   # correct total reward in dt.farm after medal is awarded
   dt.farm[medal == "bronze", S_ER_REWARD := 70]
   dt.farm[medal == "silver", S_ER_REWARD := 110]
   dt.farm[medal == "gold", S_ER_REWARD := 175]
   dt.farm[medal == "none", S_ER_REWARD := 0]
 
+  # estimate the opportunity index for farm and field
+  dt.opi <- er_opi(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
+                   S_ER_SOIL = dt.fields$S_ER_SOIL,
+                   S_ER_WATER = dt.fields$S_ER_WATER,
+                   S_ER_CLIMATE = dt.fields$S_ER_CLIMATE,
+                   S_ER_BIODIVERSITY = dt.fields$S_ER_BIODIVERSITY,
+                   S_ER_LANDSCAPE = dt.fields$S_ER_LANDSCAPE,
+                   S_ER_REWARD = dt.fields$S_ER_REWARD,
+                   B_AREA = B_AREA,
+                   medalscore = medalscore)
+  
   # return output when preferred measures are requested
   if(output == 'measures'){
     
@@ -151,18 +140,38 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
   # return output when BBWP field and farm scores are requested
   if(output == 'scores'){
     
-    # Set the column names to lowercase
-    setnames(dt.fields, colnames(dt.fields), tolower(colnames(dt.fields)))
-    setnames(dt.farm, colnames(dt.farm), tolower(colnames(dt.farm)))
+    # copy the opportunity indexes on field level (given their contribution to farm score)
+    # 90% of score is for the indicator, 10% for the farm reward
     
-    # Add field id
-    setnames(dt.fields,old = c('id','medal'),new = c('field_id','s_er_medal'))
+    if (FALSE){
+      
+      # select field output where bars reflect contribution to desired total farm score
+      out.field <- copy(dt.opi$dt.field.ind.score)
+      
+    } else {
+      
+      # reset field scores to be similar to the farm score
+      out.field <- copy(dt.opi$dt.farm.ind.score)[rep(1,max(dt.fields$id))]
+      out.field[,field_id := .I]
+      setnames(out.field, tolower(colnames(out.field)))
+      setcolorder(out.field,
+                  c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity","s_er_landscape","s_er_tot","s_er_reward"))
+      
+      
+    }
     
-    # add fake medal for the moment
-    setnames(dt.farm,'medal','s_er_medal')
+    # add the farm medal to the field
+    out.field[, s_er_medal := dt.farm$medal]
+    
+    # copy the farm output and set to lower case
+    out.farm <- copy(dt.opi$dt.farm.ind.score)
+    setnames(out.farm, tolower(colnames(out.farm)))
+    
+    # add medal 
+    out.farm[, s_er_medal := dt.farm$medal]
     
     # set output object
-    out <- list(farm = as.list(dt.farm),fields = dt.fields)
+    out <- list(farm = as.list(out.farm),fields = out.field)
     
   }
   

@@ -85,12 +85,12 @@ test_that("check bbwp_meas_scores", {
     object = test,
     expected = data.table(
       id = 1:4,
-      D_MEAS_NGW = c(0,0,0.25,0),
-      D_MEAS_NSW = c(0.0125,0.,0.125,0),
-      D_MEAS_PSW = c(0,0,0,0),
-      D_MEAS_NUE = c(0.0825,0,0.1458,0),
-      D_MEAS_WB = c(0.18675,0,0.0625,0),
-      D_MEAS_TOT = c(0.05635,0,0.11667,0)
+      D_MEAS_NGW = c(0.0125,0,3.8,0),
+      D_MEAS_NSW = c(0.3,0,3.8,0),
+      D_MEAS_PSW = c(3.75,0,0,0),
+      D_MEAS_NUE = c(96250001,0,2,0),
+      D_MEAS_WB = c(1,0,10,0),
+      D_MEAS_TOT = c(19250001,0,4,0)
     ),
     tolerance = 1,
     ignore_attr = TRUE)

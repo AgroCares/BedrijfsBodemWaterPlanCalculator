@@ -1,3 +1,23 @@
+# BBWPC v0.10.0
+## Fixed
+* test csv files removed from package directory and dev directory
+* threshold of scores for medals are set to zero for indicators climate and water (only on peat soils)
+* the absolute total score is used for medal check instead of the integrative total score 
+* no "terras" measures are recommended for fields where B_SLOPE_DEGREE is less than 2\% (fix in `bbwp_meas_rank`)
+
+## Added
+* function `er_opi` to estimate the contribution of single fields to the farm score
+* exception for measure G20 is added to `er_meas_rank`, `er_meas_score` and `er_crop_rotation`.
+
+## Changed
+* the field score is set equal to the farm score for Ecoregeling method
+* input arguments `B_CT_??` are removed from `er_crop_rotation`,`er_field_score`
+* input argument `E_ER_TOT` is removed from `er_farm_score`
+* adjust targets for landscape in the final scoring in `er_medal` and `er_opi`; there is no minimum needed.
+* the indicator score is set to the contribution of single fields to the farm score. The function `er_field_score` givers therefore the actual score per hectare, and not the relative score given target.
+* measures table is updated (some levels (field vs farm) have been altered)
+
+
 # BBWPC v0.9.1
 ## Added
 * Added table with BBWPC variable from pandex to standardise parameter checks

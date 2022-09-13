@@ -3,15 +3,10 @@ require(data.table);library(usethis)
 
 # -- prepare measures table -----
 
-  # load measures table (under construction)
-  bbwp_measures <- fread('dev/measures_from_main.csv', encoding = 'UTF-8')
+  # load measures table
+  bbwp_measures <- fread('dev/measures.csv', encoding = 'UTF-8')
   bbwp_measures[bbwp_measures == ''] <- NA
 
-  # load measues table from Astrid, and merge regio_factor
-  bbwp_rf <- fread('dev/measures.csv')
-  bbwp_rf <- bbwp_rf[,.(bbwp_id,regio_factor)]
-  bbwp_measures <- merge(bbwp_measures,bbwp_rf,by='bbwp_id',all.x = TRUE)
-  
   # setcolorder
   setcolorder(bbwp_measures,'bbwp_id')
   
@@ -52,13 +47,10 @@ require(data.table);library(usethis)
     setnames(bbwp_measures, 
              old = c('bouwland', 'productief', 'beteelbaar'), 
              new = c('b_lu_arable_er','b_lu_productive_er','b_lu_cultivated_er'))
+  
+    # remove duplicated columns
+    bbwp_measures[,c(paste0('c',1:12)) := NULL]
     
-    # columns to remove
-    cols.rem <- paste0('c',1:29)
-    
-    # remove columns
-    bbwp_measures[,c(cols.rem):= NULL]
- 
   # save measures as bbwp table
   use_data(bbwp_measures, overwrite = TRUE)
   
@@ -66,9 +58,42 @@ require(data.table);library(usethis)
 
   # load in csv  
   er_measures <- fread('dev/eco_brp.csv', encoding = 'UTF-8')
+  
+  # BRP ids for nature, buffer zones
+  cols <- c(863,7002,7003,1936,1940,2617,2619,2621,2622,2626,2628,2630,2631,2640,2641,2642,2643,2644,2636,2638,2620,2639,2618,2624,2625,2629,2637)
+    
+  # get right brp codes for each measure
+  er_measures <- er_measures[!eco_id %in% c("EG11","EG10A","EG10B","EG22","EB4A","EB4B","EB5A","EB5B","EB10","EB12","EB13A","EB13B","EB14A","EB14B","EB14C","EB15","EB18","EB19")]
+  d1 <- er_crops[, .(B_LU_BRP)][, eco_id := "EG11"]
+  d2 <- er_crops[!B_LU_BRP %in% c(343,cols), .(B_LU_BRP)][, eco_id := "EG10A"]
+  d3 <- er_crops[!B_LU_BRP %in% c(343,cols), .(B_LU_BRP)][, eco_id := "EG10B"]
+  d4 <- er_crops[productive ==1, .(B_LU_BRP)][, eco_id := "EG22"]
+  d5 <- er_crops[bouwland ==1 | B_LU_BRP %in% c(cols), .(B_LU_BRP)][, eco_id := "EB4A"]
+  d6 <- er_crops[bouwland ==1 | B_LU_BRP %in% c(cols), .(B_LU_BRP)][, eco_id := "EB4B"]
+  d7 <- er_crops[bouwland ==1, .(B_LU_BRP)][, eco_id := "EB5A"]
+  d8 <- er_crops[bouwland ==1, .(B_LU_BRP)][, eco_id := "EB5B"]
+  d9 <- er_crops[productive ==1, .(B_LU_BRP)][, eco_id := "EB10"]
+  d10 <- er_crops[bouwland ==1 | B_LU_BRP %in% c(3501, 3502, 3503, 3504, 3510, 3505, 3506, 801, 3507, 3508, 3509, 428, 3512, 670, 3500, 
+                                                 3511, 3515, 799, 3524, 663, 258, 3514, 426, 3807, 800, 3808, 3517, 3518, 3519, 3520, 
+                                                 3522, 3523, 3513, 802, 803, 515, 669), .(B_LU_BRP)][, eco_id := "EB12"]
+  d11 <- er_crops[bouwland ==1, .(B_LU_BRP)][, eco_id := "EB13A"]
+  d12 <- er_crops[bouwland ==1, .(B_LU_BRP)][, eco_id := "EB13B"]
+  d13 <- er_crops[bouwland ==1, .(B_LU_BRP)][, eco_id := "EB14A"]
+  d14 <- er_crops[bouwland ==1, .(B_LU_BRP)][, eco_id := "EB14B"]
+  d15 <- er_crops[bouwland ==1, .(B_LU_BRP)][, eco_id := "EB14C"]
+  d16 <- er_crops[bouwland ==1, .(B_LU_BRP)][, eco_id := "EB15"]
+  d17 <- er_crops[bouwland ==1, .(B_LU_BRP)][, eco_id := "EB18"]
+  d18 <- er_crops[bouwland ==1, .(B_LU_BRP)][, eco_id := "EB19"]
 
-  # setnames
-  setnames(er_measures,old = 'brp_code', new = 'B_LU_BRP',skip_absent = TRUE)
+  # bind all tables together
+  setnames(er_measures,"brp_code","B_LU_BRP")
+  all <- rbind(er_measures,d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15,d16,d17,d18)
+  
+  # remove codes higher than 7000 
+  all <- all[B_LU_BRP < 7000,]
+
+  # overwrite table
+  er_measures <- copy(all)
   
   # add a column with applicability
   er_measures[, eco_app := 1]
