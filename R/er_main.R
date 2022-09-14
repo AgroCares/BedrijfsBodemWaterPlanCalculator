@@ -163,6 +163,9 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     # add the farm medal to the field
     out.field[, s_er_medal := dt.farm$medal]
     
+    # add reward corresponding with medal to the field
+    out.field[, s_er_reward := dt.farm$S_ER_REWARD]
+    
     # copy the farm output and set to lower case
     out.farm <- copy(dt.opi$dt.farm.ind.score)
     setnames(out.farm, tolower(colnames(out.farm)))
