@@ -1,3 +1,20 @@
+# BBWPC v0.10.1
+## Fixed
+* reward is now corresponding with the medal and a fixed value for bronze, silver and gold
+* minor error in test data `test-er`
+
+## Added
+* visible binding `s_er_reward` added to `er_main`
+
+
+## Changed
+* the field score is set equal to the farm score for Ecoregeling method
+* input arguments `B_CT_??` are removed from `er_crop_rotation`,`er_field_score`
+* input argument `E_ER_TOT` is removed from `er_farm_score`
+* adjust targets for landscape in the final scoring in `er_medal` and `er_opi`; there is no minimum needed.
+* the indicator score is set to the contribution of single fields to the farm score. The function `er_field_score` givers therefore the actual score per hectare, and not the relative score given target.
+* measures table is updated (some levels (field vs farm) have been altered)
+
 # BBWPC v0.10.0
 ## Fixed
 * test csv files removed from package directory and dev directory
