@@ -54,6 +54,6 @@ test_that("check er_opi", {
 test_that("check er_opi", {
   expect_equal(
     test$dt.field.ind.score$s_er_biodiversity,
-    expected = c(10,16,23,28,34),
+    expected = c(116,122,129,134,140),
     tolerance = 0.01)
 })

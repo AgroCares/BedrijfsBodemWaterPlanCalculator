@@ -53,12 +53,12 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
     expect_equal(
       object = colnames(test$fields),
       expected = c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity",
-                   "s_er_landscape","s_er_tot","s_er_reward","s_er_medal"))
+                   "s_er_landscape","s_er_farm_tot","s_er_costs","s_er_medal","s_er_reward"))
   })
   
   test_that("check ecoregeling", {
     expect_equal(
-      object = test$fields$s_er_tot,
+      object = test$fields$s_er_farm_tot,
       expected = c(0,0,0),
       tolerance = 0.01)
   })
@@ -66,7 +66,7 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check ecoregeling", {
     expect_equal(
       object = as.character(unlist(test$farm)),
-      expected = c(0,0,0,0,100,0,0,'none'),
+      expected = c(0,0,0,0,0,0,0,'none'),
       tolerance = 0.01)
   })
 
@@ -142,7 +142,7 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   # run tests on format and output values
   test_that("check ecoregeling", {
     expect_equal(
-      object = test$fields$s_er_tot,
+      object = test$fields$s_er_farm_tot,
       expected = c(100,100,100),
       tolerance = 0.01)
   })
