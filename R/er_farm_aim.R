@@ -15,7 +15,7 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
   
   # add visual bindings
   . = type = soiltype = value.mis = value = farmid = NULL
-  code = value_min = value_max = choices = NULL
+  code = value_min = value_max = choices = cf_farm_tot = cf_costs = NULL
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
@@ -108,6 +108,9 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
            c('cf_soil', 'cf_water','cf_climate', 'cf_biodiversity','cf_landscape','cf_farm_tot','cf_costs'),
            c('B_CT_SOIL', 'B_CT_WATER','B_CT_CLIMATE','B_CT_BIO','B_CT_LANDSCAPE','B_CT_FARM_TOT','B_CT_COSTS')) 
   
+  # round values
+  out.tgt <- round(out.tgt,1)
+  
   # return output if thresholds for medals are requested
   if(thresholds == TRUE){
 
@@ -129,7 +132,10 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
     setnames(out.threshold,
              c('cf_soil', 'cf_water','cf_climate', 'cf_biodiversity','cf_landscape','cf_farm_tot','cf_costs'),
              c('B_CT_SOIL', 'B_CT_WATER','B_CT_CLIMATE','B_CT_BIO','B_CT_LANDSCAPE','B_CT_FARM_TOT','B_CT_COSTS')) 
-   
+    
+    # round values
+    out.threshold <- round(out.threshold,1)
+    
     # set output object with target and thresholds
     out <- list(target = as.list(out.tgt),farm.thresholds = out.threshold)
     
