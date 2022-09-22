@@ -150,14 +150,16 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
       
     } else {
       
+      # select field output where bars reflect contribution to desired total farm score
+      out.field <- copy(dt.opi$dt.field.ind.score)
+      
       # reset field scores to be similar to the farm score
-      out.field <- copy(dt.opi$dt.farm.ind.score)[rep(1,max(dt.fields$id))]
-      out.field[,field_id := .I]
-      setnames(out.field, tolower(colnames(out.field)))
-      setcolorder(out.field,
-                  c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity","s_er_landscape","s_er_tot","s_er_reward"))
-      
-      
+      #out.field <- copy(dt.opi$dt.farm.ind.score)[rep(1,max(dt.fields$id))]
+      #out.field[,field_id := .I]
+      #setnames(out.field, tolower(colnames(out.field)))
+      #setcolorder(out.field,
+      #            c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity","s_er_landscape","s_er_farm_tot","s_er_costs")) 
+
     }
     
     # add the farm medal to the field
@@ -173,10 +175,22 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     # add medal 
     out.farm[, s_er_medal := dt.farm$medal]
     
-    # set output object
-    out <- list(farm = as.list(out.farm),fields = out.field)
+    # include thresholds into output when this is requested
+    if(is.null(dt.farm.aim$thresholds)){
+      
+      # set output object when no thresholds are requested
+      out <- list(farm = as.list(out.farm),fields = out.field)
+      
+      
+    } else {
+      
+      # set output object if thresholds are requested
+      out <- list(farm = as.list(out.farm),fields = out.field, farm.thresholds = dt.farm.aim$thresholds)
+      
+    }
     
-  }
+    
+    }
   
   
   # return output
