@@ -176,7 +176,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     out.farm[, s_er_medal := dt.farm$medal]
     
     # include thresholds into output when this is requested
-    if(is.null(dt.farm.aim$thresholds)){
+    if(is.null(dt.farm.aim$farm.thresholds)){
       
       # set output object when no thresholds are requested
       out <- list(farm = as.list(out.farm),fields = out.field)
@@ -185,7 +185,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     } else {
       
       # set output object if thresholds are requested
-      out <- list(farm = as.list(out.farm),fields = out.field, farm.thresholds = dt.farm.aim$thresholds)
+      out <- list(farm = as.list(out.farm),fields = out.field, farm.thresholds = dt.farm.aim$farm.thresholds)
       
     }
     
