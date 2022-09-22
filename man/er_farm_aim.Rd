@@ -4,7 +4,13 @@
 \alias{er_farm_aim}
 \title{Calculate the minimum required Ecoregelingen Scores on Farm level}
 \usage{
-er_farm_aim(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore = NA_real_)
+er_farm_aim(
+  B_SOILTYPE_AGR,
+  B_AREA,
+  medalscore = "gold",
+  farmscore = NA_real_,
+  thresholds = TRUE
+)
 }
 \arguments{
 \item{B_SOILTYPE_AGR}{(character) The type of soil}
