@@ -62,8 +62,8 @@ er_opi <- function(B_SOILTYPE_AGR,
                    B_AREA = B_AREA
                    )
   
-  # count the total score per field (scores / ha)
-  dt[, S_ER_FARM_TOT := S_ER_SOIL + S_ER_WATER + S_ER_CLIMATE + S_ER_BIODIVERSITY + S_ER_LANDSCAPE]
+  # count the average total score per field, averaged over the eco goals (scores / ha) 
+  dt[, S_ER_FARM_TOT := (S_ER_SOIL + S_ER_WATER + S_ER_CLIMATE + S_ER_BIODIVERSITY + S_ER_LANDSCAPE)/5 ]
 
   # estimate the farm scores
   
