@@ -184,6 +184,9 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     out.farm[, s_er_reward := dt.farm$S_ER_REWARD]
     out.farm[, s_er_tot := dt.opi$dt.farm.score]
     
+    # set maximum for s_er_costs
+    out.farm[, s_er_costs := pmin(250,s_er_costs)]
+    
     # add thresholds
     out <- list(farm = as.list(out.farm),
                 fields = out.field, 
