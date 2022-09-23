@@ -63,7 +63,7 @@ er_opi <- function(B_SOILTYPE_AGR,
                    )
   
   # count the average total score per field, averaged over the eco goals (scores / ha) 
-  dt[, S_ER_FARM_TOT := (S_ER_SOIL + S_ER_WATER + S_ER_CLIMATE + S_ER_BIODIVERSITY + S_ER_LANDSCAPE)/5 ]
+  dt[, S_ER_FARM_TOT := max((S_ER_SOIL + S_ER_WATER + S_ER_CLIMATE + S_ER_BIODIVERSITY + S_ER_LANDSCAPE),0.001)/5]
 
   # estimate the farm scores
   
@@ -81,10 +81,10 @@ er_opi <- function(B_SOILTYPE_AGR,
 
     # add the aim
     dt.farm[indicator=='S_ER_SOIL', S_AIM := dt.farm.aim$B_CT_SOIL]
-    dt.farm[indicator=='S_ER_WATER', S_AIM := dt.farm.aim$B_CT_WATER]
+    dt.farm[indicator=='S_ER_WATER', S_AIM := max(dt.farm.aim$B_CT_WATER,0.001)]
     dt.farm[indicator=='S_ER_CLIMATE', S_AIM := dt.farm.aim$B_CT_CLIMATE]
     dt.farm[indicator=='S_ER_BIODIVERSITY', S_AIM := dt.farm.aim$B_CT_BIO]
-    dt.farm[indicator=='S_ER_LANDSCAPE', S_AIM := dt.farm.aim$B_CT_LANDSCAPE]
+    dt.farm[indicator=='S_ER_LANDSCAPE', S_AIM := max(dt.farm.aim$B_CT_LANDSCAPE,0.001)]
     dt.farm[indicator=='S_ER_REWARD', S_AIM := mcosts]
     dt.farm[indicator=='S_ER_FARM_TOT', S_AIM :=  dt.farm.aim$B_CT_FARM_TOT]
 
