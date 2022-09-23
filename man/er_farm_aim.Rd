@@ -9,7 +9,7 @@ er_farm_aim(
   B_AREA,
   medalscore = "gold",
   farmscore = NA_real_,
-  thresholds = TRUE
+  thresholds = FALSE
 )
 }
 \arguments{
@@ -20,6 +20,8 @@ er_farm_aim(
 \item{medalscore}{(character) The desired medal score expressed as bronze, silver or gold}
 
 \item{farmscore}{(numeric) The desired total ER score on farm level}
+
+\item{thresholds}{(boolean) The threshold of scores for medals bronze, silver and gold should be included in output (options: TRUE or FALSE)}
 }
 \description{
 Estimate the  required score on farm level for soil quality, water quality, climate, biodiversity and landscape given soil type. Unit is score per hectare.
