@@ -182,7 +182,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     # add medal and reward
     out.farm[, s_er_medal := dt.farm$medal]
     out.farm[, s_er_reward := dt.farm$S_ER_REWARD]
-    out.farm[, s_er_tot := dt.farm$S_ER_TOT] #dt.opi$dt.farm.score
+    out.farm[, s_er_tot := dt.opi$dt.farm.score]
     
     # add thresholds
     out <- list(farm = as.list(out.farm),
