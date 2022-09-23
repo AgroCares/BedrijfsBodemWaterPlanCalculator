@@ -11,7 +11,7 @@
 #'
 #' @export
 # calculate the desired Ecoregeling Score for a farm
-er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore = NA_real_, thresholds = TRUE){
+er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore = NA_real_, thresholds = FALSE){
   
   # add visual bindings
   . = type = soiltype = value.mis = value = farmid = NULL
@@ -32,35 +32,20 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
   er_aim <- as.data.table(BBWPC::er_scoring)[type == 'aim'][,type := NULL]
   
   # make internal table
-  dt1 <- data.table(id = 1:arg.length,
+  dt <- data.table(id = 1:arg.length,
                    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                    B_AREA = B_AREA,
-                   medalscore = "gold",
                    farmscore = farmscore)
 
-  dt2 <- data.table(id = 1:arg.length,
-                    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
-                    B_AREA = B_AREA,
-                    medalscore = "silver",
-                    farmscore = farmscore)
-  
-  dt3 <- data.table(id = 1:arg.length,
-                    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
-                    B_AREA = B_AREA,
-                    medalscore = "bronze",
-                    farmscore = farmscore)
-  
-  dt <- rbind(dt1,dt2,dt3)
+  # merge with all options medal score
+  dt <- merge(dt,
+              CJ(id=1:arg.length,medalscores = c('gold','silver','bronze')),
+              by = 'id')
   
   # calculate minimum score for medals: score per ha
-  # dt[medalscore == "bronze" & is.na(farmscore),farmscore := 14]
-  # dt[medalscore == "silver" & is.na(farmscore),farmscore := 22]
-  # dt[medalscore == "gold" & is.na(farmscore),farmscore := 35]
-  
-  # calculate minimum score for medals: score per ha
-  dt[medalscore == "bronze",farmscore := 14]
-  dt[medalscore == "silver",farmscore := 22]
-  dt[medalscore == "gold",farmscore := 35]
+  dt[medalscores == "bronze",farmscore := 14]
+  dt[medalscores == "silver",farmscore := 22]
+  dt[medalscores == "gold",farmscore := 35]
   
   # add soil type
   dt[grepl('klei', B_SOILTYPE_AGR) , soiltype := 'klei']
@@ -72,7 +57,8 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
   dt <- merge(dt, er_aim,by='soiltype')
   
   # reshape table to estimate minimum score per indicator on farm level
-  dt <- melt(dt,id.vars = c('id','B_AREA','farmscore','medalscore'),
+  dt <- melt(dt,
+             id.vars = c('id','B_AREA','farmscore','medalscores'),
              measure.vars = c('cf_soil', 'cf_water','cf_climate', 'cf_biodiversity','cf_landscape'),
              variable.name = 'indicator')
   
@@ -80,78 +66,70 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
   # dt[value == 0, value := value.mis]
   
   # weighted mean on farm level
-  dt <- dt[,list(er_score = weighted.mean(farmscore * value,w = B_AREA)), by = c('indicator','medalscore')]
+  dt <- dt[,list(er_score = weighted.mean(farmscore * value,w = B_AREA)), by = c('indicator','medalscores')]
 
   # select rows in dt that match the desired medal score  
   v = medalscore
-  out.tgt <- dt[medalscore %in% v,]
+  out.tgt <- dt[medalscores == v,]
   
   # dcast the table to make selection easier
-  out.tgt <- dcast(out.tgt,medalscore~indicator,value.var = 'er_score')
+  out.tgt <- dcast(out.tgt,medalscores~indicator,value.var = 'er_score')
   
-  # calculate target score for farm total
-  out.tgt <- out.tgt[, cf_farm_tot := sum(out.tgt[,-1])]
+  # add target costs and total farm score on farm level
+  out.tgt[medalscore == "gold", c('B_CT_FARM_TOT','B_CT_COSTS') := list(175,35)]
+  out.tgt[medalscore == "silver", c('B_CT_FARM_TOT','B_CT_COSTS') := list(100,22)]
+  out.tgt[medalscore == "bronze", c('B_CT_FARM_TOT','B_CT_COSTS') := list(70,14)]
   
-  # add target costs on farm level
-  out.tgt <- out.tgt[medalscore == "gold", cf_costs := 175][medalscore == "gold",cf_farm_tot :=35]
-  out.tgt <- out.tgt[medalscore == "silver", cf_costs := 100][medalscore == "silver",cf_farm_tot :=22]
-  out.tgt <- out.tgt[medalscore == "bronze", cf_costs := 70][medalscore == "bronze",cf_farm_tot :=14]
-
   # add a farm id
   out.tgt[,farmid := 1]
   
   # remove medalscore from table
-  out.tgt[, medalscore := NULL]
+  out.tgt[, medalscores := NULL]
   
   # update name to set target
   setnames(out.tgt,
-           c('cf_soil', 'cf_water','cf_climate', 'cf_biodiversity','cf_landscape','cf_farm_tot','cf_costs'),
-           c('B_CT_SOIL', 'B_CT_WATER','B_CT_CLIMATE','B_CT_BIO','B_CT_LANDSCAPE','B_CT_FARM_TOT','B_CT_COSTS')) 
+           c('cf_soil', 'cf_water','cf_climate', 'cf_biodiversity','cf_landscape'),
+           c('B_CT_SOIL', 'B_CT_WATER','B_CT_CLIMATE','B_CT_BIO','B_CT_LANDSCAPE')) 
+  
+  # setcolorder
+  setcolorder(out.tgt,'farmid')
   
   # round values
   out.tgt <- round(out.tgt,1)
   
   # return output if thresholds for medals are requested
   if(thresholds == TRUE){
-
+    
     # dcast the table to make selection easier
-    out.threshold <- dcast(dt,medalscore~indicator,value.var = 'er_score')  
+    out.threshold <- dcast(dt,medalscores~indicator,value.var = 'er_score')  
     
-    # select columns
-    cols <- c('cf_soil', 'cf_water','cf_climate', 'cf_biodiversity','cf_landscape')
-    
-    # calculate target score for farm total
-    out.threshold <- out.threshold[, cf_farm_tot := rowSums(.SD), .SDcols = cols]
+    # add farm targets on farm level 
+    out.threshold[medalscores == "bronze",er_th_farmtotal := 14]
+    out.threshold[medalscores == "silver",er_th_farmtotal := 22]
+    out.threshold[medalscores == "gold",er_th_farmtotal := 35]
     
     # add target costs on farm level
-    out.threshold <- out.threshold[medalscore == "gold", cf_costs := 175][medalscore == "gold",cf_farm_tot :=35]
-    out.threshold <- out.threshold[medalscore == "silver", cf_costs := 100][medalscore == "silver",cf_farm_tot :=22]
-    out.threshold <- out.threshold[medalscore == "bronze", cf_costs := 70][medalscore == "bronze",cf_farm_tot :=14]
+    out.threshold[medalscores == "gold", er_th_costs := 175]
+    out.threshold[medalscores == "silver", er_th_costs := 100]
+    out.threshold[medalscores == "bronze", er_th_costs := 70]
     
     # update name to set absolute thresholds
     setnames(out.threshold,
-             c('cf_soil', 'cf_water','cf_climate', 'cf_biodiversity','cf_landscape','cf_farm_tot','cf_costs'),
-             c('B_CT_SOIL', 'B_CT_WATER','B_CT_CLIMATE','B_CT_BIO','B_CT_LANDSCAPE','B_CT_FARM_TOT','B_CT_COSTS')) 
+             c('cf_soil', 'cf_water','cf_climate', 'cf_biodiversity','cf_landscape'),
+             c('er_th_soil', 'er_th_water','er_th_climate','er_th_biodiversity','er_th_landscape')) 
     
     # round values
-    out.threshold <- round(out.threshold,1)
+    cols <- colnames(out.threshold)[grepl('er_',colnames(out.threshold))]
+    out.threshold[,c(cols) := lapply(.SD,round,1),.SDcols = cols]
     
     # set output object with target and thresholds
-    out <- list(target = as.list(out.tgt),farm.thresholds = out.threshold)
+    out.tgt <- out.threshold
     
-    }
+  } 
+  
 
-  # return output if thresholds for medals are not requested
-  if(thresholds == FALSE){
-  
-    # set output object with targets only 
-    out <- list(target = as.list(out.tgt))
-  
-    }
- 
- 
   # return
-  return(out)
+  return(out.tgt)
 }
 
 

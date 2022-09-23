@@ -48,19 +48,16 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
   
   # get internal tables for minimum scores on farm level
   er_aim.gold <- er_farm_aim(B_SOILTYPE_AGR, B_AREA, medalscore = "gold") 
-  er_aim.gold <- as.data.table(er_aim.gold$target)
   er_aim.gold[,B_CT_TOTAL := B_CT_SOIL + B_CT_WATER + B_CT_CLIMATE + B_CT_BIO + B_CT_LANDSCAPE]
   er_aim.gold[,REWARD := 175]
   er_aim.gold <- melt(er_aim.gold,id.vars = 'farmid',variable.name = 'indicator',value.name = 'er_gold')
   er_aim.gold[,indicator := gsub('B_CT_','',indicator)]
   er_aim.silver <- er_farm_aim(B_SOILTYPE_AGR, B_AREA, medalscore = "silver") 
-  er_aim.silver <- as.data.table(er_aim.silver$target)
   er_aim.silver[,B_CT_TOTAL := B_CT_SOIL + B_CT_WATER + B_CT_CLIMATE + B_CT_BIO + B_CT_LANDSCAPE]
   er_aim.silver[,REWARD := 110]
   er_aim.silver <- melt(er_aim.silver,id.vars = 'farmid',variable.name = 'indicator',value.name = 'er_silver')
   er_aim.silver[,indicator := gsub('B_CT_','',indicator)]
   er_aim.bronze <- er_farm_aim(B_SOILTYPE_AGR, B_AREA, medalscore = "bronze") 
-  er_aim.bronze <- as.data.table(er_aim.bronze$target)
   er_aim.bronze[,B_CT_TOTAL := B_CT_SOIL + B_CT_WATER + B_CT_CLIMATE + B_CT_BIO + B_CT_LANDSCAPE]
   er_aim.bronze[,REWARD := 70]
   er_aim.bronze <- melt(er_aim.bronze,id.vars = 'farmid',variable.name = 'indicator',value.name = 'er_bronze')
@@ -93,16 +90,16 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
   # dt[, score := fifelse(indicator == 'REWARD',value,value * er_gold * 0.01)]
   dt[, score := value]
   
+  # indicator landscape passes the threshold for gold, silver, and bronze in any case
+  cols <- c("er_gold", "er_silver", "er_bronze")
+  dt[indicator == "LANDSCAPE", c(cols) := 0]
+  
+  # indicator water passes the threshold for gold, silver, and bronze always when soil type is "veen"
+  dt[indicator == "WATER" & B_SOILTYPE_AGR == "veen", c(cols) := 0]
+  
   # set output depending on farm or field level
   if(type == 'field'){
     
-    # indicator landscape passes the threshold for gold, silver, and bronze in any case
-    cols <- c("er_gold", "er_silver", "er_bronze")
-    dt[indicator == "LANDSCAPE", c(cols) := 0]
-    
-    # indicator water passes the threshold for gold, silver, and bronze always when soil type is "veen"
-    dt[indicator == "WATER" & B_SOILTYPE_AGR == "veen", c(cols) := 0]
-
     # set checks for medals score per field
     dt[,c_gold := fifelse(score>=er_gold,1,0)] 
     dt[,c_silver := fifelse(score>=er_silver,1,0)]
@@ -125,13 +122,6 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
     # estimate weighted mean score for full farm
     dt.farm <- dt[,lapply(.SD,weighted.mean,w = B_AREA),
                   .SDcols = c('score','er_gold','er_silver','er_bronze'), by = 'indicator']
-    
-    # indicator landscape passes the threshold for gold, silver, and bronze in any case
-    cols <- c("er_gold", "er_silver", "er_bronze")
-    dt.farm[indicator == "LANDSCAPE", c(cols) := 0]
-    
-    # indicator water passes the threshold for gold, silver, and bronze always when soil type is "veen"
-    #dt.farm[indicator == "WATER" & B_SOILTYPE_AGR == "veen", c(cols) := 0]
     
     # set checks for medals score per field
     dt.farm[,c_gold := fifelse(score>=er_gold,1,0)]

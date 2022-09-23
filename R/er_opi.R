@@ -50,9 +50,6 @@ er_opi <- function(B_SOILTYPE_AGR,
   # Calculate the minimum required ER scores on Farm level for the desired medal
   dt.farm.aim <- er_farm_aim(B_SOILTYPE_AGR = B_SOILTYPE_AGR, B_AREA = B_AREA, medalscore = medalscore)
   
-  # Convert list to datatable
-  dt.farm.aim <- as.data.table(dt.farm.aim$target)
-  
   # collect data in one data.table
   dt <- data.table(id = 1:arg.length,
                    B_SOILTYPE_AGR = B_SOILTYPE_AGR,
@@ -76,11 +73,6 @@ er_opi <- function(B_SOILTYPE_AGR,
                     value.name = 'S_ER',
                     variable.name = 'indicator')
 
-    # adjust the current score in the case that there is no minimum needed
-    # be aware, this is done after calculation of the total score
-    #dt.farm[B_SOILTYPE_AGR == 'veen' & indicator == 'S_ER_WATER', S_ER := dt.farm.aim$B_CT_WATER]
-    #dt.farm[indicator == 'S_ER_LANDSCAPE', S_ER := dt.farm.aim$B_CT_LANDSCAPE]
-
     # estimate the mean score (score / ha) per indicator for the whole farm
     dt.farm <- dt.farm[,list(farmid = 1, S_ER = weighted.mean(x = S_ER, w = B_AREA)),by='indicator']
 
@@ -97,62 +89,66 @@ er_opi <- function(B_SOILTYPE_AGR,
     dt.farm[indicator=='S_ER_FARM_TOT', S_AIM :=  dt.farm.aim$B_CT_FARM_TOT]
 
     # estimate distance to target between 0-100
-    dt.farm[, D_FS := round(pmax(0,pmin(100,S_ER * 100 / S_AIM)),0)]
+    dt.farm[, D_OPI := round(pmax(0,pmin(100,S_ER * 100 / S_AIM)),0)]
 
-    # estimate distance to target between 0-50 (only to be used if thresholds for gold, silver and bronze are relative and not absolute?)
-    dt.farm[, D_OPI := round(pmax(0,pmin(50,S_ER*50/S_AIM)),0)]
-
-    # set a weighting factor on the score per indicator
-    dt.farm[, cfFS := wf(D_FS, type="score")]
-    
     # set a weighting factor on the score per indicator (only to be used if thresholds for gold, silver and bronze are relative and not absolute?)
     dt.farm[, cfOPI := wf(D_OPI, type="score")]
 
-    # weighted farm score
-    dt.farm.score <- dt.farm[,weighted.mean(x = D_FS, w = cfFS)]
+    # weighted farm score (based on distance to target, relative)
+    dt.farm.score <- dt.farm[,weighted.mean(x = D_OPI, w = cfOPI)]
     dt.farm.score <- round(dt.farm.score)
 
-    # get the distance to target for the five indicators
+    # get the farm mean scores for the five indicators, farm total and costs
     dt.farm.ind.score <- dcast(dt.farm,farmid ~ indicator, value.var = 'S_ER')
     dt.farm.ind.score[,c('farmid') := NULL]
     
     # rename reward column to costs 
     setnames(dt.farm.ind.score,"S_ER_REWARD","S_ER_COSTS")
 
+    # get the distance to target for the five indicators
+    dt.farm.ind.opi <- dcast(dt.farm,farmid ~ indicator, value.var = 'D_OPI')
+    
+    
   # estimate the distance to target for 5 indicators per field
     
     # estimate the total contribution of a single field to the desired score on farm level (add 0.001 to water and landscape indicators for in case these are zero)
     dt[, D_OPI_SOIL := S_ER_SOIL * B_AREA / (dt.farm.aim$B_CT_SOIL * sum(B_AREA))]
-    dt[, D_OPI_WATER := S_ER_WATER * B_AREA / (dt.farm.aim$B_CT_WATER+0.001 * sum(B_AREA))]
+    dt[, D_OPI_WATER := S_ER_WATER * B_AREA / (max(dt.farm.aim$B_CT_WATER,0.001) * sum(B_AREA))]
     dt[, D_OPI_CLIMATE := S_ER_CLIMATE * B_AREA / (dt.farm.aim$B_CT_CLIMATE * sum(B_AREA))]
     dt[, D_OPI_BIO := S_ER_BIODIVERSITY * B_AREA / (dt.farm.aim$B_CT_BIO * sum(B_AREA))]
-    dt[, D_OPI_LANDSCAPE := S_ER_LANDSCAPE * B_AREA / ((dt.farm.aim$B_CT_LANDSCAPE+0.001) * sum(B_AREA))]
+    dt[, D_OPI_LANDSCAPE := S_ER_LANDSCAPE * B_AREA / (max(dt.farm.aim$B_CT_LANDSCAPE,0.001) * sum(B_AREA))]
     dt[, D_OPI_FARM_TOT := S_ER_FARM_TOT * B_AREA / (dt.farm.aim$B_CT_FARM_TOT * sum(B_AREA))]
     dt[, D_OPI_REWARD := S_ER_REWARD * B_AREA / (mcosts * sum(B_AREA))]
     
     # melt the table
     dt.field <- melt(dt,id.vars = c('id','B_AREA'),
-               measure = patterns("D_OPI"), 
-               value.name = 'D_OPI',
-               variable.name = 'indicator')
+                        measure = patterns("D_OPI"), 
+                        value.name = 'D_OPI',
+                        variable.name = 'indicator')
    
     # contribution of a single field, optimized between 0 and 100
     dt.field[,D_OPI_SCORE := round(100 * pmax(0,pmin(1,D_OPI)),0)]
     
     # add a correction for the distance to target for reward (10%)
-    dt.field[, D_OPI_SCORE := round((0.9 * D_OPI_SCORE) + (10 * dt.farm.ind.score$S_ER_COSTS * 0.01))]
+    dt.field[, D_OPI_SCORE := round((0.9 * D_OPI_SCORE) + (10 * dt.farm.ind.opi$S_ER_REWARD * 0.01))]
     
     # dcast output
     dt.field <- dcast(dt.field,id~indicator, value.var = 'D_OPI_SCORE')
     
     # rename the column names to scores
     setnames(dt.field, 
-             old = c('id' , 'D_OPI_SOIL', 'D_OPI_WATER', 'D_OPI_CLIMATE', 'D_OPI_BIO', 'D_OPI_LANDSCAPE', 'D_OPI_FARM_TOT', 'D_OPI_REWARD'),
-             new = c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity","s_er_landscape","s_er_farm_tot","s_er_costs"))
+             old = c('id' , 'D_OPI_SOIL', 'D_OPI_WATER', 'D_OPI_CLIMATE', 'D_OPI_BIO', 
+                     'D_OPI_LANDSCAPE', 'D_OPI_FARM_TOT', 'D_OPI_REWARD'),
+             new = c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity",
+                     "s_er_landscape","s_er_farm_tot","s_er_costs"))
     
   # collect output
-  out <- list(dt.field.ind.score = dt.field,
+  out <- list(
+              # the relative contribution of a single field to the farm objective
+              dt.field.ind.score = dt.field,
+              # the averaged farm score (mean scores / ha, mean costs / ha)
               dt.farm.ind.score = dt.farm.ind.score,
+              # the BBWP score, being overall distance to target
               dt.farm.score = dt.farm.score)
   
   # return value
