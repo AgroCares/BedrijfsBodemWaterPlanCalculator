@@ -150,7 +150,7 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check ecoregeling", {
     expect_equal(
       object = as.character(unlist(test$farm)),
-      expected = c(31,61,16,77,71,250,51,'gold',175,100),
+      expected = c(31,61,16,77,71,250,56,'gold',175,100),
       tolerance = 0.01)
   })
 
