@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BBWPC</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.2</span>
       </span>
     </div>
 
@@ -53,7 +53,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">er_farm_aim</span><span class="op">(</span><span class="va">B_SOILTYPE_AGR</span>, <span class="va">B_AREA</span>, medalscore <span class="op">=</span> <span class="st">"gold"</span>, farmscore <span class="op">=</span> <span class="cn">NA_real_</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">er_farm_aim</span><span class="op">(</span></span>
+<span>  <span class="va">B_SOILTYPE_AGR</span>,</span>
+<span>  <span class="va">B_AREA</span>,</span>
+<span>  medalscore <span class="op">=</span> <span class="st">"gold"</span>,</span>
+<span>  farmscore <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>  thresholds <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -72,6 +78,10 @@
 
 <dt>farmscore</dt>
 <dd><p>(numeric) The desired total ER score on farm level</p></dd>
+
+
+<dt>thresholds</dt>
+<dd><p>(boolean) The threshold of scores for medals bronze, silver and gold should be included in output (options: TRUE or FALSE)</p></dd>
 
 </dl></div>
 
