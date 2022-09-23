@@ -78,9 +78,9 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
   out.tgt <- dcast(out.tgt,medalscores~indicator,value.var = 'er_score')
   
   # add target costs and total farm score on farm level
-  out.tgt[medalscore == "gold", c('B_CT_FARM_TOT','B_CT_COSTS') := list(175,35)]
-  out.tgt[medalscore == "silver", c('B_CT_FARM_TOT','B_CT_COSTS') := list(100,22)]
-  out.tgt[medalscore == "bronze", c('B_CT_FARM_TOT','B_CT_COSTS') := list(70,14)]
+  out.tgt[medalscore == "gold", c('B_CT_FARM_TOT','B_CT_COSTS') := list(35,175)]
+  out.tgt[medalscore == "silver", c('B_CT_FARM_TOT','B_CT_COSTS') := list(22,100)]
+  out.tgt[medalscore == "bronze", c('B_CT_FARM_TOT','B_CT_COSTS') := list(14,70)]
   
   # add a farm id
   out.tgt[,farmid := 1]
