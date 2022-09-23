@@ -157,6 +157,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
       # select field output where bars reflect contribution to desired total farm score
       out.field <- copy(dt.opi$dt.field.ind.score)
       
+      
     } else {
       
       # reset field scores to be similar to the farm score
@@ -174,6 +175,11 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     
     # add reward corresponding with medal to the field
     out.field[, s_er_reward := dt.farm$S_ER_REWARD]
+    
+    # set column order for field scores
+    setcolorder(out.field,
+                c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity",
+                  "s_er_landscape","s_er_costs","s_er_farm_tot","s_er_medal","s_er_reward","s_er_tot")) 
     
     # copy the farm output and set to lower case
     out.farm <- copy(dt.opi$dt.farm.ind.score)
