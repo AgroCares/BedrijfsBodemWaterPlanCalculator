@@ -104,7 +104,12 @@ er_opi <- function(B_SOILTYPE_AGR,
     
     # rename reward column to costs 
     setnames(dt.farm.ind.score,"S_ER_REWARD","S_ER_COSTS")
-
+    
+    # round values
+    cols <- colnames(dt.farm.ind.score)[grepl('S_ER',colnames(dt.farm.ind.score))]
+    dt.farm.ind.score[,c(cols) := lapply(.SD,round,0),.SDcols = cols]
+    
+    
     # get the distance to target for the five indicators
     dt.farm.ind.opi <- dcast(dt.farm,farmid ~ indicator, value.var = 'D_OPI')
     
@@ -119,6 +124,7 @@ er_opi <- function(B_SOILTYPE_AGR,
     dt[, D_OPI_LANDSCAPE := S_ER_LANDSCAPE * B_AREA / (max(dt.farm.aim$B_CT_LANDSCAPE,0.001) * sum(B_AREA))]
     dt[, D_OPI_FARM_TOT := S_ER_FARM_TOT * B_AREA / (dt.farm.aim$B_CT_FARM_TOT * sum(B_AREA))]
     dt[, D_OPI_REWARD := S_ER_REWARD * B_AREA / (mcosts * sum(B_AREA))]
+    dt[, D_OPI_TOT := S_ER_FARM_TOT * B_AREA / (dt.farm.aim$B_CT_FARM_TOT * sum(B_AREA))]
     
     # melt the table
     dt.field <- melt(dt,id.vars = c('id','B_AREA'),
@@ -127,10 +133,10 @@ er_opi <- function(B_SOILTYPE_AGR,
                         variable.name = 'indicator')
    
     # contribution of a single field, optimized between 0 and 100
-    dt.field[,D_OPI_SCORE := round(100 * pmax(0,pmin(1,D_OPI)),0)]
+    dt.field[,D_OPI_SCORE := round(100 * pmax(0,pmin(1,D_OPI)),0)] # s_er_farm_tot
     
     # add a correction for the distance to target for reward (10%)
-    dt.field[, D_OPI_SCORE := round((0.9 * D_OPI_SCORE) + (10 * dt.farm.ind.opi$S_ER_REWARD * 0.01))]
+    dt.field[indicator != "D_OPI_FARM_TOT", D_OPI_SCORE := round((0.9 * D_OPI_SCORE) + (10 * dt.farm.ind.opi$S_ER_REWARD * 0.01))] ##s_er_tot
     
     # dcast output
     dt.field <- dcast(dt.field,id~indicator, value.var = 'D_OPI_SCORE')
@@ -138,9 +144,9 @@ er_opi <- function(B_SOILTYPE_AGR,
     # rename the column names to scores
     setnames(dt.field, 
              old = c('id' , 'D_OPI_SOIL', 'D_OPI_WATER', 'D_OPI_CLIMATE', 'D_OPI_BIO', 
-                     'D_OPI_LANDSCAPE', 'D_OPI_FARM_TOT', 'D_OPI_REWARD'),
+                     'D_OPI_LANDSCAPE', 'D_OPI_FARM_TOT', 'D_OPI_REWARD', 'D_OPI_TOT'),
              new = c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity",
-                     "s_er_landscape","s_er_farm_tot","s_er_costs"))
+                     "s_er_landscape","s_er_farm_tot","s_er_costs","s_er_tot"))
     
   # collect output
   out <- list(
