@@ -222,7 +222,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, M_
     dt[, er_soil := er_soil * pmax(0.1,1 - dt.farm$soil/B_CT_SOIL)]
     dt[, er_climate := er_climate * pmax(0.1,1 - dt.farm$climate / B_CT_CLIMATE)]
     dt[, er_biodiversity := er_biodiversity * pmax(0.1,1 - dt.farm$biodiversity / B_CT_BIO)]
-    dt[, er_landscape := er_landscape * pmax(0.1,1 - dt.farm$landscape/B_CT_LANDSCAPE)]
+    dt[, er_landscape := er_landscape * pmax(0.1,1 - dt.farm$landscape/max(B_CT_LANDSCAPE,0.001))]
     dt[, er_reward := dt.farm$S_ER_REWARD]
     
     # Calculate total measurement score given the distance to target

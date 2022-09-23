@@ -4,7 +4,13 @@
 \alias{er_farm_aim}
 \title{Calculate the minimum required Ecoregelingen Scores on Farm level}
 \usage{
-er_farm_aim(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore = NA_real_)
+er_farm_aim(
+  B_SOILTYPE_AGR,
+  B_AREA,
+  medalscore = "gold",
+  farmscore = NA_real_,
+  thresholds = FALSE
+)
 }
 \arguments{
 \item{B_SOILTYPE_AGR}{(character) The type of soil}
@@ -14,6 +20,8 @@ er_farm_aim(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore = NA_real_)
 \item{medalscore}{(character) The desired medal score expressed as bronze, silver or gold}
 
 \item{farmscore}{(numeric) The desired total ER score on farm level}
+
+\item{thresholds}{(boolean) The threshold of scores for medals bronze, silver and gold should be included in output (options: TRUE or FALSE)}
 }
 \description{
 Estimate the  required score on farm level for soil quality, water quality, climate, biodiversity and landscape given soil type. Unit is score per hectare.

@@ -1,3 +1,36 @@
+# BBWPC v0.10.2
+## Fixed
+* correction on calculation of `S_ER_FARM_SCORE`: now averaged over the five eco themes
+* the eco scores or eco aims are set to 0.001 when these are 0, to prevent outputs of NA's.
+
+## Added
+* added visible bindings to `er_main`, `er_farm_aim`, `er_medal`, 
+* added argument `thresholds` to `er_farm_aim` for medals 
+* added `s_er_tot` to the field output
+* added aim for total farm score and costs as threshold for medals
+
+## Changed
+* maximum costs is set to 250
+* changed order of output from `ecoregeling` in `er_main`
+* update tests
+
+# BBWPC v0.10.1
+## Fixed
+* reward is now corresponding with the medal and a fixed value for bronze, silver and gold
+* minor error in test data `test-er`
+
+## Added
+* visible binding `s_er_reward` added to `er_main`
+
+
+## Changed
+* the field score is set equal to the farm score for Ecoregeling method
+* input arguments `B_CT_??` are removed from `er_crop_rotation`,`er_field_score`
+* input argument `E_ER_TOT` is removed from `er_farm_score`
+* adjust targets for landscape in the final scoring in `er_medal` and `er_opi`; there is no minimum needed.
+* the indicator score is set to the contribution of single fields to the farm score. The function `er_field_score` givers therefore the actual score per hectare, and not the relative score given target.
+* measures table is updated (some levels (field vs farm) have been altered)
+
 # BBWPC v0.10.0
 ## Fixed
 * test csv files removed from package directory and dev directory
