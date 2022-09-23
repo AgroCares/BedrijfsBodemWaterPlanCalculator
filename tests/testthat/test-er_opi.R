@@ -33,27 +33,27 @@ test_that("check er_opi", {
 test_that("check er_opi", {
   expect_equal(
     names(test$dt.field.ind.score),
-    expected = c('field_id','s_er_soil','s_er_water','s_er_climate','s_er_biodiversity','s_er_landscape','s_er_tot','s_er_reward'),
+    expected = c('field_id','s_er_soil','s_er_water','s_er_climate','s_er_biodiversity','s_er_landscape','s_er_farm_tot','s_er_costs','s_er_tot'),
     tolerance = 0.01)
 })
 
 test_that("check er_opi", {
   expect_equal(
     names(test$dt.farm.ind.score),
-    expected = c('S_ER_SOIL' ,'S_ER_WATER', 'S_ER_CLIMATE', 'S_ER_BIODIVERSITY' ,'S_ER_LANDSCAPE', 'S_ER_REWARD' ,'S_ER_TOT'),
+    expected = c('S_ER_SOIL' ,'S_ER_WATER', 'S_ER_CLIMATE', 'S_ER_BIODIVERSITY' ,'S_ER_LANDSCAPE', 'S_ER_COSTS' ,'S_ER_FARM_TOT'),
     tolerance = 0.01)
 })
 
 test_that("check er_opi", {
   expect_equal(
     test$dt.farm.score,
-    expected = 77,
+    expected = 57,
     tolerance = 0.01)
 })
 
 test_that("check er_opi", {
   expect_equal(
     test$dt.field.ind.score$s_er_biodiversity,
-    expected = c(116,122,129,134,140),
+    expected = c(10,16,23,29,34),
     tolerance = 0.01)
 })
