@@ -124,6 +124,13 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
     cols <- colnames(out.threshold)[grepl('er_',colnames(out.threshold))]
     out.threshold[,c(cols) := lapply(.SD,round,1),.SDcols = cols]
     
+    # set column order for thresholds
+    setcolorder(out.threshold,
+                c('medalscores','er_th_soil', 'er_th_water','er_th_climate','er_th_biodiversity','er_th_landscape','er_th_costs','er_th_farmtotal')) 
+    
+    # set row order (bronze, silver, gold)
+    out.threshold <- out.threshold[c("bronze","silver","gold"),]
+    
     # set output object with target and thresholds
     out.tgt <- out.threshold
     
