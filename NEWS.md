@@ -1,3 +1,19 @@
+# BBWPC v0.10.2
+## Fixed
+* correction on calculation of `S_ER_FARM_SCORE`: now averaged over the five eco themes
+* the eco scores or eco aims are set to 0.001 when these are 0, to prevent outputs of NA's.
+
+## Added
+* added visible bindings to `er_main`, `er_farm_aim`, `er_medal`, 
+* added argument `thresholds` to `er_farm_aim` for medals 
+* added `s_er_tot` to the field output
+* added aim for total farm score and costs as threshold for medals
+
+## Changed
+* maximum costs is set to 250
+* changed order of output from `ecoregeling` in `er_main`
+* update tests
+
 # BBWPC v0.10.1
 ## Fixed
 * reward is now corresponding with the medal and a fixed value for bronze, silver and gold
