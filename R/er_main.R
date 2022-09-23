@@ -34,7 +34,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
   
   # add visual bindings
   S_ER_TOT = S_ER_SOIL = S_ER_WATER = S_ER_CLIMATE = S_ER_BIODIVERSITY = S_ER_LANDSCAPE = S_ER_REWARD = NULL
-  medal = s_er_medal = field_id = s_er_reward = NULL
+  medal = s_er_medal = field_id = s_er_reward = s_er_tot = NULL
   
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
@@ -165,7 +165,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
       setnames(out.field, tolower(colnames(out.field)))
       setcolorder(out.field,
                   c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity",
-                    "s_er_landscape","s_er_farm_tot","s_er_costs")) 
+                    "s_er_landscape","s_er_costs","s_er_farm_tot","s_er_tot")) 
 
     }
     
@@ -182,7 +182,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     # add medal and reward
     out.farm[, s_er_medal := dt.farm$medal]
     out.farm[, s_er_reward := dt.farm$S_ER_REWARD]
-    out.farm[, s_er_tot := dt.farm$S_ER_TOT]
+    out.farm[, s_er_tot := dt.farm$S_ER_TOT] #dt.opi$dt.farm.score
     
     # add thresholds
     out <- list(farm = as.list(out.farm),
