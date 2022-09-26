@@ -35,6 +35,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
   # add visual bindings
   S_ER_TOT = S_ER_SOIL = S_ER_WATER = S_ER_CLIMATE = S_ER_BIODIVERSITY = S_ER_LANDSCAPE = S_ER_REWARD = NULL
   medal = s_er_medal = field_id = s_er_reward = s_er_tot = s_er_costs = NULL
+  s_er_soil = s_er_water = s_er_climate = s_er_biodiversity = s_er_landscape = s_er_farm_tot = NULL 
   
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
@@ -190,8 +191,16 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     out.farm[, s_er_reward := dt.farm$S_ER_REWARD]
     out.farm[, s_er_tot := dt.opi$dt.farm.score]
     
-    # set maximum for s_er_costs
-    out.farm[, s_er_costs := pmin(250,s_er_costs)]
+    # set maximum for s_er_costs at 175 and convert to percentage 
+    out.farm[, s_er_costs := (pmin(175,s_er_costs)/175)*100]
+    
+    # set maximum for eco scores and total farm scores on farm level
+    out.farm[, s_er_soil := pmin(15,s_er_soil)]
+    out.farm[, s_er_water := pmin(15,s_er_soil)]
+    out.farm[, s_er_climate := pmin(15,s_er_climate)]
+    out.farm[, s_er_biodiversity := pmin(15,s_er_biodiversity)]
+    out.farm[, s_er_landscape := pmin(1,s_er_landscape)]
+    out.farm[, s_er_farm_tot:= pmin(50,s_er_farm_tot)]
     
     # add thresholds
     out <- list(farm = as.list(out.farm),
