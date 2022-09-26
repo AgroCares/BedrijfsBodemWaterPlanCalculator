@@ -16,7 +16,7 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
   
   # add visual bindings
   . = type = soiltype = value.mis = value = farmid = NULL
-  code = value_min = value_max = choices = cf_farm_tot = cf_costs = NULL
+  code = value_min = value_max = choices = cf_farm_tot = cf_costs = cf_landscape = cf_water = NULL
   medalscores = er_th_farmtotal = er_th_costs = NULL
   
   # Load bbwp_parms
@@ -93,7 +93,7 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
            c('cf_soil', 'cf_water','cf_climate', 'cf_biodiversity','cf_landscape'),
            c('B_CT_SOIL', 'B_CT_WATER','B_CT_CLIMATE','B_CT_BIO','B_CT_LANDSCAPE')) 
   
-  # setcolorder
+  # set colorder
   setcolorder(out.tgt,'farmid')
   
   # round values
@@ -114,6 +114,20 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
     out.threshold[medalscores == "gold", er_th_costs := 175]
     out.threshold[medalscores == "silver", er_th_costs := 100]
     out.threshold[medalscores == "bronze", er_th_costs := 70]
+    
+    # set threshold of golden medal for landscape to 0.5 and
+    # remove thresholds of bronze and silver medal for landscape
+    out.threshold[medalscores == "gold", cf_landscape := 0.5]
+    out.threshold[medalscores == "silver", cf_landscape := NA_real_]
+    out.threshold[medalscores == "bronze", cf_landscape := NA_real_]
+ 
+    # if farm only includes peat soils, set threshold for water to 0.5 
+    if( all(grepl("veen",B_SOILTYPE_AGR)) == TRUE){
+    
+    out.threshold[medalscores == "gold", cf_water := 0.5]
+    out.threshold[medalscores == "silver", cf_water := NA_real_]
+    out.threshold[medalscores == "bronze", cf_water := NA_real_]
+    }
     
     # update name to set absolute thresholds
     setnames(out.threshold,
