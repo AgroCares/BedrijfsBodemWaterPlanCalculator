@@ -1,3 +1,13 @@
+# BBWPC v0.10.3
+## Added
+* added visible bindings to `er_main` and `er_farm_aim`
+
+## Changed
+* Set maxima for the five eco scores to 15 and for `s_er_farm_tot` to 50.
+* Set maximum for `s_er_costs` to 175 and convert to percentage between 0 and 100
+* Set aim for landscape to 1 and set aim for water to 1 in case all fields have `B_SOILTYPE_AGR` "veen".
+* Update `test-er`
+
 # BBWPC v0.10.2
 ## Fixed
 * correction on calculation of `S_ER_FARM_SCORE`: now averaged over the five eco themes
@@ -21,7 +31,6 @@
 
 ## Added
 * visible binding `s_er_reward` added to `er_main`
-
 
 ## Changed
 * the field score is set equal to the farm score for Ecoregeling method
