@@ -154,9 +154,9 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
     out.threshold.gold <- as.list(out.threshold.gold)
     
     # combine in one output object
-    out.threshold <- c(as.list(out.threshold.bronze),
-                       as.list(out.threshold.silver),
-                       as.list(out.threshold.gold))
+    out.threshold <- c(out.threshold.bronze,
+                       out.threshold.silver,
+                       out.threshold.gold)
     
     # set missing values to NULL
     out.threshold[is.na(out.threshold)] <- list(NULL)
