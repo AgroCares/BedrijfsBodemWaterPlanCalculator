@@ -1,11 +1,9 @@
 # BBWPC v0.10.4
 ## Added
-* the function `ecoregeling` in er_main gives an additional output besides `farm` and `field` named `farm_tresholds`
-* thresholds are given for 7 aims of Ecoregeling
+* the function `ecoregeling` in er_main gives an additional output object besides `farm` and `field`, named `farm_tresholds`
+* farm thresholds are given for 7 aims of Ecoregeling, differentiated for level `bronze`, `silver` or `gold`
 
 # BBWPC v0.10.3
-## Added
-* added visible bindings to `er_main` and `er_farm_aim`
 
 ## Changed
 * Set maxima for the five eco scores to 15 and for `s_er_farm_tot` to 50.
@@ -19,10 +17,9 @@
 * the eco scores or eco aims are set to 0.001 when these are 0, to prevent outputs of NA's.
 
 ## Added
-* added visible bindings to `er_main`, `er_farm_aim`, `er_medal`, 
-* added argument `thresholds` to `er_farm_aim` for medals 
-* added `s_er_tot` to the field output
-* added aim for total farm score and costs as threshold for medals
+* argument `thresholds` to `er_farm_aim` for medals 
+* `s_er_tot` to the field output
+* aim for total farm score and costs as threshold for medals
 
 ## Changed
 * maximum costs is set to 250
