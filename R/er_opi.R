@@ -26,6 +26,8 @@ er_opi <- function(B_SOILTYPE_AGR,
   code = value_min = value_max = S_ER_TOT = patterns = indicator = choices = NULL
   S_ER = S_AIM = D_OPI = cfOPI = D_OPI_SOIL = D_OPI_WATER = D_OPI_CLIMATE = D_OPI_LANDSCAPE = D_OPI_BIO = D_OPI_TOT = D_OPI_REWARD = D_OPI_SCORE = NULL
   S_ER_FARM_TOT = D_FS = cfFS = D_OPI_FARM_TOT = NULL
+  s_er_soil = s_er_water = s_er_climate = s_er_landscape = s_er_biodiversity = s_er_farm_tot = s_er_costs = s_er_tot = NULL
+  
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
