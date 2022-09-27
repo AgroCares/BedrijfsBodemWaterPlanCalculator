@@ -3,6 +3,10 @@
 * the function `ecoregeling` in er_main gives an additional output object besides `farm` and `field`, named `farm_tresholds`
 * farm thresholds are given for 7 aims of Ecoregeling, differentiated for level `bronze`, `silver` or `gold`
 
+## Changed
+* thresholds for costs changed from absolute values to percentages in `out` of `ecoregeling`
+* field scores in output of `er_opi` have maximum levels similar to maximum levels of farm scores now
+
 # BBWPC v0.10.3
 
 ## Changed
