@@ -111,9 +111,13 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
     out.threshold[medalscores == "gold",s_er_farmtotal := 35]
     
     # add target costs on farm level
-    out.threshold[medalscores == "gold", s_er_costs := 175]
-    out.threshold[medalscores == "silver", s_er_costs := 100]
-    out.threshold[medalscores == "bronze", s_er_costs := 70]
+    out.threshold[medalscores == "gold", s_er_costs := (175/175)*100]
+    out.threshold[medalscores == "silver", s_er_costs := (100/175)*100]
+    out.threshold[medalscores == "bronze", s_er_costs := (70/175)*100]
+    
+    # round values 
+    cols <- colnames(out.threshold)[grepl('er_costs',colnames(out.threshold))]
+    out.threshold[,c(cols) := lapply(.SD,round,1),.SDcols = cols]
     
     # set threshold of golden medal for landscape to 0.5 and
     # remove thresholds of bronze and silver medal for landscape
