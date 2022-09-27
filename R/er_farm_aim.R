@@ -17,7 +17,7 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
   # add visual bindings
   . = type = soiltype = value.mis = value = farmid = NULL
   code = value_min = value_max = choices = cf_farm_tot = cf_costs = cf_landscape = cf_water = NULL
-  medalscores = er_th_farmtotal = er_th_costs = NULL
+  medalscores = s_er_farmtotal = s_er_costs = NULL
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms

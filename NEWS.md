@@ -1,3 +1,8 @@
+# BBWPC v0.10.4
+## Added
+* the function `ecoregeling` in er_main gives an additional output besides `farm` and `field` named `farm_tresholds`
+* thresholds are given for 7 aims of Ecoregeling
+
 # BBWPC v0.10.3
 ## Added
 * added visible bindings to `er_main` and `er_farm_aim`
