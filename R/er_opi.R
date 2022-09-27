@@ -26,6 +26,8 @@ er_opi <- function(B_SOILTYPE_AGR,
   code = value_min = value_max = S_ER_TOT = patterns = indicator = choices = NULL
   S_ER = S_AIM = D_OPI = cfOPI = D_OPI_SOIL = D_OPI_WATER = D_OPI_CLIMATE = D_OPI_LANDSCAPE = D_OPI_BIO = D_OPI_TOT = D_OPI_REWARD = D_OPI_SCORE = NULL
   S_ER_FARM_TOT = D_FS = cfFS = D_OPI_FARM_TOT = NULL
+  s_er_soil = s_er_water = s_er_climate = s_er_landscape = s_er_biodiversity = s_er_farm_tot = s_er_costs = s_er_tot = NULL
+  
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
@@ -148,10 +150,39 @@ er_opi <- function(B_SOILTYPE_AGR,
              new = c("field_id","s_er_soil","s_er_water","s_er_climate","s_er_biodiversity",
                      "s_er_landscape","s_er_farm_tot","s_er_costs","s_er_tot"))
     
+  # estimate the absolute fieldscores with maxima
+    
+    # set colnames dt to lower case
+    setnames(dt, tolower(colnames(dt)))
+    
+    # set colnames S_ER_REWARD to s_er_costs
+    setnames(dt, c("s_er_reward","id"),c("s_er_costs","field_id"))
+    
+    # set maximum for eco scores and total farm score on field level
+    dt[, s_er_soil := pmin(15,s_er_soil)]
+    dt[, s_er_water := pmin(15,s_er_soil)]
+    dt[, s_er_climate := pmin(15,s_er_climate)]
+    dt[, s_er_biodiversity := pmin(15,s_er_biodiversity)]
+    dt[, s_er_landscape := pmin(1,s_er_landscape)]
+    dt[, s_er_farm_tot:= pmin(50,s_er_farm_tot)]
+    
+    # set maximum for s_er_costs at 175 and convert to percentage 
+    dt[, s_er_costs := (pmin(175,s_er_costs)/175)*100]
+  
+    # set s_er_tot equal to s_er_tot calculated in dt.fields (distance to target) 
+    dt[, s_er_tot := dt.field$s_er_tot]
+    
+    # select columns to used in output
+    cols <- colnames(dt)[grepl('s_er|id',colnames(dt))]
+    dt <- dt[, mget(cols)] 
+    
+    # round values
+    dt[,c(cols) := lapply(.SD,round,1),.SDcols = cols]
+
   # collect output
   out <- list(
               # the relative contribution of a single field to the farm objective
-              dt.field.ind.score = dt.field,
+              dt.field.ind.score = dt,
               # the averaged farm score (mean scores / ha, mean costs / ha)
               dt.farm.ind.score = dt.farm.ind.score,
               # the BBWP score, being overall distance to target

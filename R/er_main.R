@@ -203,9 +203,8 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     out.farm[, s_er_farm_tot:= pmin(50,s_er_farm_tot)]
     
     # add thresholds
-    out <- list(farm = as.list(out.farm),
-                fields = out.field, 
-                farm_thresholds = dt.farm.thresholds)
+    out <- list(farm = c(as.list(out.farm),dt.farm.thresholds),
+                fields = out.field)
     
     }
   
