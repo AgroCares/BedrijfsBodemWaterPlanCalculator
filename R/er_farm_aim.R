@@ -106,14 +106,14 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
     out.threshold <- dcast(dt,medalscores~indicator,value.var = 'er_score')  
     
     # add farm targets on farm level 
-    out.threshold[medalscores == "bronze",er_th_farmtotal := 14]
-    out.threshold[medalscores == "silver",er_th_farmtotal := 22]
-    out.threshold[medalscores == "gold",er_th_farmtotal := 35]
+    out.threshold[medalscores == "bronze",s_er_farmtotal := 14]
+    out.threshold[medalscores == "silver",s_er_farmtotal := 22]
+    out.threshold[medalscores == "gold",s_er_farmtotal := 35]
     
     # add target costs on farm level
-    out.threshold[medalscores == "gold", er_th_costs := 175]
-    out.threshold[medalscores == "silver", er_th_costs := 100]
-    out.threshold[medalscores == "bronze", er_th_costs := 70]
+    out.threshold[medalscores == "gold", s_er_costs := 175]
+    out.threshold[medalscores == "silver", s_er_costs := 100]
+    out.threshold[medalscores == "bronze", s_er_costs := 70]
     
     # set threshold of golden medal for landscape to 0.5 and
     # remove thresholds of bronze and silver medal for landscape
@@ -132,18 +132,26 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
     # update name to set absolute thresholds
     setnames(out.threshold,
              c('cf_soil', 'cf_water','cf_climate', 'cf_biodiversity','cf_landscape'),
-             c('er_th_soil', 'er_th_water','er_th_climate','er_th_biodiversity','er_th_landscape')) 
+             c('s_er_soil', 's_er_water','s_er_climate','s_er_biodiversity','s_er_landscape')) 
     
     # round values
     cols <- colnames(out.threshold)[grepl('er_',colnames(out.threshold))]
     out.threshold[,c(cols) := lapply(.SD,round,1),.SDcols = cols]
     
-    # set column order for thresholds
-    setcolorder(out.threshold,
-                c('medalscores','er_th_soil', 'er_th_water','er_th_climate','er_th_biodiversity','er_th_landscape','er_th_costs','er_th_farmtotal')) 
+    # restructure the threshold
+    out.threshold.bronze <- out.threshold[medalscores=='bronze',mget(cols)]
+    out.threshold.silver <- out.threshold[medalscores=='silver',mget(cols)]
+    out.threshold.gold <- out.threshold[medalscores=='gold',mget(cols)]
     
-    # set row order (bronze, silver, gold)
-    out.threshold <- out.threshold[c("bronze","silver","gold"),]
+    # rename the thresholds
+    setnames(out.threshold.bronze,paste0(colnames(out.threshold.bronze),'_bronze'))
+    setnames(out.threshold.silver,paste0(colnames(out.threshold.silver),'_silver'))
+    setnames(out.threshold.gold,paste0(colnames(out.threshold.gold),'_gold'))
+    
+    # combine in one output object
+    out.threshold <- data.table(out.threshold.bronze,
+                                out.threshold.silver,
+                                out.threshold.gold)
     
     # set output object with target and thresholds
     out.tgt <- out.threshold
