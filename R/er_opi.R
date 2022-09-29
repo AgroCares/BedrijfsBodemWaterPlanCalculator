@@ -93,7 +93,7 @@ er_opi <- function(B_SOILTYPE_AGR,
     # estimate distance to target between 0-100
     dt.farm[, D_OPI := round(pmax(0,pmin(100,S_ER * 100 / S_AIM)),0)]
 
-    # set a weighting factor on the score per indicator (only to be used if thresholds for gold, silver and bronze are relative and not absolute?)
+    # set a weighting factor on the score per indicator
     dt.farm[, cfOPI := wf(D_OPI, type="score")]
 
     # weighted farm score (based on distance to target, relative)
@@ -137,7 +137,7 @@ er_opi <- function(B_SOILTYPE_AGR,
     dt.field[,D_OPI_SCORE := round(100 * pmax(0,pmin(1,D_OPI)),0)]
     
     # add a correction for the distance to target for reward (10%)
-    dt.field[indicator != "D_OPI_FARM_TOT", D_OPI_SCORE := round((0.9 * D_OPI_SCORE) + (10 * dt.farm.ind.opi$S_ER_REWARD * 0.01))] ##s_er_tot
+    dt.field[indicator != "D_OPI_FARM_TOT", D_OPI_SCORE := round((0.9 * D_OPI_SCORE) + (10 * dt.farm.ind.opi$S_ER_REWARD * 0.01))]
     
     # dcast output
     dt.field <- dcast(dt.field,id~indicator, value.var = 'D_OPI_SCORE')
