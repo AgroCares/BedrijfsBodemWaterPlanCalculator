@@ -30,7 +30,6 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
   
-  
   # check length of the inputs
   arg.length <- max(length(B_SOILTYPE_AGR), length(B_AREA),
                     length(S_ER_TOT),length(S_ER_SOIL),length(S_ER_WATER),length(S_ER_CLIMATE),
@@ -70,7 +69,7 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
                    CLIMATE = S_ER_CLIMATE,
                    BIO = S_ER_BIODIVERSITY,
                    LANDSCAPE = S_ER_LANDSCAPE,
-                   TOTAL = S_ER_TOT,
+                   FARM_TOT = S_ER_TOT,
                    REWARD = S_ER_REWARD,
                    B_AREA = B_AREA,
                    B_SOILTYPE_AGR = B_SOILTYPE_AGR
