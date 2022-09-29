@@ -97,7 +97,7 @@ er_opi <- function(B_SOILTYPE_AGR,
     dt.farm[, cfOPI := wf(D_OPI, type="score")]
 
     # weighted farm score (based on distance to target, relative)
-    dt.farm.score <- dt.farm[!grepl("S_ER_REWARD|S_ER_FARM_TOT",indicator),weighted.mean(x = D_OPI, w = cfOPI)]
+    dt.farm.score <- dt.farm[,weighted.mean(x = D_OPI, w = cfOPI)]
     dt.farm.score <- round(dt.farm.score)
 
     # get the farm mean scores for the five indicators, farm total and costs
