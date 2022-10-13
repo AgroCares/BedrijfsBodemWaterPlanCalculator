@@ -196,7 +196,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     
     # set maximum for eco scores and total farm scores on farm level
     out.farm[, s_er_soil := pmin(15,s_er_soil)]
-    out.farm[, s_er_water := pmin(15,s_er_soil)]
+    out.farm[, s_er_water := pmin(15,s_er_water)]
     out.farm[, s_er_climate := pmin(15,s_er_climate)]
     out.farm[, s_er_biodiversity := pmin(15,s_er_biodiversity)]
     out.farm[, s_er_landscape := pmin(1,s_er_landscape)]

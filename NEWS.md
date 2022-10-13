@@ -1,3 +1,12 @@
+# BBWPC v.0.10.5
+## Changed
+* changed name of `TOTAL` into `FARM_TOT` in input dt for `er_medal` in order to get the merge with aims right
+
+## Fixed
+* `s_er_water` in `er_main` and `er_opi` are no longer showing score for soil but for water now
+* correction on calculation of `s_er_costs_silver` in `er_farm_aim`
+* `S_ER_FARM_TOT` in `er_opi` is now the sum of the five eco theme scores
+
 # BBWPC v0.10.4
 ## Added
 * the function `ecoregeling` in er_main gives an additional output object besides `farm` and `field`, named `farm_tresholds`

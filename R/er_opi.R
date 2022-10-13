@@ -64,9 +64,9 @@ er_opi <- function(B_SOILTYPE_AGR,
                    B_AREA = B_AREA
                    )
   
-  # count the average total score per field, averaged over the eco goals (scores / ha) 
-  dt[, S_ER_FARM_TOT := max((S_ER_SOIL + S_ER_WATER + S_ER_CLIMATE + S_ER_BIODIVERSITY + S_ER_LANDSCAPE),0.001)/5]
-
+  # count the total score per field(scores / ha) 
+  dt[, S_ER_FARM_TOT := pmax((S_ER_SOIL + S_ER_WATER + S_ER_CLIMATE + S_ER_BIODIVERSITY + S_ER_LANDSCAPE),0.001)]
+  
   # estimate the farm scores
   
     # melt the table to estimate farm score
@@ -93,7 +93,7 @@ er_opi <- function(B_SOILTYPE_AGR,
     # estimate distance to target between 0-100
     dt.farm[, D_OPI := round(pmax(0,pmin(100,S_ER * 100 / S_AIM)),0)]
 
-    # set a weighting factor on the score per indicator (only to be used if thresholds for gold, silver and bronze are relative and not absolute?)
+    # set a weighting factor on the score per indicator
     dt.farm[, cfOPI := wf(D_OPI, type="score")]
 
     # weighted farm score (based on distance to target, relative)
@@ -109,8 +109,7 @@ er_opi <- function(B_SOILTYPE_AGR,
     
     # round values
     cols <- colnames(dt.farm.ind.score)[grepl('S_ER',colnames(dt.farm.ind.score))]
-    dt.farm.ind.score[,c(cols) := lapply(.SD,round,0),.SDcols = cols]
-    
+    dt.farm.ind.score[,c(cols) := lapply(.SD,round,1),.SDcols = cols]
     
     # get the distance to target for the five indicators
     dt.farm.ind.opi <- dcast(dt.farm,farmid ~ indicator, value.var = 'D_OPI')
@@ -135,10 +134,10 @@ er_opi <- function(B_SOILTYPE_AGR,
                         variable.name = 'indicator')
    
     # contribution of a single field, optimized between 0 and 100
-    dt.field[,D_OPI_SCORE := round(100 * pmax(0,pmin(1,D_OPI)),0)] # s_er_farm_tot
+    dt.field[,D_OPI_SCORE := round(100 * pmax(0,pmin(1,D_OPI)),0)]
     
     # add a correction for the distance to target for reward (10%)
-    dt.field[indicator != "D_OPI_FARM_TOT", D_OPI_SCORE := round((0.9 * D_OPI_SCORE) + (10 * dt.farm.ind.opi$S_ER_REWARD * 0.01))] ##s_er_tot
+    dt.field[indicator != "D_OPI_FARM_TOT", D_OPI_SCORE := round((0.9 * D_OPI_SCORE) + (10 * dt.farm.ind.opi$S_ER_REWARD * 0.01))]
     
     # dcast output
     dt.field <- dcast(dt.field,id~indicator, value.var = 'D_OPI_SCORE')
@@ -160,7 +159,7 @@ er_opi <- function(B_SOILTYPE_AGR,
     
     # set maximum for eco scores and total farm score on field level
     dt[, s_er_soil := pmin(15,s_er_soil)]
-    dt[, s_er_water := pmin(15,s_er_soil)]
+    dt[, s_er_water := pmin(15,s_er_water)]
     dt[, s_er_climate := pmin(15,s_er_climate)]
     dt[, s_er_biodiversity := pmin(15,s_er_biodiversity)]
     dt[, s_er_landscape := pmin(1,s_er_landscape)]
@@ -169,8 +168,8 @@ er_opi <- function(B_SOILTYPE_AGR,
     # set maximum for s_er_costs at 175 and convert to percentage 
     dt[, s_er_costs := (pmin(175,s_er_costs)/175)*100]
   
-    # set s_er_tot equal to s_er_tot calculated in dt.fields (distance to target) 
-    dt[, s_er_tot := dt.field$s_er_tot]
+    # set s_er_tot equal to s_er_tot calculated in dt.field (distance to target) 
+    dt[, s_er_tot := dt.field$s_er_tot]  
     
     # select columns to used in output
     cols <- colnames(dt)[grepl('s_er|id',colnames(dt))]

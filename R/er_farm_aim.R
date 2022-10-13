@@ -112,7 +112,7 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
     
     # add target costs on farm level
     out.threshold[medalscores == "gold", s_er_costs := (175/175)*100]
-    out.threshold[medalscores == "silver", s_er_costs := (100/175)*100]
+    out.threshold[medalscores == "silver", s_er_costs := (110/175)*100]
     out.threshold[medalscores == "bronze", s_er_costs := (70/175)*100]
     
     # round values 
