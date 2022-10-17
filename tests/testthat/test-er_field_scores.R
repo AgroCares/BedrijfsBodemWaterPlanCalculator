@@ -77,7 +77,7 @@ test_that("check er_field_scores", {
       S_ER_CLIMATE = c(11.5,11.5,11.5,11.5),
       S_ER_BIODIVERSITY = c(65,65,70,65),
       S_ER_LANDSCAPE =c(58,58,63,58),
-      S_ER_TOT = rep(1044,4),
+      S_ER_TOT = rep(165356,4),
       S_ER_REWARD = c(217,217,241,217)
     ),
     tolerance = 1,
@@ -117,7 +117,7 @@ test_that("check er_field_scores", {
       S_ER_CLIMATE = rep(0,4),
       S_ER_BIODIVERSITY = rep(112,4),
       S_ER_LANDSCAPE = rep(75,4),
-      S_ER_TOT = rep(49,4),
+      S_ER_TOT = rep(490760,4),
       S_ER_REWARD = c(301,301,301,301)
     ),
     tolerance = 1,
