@@ -19,7 +19,7 @@ test <- er_opi(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen','dekza
                S_ER_BIODIVERSITY = seq(0, 10, 2.5),
                S_ER_LANDSCAPE = seq(0, 10, 2.5),
                S_ER_REWARD = c(250,4650,213,15,680),
-               B_AREA = rep(1,5),
+               B_AREA = rep(10000,5),
                medalscore = 'gold'
                )
 

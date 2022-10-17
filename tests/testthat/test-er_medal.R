@@ -2,7 +2,7 @@
 # default inputs for testing
     
   B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
-  B_AREA = c(45,18,0.8,6)
+  B_AREA = c(450000,180000,8000,60000)
   S_ER_SOIL = c(75,85,100,100)
   S_ER_WATER = c(75,85,100,100)
   S_ER_CLIMATE = c(75,85,100,100)
@@ -15,7 +15,7 @@
 
   # run test example
   test <- er_medal(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                   B_AREA = c(45,18,0.8,6),
+                   B_AREA = c(450000,180000,8000,60000),
                    S_ER_SOIL = c(75,85,100,100),
                    S_ER_WATER = c(75,85,100,100),
                    S_ER_CLIMATE = c(75,85,100,100),
@@ -33,7 +33,7 @@ test_that("check er_medal", {
 
 # run test example for farm estimate
 test <- er_medal(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                 B_AREA = c(45,18,0.8,6),
+                 B_AREA = c(450000,180000,8000,60000),
                  S_ER_SOIL = c(75,85,100,100),
                  S_ER_WATER = c(75,85,100,100),
                  S_ER_CLIMATE = c(75,85,100,100),

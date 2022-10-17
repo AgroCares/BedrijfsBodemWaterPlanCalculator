@@ -21,7 +21,7 @@ test <- er_croprotation(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','vee
                         B_LU_PRODUCTIVE_ER = c(T,T,T,T),
                         B_LU_CULTIVATED_ER = c(T,T,T,T),
                         B_AER_CBS = c('Bouwhoek en Hogeland','LG14','LG12','Westelijk Holland'),
-                        B_AREA = c(45,18,0.8,6),
+                        B_AREA = c(450000,180000,8000,60000),
                         measures = NULL,
                         sector = 'dairy'
                         )
@@ -65,7 +65,7 @@ test <- er_croprotation(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','vee
                         B_LU_PRODUCTIVE_ER = c(T,T,T,T),
                         B_LU_CULTIVATED_ER = c(T,T,T,T),
                         B_AER_CBS = c('Bouwhoek en Hogeland','LG14','LG12','Westelijk Holland'),
-                        B_AREA = c(45,18,0.8,6),
+                        B_AREA = c(450000,180000,8000,60000),
                         measures = measures,
                         sector = 'dairy'
                      )
@@ -87,7 +87,7 @@ test_that("check er_croprotation", {
 test_that("check er_croprotation", {
   expect_equal(
     object = as.numeric(test),
-    expected = c(1,77.3,16.7,68.1,28.9,61.1,252.2,165356.3),
+    expected = c(1,77.3,16.7,68.1,28.9,61.1,252.2,1786.2),
     tolerance = 0.1,
     ignore_attr = TRUE)
 })

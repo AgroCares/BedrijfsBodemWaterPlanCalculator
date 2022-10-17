@@ -8,7 +8,7 @@
   # S_ER_BIODIVERSITY = seq(0, 10, 2.5)
   # S_ER_LANDSCAPE = seq(0, 10, 2.5)
   # S_ER_REWARD = c(250,4650,213,15,680)
-  # B_AREA = rep(1,5)
+  # B_AREA = rep(10000,5)
 
 
 # run example without any measures taken  
@@ -22,7 +22,7 @@ test_that("check er_farm_score", {
       S_ER_BIODIVERSITY = seq(0, 10, 2.5),
       S_ER_LANDSCAPE = seq(0, 10, 2.5),
       S_ER_REWARD = c(250,4650,213,15,680),
-      B_AREA = rep(1,5)
+      B_AREA = rep(10000,5)
     ),
     expected = data.table(
       S_ER_SOIL = 5,
