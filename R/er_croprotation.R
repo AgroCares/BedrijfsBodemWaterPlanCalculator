@@ -266,9 +266,9 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       # add correction reward
       cfr <- weighted.mean(x = dt$reward_cf, w = dt$B_AREA)
       
-      # sum total score (score per hectare)
+      # sum total score (score per hectare) 
       dt.farm.score <- dt4[,lapply(.SD,sum), .SDcols = cols]
-      dt.farm.reward <- dt4[,list(er_reward = cfr * (max(euro_ha[total>0],0) + max(euro_farm[total>0],0) / dt.farm$area_farm))]
+      dt.farm.reward <- dt4[,list(er_reward = cfr * (max(euro_ha[total>0],0) + max(euro_farm[total>0],0) / (dt.farm$area_farm/10000)))]
       
     } else {
       

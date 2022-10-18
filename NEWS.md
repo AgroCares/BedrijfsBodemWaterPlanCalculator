@@ -1,3 +1,8 @@
+# BBWPC v.0.10.6
+## Fixed
+* correction on calculation of `S_ER_REWARD` in `er_croprotation`, costs of farm level measures per farm are now per hectare instead of per m2 so the costs of farm level measures per ha and farm level measures per farm are now added up correctly 
+* correction on brp codes to which the measures apply in internal table `er_measures`
+
 # BBWPC v.0.10.5
 ## Changed
 * changed name of `TOTAL` into `FARM_TOT` in input dt for `er_medal` in order to get the merge with aims right

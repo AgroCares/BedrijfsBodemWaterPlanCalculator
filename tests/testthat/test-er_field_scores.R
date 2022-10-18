@@ -11,7 +11,7 @@ require(testthat)
   # B_LU_PRODUCTIVE_ER = c(T,T,T,T)
   # B_LU_CULTIVATED_ER = c(T,T,T,T)
   # B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland")
-  # B_AREA = c(45,18,0.8,6)
+  # B_AREA = c(450000,180000,8000,60000),
   # measures = NULL
   # sector = 'dairy'
 
@@ -23,7 +23,7 @@ test <- er_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','vee
                         B_LU_PRODUCTIVE_ER = c(T,T,T,T),
                         B_LU_CULTIVATED_ER = c(T,T,T,T),
                         B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland"),
-                        B_AREA = c(45,18,0.8,6),
+                        B_AREA = c(450000,180000,8000,60000),
                         measures = NULL,
                         sector = 'dairy'
                         )
@@ -61,7 +61,7 @@ test <- er_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','vee
                         B_LU_PRODUCTIVE_ER = c(T,T,T,T),
                         B_LU_CULTIVATED_ER = c(T,T,T,T),
                         B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland"),
-                        B_AREA = c(45,18,0.8,6),
+                        B_AREA = c(450000,180000,8000,60000),
                         measures = measures,
                         sector = c('dairy','arable')
 )
@@ -77,7 +77,7 @@ test_that("check er_field_scores", {
       S_ER_CLIMATE = c(11.5,11.5,11.5,11.5),
       S_ER_BIODIVERSITY = c(65,65,70,65),
       S_ER_LANDSCAPE =c(58,58,63,58),
-      S_ER_TOT = rep(1044,4),
+      S_ER_TOT = rep(165356,4),
       S_ER_REWARD = c(217,217,241,217)
     ),
     tolerance = 1,
@@ -101,7 +101,7 @@ test <- er_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','vee
                         B_LU_PRODUCTIVE_ER = c(T,T,T,T),
                         B_LU_CULTIVATED_ER = c(T,T,T,T),
                         B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland"),
-                        B_AREA = c(45,18,0.8,6),
+                        B_AREA = c(450000,180000,8000,60000),
                         measures = measures,
                         sector = c('dairy','arable')
 )
@@ -117,7 +117,7 @@ test_that("check er_field_scores", {
       S_ER_CLIMATE = rep(0,4),
       S_ER_BIODIVERSITY = rep(112,4),
       S_ER_LANDSCAPE = rep(75,4),
-      S_ER_TOT = rep(49,4),
+      S_ER_TOT = rep(490760,4),
       S_ER_REWARD = c(301,301,301,301)
     ),
     tolerance = 1,
