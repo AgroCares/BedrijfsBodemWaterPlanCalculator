@@ -88,9 +88,9 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
                               B_AREA = B_AREA, type = 'farm')]
   
   # correct total reward in dt.farm after medal is awarded
-  dt.farm[medal == "bronze", S_ER_REWARD := 70]
-  dt.farm[medal == "silver", S_ER_REWARD := 110]
-  dt.farm[medal == "gold", S_ER_REWARD := 175]
+  dt.farm[medal == "bronze", S_ER_REWARD := 60]
+  dt.farm[medal == "silver", S_ER_REWARD := 100]
+  dt.farm[medal == "gold", S_ER_REWARD := 200]
   dt.farm[medal == "none", S_ER_REWARD := 0]
 
   # estimate the opportunity index for farm and field
@@ -191,8 +191,8 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     out.farm[, s_er_reward := dt.farm$S_ER_REWARD]
     out.farm[, s_er_tot := dt.opi$dt.farm.score]
     
-    # set maximum for s_er_costs at 175 and convert to percentage 
-    out.farm[, s_er_costs := (pmin(175,s_er_costs)/175)*100]
+    # set maximum for s_er_costs at 200 and convert to percentage 
+    out.farm[, s_er_costs := (pmin(200,s_er_costs)/200)*100]
     
     # set maximum for eco scores and total farm scores on farm level
     out.farm[, s_er_soil := pmin(15,s_er_soil)]
