@@ -53,7 +53,7 @@ er_medal <- function(B_SOILTYPE_AGR, B_AREA,
   er_aim.gold[,indicator := gsub('B_CT_','',indicator)]
   er_aim.silver <- er_farm_aim(B_SOILTYPE_AGR, B_AREA, medalscore = "silver") 
   er_aim.silver[,B_CT_TOTAL := B_CT_SOIL + B_CT_WATER + B_CT_CLIMATE + B_CT_BIO + B_CT_LANDSCAPE]
-  er_aim.silver[,REWARD := 10]
+  er_aim.silver[,REWARD := 100]
   er_aim.silver <- melt(er_aim.silver,id.vars = 'farmid',variable.name = 'indicator',value.name = 'er_silver')
   er_aim.silver[,indicator := gsub('B_CT_','',indicator)]
   er_aim.bronze <- er_farm_aim(B_SOILTYPE_AGR, B_AREA, medalscore = "bronze") 
