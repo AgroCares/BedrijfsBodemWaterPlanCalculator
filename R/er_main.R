@@ -195,12 +195,12 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     out.farm[, s_er_costs := (pmin(200,s_er_costs)/200)*100]
     
     # set maximum for eco scores and total farm scores on farm level
-    out.farm[, s_er_soil := pmin(15,s_er_soil)]
-    out.farm[, s_er_water := pmin(15,s_er_water)]
-    out.farm[, s_er_climate := pmin(15,s_er_climate)]
-    out.farm[, s_er_biodiversity := pmin(15,s_er_biodiversity)]
+    out.farm[, s_er_soil := pmin(dt.farm.thresholds$s_er_soil_gold,s_er_soil)] 
+    out.farm[, s_er_water := pmin(dt.farm.thresholds$s_er_water_gold,s_er_water)]
+    out.farm[, s_er_climate := pmin(dt.farm.thresholds$s_er_climate_gold,s_er_climate)]
+    out.farm[, s_er_biodiversity := pmin(dt.farm.thresholds$s_er_biodiversity_gold,s_er_biodiversity)]
     out.farm[, s_er_landscape := pmin(1,s_er_landscape)]
-    out.farm[, s_er_farm_tot:= pmin(50,s_er_farm_tot)]
+    out.farm[, s_er_farm_tot:= pmin(dt.farm.thresholds$s_er_farmtotal_gold,s_er_farm_tot)]
     
     # add thresholds
     out <- list(farm = c(as.list(out.farm),dt.farm.thresholds),
