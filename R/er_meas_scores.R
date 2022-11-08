@@ -236,13 +236,13 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     
     # measure EG13. inzet baggerspuit (check na update maatregelentabel, EG13 kan 1 keer per perceel voorkomen)
     cols.ad1 <- c(0,0,5,0,5,5)
-    dt[grepl('EG13',eco_id), B_AREA_REL := sum(B_AREA) / dt.farm$area_farm]
+    dt[grepl('EG13|EG14',eco_id), B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_farm]
     dt[grepl('EG13',eco_id) & B_AREA_REL < 25 & er_total > 0, c(cols.score) := 0]
     dt[grepl('EG13',eco_id) & B_AREA_REL > 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
 
     # measure EG14. slootkanten ecologische maaien (check na update maatregelentabel, EG14 kan 1 keer per perceel voorkomen)
     cols.ad1 <- c(0,2,2,1,5,5)
-    dt[grepl('EG14',eco_id), B_AREA_REL := sum(B_AREA) / dt.farm$area_farm]
+    dt[grepl('EG14|EG13',eco_id), B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_farm]
     dt[grepl('EG14',eco_id) & B_AREA_REL < 25 & er_total > 0, c(cols.score) := 0]
     dt[grepl('EG14',eco_id) & B_AREA_REL > 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
     
