@@ -206,8 +206,8 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt[grepl('^EB12',eco_id) & B_AREA_REL > 85 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
     
     # measure EB13. no till and reduced till 
-    cols.ad1 <- c(1,1,0,0,0,0)
-    cols.ad2 <- c(2,2,0,0,0,0)
+    cols.ad1 <- c(2,1,1,0,0,0)
+    cols.ad2 <- c(4,2,2,0,0,0)
     dt[grepl('^EB13',eco_id), B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_arable]
     dt[grepl('^EB13',eco_id) & B_AREA_REL <= 50 & er_total > 0, c(cols.sel) := 0]
     dt[grepl('^EB13',eco_id) & B_AREA_REL > 65 & B_AREA_REL <= 80 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
