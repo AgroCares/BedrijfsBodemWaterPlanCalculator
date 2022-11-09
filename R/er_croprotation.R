@@ -58,10 +58,28 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt.meas.farm <- bbwp_check_meas(dt = measures, eco = TRUE, score = TRUE)
   dt.meas.field <- bbwp_check_meas(dt = NULL, eco = TRUE, score = FALSE)
   dt.meas.eco <- as.data.table(BBWPC::er_measures)
+  dt.meas.idx <- bbwp_check_meas(dt = NULL, eco = TRUE, score = FALSE)
     
-  # subset both measurement tables # Add EB18 here Gerard
+  # subset measurement tables # Add EB18 here Gerard
   dt.meas.field <- dt.meas.field[grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field',]
-  dt.meas.farm <- dt.meas.farm[level == 'farm']
+  dt.meas.idx <- dt.meas.idx[grepl('EB10A',eco_id) & level == 'farm']
+  dt.meas.farm <- dt.meas.farm[level == 'farm',]
+ 
+  # add crop diversification index (EB10A) to farm measures table
+  if(length(dt.meas.farm[grepl("EB10",eco_id)]) > 0) {
+    
+    # replace EB10B or EB10C by EB10A
+    dt.meas.farm <- dt.meas.farm[!grepl("EB10",eco_id),]
+    dt.meas.farm <- rbind(dt.meas.farm,dt.meas.idx, use.names = TRUE, fill = TRUE)
+    dt.meas.farm <- dt.meas.farm[eco_id == 'EB10A', id:= fifelse(is.na(id),1,id)]
+    
+    } else { 
+    
+    # add crop EB10A to farm measures  
+    dt.meas.farm <- rbind(dt.meas.farm,dt.meas.idx, use.names = TRUE, fill = TRUE)
+    dt.meas.farm <- dt.meas.farm[eco_id == 'EB10A', id:= fifelse(is.na(id),1,id)]
+  
+    } 
   
   # add bbwp table for financial reward correction factor per AER
   dt.er.reward <- as.data.table(BBWPC::er_aer_reward)
@@ -164,11 +182,11 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt.field[grepl('loess', B_SOILTYPE_AGR) & loess == FALSE , c(cols) := 0]
     
     # columns to be updated
-    cols.sel <- c('er_climate','er_soil','er_water','er_landscape','er_biodiversity')
+    cols.sel <- c('er_climate','er_soil','er_water','er_landscape','er_biodiversity','er_euro_ha')
     
     # measure EB1. Cultivate rustgewas on a field
-    cols.ad1 <- c(3,3,3,0,1)
-    cols.ad2 <- c(4,4,4,1,1)
+    cols.ad1 <- c(3,3,3,0,1,20) ## AANPASSEN WAARDE NA NAVRAAG B&N
+    cols.ad2 <- c(4,4,4,1,1,40) ## AANPASSEN WAARDE NA NAVRAAG B&N
     dt.field[, er_total := er_climate + er_soil + er_water + er_landscape + er_biodiversity]
     dt.field[bbwp_id == 'G54' & er_total > 0, B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_arable]
     dt.field[bbwp_id == 'G54' & er_total > 0 & B_AREA_REL <= 20, c(cols.sel) := 0]
@@ -237,6 +255,19 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       # adapt the score when measure is not applicable
       dt.meas.farm[fsector == 0, c(cols) := 0]
       
+      # columns to be updated
+      cols.sel <- c('er_climate','er_soil','er_water','er_landscape','er_biodiversity','er_euro_farm')
+      
+      # measure EB10: Crop diversification index
+      cols.ad1 <- c(0,10,10,10,20,1000)
+      cols.ad2 <- c(0,20,20,20,40,2000)
+      dt.meas.farm[, er_total := er_climate + er_soil + er_water + er_landscape + er_biodiversity]
+      crops <- length(unique(B_LU_BRP))
+      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0, B_IDX := crops / (dt.farm$area_cultivated/10000)]
+      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX <= 0.05, c(cols.sel) := 0]
+      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.07 & B_IDX <= 0.10, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.10, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+
       # copy dt.meas.farm to be used later
       dt.region <- dt.meas.farm
       
@@ -264,8 +295,8 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt4[oid > 1, c(cols) := 0]
       
       # measure index crop diversification (score dependent on cultivated area)
-      dt4[grepl('B189|B190|B191',bbwp_id), c(cols) := lapply(.SD, function (x) x * dt.farm$area_cultivated / dt.farm$area_farm),.SDcols = cols]
-      
+      dt4[grepl('B189|B190|B191',bbwp_id), c(cols) := lapply(.SD, function (x) x * dt.farm$area_cultivated/dt.farm$area_farm), .SDcols = cols]
+
       # add correction reward
       dt5 <- merge(dt.region[,c("id","bbwp_id","regio_factor")], dt[,c("id","reward_cf")], by = "id")
       dt4 <- dt4[dt5[,.(bbwp_id,regio_factor,reward_cf)], on = "bbwp_id"]
