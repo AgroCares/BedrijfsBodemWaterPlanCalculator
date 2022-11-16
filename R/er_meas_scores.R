@@ -91,8 +91,9 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt.farm <- data.table(area_farm = sum(B_AREA),
                         area_arable = sum(B_AREA * B_LU_ARABLE_ER),
                         area_productive = sum(B_AREA * B_LU_PRODUCTIVE_ER),
-                        area_cultivated = sum(B_AREA * B_LU_CULTIVATED_ER))
-  
+                        area_cultivated = sum(B_AREA * B_LU_CULTIVATED_ER),
+                        area_ditch = sum(dt$B_AREA[which(B_LU_BRP == 343)]))
+
   # merge all measures to the given fields
   dt <- merge(dt,dt.meas.taken,by = 'id',all=TRUE)
   
@@ -236,13 +237,13 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     
     # measure EG13. inzet baggerspuit (check na update maatregelentabel, EG13 kan 1 keer per perceel voorkomen)
     cols.ad1 <- c(0,0,5,0,5,5)
-    dt[grepl('EG13|EG14',eco_id), B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_farm]
+    dt[grepl('EG13|EG14',eco_id), B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_ditch]
     dt[grepl('EG13',eco_id) & B_AREA_REL < 25 & er_total > 0, c(cols.score) := 0]
     dt[grepl('EG13',eco_id) & B_AREA_REL > 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
 
     # measure EG14. slootkanten ecologische maaien (check na update maatregelentabel, EG14 kan 1 keer per perceel voorkomen)
     cols.ad1 <- c(0,2,2,1,5,5)
-    dt[grepl('EG14|EG13',eco_id), B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_farm]
+    dt[grepl('EG14|EG13',eco_id), B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_ditch]
     dt[grepl('EG14',eco_id) & B_AREA_REL < 25 & er_total > 0, c(cols.score) := 0]
     dt[grepl('EG14',eco_id) & B_AREA_REL > 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
     
