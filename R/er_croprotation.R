@@ -185,8 +185,8 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     cols.sel <- c('er_climate','er_soil','er_water','er_landscape','er_biodiversity','er_euro_ha')
     
     # measure EB1. Cultivate rustgewas on a field
-    cols.ad1 <- c(3,3,3,0,1,20) ## AANPASSEN WAARDE NA NAVRAAG B&N
-    cols.ad2 <- c(4,4,4,1,1,40) ## AANPASSEN WAARDE NA NAVRAAG B&N
+    cols.ad1 <- c(3,3,3,0,1,0)
+    cols.ad2 <- c(4,4,4,1,1,0)
     dt.field[, er_total := er_climate + er_soil + er_water + er_landscape + er_biodiversity]
     dt.field[bbwp_id == 'G54' & er_total > 0, B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_arable]
     dt.field[bbwp_id == 'G54' & er_total > 0 & B_AREA_REL <= 20, c(cols.sel) := 0]
