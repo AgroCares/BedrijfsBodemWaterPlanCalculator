@@ -1,3 +1,16 @@
+# BBPC v.0.10.7
+## Changed
+* maximum scores in `er_main` are now equal to aim for golden medal
+* the threshold for landscape and water on peat soil is set to 0 in `er_farm_aim` 
+* differentiation of costs based on economic region for farm level measures now depends on region factor (T/F) in the function `er_croprotation`
+* the score for crop diversification index is now automatically rewarded in `er_croprotation` based on the index, while the measure is still selectable in the measures list 
+* in `er_meas_score` measures EG13 and EG14 are now independent of crop type and relative area is based on total area ditch 
+* in `er_meas_score` measures for non-productive area have changed from farm level to field level and are corrected on relative area
+* in `er_meas_score` several small changes and corrections on values for scores 
+
+## Added
+* five columns were added to the internal database `measures.csv` to select the theme to which the measures applies most, namely `waterkwaliteit`, `bodemkwaliteit`, `klimaat`, `biodiversiteit` en `landschap`.
+
 # BBWPC v.0.10.6
 ## Fixed
 * correction on calculation of `S_ER_REWARD` in `er_croprotation`, costs of farm level measures per farm are now per hectare instead of per m2 so the costs of farm level measures per ha and farm level measures per farm are now added up correctly 
