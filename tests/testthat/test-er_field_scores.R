@@ -116,8 +116,8 @@ test_that("check er_field_scores", {
       S_ER_WATER = rep(63,4),
       S_ER_CLIMATE = rep(0,4),
       S_ER_BIODIVERSITY = rep(112,4),
-      S_ER_LANDSCAPE = rep(75,4),
-      S_ER_TOT = rep(490760,4),
+      S_ER_LANDSCAPE = rep(0,4),
+      S_ER_TOT = rep(0,4),
       S_ER_REWARD = c(301,301,301,301)
     ),
     tolerance = 1,
