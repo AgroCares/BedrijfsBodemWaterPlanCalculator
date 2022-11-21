@@ -299,7 +299,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
 
       # add correction reward
       dt5 <- merge(dt.region[,c("id","bbwp_id","regio_factor")], dt[,c("id","reward_cf")], by = "id")
-      dt4 <- dt4[dt5[,.(bbwp_id,regio_factor,reward_cf)], on = "bbwp_id"]
+      dt4 <- merge(dt4,dt5[, c("bbwp_id","regio_factor","reward_cf")], by = "bbwp_id")
       dt4[, cfr := fifelse(regio_factor == 1, reward_cf, 1)]
     
       # sum total score (score per hectare) 
