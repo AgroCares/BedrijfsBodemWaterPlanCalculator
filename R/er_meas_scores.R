@@ -306,31 +306,36 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   # data table with measures applied on field level and corresponding scores to be used for pdf 
   if(pdf == TRUE){
     
-    # get applied measures and corresponding scores
-    pdf.meas.field <- dt2[!is.na(bbwp_id), c("bbwp_id","B_AREA","climate","soil","water","landscape","biodiversity","total")]
+    pdf_fields <- er_pdf(croprotation = FALSE,meas_scores = TRUE,dt.field.measures = dt2,dt.farm.measures = NULL)
     
-    # get measures summary 
-    dt3 <- bbwp_measures[, c("summary","bbwp_id")]
-    
-    # merge measure summary with applied measures
-    pdf.meas.field <- merge(pdf.meas.field,dt3, on = "bbwp_id")
-    
-    # convert area to ha
-    pdf.meas.field <- pdf.meas.field[, B_AREA := B_AREA/10000]
-    
-    # add up scores and area if measures are applied on multiple fields
-      # get total area of the measures applied on multiple fields
-    pdf.meas.field <- pdf.meas.field[, B_AREA_tot := sum(B_AREA), by = "summary"]
-      
-      # get cols
-      cols <- c('climate','soil','water','landscape','biodiversity','total')
-      
-      # calculate weighted mean of the scores
-      pdf.meas.field <- pdf.meas.field[,lapply(.SD,weighted.mean,w = B_AREA), by = c("summary","bbwp_id","B_AREA_tot"),.SDcols = cols]
-      
-    # arrange table to right format
-    pdf.meas.field <- pdf.meas.field[, bbwp_id := NULL]
-    setcolorder(pdf.meas.field, c("summary"))
+    # # get applied measures that have a score or reward
+    # pdf.meas.field <- dt2[total > 0 | euro_ha > 0 | euro_farm >0,]
+    # 
+    # # select measures, area and corresponding scores
+    # pdf.meas.field <- pdf.meas.field[!is.na(bbwp_id), c("bbwp_id","B_AREA","climate","soil","water","landscape","biodiversity","total")]
+    # 
+    #  # get measures summary
+    # dt3 <- bbwp_measures[, c("summary","bbwp_id")]
+    # 
+    # # merge measure summary with applied measures
+    # pdf.meas.field <- merge(pdf.meas.field,dt3, on = "bbwp_id")
+    # 
+    # # convert area to ha
+    # pdf.meas.field <- pdf.meas.field[, B_AREA := B_AREA/10000]
+    # 
+    # # add up scores and area if measures are applied on multiple fields
+    #   # get total area of the measures applied on multiple fields
+    #   pdf.meas.field <- pdf.meas.field[, B_AREA_tot := sum(B_AREA), by = "summary"]
+    # 
+    #   # get cols
+    #   cols <- c('climate','soil','water','landscape','biodiversity','total')
+    # 
+    #   # calculate weighted mean of the scores
+    #   pdf.meas.field <- pdf.meas.field[,lapply(.SD,weighted.mean,w = B_AREA), by = c("summary","bbwp_id","B_AREA_tot"),.SDcols = cols]
+    # 
+    # # arrange table to right format
+    # pdf.meas.field <- pdf.meas.field[, bbwp_id := NULL]
+    # setcolorder(pdf.meas.field, c("summary"))
     
   } else {
     
