@@ -69,10 +69,10 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   if(length(dt.meas.farm[grepl("EB10",eco_id)]) > 0) {
     
     # replace EB10B or EB10C by EB10A
+    dt.meas.idx <- dt.meas.idx[, c("id","bbwp_status") := dt.meas.farm[grepl("EB10",eco_id),c("id","bbwp_status")]]
     dt.meas.farm <- dt.meas.farm[!grepl("EB10",eco_id),]
     dt.meas.farm <- rbind(dt.meas.farm,dt.meas.idx, use.names = TRUE, fill = TRUE)
-    dt.meas.farm <- dt.meas.farm[eco_id == 'EB10A', id:= fifelse(is.na(id),1,id)]
-    
+
     } else { 
     
     # add crop EB10A to farm measures  
