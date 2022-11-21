@@ -5,8 +5,8 @@ dt.measures <- as.data.table(BBWPC::bbwp_measures)
 dt.measures <- dt.measures[!is.na(eco_id)]
 
 #### test voor B en N ####
-measures <- rbind(data.table(id = 1, dt.measures[grepl('EG1C|EB18|EG20A1',eco_id)]),
-                  data.table(id = 3, dt.measures[grepl('EG5A',eco_id)]))
+measures <- rbind(data.table(id = 1, dt.measures[grepl('EG1C|EG20A1',eco_id)]),
+                  data.table(id = 3, dt.measures[grepl('EG5A|EB10B',eco_id)]))
                   
 measures$bbwp_status <- 'hello check'
 

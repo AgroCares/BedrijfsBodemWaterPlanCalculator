@@ -12,7 +12,8 @@
 #' @param B_AREA (numeric) the area of the field (m2) 
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
 #' @param measures (list) The measures planned / done per fields
-#'    
+#' @param pdf (boolean) is there a pdf needed
+#'
 #' @import data.table
 #' @import stats
 #'
@@ -21,7 +22,7 @@
 er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                             B_LU_BBWP,B_LU_BRP, 
                             B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER,B_LU_CULTIVATED_ER,
-                            measures, sector){
+                            measures, sector, pdf){
   
   # add visual bindings
   . = eco_id = farmid = b_lu_brp = type = erscore = B_AREA_RR = indicator = NULL
@@ -32,7 +33,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   fr_soil = er_reward = fr_soil = reward_cf = regio_factor = euro_ha = oid = water = soil = climate = biodiversity = landscape = climate = total = NULL
   er_total = er_climate = er_soil = er_water = er_landscape = er_biodiversity = NULL
   eco_app = b_lu_arable_er = b_lu_productive_er = b_lu_cultivated_er = NULL
-  code = choices = cfr = B_IDX = NULL
+  code = choices = cfr = B_IDX = pdf = NULL
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
@@ -69,9 +70,10 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   if(length(dt.meas.farm[grepl("EB10",eco_id)]) > 0) {
     
     # replace EB10B or EB10C by EB10A
+    dt.meas.idx <- dt.meas.idx[, c("id","bbwp_status") := dt.meas.farm[grepl("EB10",eco_id),c("id","bbwp_status")]]
     dt.meas.farm <- dt.meas.farm[!grepl("EB10",eco_id),]
     dt.meas.farm <- rbind(dt.meas.farm,dt.meas.idx, use.names = TRUE, fill = TRUE)
-    dt.meas.farm <- dt.meas.farm[eco_id == 'EB10A', id:= fifelse(is.na(id),1,id)]
+    dt.meas.farm <- dt.meas.farm[eco_id == 'EB10A', ]
     
     } else { 
     
@@ -317,6 +319,53 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                                   total = 0)
       dt.farm.reward <- data.table(er_reward = 0)
     }
+  
+    # data table with measures applied on field and farm level and corresponding scores to be used for pdf 
+    if(pdf == TRUE){
+      
+      # get measures applied on field level
+      pdf.field.meas.name <- dt2[total>0 | euro_ha > 0, c("id","bbwp_id")]
+
+      # get measures summary 
+      dt7 <- bbwp_measures[, c("summary","bbwp_id")]
+      
+      # merge measure summary with applied measures
+      pdf.field.meas.name <- merge(pdf.field.meas.name,dt7, by = "bbwp_id")
+      
+      # get applied measures and corresponding scores
+      pdf.field.score <- dt2[!is.na(bbwp_id), c("bbwp_id","id","B_AREA","climate","soil","water","landscape","biodiversity","total")]
+      
+      # merge field measure names with field measure scores
+      pdf.field.measures <- merge(pdf.field.meas.name, pdf.field.score, by = c('id','bbwp_id'))
+      
+      # convert area to ha
+      pdf.field.measures <- pdf.field.measures[, B_AREA := B_AREA/10000]
+      
+      # add up scores and area if measures are applied on multiple fields
+      pdf.field.measures <- pdf.field.measures[, B_AREA_tot := sum(B_AREA), by = "summary"]
+      
+      # get cols
+      cols <- c('climate','soil','water','landscape','biodiversity','total')
+      
+      # calculate weighted mean of the scores
+      pdf.field.measures <- pdf.field.measures[,lapply(.SD,weighted.mean,w = B_AREA), by = c("summary","bbwp_id","B_AREA_tot"),.SDcols = cols]
+      
+      # arrange table to right format
+      pdf.field.measures <- pdf.field.measures[, c('bbwp_id') := NULL]
+      setcolorder(pdf.field.measures, c("summary"))
+      
+      # get measures applied on farm level
+      # calculate the average ER score (points/ ha) for the whole farm due to measures taken
+      pdf.field.meas.name <- dt2[total>0 | euro_ha > 0, c("id","bbwp_id")]
+      #pdf.field.score <- dt2[total > 0 | euro_ha > 0,lapply(.SD,function(x) (x*B_AREA)/dt.farm$area_farm), .SDcols = cols]
+      
+      
+      
+    } else {
+      
+      ###
+
+          }
     
     
   # total score for farm measures and crop rotation
