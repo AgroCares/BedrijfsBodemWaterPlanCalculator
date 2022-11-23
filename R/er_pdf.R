@@ -76,7 +76,7 @@ er_pdf <- function(croprotation,measurescores,dt.field.measures,dt.farm.measures
     pdf.field.measures <- merge(pdf.field.meas.name, dt.field.measures[!is.na(bbwp_id), c("bbwp_id","id","B_AREA","climate","soil","water","landscape","biodiversity","total")], by = c('id','bbwp_id'))
     
     # convert area to ha
-    pdf.field.measures <- pdf.field.measures[, B_AREA := B_AREA/10000]
+    pdf.field.measures[, B_AREA := B_AREA/10000]
     
     # add up scores and area if measures are applied on multiple fields
       # get total area of the measures applied on multiple fields
@@ -97,19 +97,21 @@ er_pdf <- function(croprotation,measurescores,dt.field.measures,dt.farm.measures
     pdf.farm.meas.name <- dt.farm.measures[total>0 | euro_farm > 0 | euro_ha > 0, c("bbwp_id")]
     
     # merge measure summary with applied measures
-    pdf.farm.meas.name <- merge(pdf.farm.meas.name,dt1, by = "bbwp_id")
+    pdf.farm.meas.name <- merge(pdf.farm.meas.name,
+                                dt1, by = "bbwp_id")
     
     # get applied measures and corresponding scores (in score per farm)
-    pdf.farm.measures <- merge(pdf.farm.meas.name,dt.farm.measures[!is.na(bbwp_id), c("bbwp_id","climate","soil","water","landscape","biodiversity","total")], by = c('bbwp_id'))
+    pdf.farm.measures <- merge(pdf.farm.meas.name,
+                               dt.farm.measures[!is.na(bbwp_id), c("bbwp_id","climate","soil","water","landscape","biodiversity","total")], by = c('bbwp_id'))
     
     # get total farm area in ha
     area_farm = (sum(B_AREA)/10000)
     
     # convert farm scores to score per ha
-    pdf.farm.measures <- pdf.farm.measures[, c(cols):= lapply(.SD, function (x) x / (area_farm)), .SDcols = cols]
+    pdf.farm.measures[, c(cols):= lapply(.SD, function (x) x / (area_farm)), .SDcols = cols]
     
     # arrange table to right format
-    pdf.farm.measures <- pdf.farm.measures[, c('bbwp_id') := NULL][, B_AREA_tot := area_farm]
+    pdf.farm.measures[, c('bbwp_id') := NULL][, B_AREA_tot := area_farm]
     pdf.farm.measures[, level := "farm"]
     setcolorder(pdf.farm.measures, c("level","summary"))
     pdf.farm.measures[, c(cols) := round(.SD,1), .SDcols = cols]
@@ -118,7 +120,7 @@ er_pdf <- function(croprotation,measurescores,dt.field.measures,dt.farm.measures
     pdf.farm.field <- rbind(pdf.field.measures,pdf.farm.measures)
     
     # set output
-    out <- pdf.meas.field
+    out <- pdf.farm.field
   }
   
   # return table
