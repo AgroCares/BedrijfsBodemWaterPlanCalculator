@@ -269,7 +269,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.10, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
 
       # copy dt.meas.farm to be used later
-      dt.region <- dt.meas.farm
+      dt.region <- copy(dt.meas.farm)
       
       # farm measures do not have a field_id
       scols <- colnames(dt.meas.farm)[grepl('^er_|bbwp_id|bbwp_conflict',colnames(dt.meas.farm))]
