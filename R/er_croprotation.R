@@ -329,7 +329,11 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     # data table with measures applied on field and farm level and corresponding scores (in score/ha) to be used for pdf 
     if(pdf == TRUE){
       
-      pdf <- er_pdf(croprotation = TRUE,measurescores = FALSE,dt.field.measures = dt2,dt.farm.measures = dt4, B_AREA = B_AREA)
+      pdf <- er_pdf(croprotation = TRUE,
+                    measurescores = FALSE,
+                    dt.field.measures = dt2,
+                    dt.farm.measures = dt4, 
+                    B_AREA = B_AREA)
       out <- list(out = out, pdf = pdf)
 
     } else {
