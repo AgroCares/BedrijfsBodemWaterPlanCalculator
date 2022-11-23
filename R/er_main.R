@@ -21,7 +21,7 @@
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: options: 'diary', 'arable', 'tree_nursery', 'bulbs')
 #' @param output (string) a vector specifying the output type of the function. Options: scores, measures 
 #' @param medalscore (character) The desired medal score expressed as bronze, silver or gold 
-#' @param pdf (string) add table with summary of all measures taken for pdf. Options: yes,no
+#' @param pdf (boolean) add table with summary of all measures taken for pdf. Options: TRUE or FALSE
 #'  
 #' @import data.table
 #' @import OBIC
@@ -31,7 +31,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
                         B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
                         B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER,B_LU_CULTIVATED_ER,
                         A_P_SG,D_SA_W, B_AREA,M_DRAIN, farmscore, 
-                        measures, sector, output = 'scores', medalscore = 'gold', pdf = 'no'){
+                        measures, sector, output = 'scores', medalscore = 'gold', pdf = FALSE){
   
   # add visual bindings
   S_ER_TOT = S_ER_SOIL = S_ER_WATER = S_ER_CLIMATE = S_ER_BIODIVERSITY = S_ER_LANDSCAPE = S_ER_REWARD = NULL
@@ -210,7 +210,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     }
   
   # make table for pdf with summary of all measures taken 
-  if(pdf == 'yes'){
+  if(pdf == TRUE){
     
     # get scores and the table with field measures that generated scores 
     pdf.field <- er_meas_score(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
