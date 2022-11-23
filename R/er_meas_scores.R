@@ -306,14 +306,14 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   # data table with measures applied on field level and corresponding scores to be used for pdf 
   if(pdf == TRUE){
     
-    pdf <- er_pdf(croprotation = FALSE,measurescores = TRUE,dt.field.measures = dt2,dt.farm.measures = NULL, B_AREA = B_AREA)
+    pdf <- er_pdf(croprotation = FALSE,
+                  measurescores = TRUE,
+                  dt.field.measures = dt2,
+                  dt.farm.measures = NULL, 
+                  B_AREA = B_AREA)
     dt.field <- list(dt.field = dt.field, pdf = pdf) 
     
-  } else {
-    
-    dt.field <- list(dt.field = dt.field, pdf = NULL)
   }
-  
   
   # return value, with for each field the total scores and euros per hectare
   return(dt.field)

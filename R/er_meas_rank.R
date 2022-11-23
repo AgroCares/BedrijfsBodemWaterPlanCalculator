@@ -122,7 +122,6 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, M_
                              B_AREA = dt$B_AREA,
                              measures = measures,
                              sector = sector)
-  dt.farm <- dt.farm$out
   
   # merge all measures to the given fields
   dt <- as.data.table(merge.data.frame(dt, dt.meas.av, all = TRUE))

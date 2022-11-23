@@ -336,11 +336,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                     B_AREA = B_AREA)
       out <- list(out = out, pdf = pdf)
 
-    } else {
-      
-      out <- list(out = out, pdf = NULL)
-      
-          }
+    }
   
   # return the Ecoregelingen Score based on Crop Rotation and Farm Measures
   # output has units score / ha and euro/ha
