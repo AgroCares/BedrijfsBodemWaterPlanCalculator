@@ -229,14 +229,14 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     pdf.field <- pdf.field$pdf
     
     # get scores and the table with field and farm measures that generated scores 
-    pdf.farm.field <- er_croprotation(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR,
-                                      B_LU_BBWP = dt$B_LU_BBWP,
-                                      B_LU_BRP = dt$B_LU_BRP,
-                                      B_LU_ARABLE_ER = dt$B_LU_ARABLE_ER,
-                                      B_LU_PRODUCTIVE_ER = dt$B_LU_PRODUCTIVE_ER,
-                                      B_LU_CULTIVATED_ER = dt$B_LU_CULTIVATED_ER,
-                                      B_AER_CBS = dt$B_AER_CBS,
-                                      B_AREA = dt$B_AREA,
+    pdf.farm.field <- er_croprotation(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
+                                      B_LU_BBWP = B_LU_BBWP,
+                                      B_LU_BRP = B_LU_BRP,
+                                      B_LU_ARABLE_ER = B_LU_ARABLE_ER,
+                                      B_LU_PRODUCTIVE_ER = B_LU_PRODUCTIVE_ER,
+                                      B_LU_CULTIVATED_ER = B_LU_CULTIVATED_ER,
+                                      B_AER_CBS = B_AER_CBS,
+                                      B_AREA = B_AREA,
                                       measures = measures,
                                       sector = sector,
                                       pdf = TRUE)
