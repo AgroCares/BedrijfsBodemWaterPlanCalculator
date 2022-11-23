@@ -21,7 +21,7 @@
 er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                           B_LU_BBWP,B_LU_BRP,
                           B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER,B_LU_CULTIVATED_ER,
-                          measures, sector, pdf){
+                          measures, sector, pdf = FALSE){
   
   # add visual bindings
   eco_id = type = fr_area = id = er_urgency = NULL
@@ -34,7 +34,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   eco_app = b_lu_arable_er = b_lu_productive_er = b_lu_cultivated_er = NULL
   er_total = er_climate = er_soil = er_measure = er_water = er_landscape = er_biodiversity = NULL
   reward_cf = regio_factor = . = er_cf = statcode = NULL
-  code = choices = area_fr =  pdf.meas.field = dt3 = NULL
+  code = choices = area_fr = dt3 = NULL
 
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
@@ -306,41 +306,14 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   # data table with measures applied on field level and corresponding scores to be used for pdf 
   if(pdf == TRUE){
     
-    pdf_fields <- er_pdf(croprotation = FALSE,meas_scores = TRUE,dt.field.measures = dt2,dt.farm.measures = NULL)
-    
-    # # get applied measures that have a score or reward
-    # pdf.meas.field <- dt2[total > 0 | euro_ha > 0 | euro_farm >0,]
-    # 
-    # # select measures, area and corresponding scores
-    # pdf.meas.field <- pdf.meas.field[!is.na(bbwp_id), c("bbwp_id","B_AREA","climate","soil","water","landscape","biodiversity","total")]
-    # 
-    #  # get measures summary
-    # dt3 <- bbwp_measures[, c("summary","bbwp_id")]
-    # 
-    # # merge measure summary with applied measures
-    # pdf.meas.field <- merge(pdf.meas.field,dt3, on = "bbwp_id")
-    # 
-    # # convert area to ha
-    # pdf.meas.field <- pdf.meas.field[, B_AREA := B_AREA/10000]
-    # 
-    # # add up scores and area if measures are applied on multiple fields
-    #   # get total area of the measures applied on multiple fields
-    #   pdf.meas.field <- pdf.meas.field[, B_AREA_tot := sum(B_AREA), by = "summary"]
-    # 
-    #   # get cols
-    #   cols <- c('climate','soil','water','landscape','biodiversity','total')
-    # 
-    #   # calculate weighted mean of the scores
-    #   pdf.meas.field <- pdf.meas.field[,lapply(.SD,weighted.mean,w = B_AREA), by = c("summary","bbwp_id","B_AREA_tot"),.SDcols = cols]
-    # 
-    # # arrange table to right format
-    # pdf.meas.field <- pdf.meas.field[, bbwp_id := NULL]
-    # setcolorder(pdf.meas.field, c("summary"))
+    pdf <- er_pdf(croprotation = FALSE,measurescores = TRUE,dt.field.measures = dt2,dt.farm.measures = NULL, B_AREA = B_AREA)
+    dt.field <- list(dt.field = dt.field, pdf = pdf) 
     
   } else {
     
-    dt.field <- dt.field
+    dt.field <- list(dt.field = dt.field, pdf = NULL)
   }
+  
   
   # return value, with for each field the total scores and euros per hectare
   return(dt.field)
