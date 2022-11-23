@@ -14,7 +14,8 @@ er_croprotation(
   B_LU_PRODUCTIVE_ER,
   B_LU_CULTIVATED_ER,
   measures,
-  sector
+  sector,
+  pdf = FALSE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ er_croprotation(
 \item{measures}{(list) The measures planned / done per fields}
 
 \item{sector}{(string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')}
+
+\item{pdf}{(boolean) is there a pdf needed}
 }
 \description{
 Estimate the actual contribution of crop rotation given aims for soil quality, water quality, climate, biodiversity and landscape
