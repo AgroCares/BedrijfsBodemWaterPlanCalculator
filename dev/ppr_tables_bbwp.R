@@ -51,6 +51,18 @@ require(data.table);library(usethis)
     # remove duplicated columns
     bbwp_measures[,c(paste0('c',1:12)) := NULL]
     
+  # update the measure categories
+    
+    # set the ecoregeling array
+    bbwp_measures[klimaat == 1, categories := "klimaat"]
+    bbwp_measures[bodemkwaliteit == 1, categories := paste0(categories,"||bodemkwaliteit"),by = .I]
+    bbwp_measures[waterkwaliteit == 1, categories := paste0(categories,"||waterkwaliteit"),by = .I]
+    bbwp_measures[biodiversiteit  == 1, categories := paste0(categories,"||biodiversiteit"),by = .I]
+    bbwp_measures[landschap  == 1, categories := paste0(categories,"||landschap"),by = .I]
+    
+    # add the bbwp category
+    bbwp_measures[,categories := paste0(categories,"||",category),by = .I]
+    
   # save measures as bbwp table
   use_data(bbwp_measures, overwrite = TRUE)
   

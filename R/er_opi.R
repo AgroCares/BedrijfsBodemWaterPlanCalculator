@@ -79,7 +79,7 @@ er_opi <- function(B_SOILTYPE_AGR,
     dt.farm <- dt.farm[,list(farmid = 1, S_ER = weighted.mean(x = S_ER, w = B_AREA)),by='indicator']
 
     # the minimum costs required (euro / ha) required for the medals
-    if(medalscore=='gold'){mcosts <- 175} else if(medalscore=='silver') {mcosts <- 100} else {mcosts <- 70}
+    if(medalscore=='gold'){mcosts <- 200} else if(medalscore=='silver') {mcosts <- 100} else {mcosts <- 60}
 
     # add the aim
     dt.farm[indicator=='S_ER_SOIL', S_AIM := dt.farm.aim$B_CT_SOIL]
@@ -165,8 +165,8 @@ er_opi <- function(B_SOILTYPE_AGR,
     dt[, s_er_landscape := pmin(1,s_er_landscape)]
     dt[, s_er_farm_tot:= pmin(50,s_er_farm_tot)]
     
-    # set maximum for s_er_costs at 175 and convert to percentage 
-    dt[, s_er_costs := (pmin(175,s_er_costs)/175)*100]
+    # set maximum for s_er_costs at 200 and convert to percentage 
+    dt[, s_er_costs := (pmin(200,s_er_costs)/200)*100]
   
     # set s_er_tot equal to s_er_tot calculated in dt.field (distance to target) 
     dt[, s_er_tot := dt.field$s_er_tot]  

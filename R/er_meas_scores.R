@@ -91,8 +91,9 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt.farm <- data.table(area_farm = sum(B_AREA),
                         area_arable = sum(B_AREA * B_LU_ARABLE_ER),
                         area_productive = sum(B_AREA * B_LU_PRODUCTIVE_ER),
-                        area_cultivated = sum(B_AREA * B_LU_CULTIVATED_ER))
-  
+                        area_cultivated = sum(B_AREA * B_LU_CULTIVATED_ER),
+                        area_ditch = sum(dt$B_AREA[which(B_LU_BRP == 343)]))
+
   # merge all measures to the given fields
   dt <- merge(dt,dt.meas.taken,by = 'id',all=TRUE)
   
@@ -101,8 +102,8 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
               dt.meas.eco, 
               by = c('B_LU_BRP','eco_id'),
               all.x = TRUE)
-  dt[is.na(eco_app) & !grepl('EG20',eco_id),eco_app := 0]
-  dt[is.na(eco_app) & grepl('EG20',eco_id), eco_app := 1]
+  dt[is.na(eco_app) & !grepl('EG20|EG13|EG14',eco_id),eco_app := 0]
+  dt[is.na(eco_app) & grepl('EG20|EG13|EG14',eco_id), eco_app := 1]
   
   # measures that apply to crops cultivated after main crop (vanggewassen en groenbemesters) and FAB-stroken are applicable on all main crops 
   dt[grepl("EB17|EB10|EB23", eco_id) & grepl("gras_tijdelijk|rustgewas|rooivrucht|groenten|bollensierteelt|boomfruitteelt|mais|eiwitgewas",B_LU_BBWP), eco_app := 1]
@@ -134,12 +135,12 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     
     # set the score to zero when not applicable as arable/productive/cultivated measure
     # ensure that measure non-productive area is always applicable
-    dt[B_LU_ARABLE_ER  == TRUE & b_lu_arable_er  == 0 & !grepl('EG20',eco_id), c(cols) := 0]
-    dt[B_LU_PRODUCTIVE_ER == TRUE & b_lu_productive_er == 0 & !grepl('EG20',eco_id), c(cols) := 0]
-    dt[B_LU_CULTIVATED_ER  == TRUE & b_lu_cultivated_er == 0 & !grepl('EG20',eco_id), c(cols) := 0]
-    dt[B_LU_ARABLE_ER  == FALSE & b_lu_arable_er  == 1 & !grepl('EG20',eco_id), c(cols) := 0]
-    dt[B_LU_PRODUCTIVE_ER == FALSE & b_lu_productive_er == 1 & !grepl('EG20',eco_id), c(cols) := 0]
-    dt[B_LU_CULTIVATED_ER  == FALSE & b_lu_cultivated_er == 1 & !grepl('EG20',eco_id), c(cols) := 0]
+    dt[B_LU_ARABLE_ER  == TRUE & b_lu_arable_er  == 0 & !grepl('EG20|EG13|EG14',eco_id), c(cols) := 0]
+    dt[B_LU_PRODUCTIVE_ER == TRUE & b_lu_productive_er == 0 & !grepl('EG20|EG13|EG14',eco_id), c(cols) := 0]
+    dt[B_LU_CULTIVATED_ER  == TRUE & b_lu_cultivated_er == 0 & !grepl('EG20|EG13|EG14',eco_id), c(cols) := 0]
+    dt[B_LU_ARABLE_ER  == FALSE & b_lu_arable_er  == 1 & !grepl('EG20|EG13|EG14',eco_id), c(cols) := 0]
+    dt[B_LU_PRODUCTIVE_ER == FALSE & b_lu_productive_er == 1 & !grepl('EG20|EG13|EG14',eco_id), c(cols) := 0]
+    dt[B_LU_CULTIVATED_ER  == FALSE & b_lu_cultivated_er == 1 & !grepl('EG20|EG13|EG14',eco_id), c(cols) := 0]
     
   # set the score and profit to zero when the measure is not applicable given sector or soil type
   
@@ -206,8 +207,8 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt[grepl('^EB12',eco_id) & B_AREA_REL > 85 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
     
     # measure EB13. no till and reduced till 
-    cols.ad1 <- c(1,1,0,0,0,0)
-    cols.ad2 <- c(2,2,0,0,0,0)
+    cols.ad1 <- c(2,1,1,0,0,0)
+    cols.ad2 <- c(4,2,2,0,0,0)
     dt[grepl('^EB13',eco_id), B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_arable]
     dt[grepl('^EB13',eco_id) & B_AREA_REL <= 50 & er_total > 0, c(cols.sel) := 0]
     dt[grepl('^EB13',eco_id) & B_AREA_REL > 65 & B_AREA_REL <= 80 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
@@ -235,14 +236,14 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt[grepl('^EG20',eco_id) & B_AREA_REL > 9 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
     
     # measure EG13. inzet baggerspuit (check na update maatregelentabel, EG13 kan 1 keer per perceel voorkomen)
-    cols.ad1 <- c(0,0,5,0,5,5)
-    dt[grepl('EG13',eco_id), B_AREA_REL := sum(B_AREA) / dt.farm$area_farm]
+    cols.ad1 <- c(0,0,5,0,5,0)
+    dt[grepl('EG13|EG14',eco_id), B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_ditch]
     dt[grepl('EG13',eco_id) & B_AREA_REL < 25 & er_total > 0, c(cols.score) := 0]
     dt[grepl('EG13',eco_id) & B_AREA_REL > 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
 
     # measure EG14. slootkanten ecologische maaien (check na update maatregelentabel, EG14 kan 1 keer per perceel voorkomen)
-    cols.ad1 <- c(0,2,2,1,5,5)
-    dt[grepl('EG14',eco_id), B_AREA_REL := sum(B_AREA) / dt.farm$area_farm]
+    cols.ad1 <- c(0,2,2,1,5,0)
+    dt[grepl('EG14|EG13',eco_id), B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_ditch]
     dt[grepl('EG14',eco_id) & B_AREA_REL < 25 & er_total > 0, c(cols.score) := 0]
     dt[grepl('EG14',eco_id) & B_AREA_REL > 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
     

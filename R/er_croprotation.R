@@ -32,7 +32,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   fr_soil = er_reward = fr_soil = reward_cf = regio_factor = euro_ha = oid = water = soil = climate = biodiversity = landscape = climate = total = NULL
   er_total = er_climate = er_soil = er_water = er_landscape = er_biodiversity = NULL
   eco_app = b_lu_arable_er = b_lu_productive_er = b_lu_cultivated_er = NULL
-  code = choices = NULL
+  code = choices = cfr = B_IDX = NULL
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
@@ -58,10 +58,28 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt.meas.farm <- bbwp_check_meas(dt = measures, eco = TRUE, score = TRUE)
   dt.meas.field <- bbwp_check_meas(dt = NULL, eco = TRUE, score = FALSE)
   dt.meas.eco <- as.data.table(BBWPC::er_measures)
+  dt.meas.idx <- bbwp_check_meas(dt = NULL, eco = TRUE, score = FALSE)
     
-  # subset both measurement tables # Add EB18 here Gerard
+  # subset measurement tables # Add EB18 here Gerard
   dt.meas.field <- dt.meas.field[grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field',]
-  dt.meas.farm <- dt.meas.farm[level == 'farm']
+  dt.meas.idx <- dt.meas.idx[grepl('EB10A',eco_id) & level == 'farm']
+  dt.meas.farm <- dt.meas.farm[level == 'farm',]
+ 
+  # add crop diversification index (EB10A) to farm measures table
+  if(nrow(dt.meas.farm[grepl("EB10",eco_id),]) > 0){
+    
+    # replace EB10B or EB10C by EB10A
+    dt.meas.idx <- dt.meas.idx[, c("id","bbwp_status") := dt.meas.farm[grepl("EB10",eco_id),c("id","bbwp_status")]]
+    dt.meas.farm <- dt.meas.farm[!grepl("EB10",eco_id),]
+    dt.meas.farm <- rbind(dt.meas.farm,dt.meas.idx, use.names = TRUE, fill = TRUE)
+
+    } else { 
+    
+    # add crop EB10A to farm measures  
+    dt.meas.farm <- rbind(dt.meas.farm,dt.meas.idx, use.names = TRUE, fill = TRUE)
+    dt.meas.farm <- dt.meas.farm[eco_id == 'EB10A', id := fifelse(is.na(id),1,id)]
+  
+    } 
   
   # add bbwp table for financial reward correction factor per AER
   dt.er.reward <- as.data.table(BBWPC::er_aer_reward)
@@ -164,11 +182,11 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt.field[grepl('loess', B_SOILTYPE_AGR) & loess == FALSE , c(cols) := 0]
     
     # columns to be updated
-    cols.sel <- c('er_climate','er_soil','er_water','er_landscape','er_biodiversity')
+    cols.sel <- c('er_climate','er_soil','er_water','er_landscape','er_biodiversity','er_euro_ha')
     
     # measure EB1. Cultivate rustgewas on a field
-    cols.ad1 <- c(3,3,3,0,1)
-    cols.ad2 <- c(4,4,4,1,1)
+    cols.ad1 <- c(3,3,3,0,1,0)
+    cols.ad2 <- c(4,4,4,1,1,0)
     dt.field[, er_total := er_climate + er_soil + er_water + er_landscape + er_biodiversity]
     dt.field[bbwp_id == 'G54' & er_total > 0, B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_arable]
     dt.field[bbwp_id == 'G54' & er_total > 0 & B_AREA_REL <= 20, c(cols.sel) := 0]
@@ -237,6 +255,22 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       # adapt the score when measure is not applicable
       dt.meas.farm[fsector == 0, c(cols) := 0]
       
+      # columns to be updated
+      cols.sel <- c('er_climate','er_soil','er_water','er_landscape','er_biodiversity','er_euro_farm')
+      
+      # measure EB10: Crop diversification index
+      cols.ad1 <- c(0,10,10,10,20,1000)
+      cols.ad2 <- c(0,20,20,20,40,2000)
+      dt.meas.farm[, er_total := er_climate + er_soil + er_water + er_landscape + er_biodiversity]
+      crops <- length(unique(B_LU_BRP))
+      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0, B_IDX := crops / (dt.farm$area_cultivated/10000)]
+      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX <= 0.05, c(cols.sel) := 0]
+      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.07 & B_IDX <= 0.10, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.10, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+
+      # copy dt.meas.farm to be used later
+      dt.region <- copy(dt.meas.farm)
+      
       # farm measures do not have a field_id
       scols <- colnames(dt.meas.farm)[grepl('^er_|bbwp_id|bbwp_conflict',colnames(dt.meas.farm))]
       dt.meas.farm <- unique(dt.meas.farm[,mget(scols)])
@@ -260,15 +294,19 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt4[, oid := frank(-total, ties.method = 'first',na.last = 'keep'),by = c('bbwp_conflict')]
       dt4[oid > 1, c(cols) := 0]
       
-      # measure index crop diversificaiton (score dependent on cultivated area)
-      dt4[grepl('B189|B190|B191',bbwp_id), c(cols) := lapply(.SD, function (x) x * dt.farm$area_cultivated / dt.farm$area_farm),.SDcols = cols]
-      
+      # measure index crop diversification (score dependent on cultivated area)
+      dt4[grepl('B189|B190|B191',bbwp_id), c(cols) := lapply(.SD, function (x) x * dt.farm$area_cultivated/dt.farm$area_farm), .SDcols = cols]
+
       # add correction reward
-      cfr <- weighted.mean(x = dt$reward_cf, w = dt$B_AREA)
-      
+      dt5 <- merge(dt.region[,c("id","bbwp_id","regio_factor")], dt[,c("id","reward_cf")], by = "id")
+      dt4 <- merge(dt4,dt5[, c("bbwp_id","regio_factor","reward_cf")], by = "bbwp_id")
+      dt4[, cfr := fifelse(regio_factor == 1, reward_cf, 1)]
+    
       # sum total score (score per hectare) 
-      dt.farm.score <- dt4[,lapply(.SD,sum), .SDcols = cols]
-      dt.farm.reward <- dt4[,list(er_reward = cfr * (max(euro_ha[total>0],0) + max(euro_farm[total>0],0) / (dt.farm$area_farm/10000)))]
+      dt6 <- dt4[,lapply(.SD,sum), .SDcols = cols]
+      dt.farm.score <- dt6[, c(cols):= lapply(.SD, function (x) x / (dt.farm$area_farm/10000)) , .SDcols = cols]
+      dt.farm.reward <- dt4[,list(er_reward = cfr * ( max(euro_ha[total>0],0) + max(euro_farm[total>0],0) / (dt.farm$area_farm/10000) ))][1]
+      
       
     } else {
       
