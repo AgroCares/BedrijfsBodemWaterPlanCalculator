@@ -21,6 +21,7 @@
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: options: 'diary', 'arable', 'tree_nursery', 'bulbs')
 #' @param output (string) a vector specifying the output type of the function. Options: scores, measures 
 #' @param medalscore (character) The desired medal score expressed as bronze, silver or gold 
+#' @param pdf (string) add table with summary of all measures taken for pdf. Options: yes,no
 #'  
 #' @import data.table
 #' @import OBIC
@@ -30,7 +31,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
                         B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
                         B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER,B_LU_CULTIVATED_ER,
                         A_P_SG,D_SA_W, B_AREA,M_DRAIN, farmscore, 
-                        measures, sector, output = 'scores', medalscore = 'gold'){
+                        measures, sector, output = 'scores', medalscore = 'gold', pdf = 'no'){
   
   # add visual bindings
   S_ER_TOT = S_ER_SOIL = S_ER_WATER = S_ER_CLIMATE = S_ER_BIODIVERSITY = S_ER_LANDSCAPE = S_ER_REWARD = NULL
@@ -208,7 +209,51 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     
     }
   
-  
+  # make table for pdf with summary of all measures taken 
+  if(pdf == 'yes'){
+    
+    # get scores and the table with field measures that generated scores 
+    pdf.field <- er_meas_score(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
+                               B_LU_BBWP = B_LU_BBWP,
+                               B_LU_BRP = B_LU_BRP,
+                               B_LU_ARABLE_ER = B_LU_ARABLE_ER,
+                               B_LU_PRODUCTIVE_ER = B_LU_PRODUCTIVE_ER,
+                               B_LU_CULTIVATED_ER = B_LU_CULTIVATED_ER,
+                               B_AER_CBS = B_AER_CBS,
+                               B_AREA = B_AREA,
+                               measures = measures, 
+                               sector = sector,
+                               pdf = TRUE)
+    
+    # select the table with field measures that generated scores as input for pdf 
+    pdf.field <- pdf.field$pdf
+    
+    # get scores and the table with field and farm measures that generated scores 
+    pdf.farm.field <- er_croprotation(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR,
+                                      B_LU_BBWP = dt$B_LU_BBWP,
+                                      B_LU_BRP = dt$B_LU_BRP,
+                                      B_LU_ARABLE_ER = dt$B_LU_ARABLE_ER,
+                                      B_LU_PRODUCTIVE_ER = dt$B_LU_PRODUCTIVE_ER,
+                                      B_LU_CULTIVATED_ER = dt$B_LU_CULTIVATED_ER,
+                                      B_AER_CBS = dt$B_AER_CBS,
+                                      B_AREA = dt$B_AREA,
+                                      measures = measures,
+                                      sector = sector,
+                                      pdf = TRUE)
+    
+    # select the table with field and farm measures that generated scores as input for pdf 
+    pdf.farm.field <- pdf.farm.field$pdf
+    
+    # table with all field and farm measures and corresponding scores
+    pdf.tot.dt <- rbind(pdf.field,pdf.farm.field)
+    
+    # arrange order table columns
+    setcolorder(pdf.tot.dt, c("level","summary","B_AREA_tot","climate","soil","water","landscape","biodiversity","total"))
+    
+    # add pdf table to output when pdf is requested
+    out <- list(scores = out, pdf.table = pdf.tot.dt)
+  }
+
   # return output
   return(out)
   
