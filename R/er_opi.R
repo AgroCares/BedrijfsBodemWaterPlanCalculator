@@ -114,8 +114,11 @@ er_opi <- function(B_SOILTYPE_AGR,
     # get the distance to target for the five indicators
     dt.farm.ind.opi <- dcast(dt.farm,farmid ~ indicator, value.var = 'D_OPI')
     
+    # rename reward to costs
+    setnames(dt.farm.ind.opi,"S_ER_REWARD","S_ER_COSTS")
     
   # estimate the distance to target for 5 indicators per field
+  # dt.field is distance to target and will be implemented in the ecoregeling tool later, currently not used
     
     # estimate the total contribution of a single field to the desired score on farm level (add 0.001 to water and landscape indicators for in case these are zero)
     dt[, D_OPI_SOIL := S_ER_SOIL * B_AREA / (dt.farm.aim$B_CT_SOIL * sum(B_AREA))]
@@ -137,7 +140,7 @@ er_opi <- function(B_SOILTYPE_AGR,
     dt.field[,D_OPI_SCORE := round(100 * pmax(0,pmin(1,D_OPI)),0)]
     
     # add a correction for the distance to target for reward (10%)
-    dt.field[indicator != "D_OPI_FARM_TOT", D_OPI_SCORE := round((0.9 * D_OPI_SCORE) + (10 * dt.farm.ind.opi$S_ER_REWARD * 0.01))]
+    dt.field[indicator != "D_OPI_FARM_TOT", D_OPI_SCORE := round((0.9 * D_OPI_SCORE) + (10 * dt.farm.ind.opi$S_ER_COSTS * 0.01))]
     
     # dcast output
     dt.field <- dcast(dt.field,id~indicator, value.var = 'D_OPI_SCORE')
@@ -158,12 +161,12 @@ er_opi <- function(B_SOILTYPE_AGR,
     setnames(dt, c("s_er_reward","id"),c("s_er_costs","field_id"))
     
     # set maximum for eco scores and total farm score on field level
-    dt[, s_er_soil := pmin(15,s_er_soil)]
-    dt[, s_er_water := pmin(15,s_er_water)]
-    dt[, s_er_climate := pmin(15,s_er_climate)]
-    dt[, s_er_biodiversity := pmin(15,s_er_biodiversity)]
-    dt[, s_er_landscape := pmin(1,s_er_landscape)]
-    dt[, s_er_farm_tot:= pmin(50,s_er_farm_tot)]
+    # dt[, s_er_soil := pmin(15,s_er_soil)]
+    # dt[, s_er_water := pmin(15,s_er_water)]
+    # dt[, s_er_climate := pmin(15,s_er_climate)]
+    # dt[, s_er_biodiversity := pmin(15,s_er_biodiversity)]
+    # dt[, s_er_landscape := pmin(1,s_er_landscape)]
+    # dt[, s_er_farm_tot:= pmin(50,s_er_farm_tot)]
     
     # set maximum for s_er_costs at 200 and convert to percentage 
     dt[, s_er_costs := (pmin(200,s_er_costs)/200)*100]
@@ -181,11 +184,16 @@ er_opi <- function(B_SOILTYPE_AGR,
   # collect output
   out <- list(
               # the relative contribution of a single field to the farm objective
+              # dt.field.ind.score = dt.field
+              # the absolute score per field
               dt.field.ind.score = dt,
               # the averaged farm score (mean scores / ha, mean costs / ha)
               dt.farm.ind.score = dt.farm.ind.score,
               # the BBWP score, being overall distance to target
-              dt.farm.score = dt.farm.score)
+              dt.farm.score = dt.farm.score,
+              # the relative farm score per theme
+              dt.farm.ind.opi = dt.farm.ind.opi)
+
   
   # return value
   return(out)
