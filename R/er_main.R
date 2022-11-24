@@ -232,13 +232,18 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     # set format of table 1
     pdf.1[, B_LU_BRP := NULL][, B_AREA := B_AREA/10000]
     setcolorder(pdf.1, c("B_LU_NAME","B_AREA"))
+    setnames(pdf.1,c('gewas','hectare'))
+
     
     # table 2: scores per theme (in %)
     # get relative scores
     pdf.2 <- copy(dt.opi$dt.farm.ind.opi)
-    setnames(pdf.2,gsub("S_ER_","",colnames(pdf.2)))
     setnames(pdf.2,colnames(pdf.2),tolower(colnames(pdf.2)))
-    pdf.2 <- pdf.2[,c("soil","water","climate","biodiversity","landscape")]
+    pdf.2 <- pdf.2[,list(s_er_soil,s_er_water,s_er_climate,s_er_biodiversity,s_er_landscape,id=1)]
+    setnames(pdf.2, c("bodemkwaliteit","waterkwaliteit","klimaat","biodiversiteit","landschap","id"))
+    pdf.2 <- melt(pdf.2,id.vars='id')
+    pdf.2[,id := NULL]
+    setnames(pdf.2,c('prestatiecategorie','bedrijfsscore'))
     
     # table 3: financial reward
     # get medal and area info
@@ -254,7 +259,8 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     
     # keep relevant columns
     pdf.3 <- pdf.3[,c("pb","tot_area","compensation")]
-    
+    pdf.3[,pb := gsub('bronze', 'brons',gsub('silver','zilver',gsub('gold','goud',pb)))]
+
     # setnames
     setnames(pdf.3,c('prestatie bedrijf','bedrijfsoppervlakte','vergoeding'))  
     
@@ -296,13 +302,14 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     pdf.4 <- rbind(pdf.field,pdf.farm.field)
     
     # arrange order table columns
+    pdf.4[, level := fifelse(level == "field","veld","bedrijf")]
     setcolorder(pdf.4, c("level","summary","B_AREA_tot","climate","soil","water","landscape","biodiversity","total"))
     setnames(pdf.4,c('niveau','maatregel','oppervlakte','klim','bod','wat','land','bio','totaal'))
     
     # table 5: total score of field measures and total score of farm measures 
     cols <- c('oppervlakte','klim','bod','wat','land','bio')
-    pdf.5 <- pdf.4[,lapply(.SD,function(x) weighted.mean(x,w = as.numeric(oppervlakte))),.SDcols = cols,by=.(niveau)]
-    pdf.5 <- rbind(pdf.5,data.table(niveau='totaal',t(colSums(pdf.5[,-1]))))
+    pdf.5 <- pdf.4[,lapply(.SD,function(x) round(weighted.mean(x,w = as.numeric(oppervlakte)),1)),.SDcols = cols,by=.(niveau)]
+    pdf.5 <- rbind(pdf.5,data.table(niveau='totaal',round(t(colSums(pdf.5[,-1])),1)))
     pdf.5[niveau=='total',oppervlakte :=  sum(B_AREA)]
     
     # table 6: score aim per theme for field and farm and medal thresholds per theme
@@ -318,8 +325,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     # round values in table 6a
     cols <- c("climate","soil","water","landscape","biodiversity","tot")
     pdf.6a[, c(cols) := round(.SD,1), .SDcols = cols]
-    #### MOET VELDSCORE WORDEN AFGETOPT??? --> dat moet dan op basis van aim/threshold per field, maar daar is nog geen output van uit er.farm.aim.
-    
+
     # get farm scores per theme
     pdf.6b <- copy(out.farm)
     
