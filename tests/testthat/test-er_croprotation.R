@@ -9,7 +9,7 @@ require(testthat)
   # B_LU_PRODUCTIVE_ER = c(T,T,T,T)
   # B_LU_CULTIVATED_ER = c(T,T,T,T)
   # B_AER_CBS = c('Bouwhoek en Hogeland','LG14','LG12','Westelijk Holland')
-  # B_AREA = c(45,18,0.8,6)
+  # B_AREA = c(45000,18000,8000,60000)
   # measures = NULL
   # sector = 'dairy'
 
