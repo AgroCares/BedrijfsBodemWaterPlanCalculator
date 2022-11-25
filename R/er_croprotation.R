@@ -67,7 +67,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt.meas.farm <- dt.meas.farm[level == 'farm',]
  
   # add crop diversification index (EB10A) to farm measures table
-  if(nrow(dt.meas.farm[grepl("EB10",eco_id)]) > 0) {
+  if(nrow(dt.meas.farm[grepl("EB10",eco_id)]) > 0){
     
     # replace EB10B or EB10C by EB10A
     dt.meas.idx <- dt.meas.idx[, c("id","bbwp_status") := dt.meas.farm[grepl("EB10",eco_id),c("id","bbwp_status")]]
