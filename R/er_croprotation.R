@@ -303,7 +303,58 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt4 <- merge(dt4,dt5[, c("bbwp_id","regio_factor","reward_cf")], by = "bbwp_id")
       dt4[, cfr := fifelse(regio_factor == 1, reward_cf, 1)]
     
-      # sum total score (score per hectare) 
+      # calculate the applicable area of farm level measures that apply on specific area of farm based on crop type and get score per farm
+      # farm level measures that are applicable on specific area of farm based on crop type
+      dt.ha <- dt4[grepl("B104|B107|B115|B116|B117|B118|B124|B125|B126|B127|B128|B129|B130|B133|B134|B135|B136", bbwp_id),]
+      
+      # get eco_id of measures and merge with measures taken
+      dt.measures <- as.data.table(BBWPC::bbwp_measures)
+      dt.measures <- dt.measures[, c("bbwp_id","eco_id")]
+      dt.ha <- merge(dt.ha,
+                     dt.measures, by = "bbwp_id")
+      
+      # get eco_id's of measures
+      eco.dt <- dt.ha[,c("eco_id")]
+     
+      # get crop types on farm and corresponding area
+      crop.dt <- dt[, c("B_LU_BRP","B_AREA")]
+     
+      # get all combinations of B_LU_BRP and eco_id of farm measures taken
+      combi.dt <- setkey(crop.dt[,c(k=1,.SD)],k)[eco.dt[,c(k=1,.SD)],allow.cartesian=TRUE][,k:=NULL]
+      
+      # combine columns to be used for check on applicability
+      combi.dt[, combi := paste0(B_LU_BRP,eco_id)]
+      dt.meas.eco[, combi := paste0(B_LU_BRP,eco_id)]
+      
+      # set appl to 1 when combination of eco_id and crop exists
+      appl.dt <- combi.dt[, appl := fifelse(combi %in% dt.meas.eco$combi,1,0)]
+      
+      # sum up area to which the measure applies per measure
+      appl.dt <- appl.dt[appl ==1 , area_appl := sum(B_AREA)/10000, by = "eco_id"]
+      
+      # get per measures the area to which the measure applies
+      appl.dt <- appl.dt[!is.na(area_appl), c("eco_id","area_appl")]
+      appl.dt <- unique(appl.dt)
+      
+      # merge applicable area into original table
+      dt.ha <- merge(dt.ha,appl.dt, by = "eco_id", all.x = T)
+      
+      # when measure has no applicable area, set area_appl to 0 and remove eco_id column
+      dt.ha[, area_appl := fifelse(is.na(area_appl),0,area_appl)][,eco_id := NULL]
+      
+      # select cols
+      cols <- c('biodiversity', 'climate', 'landscape', 'soil','water','total','euro_ha')
+      
+      # get score and euro per farm for measures with specific application area (in score/farm)
+      dt.ha[, c(cols) := lapply(.SD, function(x) x * area_appl), .SDcols = cols]
+      
+      # remove area_appl column 
+      dt.ha <- dt.ha[, area_appl := NULL]
+      
+      # rbind dt.ha and dt4 with remaining measures
+      dt4 <- rbind(dt.ha,dt4[!grepl("B104|B107|B115|B116|B117|B118|B124|B125|B126|B127|B128|B129|B130|B133|B134|B135|B136", bbwp_id)])
+      
+      # sum total score (score per farm to score per ha) 
       dt6 <- dt4[,lapply(.SD,sum), .SDcols = cols]
       dt.farm.score <- dt6[, c(cols):= lapply(.SD, function (x) x / (dt.farm$area_farm/10000)) , .SDcols = cols]
       dt.farm.reward <- dt4[,list(er_reward = cfr * (max(euro_ha[total>0],0) + max(euro_farm[total>0],0) / (dt.farm$area_farm/10000)))][1]
