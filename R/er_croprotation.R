@@ -355,7 +355,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt4 <- rbind(dt.ha,dt4[!grepl("B104|B107|B115|B116|B117|B118|B124|B125|B126|B127|B128|B129|B130|B133|B134|B135|B136", bbwp_id)])
       
       # sum total score (score per farm to score per ha)
-      cols <- c('biodiversity', 'climate', 'landscape', 'soil','water','total','euro_ha')
+      cols <- c('biodiversity', 'climate', 'landscape', 'soil','water','total')
       dt6 <- dt4[,lapply(.SD,sum), .SDcols = cols]
       dt.farm.score <- dt6[, c(cols):= lapply(.SD, function (x) x / (dt.farm$area_farm/10000)) , .SDcols = cols]
       dt.farm.reward <- dt4[,list(er_reward = cfr * (max(euro_ha[total>0],0) + max(euro_farm[total>0],0) / (dt.farm$area_farm/10000)))][1]
