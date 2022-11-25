@@ -5,9 +5,9 @@ dt.measures <- as.data.table(BBWPC::bbwp_measures)
 dt.measures <- dt.measures[!is.na(eco_id)]
 
 #### test voor B en N ####
-measures <- rbind(data.table(id = 1, dt.measures[grepl('EG1C|EB8A|EB7|EB11A|EB15',eco_id)]),
-                  data.table(id = 2, dt.measures[grepl('EB6|EB15',eco_id)]),
-                  data.table(id = 3, dt.measures[grepl('EG5A|EB10B|EB12|EB11A',eco_id)]))
+measures <- rbind(data.table(id = 1, dt.measures[grepl('EB6|EB15',eco_id)]),
+                  data.table(id = 2, dt.measures[grepl('EG1C|EG6A|EG8A',eco_id)]),
+                  data.table(id = 3, dt.measures[grepl('EG5A|EB10B|EB12|EB11A|EB18|EB19',eco_id)]))
                   
 measures$bbwp_status <- 'hello check'
 
@@ -16,9 +16,9 @@ B_GWL_CLASS = c('Vb','III','Vb','Vb')
 A_P_SG = c(56.11,56.28,52.87,60.43)
 B_SLOPE_DEGREE = c(0.48,0.52,0.45,0.45)
 B_AER_CBS = c('LG04','LG04','LG04','LG04')
-B_LU_BBWP = c('mais','rustgewas','rustgewas','randensloot')
-B_LU_BRP = c(259,235,235,343)
-B_LU_ARABLE_ER = c(T,T,T,T)
+B_LU_BBWP = c('mais','gras_tijdelijk','rustgewas','randensloot')
+B_LU_BRP = c(259,266,235,343)
+B_LU_ARABLE_ER = c(T,F,T,T)
 B_LU_PRODUCTIVE_ER = c(T,T,T,F)
 B_LU_CULTIVATED_ER = c(T,T,T,F)
 M_DRAIN = c(T,T,F,F)

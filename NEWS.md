@@ -1,3 +1,8 @@
+# BBPC v.0.10.9
+
+## Changed
+* function `er_croprotation` calculates score for farm level measures that apply to measure specific area based on the specific area instead of the total farm area
+
 # BBPC v.0.10.8
 
 ## Added

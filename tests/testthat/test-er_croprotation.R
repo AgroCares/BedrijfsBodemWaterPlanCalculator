@@ -9,7 +9,7 @@ require(testthat)
   # B_LU_PRODUCTIVE_ER = c(T,T,T,T)
   # B_LU_CULTIVATED_ER = c(T,T,T,T)
   # B_AER_CBS = c('Bouwhoek en Hogeland','LG14','LG12','Westelijk Holland')
-  # B_AREA = c(45,18,0.8,6)
+  # B_AREA = c(45000,18000,8000,60000)
   # measures = NULL
   # sector = 'dairy'
 
@@ -87,7 +87,7 @@ test_that("check er_croprotation", {
 test_that("check er_croprotation", {
   expect_equal(
     object = as.numeric(test),
-    expected = c(1,0.0,0.16,0.06,0,0.28,0.54,900),
+    expected = c(1,2,7,3,0,13,24,580),
     tolerance = 0.1,
     ignore_attr = TRUE)
 })
