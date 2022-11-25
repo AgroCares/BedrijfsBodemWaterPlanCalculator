@@ -37,6 +37,8 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
   S_ER_TOT = S_ER_SOIL = S_ER_WATER = S_ER_CLIMATE = S_ER_BIODIVERSITY = S_ER_LANDSCAPE = S_ER_REWARD = NULL
   medal = s_er_medal = field_id = s_er_reward = s_er_tot = s_er_costs = NULL
   s_er_soil = s_er_water = s_er_climate = s_er_biodiversity = s_er_landscape = s_er_farm_tot = NULL 
+  id = pb = reward = tot_area = compensation = level = oppervlakte = . = niveau = landscape = NULL
+  patterns = NULL
   
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
@@ -223,7 +225,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     pdf.1 <- unique(pdf.1, by = "B_LU_BRP")
     
     # get corresponding crops names 
-    dt.cropname <- as.data.table(pandex::b_lu_brp[, c('B_LU_BRP','B_LU_NAME')])
+    dt.cropname <- as.data.table(BBWPC::er_crops[, c('B_LU_BRP','B_LU_NAME')])
     
     # merge crop code with crop name
     pdf.1 <- merge(pdf.1,
