@@ -78,7 +78,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     
     # add crop EB10A to farm measures  
     dt.meas.farm <- rbind(dt.meas.farm,dt.meas.idx, use.names = TRUE, fill = TRUE)
-    dt.meas.farm <- dt.meas.farm[eco_id == 'EB10A', id:= fifelse(is.na(id),1,id)]
+    dt.meas.farm <- dt.meas.farm[eco_id == 'EB10A', id := fifelse(is.na(id),1,id)]
   
     } 
   
@@ -306,7 +306,8 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       # sum total score (score per hectare) 
       dt6 <- dt4[,lapply(.SD,sum), .SDcols = cols]
       dt.farm.score <- dt6[, c(cols):= lapply(.SD, function (x) x / (dt.farm$area_farm/10000)) , .SDcols = cols]
-      dt.farm.reward <- dt4[,list(er_reward = cfr * (max(euro_ha[total>0],0) + max(euro_farm[total>0],0) / (dt.farm$area_farm/10000)))][1]
+      dt.farm.reward <- dt4[,list(er_reward = cfr * ( max(euro_ha[total>0],0) + max(euro_farm[total>0],0) / (dt.farm$area_farm/10000) ))][1]
+      
       
     } else {
       
