@@ -5,8 +5,9 @@ dt.measures <- as.data.table(BBWPC::bbwp_measures)
 dt.measures <- dt.measures[!is.na(eco_id)]
 
 #### test voor B en N ####
-measures <- rbind(data.table(id = 1, dt.measures[grepl('EG1C|EB18|EG20A1',eco_id)]),
-                  data.table(id = 3, dt.measures[grepl('EG5A',eco_id)]))
+measures <- rbind(data.table(id = 1, dt.measures[grepl('EG1C|EB8A|EB7|EB11A|EB15',eco_id)]),
+                  data.table(id = 2, dt.measures[grepl('EB6|EB15',eco_id)]),
+                  data.table(id = 3, dt.measures[grepl('EG5A|EB10B|EB12|EB11A',eco_id)]))
                   
 measures$bbwp_status <- 'hello check'
 
@@ -28,7 +29,7 @@ medalscore = "gold"
 measures = measures
 sector = c('arable','dairy')
 output = 'scores'
-
+pdf = 'yes'
 
 bedrijfsscore <- ecoregeling(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                                   B_GWL_CLASS = B_GWL_CLASS,

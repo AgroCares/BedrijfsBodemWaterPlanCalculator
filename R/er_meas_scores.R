@@ -1,4 +1,4 @@
-#' Evaluate the contribution of agronomic measures to improve soil mand water management
+#' Evaluate the contribution of agronomic measures to improve soil and water management
 #'
 #' Estimate the Ecoregeling score for agronomic measures taken to improve soil and water management on agricultural farms.
 #'
@@ -12,6 +12,7 @@
 #' @param B_LU_CULTIVATED_ER (boolean) does the crop fall within the ER category "cultivated"
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
 #' @param measures (list) The measures planned / done per fields
+#' @param pdf (boolean) is there a pdf needed
 #'   
 #' @import data.table
 #'
@@ -20,7 +21,7 @@
 er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                           B_LU_BBWP,B_LU_BRP,
                           B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER,B_LU_CULTIVATED_ER,
-                          measures, sector){
+                          measures, sector, pdf = FALSE){
   
   # add visual bindings
   eco_id = type = fr_area = id = er_urgency = NULL
@@ -33,8 +34,8 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   eco_app = b_lu_arable_er = b_lu_productive_er = b_lu_cultivated_er = NULL
   er_total = er_climate = er_soil = er_measure = er_water = er_landscape = er_biodiversity = NULL
   reward_cf = regio_factor = . = er_cf = statcode = NULL
-  code = choices = area_fr = NULL
-  
+  code = choices = area_fr = dt3 = NULL
+
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
   
@@ -293,7 +294,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
 
   # add reward to the field
   dt.field <- merge(dt.field,dt.reward[,.(id,S_ER_REWARD)],by='id')
-   
+  
   # setnames
   setnames(dt.field,
            c('biodiversity', 'climate', 'landscape', 'soil','water','total'),
@@ -301,6 +302,18 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   
   # order to ensure field order
   setorder(dt.field, id)
+  
+  # data table with measures applied on field level and corresponding scores to be used for pdf 
+  if(pdf == TRUE){
+    
+    pdf <- er_pdf(croprotation = FALSE,
+                  measurescores = TRUE,
+                  dt.field.measures = dt2,
+                  dt.farm.measures = NULL, 
+                  B_AREA = B_AREA)
+    dt.field <- list(dt.field = dt.field, pdf = pdf) 
+    
+  }
   
   # return value, with for each field the total scores and euros per hectare
   return(dt.field)

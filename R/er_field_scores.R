@@ -90,10 +90,9 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_LU_BRP, B_AER_CBS,B_ARE
                              B_AER_CBS = dt$B_AER_CBS,
                              B_AREA = dt$B_AREA,
                              measures = measures,
-                             sector = sector)
-  
-  
-  
+                             sector = sector,
+                             pdf = FALSE)
+
   # calculate the change in opportunity indexes given the measures taken
   
   # column names for impact of measures on the five indexes (do not change order)
@@ -115,10 +114,9 @@ er_field_scores <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_LU_BRP, B_AER_CBS,B_ARE
                                       B_AER_CBS = B_AER_CBS,
                                       B_AREA = B_AREA,
                                       measures = measures, 
-                                      sector = sector)
+                                      sector = sector,
+                                      pdf = FALSE)
 
-    
-      
       # merge with dt
       dt <- merge(dt,dt.meas.impact,by='id')
       

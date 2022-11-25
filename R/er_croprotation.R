@@ -12,7 +12,8 @@
 #' @param B_AREA (numeric) the area of the field (m2) 
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
 #' @param measures (list) The measures planned / done per fields
-#'    
+#' @param pdf (boolean) is there a pdf needed
+#'
 #' @import data.table
 #' @import stats
 #'
@@ -21,7 +22,7 @@
 er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                             B_LU_BBWP,B_LU_BRP, 
                             B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER,B_LU_CULTIVATED_ER,
-                            measures, sector){
+                            measures, sector, pdf = FALSE){
   
   # add visual bindings
   . = eco_id = farmid = b_lu_brp = type = erscore = B_AREA_RR = indicator = NULL
@@ -66,7 +67,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt.meas.farm <- dt.meas.farm[level == 'farm',]
  
   # add crop diversification index (EB10A) to farm measures table
-  if(nrow(dt.meas.farm[grepl("EB10",eco_id),]) > 0){
+  if(nrow(dt.meas.farm[grepl("EB10",eco_id)]) > 0){
     
     # replace EB10B or EB10C by EB10A
     dt.meas.idx <- dt.meas.idx[, c("id","bbwp_status") := dt.meas.farm[grepl("EB10",eco_id),c("id","bbwp_status")]]
@@ -318,14 +319,25 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                                   total = 0)
       dt.farm.reward <- data.table(er_reward = 0)
     }
+  
+    # total score for farm measures and crop rotation
+    out <- dt.farm.score + dt.field.score
+    out[,farmid := 1]
+    out[, total := biodiversity + climate + landscape + soil + water]
+    out[,S_ER_REWARD := dt.farm.reward + dt.field.reward]
+    setcolorder(out,'farmid') 
     
-    
-  # total score for farm measures and crop rotation
-  out <- dt.farm.score + dt.field.score
-  out[,farmid := 1]
-  out[, total := biodiversity + climate + landscape + soil + water]
-  out[,S_ER_REWARD := dt.farm.reward + dt.field.reward]
-  setcolorder(out,'farmid')
+    # data table with measures applied on field and farm level and corresponding scores (in score/ha) to be used for pdf 
+    if(pdf == TRUE){
+      
+      pdf <- er_pdf(croprotation = TRUE,
+                    measurescores = FALSE,
+                    dt.field.measures = dt2,
+                    dt.farm.measures = dt4, 
+                    B_AREA = B_AREA)
+      out <- list(out = out, pdf = pdf)
+
+    }
   
   # return the Ecoregelingen Score based on Crop Rotation and Farm Measures
   # output has units score / ha and euro/ha

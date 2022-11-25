@@ -1,3 +1,9 @@
+# BBPC v.0.10.8
+
+## Added
+* function er_pdf to prepare all output needed for the ER farm report
+* functions `er_croprotation`,`er_main`, `er_meas_rank`,`er_meas_scores`, `er_fieldscores` updated to give desired output for the ER farm report. New argument `pdf` (boolean) is added. By default set to FALSE.
+
 # BBPC v.0.10.7
 ## Changed
 * maximum scores in `er_main` are now equal to aim for golden medal

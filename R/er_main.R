@@ -21,6 +21,7 @@
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: options: 'diary', 'arable', 'tree_nursery', 'bulbs')
 #' @param output (string) a vector specifying the output type of the function. Options: scores, measures 
 #' @param medalscore (character) The desired medal score expressed as bronze, silver or gold 
+#' @param pdf (boolean) add table with summary of all measures taken for pdf. Options: TRUE or FALSE
 #'  
 #' @import data.table
 #' @import OBIC
@@ -30,12 +31,14 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
                         B_GWL_CLASS, B_SLOPE_DEGREE,B_AER_CBS,
                         B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER,B_LU_CULTIVATED_ER,
                         A_P_SG,D_SA_W, B_AREA,M_DRAIN, farmscore, 
-                        measures, sector, output = 'scores', medalscore = 'gold'){
+                        measures, sector, output = 'scores', medalscore = 'gold', pdf = FALSE){
   
   # add visual bindings
   S_ER_TOT = S_ER_SOIL = S_ER_WATER = S_ER_CLIMATE = S_ER_BIODIVERSITY = S_ER_LANDSCAPE = S_ER_REWARD = NULL
   medal = s_er_medal = field_id = s_er_reward = s_er_tot = s_er_costs = NULL
   s_er_soil = s_er_water = s_er_climate = s_er_biodiversity = s_er_landscape = s_er_farm_tot = NULL 
+  id = pb = reward = tot_area = compensation = level = oppervlakte = . = niveau = landscape = NULL
+  patterns = NULL
   
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
@@ -97,6 +100,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
   
   # dt.field.ind.score gives the relative contribution of a single field to the farm objective
   # dt.farm.ind.score gives the averaged farm score (mean scores / ha, mean costs / ha)
+  # dt.farm.ind.opi gives the distance to target for the five indicators on farm level
   # dt.farm.score gives the BBWP score, being overall distance to target
   dt.opi <- er_opi(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
                    S_ER_SOIL = dt.fields$S_ER_SOIL,
@@ -208,7 +212,183 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     
     }
   
-  
+  # make table for pdf with summary of all measures taken 
+  if(pdf == TRUE){
+    
+    # table 1: cropping plan
+    # get field and crop info
+    pdf.1 <- data.table(B_LU_BRP = B_LU_BRP,
+                        B_AREA = B_AREA)
+    
+    # sum up area of same crops 
+    pdf.1[, B_AREA := sum(B_AREA), by = "B_LU_BRP"]
+    pdf.1 <- unique(pdf.1, by = "B_LU_BRP")
+    
+    # get corresponding crops names 
+    dt.cropname <- as.data.table(BBWPC::er_crops[, c('B_LU_BRP','B_LU_NAME')])
+    
+    # merge crop code with crop name
+    pdf.1 <- merge(pdf.1,
+                   dt.cropname, by = "B_LU_BRP")
+    
+    # set format of table 1
+    pdf.1[, B_LU_BRP := NULL][, B_AREA := B_AREA/10000]
+    setcolorder(pdf.1, c("B_LU_NAME","B_AREA"))
+    setnames(pdf.1,c('gewas','hectare'))
+
+    
+    # table 2: scores per theme (in %)
+    # get relative scores
+    pdf.2 <- copy(dt.opi$dt.farm.ind.opi)
+    setnames(pdf.2,colnames(pdf.2),tolower(colnames(pdf.2)))
+    pdf.2 <- pdf.2[,list(s_er_soil,s_er_water,s_er_climate,s_er_biodiversity,s_er_landscape,id=1)]
+    setnames(pdf.2, c("bodemkwaliteit","waterkwaliteit","klimaat","biodiversiteit","landschap","id"))
+    pdf.2 <- melt(pdf.2,id.vars='id')
+    pdf.2[,id := NULL]
+    setnames(pdf.2,c('prestatiecategorie','bedrijfsscore'))
+    
+    # table 3: financial reward
+    # get medal and area info
+    pdf.3 <- data.table(medal = out$farm$s_er_medal,
+                        reward = out$farm$s_er_reward,
+                        tot_area = sum(B_AREA))
+    
+    # combine medal and reward
+    pdf.3[, pb := paste0(medal," (",reward, " euro)"), by = .I]
+    
+    # set area to ha and calculate compensation for total farm
+    pdf.3[, tot_area := tot_area/10000][, compensation := reward * tot_area]
+    
+    # keep relevant columns
+    pdf.3 <- pdf.3[,c("pb","tot_area","compensation")]
+    pdf.3[,pb := gsub('bronze', 'brons',gsub('silver','zilver',gsub('gold','goud',pb)))]
+
+    # setnames
+    setnames(pdf.3,c('prestatie bedrijf','bedrijfsoppervlakte','vergoeding'))  
+    
+    
+    # table 4: field and farm measures with scores per measure
+    # get scores and the table with field measures that generated scores 
+    pdf.field <- er_meas_score(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
+                               B_LU_BBWP = B_LU_BBWP,
+                               B_LU_BRP = B_LU_BRP,
+                               B_LU_ARABLE_ER = B_LU_ARABLE_ER,
+                               B_LU_PRODUCTIVE_ER = B_LU_PRODUCTIVE_ER,
+                               B_LU_CULTIVATED_ER = B_LU_CULTIVATED_ER,
+                               B_AER_CBS = B_AER_CBS,
+                               B_AREA = B_AREA,
+                               measures = measures, 
+                               sector = sector,
+                               pdf = TRUE)
+    
+    # select the table with field measures that generated scores as input for pdf 
+    pdf.field <- pdf.field$pdf
+    
+    # get scores and the table with field and farm measures that generated scores 
+    pdf.farm.field <- er_croprotation(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
+                                      B_LU_BBWP = B_LU_BBWP,
+                                      B_LU_BRP = B_LU_BRP,
+                                      B_LU_ARABLE_ER = B_LU_ARABLE_ER,
+                                      B_LU_PRODUCTIVE_ER = B_LU_PRODUCTIVE_ER,
+                                      B_LU_CULTIVATED_ER = B_LU_CULTIVATED_ER,
+                                      B_AER_CBS = B_AER_CBS,
+                                      B_AREA = B_AREA,
+                                      measures = measures,
+                                      sector = sector,
+                                      pdf = TRUE)
+    
+    # select the table with field and farm measures that generated scores as input for pdf 
+    pdf.farm.field <- pdf.farm.field$pdf
+    
+    # table with all field and farm measures and corresponding scores
+    pdf.4 <- rbind(pdf.field,pdf.farm.field)
+    
+    # arrange order table columns
+    pdf.4[, level := fifelse(level == "field","veld","bedrijf")]
+    setcolorder(pdf.4, c("level","summary","B_AREA_tot","climate","soil","water","landscape","biodiversity","total"))
+    setnames(pdf.4,c('niveau','maatregel','oppervlakte','klim','bod','wat','land','bio','totaal'))
+    
+    # table 5: total score of field measures and total score of farm measures 
+    cols <- c('oppervlakte','klim','bod','wat','land','bio')
+    pdf.5 <- pdf.4[,lapply(.SD,function(x) round(weighted.mean(x,w = as.numeric(oppervlakte)),1)),.SDcols = cols,by=.(niveau)]
+    pdf.5 <- rbind(pdf.5,data.table(niveau='totaal',round(t(colSums(pdf.5[,-1])),1)))
+    pdf.5[niveau=='total',oppervlakte :=  sum(B_AREA)]
+    
+    # table 6: score aim per theme for field and farm and medal thresholds per theme
+    # get scores per field
+    pdf.6a <- copy(dt.fields)
+    
+    # rearrange table 6a
+    setnames(pdf.6a,gsub("S_ER_","",colnames(pdf.6a)))
+    setnames(pdf.6a,colnames(pdf.6a),tolower(colnames(pdf.6a)))
+    pdf.6a <- pdf.6a[, c("id","climate","soil","water","landscape","biodiversity","tot")]
+    pdf.6a[, id := paste0("veld ",id)]
+    
+    # round values in table 6a
+    cols <- c("climate","soil","water","landscape","biodiversity","tot")
+    pdf.6a[, c(cols) := round(.SD,1), .SDcols = cols]
+
+    # get farm scores per theme
+    pdf.6b <- copy(out.farm)
+    
+    # arrange format table 6b
+    pdf.6b[, id := "behaald bedrijf"]
+    setnames(pdf.6b,gsub("s_er_","",colnames(pdf.6b)))
+    pdf.6b <- pdf.6b[, c("id","climate","soil","water","landscape","biodiversity","farm_tot")]
+    setnames(pdf.6b,"farm_tot","tot")
+    
+    # get medal thresholds
+    pdf.6c <- as.data.table(dt.farm.thresholds)
+    
+    # melt table
+    pdf.6c <- melt(pdf.6c, 
+                 measure.vars = patterns("climate","soil","water","landscape","biodiversity","tot"),
+                 variable.name = "medal",
+                 value.name = c("climate","soil","water","landscape","biodiversity","tot"))
+    
+    # arrange format table 6c
+    pdf.6c <- pdf.6c[, c("medal","climate","soil","water","landscape","biodiversity","tot")]
+    pdf.6c[, medal := as.character(medal)]
+    pdf.6c[, medal := fifelse(medal == "1","drempelwaarde brons",medal)][, medal := fifelse(medal == "2","drempelwaarde zilver",medal)][, medal := fifelse(medal == "3","drempelwaarde goud",medal)]
+    setnames(pdf.6c,"medal","id")
+    
+    # set missing landscape threshold to 0
+    pdf.6c[, landscape := fifelse(is.na(landscape),0,landscape)]
+
+    # bind tables 6a, 6b, 6c
+    pdf.6 <- rbind(pdf.6a,pdf.6b,pdf.6c)
+    
+    # set names pdf.6
+    setnames(pdf.6,c('omschrijving','klim','bod','wat','land','bio','totaal'))
+    
+    # table 7 midpoints field
+
+    r7_title = 'locatie van het perceel'
+    r6_title = 'Puntenscore doel op perceels- en bedrijfsniveau en per prestatieniveau'
+    r5_title = 'Maatregelen (totaal) op perceels- en bedrijfsniveau'
+    r4_title = 'Maatregelen (uitgesplitst) op perceels- en bedrijfsniveau'
+    r3_title = 'Vergoedingen EcoRegeling'
+    r2_title = 'Ecoregeling puntenscore'
+    r1_title = 'Gegevens bouwplan bedrijf'
+    
+    
+    # add pdf table to output when pdf is requested
+    out <-list(r1 = pdf.1,
+               r1_title = r1_title,
+               r2 = pdf.2,
+               r2_title = r2_title,
+               r3 = pdf.3,
+               r3_title = r3_title,
+               r4 = pdf.4,
+               r4_title = r4_title,
+               r5 = pdf.5,
+               r5_title = r5_title,
+               r6 = pdf.6,
+               r6_title = r6_title,
+               r7 = NULL,
+               r7_title = r7_title)
+  }
+
   # return output
   return(out)
   

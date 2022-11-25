@@ -22,7 +22,8 @@ ecoregeling(
   measures,
   sector,
   output = "scores",
-  medalscore = "gold"
+  medalscore = "gold",
+  pdf = FALSE
 )
 }
 \arguments{
@@ -61,6 +62,8 @@ ecoregeling(
 \item{output}{(string) a vector specifying the output type of the function. Options: scores, measures}
 
 \item{medalscore}{(character) The desired medal score expressed as bronze, silver or gold}
+
+\item{pdf}{(boolean) add table with summary of all measures taken for pdf. Options: TRUE or FALSE}
 }
 \description{
 Estimate the potential to contribute to agronomic and environmental challenges in a region for a farm and assess the impact of farm measures taken.

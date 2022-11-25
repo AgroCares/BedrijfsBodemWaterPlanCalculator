@@ -2,7 +2,7 @@
 % Please edit documentation in R/er_meas_scores.R
 \name{er_meas_score}
 \alias{er_meas_score}
-\title{Evaluate the contribution of agronomic measures to improve soil mand water management}
+\title{Evaluate the contribution of agronomic measures to improve soil and water management}
 \usage{
 er_meas_score(
   B_SOILTYPE_AGR,
@@ -14,7 +14,8 @@ er_meas_score(
   B_LU_PRODUCTIVE_ER,
   B_LU_CULTIVATED_ER,
   measures,
-  sector
+  sector,
+  pdf = FALSE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ er_meas_score(
 \item{measures}{(list) The measures planned / done per fields}
 
 \item{sector}{(string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')}
+
+\item{pdf}{(boolean) is there a pdf needed}
 }
 \description{
 Estimate the Ecoregeling score for agronomic measures taken to improve soil and water management on agricultural farms.

@@ -26,7 +26,7 @@ test <- er_opi(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen','dekza
 test_that("check er_opi", {
   expect_equal(
     names(test),
-    expected = c("dt.field.ind.score" ,"dt.farm.ind.score" , "dt.farm.score"),
+    expected = c("dt.field.ind.score" ,"dt.farm.ind.score" , "dt.farm.score","dt.farm.ind.opi"),
     tolerance = 0.01)
 })
 
@@ -57,3 +57,4 @@ test_that("check er_opi", {
     expected = c(0,2.5,5.0,7.5,10),
     tolerance = 0.01)
 })
+
