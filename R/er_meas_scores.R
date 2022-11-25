@@ -1,4 +1,4 @@
-#' Evaluate the contribution of agronomic measures to improve soil mand water management
+#' Evaluate the contribution of agronomic measures to improve soil and water management
 #'
 #' Estimate the Ecoregeling score for agronomic measures taken to improve soil and water management on agricultural farms.
 #'

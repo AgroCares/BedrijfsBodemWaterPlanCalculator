@@ -2,7 +2,7 @@
 % Please edit documentation in R/er_meas_scores.R
 \name{er_meas_score}
 \alias{er_meas_score}
-\title{Evaluate the contribution of agronomic measures to improve soil mand water management}
+\title{Evaluate the contribution of agronomic measures to improve soil and water management}
 \usage{
 er_meas_score(
   B_SOILTYPE_AGR,
