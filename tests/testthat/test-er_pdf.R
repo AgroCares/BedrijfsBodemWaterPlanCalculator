@@ -70,7 +70,7 @@
   test_that("check er_croprotation", {
     expect_equal(
       object = test$pdf$total,
-      expected = c(8,16),
+      expected = c(8.1,16.2),
       tolerance = 0.01)
   })
   

@@ -87,7 +87,7 @@ test_that("check er_croprotation", {
 test_that("check er_croprotation", {
   expect_equal(
     object = as.numeric(test),
-    expected = c(1,0.0,0.16,0.06,0,0.28,0.54,900),
+    expected = c(1,2,7,3,0,13,24,580),
     tolerance = 0.1,
     ignore_attr = TRUE)
 })
