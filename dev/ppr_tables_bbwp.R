@@ -55,13 +55,18 @@ require(data.table);library(usethis)
     
     # set the ecoregeling array
     bbwp_measures[klimaat == 1, categories := "klimaat"]
-    bbwp_measures[bodemkwaliteit == 1, categories := paste0(categories,"||bodemkwaliteit"),by = .I]
-    bbwp_measures[waterkwaliteit == 1, categories := paste0(categories,"||waterkwaliteit"),by = .I]
-    bbwp_measures[biodiversiteit  == 1, categories := paste0(categories,"||biodiversiteit"),by = .I]
-    bbwp_measures[landschap  == 1, categories := paste0(categories,"||landschap"),by = .I]
+    bbwp_measures[bodemkwaliteit == 1 & !is.na(categories), categories := paste0(categories,"||bodemkwaliteit"),by = .I]
+    bbwp_measures[bodemkwaliteit == 1 & is.na(categories), categories := "bodemkwaliteit"]
+    bbwp_measures[waterkwaliteit == 1 & !is.na(categories), categories := paste0(categories,"||waterkwaliteit"),by = .I]
+    bbwp_measures[waterkwaliteit == 1 & is.na(categories), categories := "waterkwaliteit"]
+    bbwp_measures[biodiversiteit == 1 & !is.na(categories), categories := paste0(categories,"||biodiversiteit"),by = .I]
+    bbwp_measures[biodiversiteit == 1 & is.na(categories), categories := "biodiversiteit"]
+    bbwp_measures[landschap == 1 & !is.na(categories), categories := paste0(categories,"||landschap"),by = .I]
+    bbwp_measures[landschap == 1 & is.na(categories), categories := "landschap"]
     
     # add the bbwp category
-    bbwp_measures[,categories := paste0(categories,"||",category),by = .I]
+    bbwp_measures[!is.na(categories),categories := paste0(categories,"||",category),by = .I]
+    bbwp_measures[is.na(categories),categories := category]
     
   # save measures as bbwp table
   use_data(bbwp_measures, overwrite = TRUE)

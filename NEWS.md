@@ -1,3 +1,10 @@
+# BBPC v.0.10.10
+
+## Changed
+* the columns `waterkwaliteit`, `bodemkwaliteit`, `klimaat`, `biodiversiteit`, `landschap` and `categories` were updated in the internal database `measures.csv`.
+* update values in internal table `eco_brp.csv`.
+* maximum score for `s_er_landscape` in `er_main` is now also equal to aim for golden medal instead of 1.
+
 # BBPC v.0.10.9
 
 ## Changed
