@@ -1,3 +1,8 @@
+# BBPC v.0.10.11
+
+## Fixed
+* URL of measures BWP9 does not work and seems not to exist, URL of measure BWP9 therefore removed from database.
+
 # BBPC v.0.10.10
 
 ## Changed
