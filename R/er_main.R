@@ -206,6 +206,9 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     out.farm[, s_er_landscape := pmin(dt.farm.thresholds$s_er_landscape_gold,s_er_landscape)]
     out.farm[, s_er_farm_tot:= pmin(dt.farm.thresholds$s_er_farmtotal_gold,s_er_farm_tot)]
     
+    # temporal solution to avoid BBWP score in screen
+    if(TRUE){out.farm[,s_er_tot := s_er_farm_tot]}
+    
     # add thresholds
     out <- list(farm = c(as.list(out.farm),dt.farm.thresholds),
                 fields = out.field)
