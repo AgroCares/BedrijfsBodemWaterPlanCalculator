@@ -1,3 +1,8 @@
+# BBPC v.0.10.12
+
+## Fixed
+* farm-measure EB10 gives an error when no measures are given on field level, issue #BBWP-24
+
 # BBPC v.0.10.11
 
 ## Fixed
