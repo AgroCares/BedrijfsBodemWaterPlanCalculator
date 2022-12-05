@@ -70,10 +70,12 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   if(nrow(dt.meas.farm[grepl("EB10",eco_id)]) > 0){
     
     # replace EB10B or EB10C by EB10A
-    dt.meas.idx <- dt.meas.idx[, c("id","bbwp_status") := dt.meas.farm[grepl("EB10",eco_id),c("id","bbwp_status")]]
-    dt.meas.farm <- dt.meas.farm[!grepl("EB10",eco_id),]
-    dt.meas.farm <- rbind(dt.meas.farm,dt.meas.idx, use.names = TRUE, fill = TRUE)
-
+    ucols <- colnames(dt.meas.idx)
+    dt.meas.farm[grepl('EB10',eco_id), c(ucols) := dt.meas.idx[,mget(ucols)]]
+    
+    # farm measures should be unique
+    dt.meas.farm <- dt.meas.farm[!duplicated(eco_id)]
+    
     } else { 
     
     # add crop EB10A to farm measures  
@@ -168,7 +170,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     fs1 <- paste0('f',sector)
     fs2 <- fs0[!fs0 %in% fs1]
     dt.field[,c(fs1) := 1]
-    dt.field[,c(fs2) := 0]
+    if(length(fs2) > 0){dt.field[,c(fs2) := 0]}
     
     # estimate whether sector allows applicability
     dt.field[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs] 
@@ -248,7 +250,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       fs1 <- paste0('f',sector)
       fs2 <- fs0[!fs0 %in% fs1]
       dt.meas.farm[,c(fs1) := 1]
-      dt.meas.farm[,c(fs2) := 0]
+      if(length(fs2)>0){dt.meas.farm[,c(fs2) := 0]}
       
       # estimate whether sector allows applicability
       dt.meas.farm[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs] 
