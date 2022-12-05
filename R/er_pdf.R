@@ -41,11 +41,11 @@ er_pdf <- function(croprotation,measurescores,dt.field.measures,dt.farm.measures
     pdf.meas.field <- merge(pdf.meas.field,dt1, by = "bbwp_id")
     
     # convert area to ha
-    pdf.meas.field <- pdf.meas.field[, B_AREA := B_AREA/10000]
+    pdf.meas.field[, B_AREA := B_AREA/10000]
     
     # add up scores and area if measures are applied on multiple fields
       # get total area of the measures applied on multiple fields
-      pdf.meas.field <- pdf.meas.field[, B_AREA_tot := sum(B_AREA), by = "summary"]
+      pdf.meas.field[, B_AREA_tot := sum(B_AREA), by = "summary"]
       
       # get cols
       cols <- c('climate','soil','water','landscape','biodiversity','total')
@@ -54,7 +54,7 @@ er_pdf <- function(croprotation,measurescores,dt.field.measures,dt.farm.measures
       pdf.meas.field <- pdf.meas.field[,lapply(.SD,weighted.mean,w = B_AREA), by = c("summary","bbwp_id","B_AREA_tot"),.SDcols = cols]
       
     # arrange table to right format
-    pdf.meas.field <- pdf.meas.field[, bbwp_id := NULL]
+    pdf.meas.field[, bbwp_id := NULL]
     pdf.meas.field[, level := "field"]
     setcolorder(pdf.meas.field, c("level","summary"))
     
