@@ -150,8 +150,8 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     fs1 <- paste0('f',sector)
     fs2 <- fs0[!fs0 %in% fs1]
     dt[,c(fs1) := 1]
-    dt[,c(fs2) := 0]
-    
+    if(length(fs2) > 0){dt.field[,c(fs2) := 0]}
+
     # estimate whether sector allows applicability
     dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs] 
     
