@@ -1,3 +1,11 @@
+# BBPC v.0.10.13
+
+## Fixed
+* farm measures were duplicated when BBWP-service combines field and farm measures. Duplicates are removed, issue #BBWP-23
+* `s_er_tot` in farm score of the er output is set to `s_er_farm_tot`
+* total area in pdf.5 in `er_pdf` is updated
+* avoid warnings in fs2 corrections in `er_meas_scores`
+
 # BBPC v.0.10.12
 
 ## Fixed
