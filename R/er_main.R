@@ -312,7 +312,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     cols <- c('oppervlakte','klim','bod','wat','land','bio')
     pdf.5 <- pdf.4[,lapply(.SD,function(x) round(weighted.mean(x,w = as.numeric(oppervlakte)),1)),.SDcols = cols,by=.(niveau)]
     pdf.5 <- rbind(pdf.5,data.table(niveau='totaal',round(t(colSums(pdf.5[,-1])),1)))
-    pdf.5[niveau=='total',oppervlakte :=  sum(B_AREA)]
+    pdf.5[niveau=='totaal',oppervlakte :=  round(sum(B_AREA/10000),1)]
     
     # table 6: score aim per theme for field and farm and medal thresholds per theme
     # get scores per field
