@@ -80,8 +80,11 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     
     # add crop EB10A to farm measures  
     dt.meas.farm <- rbind(dt.meas.farm,dt.meas.idx, use.names = TRUE, fill = TRUE)
-    dt.meas.farm <- dt.meas.farm[eco_id == 'EB10A', id := fifelse(is.na(id),1,id)]
-  
+    dt.meas.farm[eco_id == 'EB10A', id := fifelse(is.na(id),1,id)]
+    dt.meas.farm[eco_id == 'EB10A', bbwp_status := 'Planned']
+    
+    # farm measures should be unique
+    dt.meas.farm <- dt.meas.farm[!duplicated(eco_id)]
     } 
   
   # add bbwp table for financial reward correction factor per AER
