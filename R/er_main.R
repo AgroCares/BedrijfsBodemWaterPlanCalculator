@@ -334,7 +334,15 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     # round values in table 6a
     cols <- c("climate","soil","water","landscape","biodiversity","tot")
     pdf.6a[, c(cols) := round(.SD,1), .SDcols = cols]
-
+    
+    # subtract the points from farm level measures from field total score and calculate new total
+    pdf.6a[, climate := climate - (pdf.5[niveau == "bedrijf",klim])]
+    pdf.6a[, soil := soil - (pdf.5[niveau == "bedrijf",bod])]
+    pdf.6a[, water := water - (pdf.5[niveau == "bedrijf",wat])]
+    pdf.6a[, landscape := landscape - (pdf.5[niveau == "bedrijf",land])]
+    pdf.6a[, biodiversity := biodiversity - (pdf.5[niveau == "bedrijf",bio])]
+    pdf.6a[, tot := climate + soil + water + landscape + biodiversity]
+ 
     # get farm scores per theme
     pdf.6b <- copy(out.farm)
     
