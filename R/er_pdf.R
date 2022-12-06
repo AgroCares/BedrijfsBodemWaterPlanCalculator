@@ -19,6 +19,9 @@ er_pdf <- function(croprotation,measurescores,dt.field.measures,dt.farm.measures
   pdf.farm.meas.name = pdf.farm.measures = pdf.field.tot = area_farm = pdf.tot = NULL
   total = euro_ha = euro_farm = bbwp_id = bbwp_measures = B_AREA_tot = NULL
   
+  # set farm measures to unique measures (no duplications allowed)
+  dt.farm.measures <- unique(dt.farm.measures)
+  
   # get internal measures table
   bbwp_measures <- as.data.table(BBWPC::bbwp_measures)
   
@@ -38,11 +41,11 @@ er_pdf <- function(croprotation,measurescores,dt.field.measures,dt.farm.measures
     pdf.meas.field <- merge(pdf.meas.field,dt1, by = "bbwp_id")
     
     # convert area to ha
-    pdf.meas.field <- pdf.meas.field[, B_AREA := B_AREA/10000]
+    pdf.meas.field[, B_AREA := B_AREA/10000]
     
     # add up scores and area if measures are applied on multiple fields
       # get total area of the measures applied on multiple fields
-      pdf.meas.field <- pdf.meas.field[, B_AREA_tot := sum(B_AREA), by = "summary"]
+      pdf.meas.field[, B_AREA_tot := sum(B_AREA), by = "summary"]
       
       # get cols
       cols <- c('climate','soil','water','landscape','biodiversity','total')
@@ -51,7 +54,7 @@ er_pdf <- function(croprotation,measurescores,dt.field.measures,dt.farm.measures
       pdf.meas.field <- pdf.meas.field[,lapply(.SD,weighted.mean,w = B_AREA), by = c("summary","bbwp_id","B_AREA_tot"),.SDcols = cols]
       
     # arrange table to right format
-    pdf.meas.field <- pdf.meas.field[, bbwp_id := NULL]
+    pdf.meas.field[, bbwp_id := NULL]
     pdf.meas.field[, level := "field"]
     setcolorder(pdf.meas.field, c("level","summary"))
     
@@ -95,14 +98,15 @@ er_pdf <- function(croprotation,measurescores,dt.field.measures,dt.farm.measures
     
     # get measures applied on farm level
     pdf.farm.meas.name <- dt.farm.measures[total>0 | euro_farm > 0 | euro_ha > 0, c("bbwp_id")]
-    
+   
     # merge measure summary with applied measures
     pdf.farm.meas.name <- merge(pdf.farm.meas.name,
                                 dt1, by = "bbwp_id")
     
     # get applied measures and corresponding scores (in score per farm)
     pdf.farm.measures <- merge(pdf.farm.meas.name,
-                               dt.farm.measures[!is.na(bbwp_id), c("bbwp_id","climate","soil","water","landscape","biodiversity","total")], by = c('bbwp_id'))
+                               dt.farm.measures[!is.na(bbwp_id), c("bbwp_id","climate","soil","water","landscape","biodiversity","total")], 
+                               by = c('bbwp_id'))
     
     # get total farm area in ha
     area_farm = (sum(B_AREA)/10000)
