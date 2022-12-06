@@ -327,7 +327,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
   
     # table 5: total score of field measures and total score of farm measures 
     cols <- c('oppervlakte','klim','bod','wat','land','bio')
-    pdf.5a <- pdf.4[niveau == "veld" & oppervlakte != 0,lapply(.SD,function(x) round(weighted.mean(x,w = as.numeric(oppervlakte)),1)),.SDcols = cols][, niveau := "veld"]
+    pdf.5a <- pdf.4[niveau == "veld",lapply(.SD,function(x) round(weighted.mean(x,w = as.numeric(oppervlakte)),1)),.SDcols = cols][, niveau := "veld"]
     pdf.5b <- pdf.4[niveau == "bedrijf",lapply(.SD,function(x) round(sum(x),1)),.SDcols = cols][,niveau := "bedrijf"]
     pdf.5 <- rbind(pdf.5a,pdf.5b)
     setcolorder(pdf.5,"niveau")
