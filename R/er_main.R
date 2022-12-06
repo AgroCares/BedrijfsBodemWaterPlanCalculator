@@ -38,7 +38,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
   medal = s_er_medal = field_id = s_er_reward = s_er_tot = s_er_costs = NULL
   s_er_soil = s_er_water = s_er_climate = s_er_biodiversity = s_er_landscape = s_er_farm_tot = NULL 
   id = pb = reward = tot_area = compensation = level = oppervlakte = . = niveau = landscape = NULL
-  patterns = NULL
+  patterns = climate = klim = soil = bod = water = wat = land = biodiversity = bio = tot = NULL
   
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
