@@ -38,7 +38,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
   medal = s_er_medal = field_id = s_er_reward = s_er_tot = s_er_costs = NULL
   s_er_soil = s_er_water = s_er_climate = s_er_biodiversity = s_er_landscape = s_er_farm_tot = NULL 
   id = pb = reward = tot_area = compensation = level = oppervlakte = . = niveau = landscape = NULL
-  patterns = NULL
+  patterns = climate = klim = soil = bod = water = wat = land = biodiversity = bio = tot = NULL
   
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
@@ -286,7 +286,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     
     # select the table with field measures that generated scores as input for pdf 
     pdf.field <- pdf.field$pdf
-    
+
     # get scores and the table with field and farm measures that generated scores 
     pdf.farm.field <- er_croprotation(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                                       B_LU_BBWP = B_LU_BBWP,
@@ -303,6 +303,20 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     # select the table with field and farm measures that generated scores as input for pdf 
     pdf.farm.field <- pdf.farm.field$pdf
     
+    # if there are no measures in pdf.farm.field, create table with 0
+    if(nrow(pdf.farm.field) == 0){
+      
+      pdf.farm.field <- data.table(level = "farm",
+                              summary = NA_real_,
+                              B_AREA_tot = 0,
+                              climate = 0,
+                              soil = 0,
+                              water = 0,
+                              landscape = 0,
+                              biodiversity = 0,
+                              total = 0)
+    }
+    
     # table with all field and farm measures and corresponding scores
     pdf.4 <- rbind(pdf.field,pdf.farm.field)
     
@@ -310,12 +324,15 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     pdf.4[, level := fifelse(level == "field","veld","bedrijf")]
     setcolorder(pdf.4, c("level","summary","B_AREA_tot","climate","soil","water","landscape","biodiversity","total"))
     setnames(pdf.4,c('niveau','maatregel','oppervlakte','klim','bod','wat','land','bio','totaal'))
-    
+  
     # table 5: total score of field measures and total score of farm measures 
     cols <- c('oppervlakte','klim','bod','wat','land','bio')
-    pdf.5 <- pdf.4[,lapply(.SD,function(x) round(weighted.mean(x,w = as.numeric(oppervlakte)),1)),.SDcols = cols,by=.(niveau)]
+    pdf.5a <- pdf.4[niveau == "veld",lapply(.SD,function(x) round(weighted.mean(x,w = as.numeric(oppervlakte)),1)),.SDcols = cols][, niveau := "veld"]
+    pdf.5b <- pdf.4[niveau == "bedrijf",lapply(.SD,function(x) round(sum(x),1)),.SDcols = cols][,niveau := "bedrijf"]
+    pdf.5 <- rbind(pdf.5a,pdf.5b)
+    setcolorder(pdf.5,"niveau")
     pdf.5 <- rbind(pdf.5,data.table(niveau='totaal',round(t(colSums(pdf.5[,-1])),1)))
-    pdf.5[niveau=='totaal',oppervlakte :=  round(sum(B_AREA/10000),1)]
+    pdf.5 <- pdf.5[niveau=='totaal',oppervlakte :=  round(sum(B_AREA/10000),1)]
     
     # table 6: score aim per theme for field and farm and medal thresholds per theme
     # get scores per field
@@ -330,7 +347,15 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     # round values in table 6a
     cols <- c("climate","soil","water","landscape","biodiversity","tot")
     pdf.6a[, c(cols) := round(.SD,1), .SDcols = cols]
-
+    
+    # subtract the points from farm level measures from field total score and calculate new total
+    pdf.6a[, climate := climate - (pdf.5[niveau == "bedrijf",klim])]
+    pdf.6a[, soil := soil - (pdf.5[niveau == "bedrijf",bod])]
+    pdf.6a[, water := water - (pdf.5[niveau == "bedrijf",wat])]
+    pdf.6a[, landscape := landscape - (pdf.5[niveau == "bedrijf",land])]
+    pdf.6a[, biodiversity := biodiversity - (pdf.5[niveau == "bedrijf",bio])]
+    pdf.6a[, tot := climate + soil + water + landscape + biodiversity]
+ 
     # get farm scores per theme
     pdf.6b <- copy(out.farm)
     

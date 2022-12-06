@@ -1,3 +1,9 @@
+# BBPC v.0.10.14
+
+## Fixed
+* total of farm measures was calculated as weighted mean and is now added together instead for pdf.5 in `ecoregeling` pdf output
+* the total score per field in pdf.6 in the `ecoregeling` pdf output is now only based on field level measures and not on both field and farm level measures anymore
+
 # BBPC v.0.10.13
 
 ## Fixed
