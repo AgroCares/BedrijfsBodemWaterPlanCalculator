@@ -1,3 +1,8 @@
+# BBPC v.0.10.15
+
+## Removed
+* Removed checkmates for s_er_reward, since there is no limit for reward and it caused errors for farms with a small area
+
 # BBPC v.0.10.14
 
 ## Fixed
