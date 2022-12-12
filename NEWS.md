@@ -1,3 +1,8 @@
+# BBPC v.0.10.15
+
+## Removed
+* Removed upper boundary in checkmates for S_ER scores
+
 # BBPC v.0.10.14
 
 ## Fixed
