@@ -37,11 +37,12 @@ er_opi <- function(B_SOILTYPE_AGR,
                     length(S_ER_BIODIVERSITY),length(S_ER_LANDSCAPE),length(B_AREA))
   
   # check inputs
-  checkmate::assert_numeric(S_ER_SOIL, lower = 0, upper = 1000, len = arg.length)
-  checkmate::assert_numeric(S_ER_WATER, lower = 0, upper = 1000, len = arg.length)
-  checkmate::assert_numeric(S_ER_CLIMATE, lower = 0, upper = 1000, len = arg.length)
-  checkmate::assert_numeric(S_ER_BIODIVERSITY, lower = 0, upper = 1000, len = arg.length)
-  checkmate::assert_numeric(S_ER_LANDSCAPE, lower = 0, upper = 1000, len = arg.length)
+  checkmate::assert_numeric(S_ER_REWARD, lower = 0, len = arg.length)
+  checkmate::assert_numeric(S_ER_SOIL, lower = 0, len = arg.length)
+  checkmate::assert_numeric(S_ER_WATER, lower = 0, len = arg.length)
+  checkmate::assert_numeric(S_ER_CLIMATE, lower = 0, len = arg.length)
+  checkmate::assert_numeric(S_ER_BIODIVERSITY, lower = 0, len = arg.length)
+  checkmate::assert_numeric(S_ER_LANDSCAPE, lower = 0, len = arg.length)
   checkmate::assert_numeric(B_AREA, lower = bbwp_parms[code == "B_AREA", value_min], upper = bbwp_parms[code == "B_AREA", value_max], len = arg.length)
   checkmate::assert_character(B_SOILTYPE_AGR,len = arg.length)
   checkmate::assert_character(medalscore,len = 1)
