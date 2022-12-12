@@ -1,3 +1,8 @@
+# BBPC v.0.10.16
+
+## Fixed
+* update version of pandex package and `bbwp_parms`  
+
 # BBPC v.0.10.15
 
 ## Removed
