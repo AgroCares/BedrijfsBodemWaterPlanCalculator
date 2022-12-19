@@ -5,11 +5,11 @@
 \alias{er_measures}
 \title{The applicability of Ecoregeling Measures per crop type}
 \format{
-A data.table with 6731 rows and 3 columns:
+A data.table with 11519 rows and 3 columns:
 \describe{
-  \item{eco_id}{ecoregeling measure id}
-  \item{B_lU_BRP}{dutch crop id from the BRP}
-  \item{eco_app}{a helper variable telling that the measure is applicable for that crop}
+  \item{eco_id}{The Ecoregeling measure id}
+  \item{B_lU_BRP}{The Dutch crop id from the BRP}
+  \item{eco_app}{A helper variable telling that the measure is applicable for that crop}
 }
 }
 \usage{

@@ -5,36 +5,84 @@
 \alias{bbwp_measures}
 \title{Agronomic measures that can be applied}
 \format{
-A data.table with 61 rows and 22 columns:
+A data.table with 169 rows and 70 columns:
 \describe{
-  \item{nr}{The van Gerven number of the measure, related to the study by Van Gerven et al. (2020)}
-  \item{omschrijving}{Short description of the measure}
-  \item{m_cat}{The category of the measure}
-  \item{tp_mvh}{Applicability of the measure in the dairy sector}
-  \item{tp_ab}{Applicability of the measure in the arable sector}
-  \item{tp_vgg}{Applicability of the measure in the vegetable sector}
-  \item{tp_ab}{Applicability of the measure in the bulb sector}
-  \item{tp_ab}{Applicability of the measure in the tree and fruit tree sector}
-  \item{tp_zand}{Applicability of the measure on sandy soils}
-  \item{tp_klei}{Applicability of the measure on clay soils}
-  \item{tp_veen}{Applicability of the measure on peat soils}
-  \item{tp_metdrainage}{Applicability of the measure on fields with drainage}
-  \item{tp_zonderdrainage}{Applicability of the measure on fields without drainage}
-  \item{tp_nat}{Applicability of the measure on wet soils}
-  \item{tp_droog}{Applicability of the measure on dry soils}
-  \item{tp_nietontwaterd}{Applicability of the measure on fields without surrounding ditches}
-  \item{pow}{Effectiveness of the measure for P loss to surface water}
-  \item{now}{Effectiveness of the measure for N loss to surface water}
-  \item{ngw}{Effectiveness of the measure for nitrate loss to groundwater}
-  \item{e_np}{Effectiveness of the measure for improving nutrient use efficiency}
-  \item{e_wb}{Effectiveness of the measure to improve water holding capacity of soil}
-  \item{e_kosten}{index representing the costs for implementing the measure}
+  \item{bbwp_id}{The unique BBWP measure id based on the van Gerven number of the measure, related to the study by Van Gerven et al. (2020)}
+  \item{nr_mok}{A mock up code for bbwp measure id}
+  \item{boot22_id}{The measure id refering to the measure code on the Dutch "BOOT-lijst 2022"}
+  \item{eco_id}{The unique Ecoregeling measure id}
+  \item{summary}{A short explanation of the measure}
+  \item{description}{An elaborate description of the measure}
+  \item{url}{The URL refers to a web resource containing a fact sheet of the specific measure}
+  \item{level}{The spatial scale at which the measure is valid: "field" or "farm"}
+  \item{category}{The measure category, choices: "teeltmaatregel", "bodemverbetering", "bedrijf", "slootkantbeheer", "gewasbescherming", "precisiebemesting", "niet_productief", "watervasthouden" or "erf"}
+  \item{dairy}{Applicability of the measure in the dairy sector}
+  \item{arable}{Applicability of the measure in the arable sector}
+  \item{vegetables_outdoor}{Applicability of the measure in the (outdoor) vegetables sector}
+  \item{bulbs}{Applicability of the measure in the bulb sector}
+  \item{tree_nursery}{Applicability of the measure on tree nurseries}
+  \item{sand}{Applicability of the measure on sandy soils}
+  \item{loess}{Applicability of the measure on loess soils}
+  \item{clay}{Applicability of the measure on clay soils}
+  \item{peat}{Applicability of the measure on peat soils}
+  \item{psw_psg_low}{Additional impact on the effectiveness of the measure for P losses to surface water when the P saturation index is low} 
+  \item{psw_psg_medium}{Additional impact on the effectiveness of the measure for P losses to surface water when the P saturation index is medium}
+  \item{psw_psg_high}{Additional impact on the effectiveness of the measure for P losses to surface water when the P saturation index is high}
+  \item{nsw_drains}{Additional impact on the effectiveness of the measure for N losses to surface water on fields with drainage}
+  \item{nsw_nodrains}{Additional impact on the effectiveness of the measure for N losses to surface water on fields without drainage}
+  \item{nsw_gwl_high}{Additional impact on the effectiveness of the measure for N losses to surface water under high groundwater level conditions}
+  \item{nsw_gwl_low}{Additional impact on the effectiveness of the measure for N losses to surface water under low groundwater level conditions}
+  \item{psw_noslope}{Additional impact on the effectiveness of the measure for P losses to surface water when there is no slope}
+  \item{psw_bulbs}{Additional impact on the effectiveness of the measure for P losses to surface water when applied on a bulb field}
+  \item{ngw_grassland}{Additional impact on the effectiveness of the measure for N losses to groundwater on grasslands}
+  \item{p_ow}{Effectiveness of the measure on total P load in surface water}
+  \item{p_ow2}{Effectiveness of the measure on P concentration in ditch}
+  \item{n_ow}{Effectiveness of the measure on total N load in surface water}
+  \item{n_ow2}{Effectiveness of the measure on N concentration in ditch}
+  \item{effect_ngw}{Effectiveness of the measure for nitrate losses to groundwater}
+  \item{effect_psw}{Effectiveness of the measure for P losses to surface water}
+  \item{effect_nsw}{Effectiveness of the measure for N losses to surface water}
+  \item{effect_nue}{Effectiveness of the measure for improving nutrient use efficiency}
+  \item{effect_wb}{Effectiveness of the measure to improve water holding capacity of soil}
+  \item{effect_costs}{Index representing the costs for implementing the measure}
+  \item{b_lu_arable_er}{Boolean indicating whether the crop falls within the ER category "arable"}
+  \item{b_lu_productive_er}{Boolean indicating whether the crop falls within the ER category "productive"}
+  \item{b_lu_cultivated_er}{Boolean indicating whether the crop falls within the ER category "cultivated"}
+  \item{er_climate}{The measure impact score for eco theme climate}
+  \item{er_soil}{The measure impact score for eco theme soil}
+  \item{er_water}{The measure impact score for eco theme water}
+  \item{er_landscape}{The measure impact score for eco theme landscape}
+  \item{er_biodiversity}{The measure impact score for eco theme biodiversity}
+  \item{er_euro_ha}{The estimated costs of the measure per hectare (euro/ha)}
+  \item{er_euro_farm}{The estimated costs of measures per farm (euro/farm)}
+  \item{bbwp_conflict}{Code indicating measure conflict: measures with same bbwp_conflict code are conflicting}
+  \item{acc_anlb}{Indicator specifying how score and reward need to adjust when measure is already applied with Dutch ANLB, choices: "none", "score only", "reward only", "both score and reward"}
+  \item{acc_glmc}{Indicator specifying how score and reward need to adjust when measure is already applied with Dutch GLMC, choices: "none", "score only", "reward only", "both score and reward"}
+  \item{regio_factor}{Boolean specifying whether regional correction on measure costs based on agricultural economic region is required}
+  \item{bodemkwaliteit}{Boolean specifying whether measure greatly contributes to eco theme soil}
+  \item{waterkwaliteit}{Boolean specifying whether measure greatly contributes to eco theme water}
+  \item{klimaat}{Boolean specifying whether measure greatly contributes to eco theme climate}
+  \item{biodiversiteit}{Boolean specifying whether measure greatly contributes to eco theme biodiversity}
+  \item{landschap}{Boolean specifying whether measure greatly contributes to eco theme landscape}
+  \item{nc1}{Applicability of the measure on crop category "gras_permanent"}
+  \item{nc2}{Applicability of the measure on crop category "gras_tijdelijk"}
+  \item{nc3}{Applicability of the measure on crop category "rustgewas"}
+  \item{nc4}{Applicability of the measure on crop category "rooivrucht"}
+  \item{nc5}{Applicability of the measure on crop category "groenten"}
+  \item{nc6}{Applicability of the measure on crop category "bollensierteelt"}
+  \item{nc7}{Applicability of the measure on crop category "boomfruitteelt"}
+  \item{nc8}{Applicability of the measure on crop category "natuur"}
+  \item{nc9}{Applicability of the measure on crop category "mais"}
+  \item{nc10}{Applicability of the measure on crop category "randensloot"}
+  \item{nc11}{Applicability of the measure on crop category "vanggewas"}
+  \item{nc12}{Applicability of the measure on crop category "eiwitgewas"}
+  \item{categories}{Eco and/or BBWP categories to which the measure greatly contributes}
 }
 }
 \usage{
 bbwp_measures
 }
 \description{
-This table contains a series of agronomic measures, their applicability and effectiveness for multiple ecosystem service
+This table contains a series of agronomic measures, their applicability and effectiveness for multiple ecosystem services
 }
 \keyword{datasets}
