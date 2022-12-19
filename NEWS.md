@@ -1,3 +1,8 @@
+# BBPC v.0.10.17
+
+## Changed
+* the documentation of internal bbwp tables is updated in `bbwp_tables` 
+
 # BBPC v.0.10.16
 
 ## Fixed
