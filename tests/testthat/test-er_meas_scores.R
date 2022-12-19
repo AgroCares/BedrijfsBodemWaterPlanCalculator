@@ -15,8 +15,8 @@ require(testthat)
 
 # run example 1 without any measures taken
 test <- er_meas_score(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                      B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
-                      B_LU_BRP = c(265,2741,2741,259),
+                      B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','rooivrucht'),
+                      B_LU_BRP = c(265,2741,2741,6660),
                       B_LU_ARABLE_ER = c(T,T,T,T),
                       B_LU_PRODUCTIVE_ER = c(T,T,T,T),
                       B_LU_CULTIVATED_ER = c(T,T,T,T),
