@@ -18,7 +18,7 @@
 #'   \item{vegetables_outdoor}{Applicability of the measure in the (outdoor) vegetables sector}
 #'   \item{bulbs}{Applicability of the measure in the bulb sector}
 #'   \item{tree_nursery}{Applicability of the measure on tree nurseries}
-#'   \item{sand}{Applicability of the measure on sandy soils
+#'   \item{sand}{Applicability of the measure on sandy soils}
 #'   \item{loess}{Applicability of the measure on loess soils}
 #'   \item{clay}{Applicability of the measure on clay soils}
 #'   \item{peat}{Applicability of the measure on peat soils}
@@ -39,7 +39,7 @@
 #'   \item{effect_ngw}{Effectiveness of the measure for nitrate losses to groundwater}
 #'   \item{effect_psw}{Effectiveness of the measure for P losses to surface water}
 #'   \item{effect_nsw}{Effectiveness of the measure for N losses to surface water}
-#'   \item{effect_nue}{Effectiveness of the measure for improving nutrient use efficiency }
+#'   \item{effect_nue}{Effectiveness of the measure for improving nutrient use efficiency}
 #'   \item{effect_wb}{Effectiveness of the measure to improve water holding capacity of soil}
 #'   \item{effect_costs}{Index representing the costs for implementing the measure}
 #'   \item{b_lu_arable_er}{Boolean indicating whether the crop falls within the ER category "arable"}
