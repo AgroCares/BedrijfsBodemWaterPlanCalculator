@@ -119,16 +119,16 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
     cols <- colnames(out.threshold)[grepl('er_costs',colnames(out.threshold))]
     out.threshold[,c(cols) := lapply(.SD,round,1),.SDcols = cols]
     
-    # set threshold of golden medal for landscape to 0 and
+    # set threshold of golden medal for landscape to 1
     # remove thresholds of bronze and silver medal for landscape
-    out.threshold[medalscores == "gold", cf_landscape := 0]
+    out.threshold[medalscores == "gold", cf_landscape := 1]
     out.threshold[medalscores == "silver", cf_landscape := NA_real_]
     out.threshold[medalscores == "bronze", cf_landscape := NA_real_]
  
-    # if farm only includes peat soils, set threshold for water to 0.5 
+    # if farm only includes peat soils, set threshold for water to 1 
     if( all(grepl("veen",B_SOILTYPE_AGR)) == TRUE){
     
-    out.threshold[medalscores == "gold", cf_water := 0]
+    out.threshold[medalscores == "gold", cf_water := 1]
     out.threshold[medalscores == "silver", cf_water := NA_real_]
     out.threshold[medalscores == "bronze", cf_water := NA_real_]
     }
