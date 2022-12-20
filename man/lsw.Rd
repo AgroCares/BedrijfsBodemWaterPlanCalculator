@@ -10,7 +10,7 @@ A data.table with 546 rows and 32 columns:
   \item{oow_id}{The unique ID number of the surface water polygon for catchment or polder}
   \item{oow_name}{The name of the surface water polygon for catchment or polder}
   \item{oow_nitrogen}{The nitrogen reduction target within the surface water polygon for catchment or polder (kg/ha)}  
-  \item{oow_phosphate}{The phosphate reduction target within th surface water polygon for catchment or polder (kg/ha)}
+  \item{oow_phosphate}{The phosphate reduction target within the surface water polygon for catchment or polder (kg/ha)}
   \item{oow_source}{The type of the surface water polygon for catchment or polder: oow or lsw}
   \item{oow_mean_n_rt}{The mean organic nitrogen content of the soil in the specific surface water polygon for catchment or polder (mg N / kg)}
   \item{oow_sd_n_rt}{The standard deviation of the organic nitrogen content of the soil in the specific surface water polygon for catchment or polder (mg N / kg)}
