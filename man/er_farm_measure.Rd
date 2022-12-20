@@ -5,13 +5,13 @@
 \alias{er_farm_measure}
 \title{The impact score of farm based measures}
 \format{
-A data.table with 40 rows and 5 columns:
+A data.table with 45 rows and 5 columns:
 \describe{
-  \item{id}{bla bla}
-  \item{indicator}{bla bla}
-  \item{eco_id}{bla bla}
-  \item{description}{bla bla}
-  \item{er_score}{bla bla}
+  \item{id}{Unique id for each impact score related to crop rotation measures per environmental theme}
+  \item{indicator}{The environmental theme, choices: "soil", "water", "biodiversity", "climate" or "landscape"}
+  \item{eco_id}{Ecoregeling measure id}
+  \item{description}{Short description of the Ecoregeling measure}
+  \item{er_score}{The impact score of the Ecoregeling measure}
 }
 }
 \usage{

@@ -7,13 +7,13 @@
 \format{
 A data.table with 8 rows and 7 columns:
 \describe{
-  \item{soiltype}{bla bla}
-  \item{type}{bla bla}
-  \item{cf_soil}{bla bla}
-  \item{cf_water}{bla bla}
-  \item{cf_climate}{bla bla}
-  \item{cf_biodiversity}{bla bla}
-  \item{cf_landscape}{ bla bla}
+  \item{soiltype}{Agricultural soil type}
+  \item{type}{The type of weighting factor: urgency (distribution of scores depending on political urgency) or aim (distribution of scores depending on aim for environmental challenges)}
+  \item{cf_soil}{Weighting factor for soil}
+  \item{cf_water}{Weighting factor for water}
+  \item{cf_climate}{Weighting factor for climate}
+  \item{cf_biodiversity}{Weighting factor for biodiversity}
+  \item{cf_landscape}{Weighting factor for landscape}
 }
 }
 \usage{
