@@ -78,9 +78,9 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
   out.tgt <- dcast(out.tgt,medalscores~indicator,value.var = 'er_score')
   
   # add target costs and total farm score on farm level
-  out.tgt[medalscore == "gold", c('B_CT_FARM_TOT','B_CT_COSTS') := list(35,200)]
-  out.tgt[medalscore == "silver", c('B_CT_FARM_TOT','B_CT_COSTS') := list(22,100)]
-  out.tgt[medalscore == "bronze", c('B_CT_FARM_TOT','B_CT_COSTS') := list(14,60)]
+  out.tgt[medalscore == "gold", c('B_CT_FARM_TOT','B_CT_COSTS') := list(40,200)]
+  out.tgt[medalscore == "silver", c('B_CT_FARM_TOT','B_CT_COSTS') := list(22.5,100)]
+  out.tgt[medalscore == "bronze", c('B_CT_FARM_TOT','B_CT_COSTS') := list(15,60)]
   
   # add a farm id
   out.tgt[,farmid := 1]
@@ -106,9 +106,9 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
     out.threshold <- dcast(dt,medalscores~indicator,value.var = 'er_score')  
     
     # add farm targets on farm level 
-    out.threshold[medalscores == "bronze",s_er_farmtotal := 14]
-    out.threshold[medalscores == "silver",s_er_farmtotal := 22]
-    out.threshold[medalscores == "gold",s_er_farmtotal := 35]
+    out.threshold[medalscores == "bronze",s_er_farmtotal := 15]
+    out.threshold[medalscores == "silver",s_er_farmtotal := 22.5]
+    out.threshold[medalscores == "gold",s_er_farmtotal := 40]
     
     # add target costs on farm level
     out.threshold[medalscores == "gold", s_er_costs := (200/200)*100]
