@@ -126,12 +126,12 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
     #out.threshold[medalscores == "bronze", cf_landscape := NA_real_]
  
     # if farm only includes peat soils, set threshold for water to 0 
-    if( all(grepl("veen",B_SOILTYPE_AGR)) == TRUE){
+    #if( all(grepl("veen",B_SOILTYPE_AGR)) == TRUE){
     
     #out.threshold[medalscores == "gold", cf_water := 0]
     #out.threshold[medalscores == "silver", cf_water := NA_real_]
     #out.threshold[medalscores == "bronze", cf_water := NA_real_]
-    }
+    #}
     
     # update name to set absolute thresholds
     setnames(out.threshold,
