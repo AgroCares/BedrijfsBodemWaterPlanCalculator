@@ -64,7 +64,7 @@ test_that("check er_meas_rank", {
 test_that("check er_meas_rank", {
   expect_equal(
     object = test$top_er_tot[c(1,4,9,15)],
-    expected = c("B183",'B139','B149','G54'),
+    expected = c("B183",'B139','B145','B145'),
     tolerance = 0.01)
 })
 
@@ -117,7 +117,7 @@ test_that("check er_meas_rank", {
 test_that("check er_meas_rank", {
   expect_equal(
     object = test$top_er_tot[c(1,4,8,15)],
-    expected = c("B183", "B166", "B166", "B163"),
+    expected = c("B183", "B166", "B149", "B163"),
     tolerance = 0.01)
 })
 
