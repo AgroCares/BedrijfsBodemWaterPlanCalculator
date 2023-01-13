@@ -45,9 +45,9 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
               by = 'id')
   
   # calculate minimum score for medals: score per ha
-  dt[medalscores == "bronze",farmscore := 14]
-  dt[medalscores == "silver",farmscore := 22]
-  dt[medalscores == "gold",farmscore := 35]
+  dt[medalscores == "bronze",farmscore := 15]
+  dt[medalscores == "silver",farmscore := 22,5]
+  dt[medalscores == "gold",farmscore := 40]
   
   # add soil type
   dt[grepl('klei', B_SOILTYPE_AGR) , soiltype := 'klei']
