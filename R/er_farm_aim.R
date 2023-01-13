@@ -46,7 +46,7 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
   
   # calculate minimum score for medals: score per ha
   dt[medalscores == "bronze",farmscore := 15]
-  dt[medalscores == "silver",farmscore := 22,5]
+  dt[medalscores == "silver",farmscore := 22.5]
   dt[medalscores == "gold",farmscore := 40]
   
   # add soil type
