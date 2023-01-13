@@ -1,3 +1,12 @@
+# BBWPC v.0.10.18
+
+## Changed
+* ecoregeling norms for landscape and water (on peat soil) were changed from 0 to 0.05 in `er_scoring`
+* in `er_farm_aim` the aims for landscape and water (on peat soils) got aims based on the new norms and were not set to 0 anymore
+* output of `er_main` now also includes values for `$farm$s_er_landscape_bronze` and `$farm$s_er_landscape_silver`
+* threshold values for bronze, silver and gold were changed into 15, 22.5 and 40 respectively in `er_farm_aim` 
+* the `er_measures` table was extended from 7720 rows to 10457 rows
+
 # BBPC v.0.10.17
 
 ## Changed
