@@ -134,8 +134,8 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                     dt.meas.eco, 
                     by = c('B_LU_BRP','eco_id'),
                     all.x = TRUE)
-  dt.field[is.na(eco_app) & !grepl('EG20',eco_id),eco_app := 0]
-  dt.field[is.na(eco_app) & grepl('EG20',eco_id), eco_app := 1]
+  dt.field[is.na(eco_app),eco_app := 0]
+  dt.field[is.na(eco_app),eco_app := 1]
   
     # columns with the Ecoregelingen ranks and reward
     cols <- c('er_soil','er_water','er_biodiversity','er_climate','er_landscape','er_euro_ha', 'er_euro_farm')
