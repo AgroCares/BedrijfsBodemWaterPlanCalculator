@@ -310,7 +310,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
 
       # calculate the applicable area of farm level measures that apply on specific area of farm based on crop type and get score per farm
       # farm level measures that are applicable on specific area of farm based on crop type
-      dt.ha <- dt4[grepl("B104|B107|B115|B116|B117|B118|B124|B125|B126|B127|B128|B129|B130|B133|B134|B135|B136", bbwp_id),]
+      dt.ha <- dt4[grepl("B115|B116|B117|B118|B124|B125|B126|B127|B128|B129|B130|B133|B134|B135|B136", bbwp_id),]
       
       # check whether measures to be calculated are present
       if(nrow(dt.ha) > 0){
@@ -361,7 +361,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt.ha <- dt.ha[, area_appl := NULL]
       
       # rbind dt.ha with remaining measures of dt4
-      dt4 <- rbind(dt.ha,dt4[!grepl("B104|B107|B115|B116|B117|B118|B124|B125|B126|B127|B128|B129|B130|B133|B134|B135|B136", bbwp_id)])
+      dt4 <- rbind(dt.ha,dt4[!grepl("B115|B116|B117|B118|B124|B125|B126|B127|B128|B129|B130|B133|B134|B135|B136", bbwp_id)])
       
     }
       
