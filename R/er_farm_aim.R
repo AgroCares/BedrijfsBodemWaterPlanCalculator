@@ -26,7 +26,7 @@ er_farm_aim <- function(B_SOILTYPE_AGR, B_AREA, medalscore = "gold", farmscore =
   arg.length <- max(length(B_SOILTYPE_AGR),length(B_AREA))
   
   # check inputs
-  checkmate::assert_numeric(B_AREA, lower = 10, value_min], upper = bbwp_parms[code == "B_AREA", value_max], len = arg.length)
+  checkmate::assert_numeric(B_AREA, lower = 10, upper = bbwp_parms[code == "B_AREA", value_max], len = arg.length)
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
   checkmate::assert_subset(medalscore, choices = c('bronze','silver','gold'))
   
