@@ -103,8 +103,8 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
               dt.meas.eco, 
               by = c('B_LU_BRP','eco_id'),
               all.x = TRUE)
-  dt[is.na(eco_app) & !grepl('EG13|EG14',eco_id),eco_app := 0]
-  dt[is.na(eco_app) & grepl('EG13|EG14',eco_id), eco_app := 1]
+  dt[is.na(eco_app) & !grepl('EG20|EG13|EG14',eco_id),eco_app := 0]
+  dt[is.na(eco_app) & grepl('EG20|EG13|EG14',eco_id), eco_app := 1]
   
   # measures that apply to crops cultivated after main crop (vanggewassen en groenbemesters) and FAB-stroken are applicable on all main crops 
   dt[grepl("EB17|EB10|EB23", eco_id) & grepl("gras_tijdelijk|rustgewas|rooivrucht|groenten|bollensierteelt|boomfruitteelt|mais|eiwitgewas",B_LU_BBWP), eco_app := 1]
@@ -136,12 +136,12 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     
     # set the score to zero when not applicable as arable/productive/cultivated measure
     # ensure that measure non-productive area is always applicable
-    dt[B_LU_ARABLE_ER  == TRUE & b_lu_arable_er  == 0 & !grepl('EG13|EG14',eco_id), c(cols) := 0]
-    dt[B_LU_PRODUCTIVE_ER == TRUE & b_lu_productive_er == 0 & !grepl('EG13|EG14',eco_id), c(cols) := 0]
-    dt[B_LU_CULTIVATED_ER  == TRUE & b_lu_cultivated_er == 0 & !grepl('EG13|EG14',eco_id), c(cols) := 0]
-    dt[B_LU_ARABLE_ER  == FALSE & b_lu_arable_er  == 1 & !grepl('EG13|EG14',eco_id), c(cols) := 0]
-    dt[B_LU_PRODUCTIVE_ER == FALSE & b_lu_productive_er == 1 & !grepl('EG13|EG14',eco_id), c(cols) := 0]
-    dt[B_LU_CULTIVATED_ER  == FALSE & b_lu_cultivated_er == 1 & !grepl('EG13|EG14',eco_id), c(cols) := 0]
+    dt[B_LU_ARABLE_ER  == TRUE & b_lu_arable_er  == 0 & !grepl('EG20|EG13|EG14',eco_id), c(cols) := 0]
+    dt[B_LU_PRODUCTIVE_ER == TRUE & b_lu_productive_er == 0 & !grepl('EG20|EG13|EG14',eco_id), c(cols) := 0]
+    dt[B_LU_CULTIVATED_ER  == TRUE & b_lu_cultivated_er == 0 & !grepl('EG20|EG13|EG14',eco_id), c(cols) := 0]
+    dt[B_LU_ARABLE_ER  == FALSE & b_lu_arable_er  == 1 & !grepl('EG20|EG13|EG14',eco_id), c(cols) := 0]
+    dt[B_LU_PRODUCTIVE_ER == FALSE & b_lu_productive_er == 1 & !grepl('EG20|EG13|EG14',eco_id), c(cols) := 0]
+    dt[B_LU_CULTIVATED_ER  == FALSE & b_lu_cultivated_er == 1 & !grepl('EG20|EG13|EG14',eco_id), c(cols) := 0]
     
   # set the score and profit to zero when the measure is not applicable given sector or soil type
   
