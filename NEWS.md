@@ -1,3 +1,14 @@
+# BBWPC v.0.10.19
+
+## Changed
+* update csv files for internal tables `bbwp_measures` and `eco_brp` 
+* `bbwp_measures` has extra category `alles` in column `categories` for each Ecoregeling measure
+* measures EB18 and EB19 are now field level measures and therefore transferred from `er_croprotation` to `er_meas_scores` for calculations
+* EG20 applies to 100% nature areas instead of 1-3%, 3-5% or >5%
+
+## Fixed
+* lower input level for `B_AREA` changed from 0 into 10, issue #BBWP-60
+
 # BBPC v.0.10.17
 
 ## Changed
