@@ -1,4 +1,4 @@
-# BBWPC v.0.10.19
+# BBWPC v.0.11.0
 
 ## Changed
 * update csv files for internal tables `bbwp_measures` and `eco_brp` (reduce variants of EG20 from 18 to 6) 
