@@ -77,6 +77,9 @@ require(data.table);library(usethis)
   # load in csv  
   er_measures <- fread('dev/eco_brp.csv', encoding = 'UTF-8')
   
+  # remove brp codes that do not occur in pandex
+  er_measures <- er_measures[B_LU_BRP < 7000 & B_LU_BRP != 305,]
+  
   # add a column with applicability
   er_measures[, eco_app := 1]
   
