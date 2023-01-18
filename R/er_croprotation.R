@@ -268,7 +268,11 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       cols.ad1 <- c(0,10,10,10,20,1000)
       cols.ad2 <- c(0,20,20,20,40,2000)
       dt.meas.farm[, er_total := er_climate + er_soil + er_water + er_landscape + er_biodiversity]
-      crops <- length(unique(B_LU_BRP))
+      
+        # select only the unique crops that count for measure EB10
+        crops <- unique(B_LU_BRP)
+        crops <- sum(crops %in% er_measures[grepl('EB10',eco_id),B_LU_BRP], na.rm=TRUE) 
+        
       dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0, B_IDX := crops / (dt.farm$area_cultivated/10000)]
       dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX <= 0.05, c(cols.sel) := 0]
       dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.07 & B_IDX <= 0.10, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
