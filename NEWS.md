@@ -1,9 +1,10 @@
 # BBWPC v.0.10.19
 
 ## Changed
-* update csv files for internal tables `bbwp_measures` and `eco_brp` 
+* update csv files for internal tables `bbwp_measures` and `eco_brp` (reduce variants of EG20 from 18 to 6) 
 * `bbwp_measures` has extra category `alles` in column `categories` for each Ecoregeling measure
 * measures EB18 and EB19 are now field level measures and therefore transferred from `er_croprotation` to `er_meas_scores` for calculations
+* Calculation of crop diversification index (EB10) is now based on the unique crops (brp codes) to which EB10 applies
 * EG20 applies to 100% nature areas instead of 1-3%, 3-5% or >5%
 
 ## Fixed
