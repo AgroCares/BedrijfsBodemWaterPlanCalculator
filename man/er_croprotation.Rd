@@ -13,13 +13,9 @@ er_croprotation(
   B_LU_ARABLE_ER,
   B_LU_PRODUCTIVE_ER,
   B_LU_CULTIVATED_ER,
-  B_CT_SOIL,
-  B_CT_WATER,
-  B_CT_CLIMATE,
-  B_CT_BIO,
-  B_CT_LANDSCAPE,
   measures,
-  sector
+  sector,
+  pdf = FALSE
 )
 }
 \arguments{
@@ -39,19 +35,11 @@ er_croprotation(
 
 \item{B_LU_CULTIVATED_ER}{(boolean) does the crop fall within the ER category "cultivated"}
 
-\item{B_CT_SOIL}{(numeric) the target value for soil quality conform Ecoregeling scoring  (score / ha)}
-
-\item{B_CT_WATER}{(numeric) the target value for water quality conform Ecoregeling scoring (score / ha)}
-
-\item{B_CT_CLIMATE}{(numeric) the target value for climate conform Ecoregeling scoring (score / ha)}
-
-\item{B_CT_BIO}{(numeric) the target value for biodiversity conform Ecoregeling scoring (score / ha)}
-
-\item{B_CT_LANDSCAPE}{(numeric) the target value for landscape quality conform Ecoregeling scoring (score / ha)}
-
 \item{measures}{(list) The measures planned / done per fields}
 
 \item{sector}{(string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')}
+
+\item{pdf}{(boolean) is there a pdf needed}
 }
 \description{
 Estimate the actual contribution of crop rotation given aims for soil quality, water quality, climate, biodiversity and landscape

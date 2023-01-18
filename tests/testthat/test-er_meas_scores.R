@@ -9,19 +9,19 @@ require(testthat)
   B_LU_PRODUCTIVE_ER = c(T,T,T,T)
   B_LU_CULTIVATED_ER = c(T,T,T,T)
   B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland")
-  B_AREA = c(45,18,0.8,6)
+  B_AREA = c(450000,180000,8000,60000)
   measures = NULL
   sector = 'dairy'
 
 # run example 1 without any measures taken
 test <- er_meas_score(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                      B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
-                      B_LU_BRP = c(265,2741,2741,259),
+                      B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','rooivrucht'),
+                      B_LU_BRP = c(265,2741,2741,6660),
                       B_LU_ARABLE_ER = c(T,T,T,T),
                       B_LU_PRODUCTIVE_ER = c(T,T,T,T),
                       B_LU_CULTIVATED_ER = c(T,T,T,T),
                       B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland"),
-                      B_AREA = c(45,18,0.8,6),
+                      B_AREA = c(450000,180000,8000,60000),
                       measures = NULL,
                       sector = 'dairy'
                       )
@@ -61,7 +61,7 @@ test <- er_meas_score(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'
                       B_LU_PRODUCTIVE_ER = c(T,T,T,T),
                       B_LU_CULTIVATED_ER = c(T,T,T,T),
                       B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland"),
-                      B_AREA = c(45,18,0.8,6),
+                      B_AREA = c(450000,180000,8000,60000),
                       measures = measures,
                       sector = c('dairy','arable')
                       )
@@ -72,12 +72,12 @@ test_that("check er_meas_scores", {
     object = test,
     expected = data.table(
       id = 1:4,
-      D_MEAS_BIO = c(0,0,10,0),
-      D_MEAS_CLIM = c(7,0,0,0),
-      D_MEAS_LAND = c(0,0,5,0),
+      D_MEAS_BIO = c(31,0,35,0),
+      D_MEAS_CLIM = c(14,0,0,0),
+      D_MEAS_LAND = c(5,0,10,0),
       D_MEAS_SOIL = c(7,0,22,0),
-      D_MEAS_WAT = c(0,0,12,0),
-      D_MEAS_TOT = c(14,0,50,0),
+      D_MEAS_WAT = c(26,0,25,0),
+      D_MEAS_TOT = c(93,0,108,0),
       reward = c(100,0,0,0)
     ),
     tolerance = 1,

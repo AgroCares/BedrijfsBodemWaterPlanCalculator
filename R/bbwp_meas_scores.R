@@ -35,7 +35,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   D_MEAS_PSW = D_MEAS_NGW = D_MEAS_PSW = effect_wb = NULL
   nc1 = nc2 = nc3 = nc4 = nc5 = nc6 = nc7 = nc8 = nc9 = nc10 = nc11 = nc12 = NULL
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = fbulbs = bulbs = NULL
-  oid = NULL
+  oid = bbwp_id = NULL
   code = value_min = value_max =  choices = NULL
   
   # Load bbwp_parms
@@ -155,6 +155,9 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
       dt[grepl('veen', B_SOILTYPE_AGR) & peat == FALSE , c(cols) := 0]
       dt[grepl('loess', B_SOILTYPE_AGR) & loess == FALSE , c(cols) := 0]
   
+      # adapt the score for slope dependent
+      dt[B_SLOPE_DEGREE <= 2 & bbwp_id == 'G21',c(cols) := 0]
+      
   # add impact score for measure per opportunity index
   dt[, D_MEAS_NGW := D_OPI_NGW * effect_ngw]
   dt[, D_MEAS_NSW := D_OPI_NSW * effect_nsw]

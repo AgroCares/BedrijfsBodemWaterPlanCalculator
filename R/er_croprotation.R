@@ -9,15 +9,11 @@
 #' @param B_LU_PRODUCTIVE_ER (boolean) does the crop fall within the ER category "productive"
 #' @param B_LU_CULTIVATED_ER (boolean) does the crop fall within the ER category "cultivated"
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
-#' @param B_CT_SOIL (numeric) the target value for soil quality conform Ecoregeling scoring  (score / ha)
-#' @param B_CT_WATER (numeric) the target value for water quality conform Ecoregeling scoring (score / ha)
-#' @param B_CT_CLIMATE (numeric) the target value for climate conform Ecoregeling scoring (score / ha)
-#' @param B_CT_BIO (numeric) the target value for biodiversity conform Ecoregeling scoring (score / ha)
-#' @param B_CT_LANDSCAPE (numeric) the target value for landscape quality conform Ecoregeling scoring (score / ha)
 #' @param B_AREA (numeric) the area of the field (m2) 
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
 #' @param measures (list) The measures planned / done per fields
-#'    
+#' @param pdf (boolean) is there a pdf needed
+#'
 #' @import data.table
 #' @import stats
 #'
@@ -26,8 +22,7 @@
 er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                             B_LU_BBWP,B_LU_BRP, 
                             B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER,B_LU_CULTIVATED_ER,
-                            B_CT_SOIL, B_CT_WATER,B_CT_CLIMATE,B_CT_BIO,B_CT_LANDSCAPE,
-                            measures, sector){
+                            measures, sector, pdf = FALSE){
   
   # add visual bindings
   . = eco_id = farmid = b_lu_brp = type = erscore = B_AREA_RR = indicator = NULL
@@ -38,7 +33,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   fr_soil = er_reward = fr_soil = reward_cf = regio_factor = euro_ha = oid = water = soil = climate = biodiversity = landscape = climate = total = NULL
   er_total = er_climate = er_soil = er_water = er_landscape = er_biodiversity = NULL
   eco_app = b_lu_arable_er = b_lu_productive_er = b_lu_cultivated_er = NULL
-  code = choices = NULL
+  code = choices = cfr = B_IDX = k = combi = appl = area_appl = bbwp_status = NULL
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
@@ -59,20 +54,38 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   checkmate::assert_logical(B_LU_ARABLE_ER,len = arg.length)
   checkmate::assert_logical(B_LU_PRODUCTIVE_ER,len = arg.length)
   checkmate::assert_logical(B_LU_CULTIVATED_ER,len = arg.length)
-  checkmate::assert_numeric(B_CT_SOIL, lower = 0, min.len = 1)
-  checkmate::assert_numeric(B_CT_WATER, lower = 0, min.len = 1)
-  checkmate::assert_numeric(B_CT_CLIMATE, lower = 0, min.len = 1)
-  checkmate::assert_numeric(B_CT_BIO, lower = 0, min.len = 1)
-  checkmate::assert_numeric(B_CT_LANDSCAPE, lower = 0, min.len = 1)
-  
+
   # check and update the measure table
   dt.meas.farm <- bbwp_check_meas(dt = measures, eco = TRUE, score = TRUE)
   dt.meas.field <- bbwp_check_meas(dt = NULL, eco = TRUE, score = FALSE)
   dt.meas.eco <- as.data.table(BBWPC::er_measures)
+  dt.meas.idx <- bbwp_check_meas(dt = NULL, eco = TRUE, score = FALSE)
     
-  # subset both measurement tables
+  # subset measurement tables # Add EB18 here Gerard
   dt.meas.field <- dt.meas.field[grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field',]
-  dt.meas.farm <- dt.meas.farm[level == 'farm']
+  dt.meas.idx <- dt.meas.idx[grepl('EB10A',eco_id) & level == 'farm']
+  dt.meas.farm <- dt.meas.farm[level == 'farm',]
+ 
+  # add crop diversification index (EB10A) to farm measures table
+  if(nrow(dt.meas.farm[grepl("EB10",eco_id)]) > 0){
+    
+    # replace EB10B or EB10C by EB10A
+    ucols <- colnames(dt.meas.idx)
+    dt.meas.farm[grepl('EB10',eco_id), c(ucols) := dt.meas.idx[,mget(ucols)]]
+    
+    # farm measures should be unique
+    dt.meas.farm <- dt.meas.farm[!duplicated(eco_id)]
+    
+    } else { 
+    
+    # add crop EB10A to farm measures  
+    dt.meas.farm <- rbind(dt.meas.farm,dt.meas.idx, use.names = TRUE, fill = TRUE)
+    dt.meas.farm[eco_id == 'EB10A', id := fifelse(is.na(id),1,id)]
+    dt.meas.farm[eco_id == 'EB10A', bbwp_status := 'Planned']
+    
+    # farm measures should be unique
+    dt.meas.farm <- dt.meas.farm[!duplicated(eco_id)]
+    } 
   
   # add bbwp table for financial reward correction factor per AER
   dt.er.reward <- as.data.table(BBWPC::er_aer_reward)
@@ -101,12 +114,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                    B_LU_ARABLE_ER = B_LU_ARABLE_ER, 
                    B_LU_PRODUCTIVE_ER = B_LU_PRODUCTIVE_ER,
                    B_LU_CULTIVATED_ER = B_LU_CULTIVATED_ER,
-                   B_AREA = B_AREA,
-                   B_CT_SOIL = B_CT_SOIL, 
-                   B_CT_WATER = B_CT_WATER,
-                   B_CT_CLIMATE = B_CT_CLIMATE,
-                   B_CT_BIO = B_CT_BIO,
-                   B_CT_LANDSCAPE = B_CT_LANDSCAPE)
+                   B_AREA = B_AREA)
   
   # add regional correction value for price
   dt <- merge(dt,dt.er.reward[,.(statcode,reward_cf = er_cf)], 
@@ -126,7 +134,8 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                     dt.meas.eco, 
                     by = c('B_LU_BRP','eco_id'),
                     all.x = TRUE)
-  dt.field[is.na(eco_app),eco_app := 0]
+  dt.field[is.na(eco_app) & !grepl('EG20',eco_id),eco_app := 0]
+  dt.field[is.na(eco_app) & grepl('EG20',eco_id), eco_app := 1]
   
     # columns with the Ecoregelingen ranks and reward
     cols <- c('er_soil','er_water','er_biodiversity','er_climate','er_landscape','er_euro_ha', 'er_euro_farm')
@@ -151,7 +160,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     # set the score to zero when not applicable for a given ER combined category
     dt.field[eco_app == 0, c(cols) := 0]
    
-    # set measures not applicable on arable, cultivated or productive land
+    # set measures not applicable on arable, cultivated or productive land (only for measures that are crop rotation based)
     dt.field[B_LU_ARABLE_ER  == TRUE & b_lu_arable_er  == 0, c(cols) := 0]
     dt.field[B_LU_PRODUCTIVE_ER == TRUE & b_lu_productive_er == 0, c(cols) := 0]
     dt.field[B_LU_CULTIVATED_ER  == TRUE & b_lu_cultivated_er == 0, c(cols) := 0]
@@ -164,7 +173,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     fs1 <- paste0('f',sector)
     fs2 <- fs0[!fs0 %in% fs1]
     dt.field[,c(fs1) := 1]
-    dt.field[,c(fs2) := 0]
+    if(length(fs2) > 0){dt.field[,c(fs2) := 0]}
     
     # estimate whether sector allows applicability
     dt.field[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs] 
@@ -179,11 +188,11 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt.field[grepl('loess', B_SOILTYPE_AGR) & loess == FALSE , c(cols) := 0]
     
     # columns to be updated
-    cols.sel <- c('er_climate','er_soil','er_water','er_landscape','er_biodiversity')
+    cols.sel <- c('er_climate','er_soil','er_water','er_landscape','er_biodiversity','er_euro_ha')
     
     # measure EB1. Cultivate rustgewas on a field
-    cols.ad1 <- c(3,3,3,0,1)
-    cols.ad2 <- c(4,4,4,1,1)
+    cols.ad1 <- c(3,3,3,0,1,0)
+    cols.ad2 <- c(4,4,4,1,1,0)
     dt.field[, er_total := er_climate + er_soil + er_water + er_landscape + er_biodiversity]
     dt.field[bbwp_id == 'G54' & er_total > 0, B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_arable]
     dt.field[bbwp_id == 'G54' & er_total > 0 & B_AREA_REL <= 20, c(cols.sel) := 0]
@@ -244,13 +253,33 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       fs1 <- paste0('f',sector)
       fs2 <- fs0[!fs0 %in% fs1]
       dt.meas.farm[,c(fs1) := 1]
-      dt.meas.farm[,c(fs2) := 0]
+      if(length(fs2)>0){dt.meas.farm[,c(fs2) := 0]}
       
       # estimate whether sector allows applicability
       dt.meas.farm[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs] 
       
       # adapt the score when measure is not applicable
       dt.meas.farm[fsector == 0, c(cols) := 0]
+      
+      # columns to be updated
+      cols.sel <- c('er_climate','er_soil','er_water','er_landscape','er_biodiversity','er_euro_farm')
+      
+      # measure EB10: Crop diversification index
+      cols.ad1 <- c(0,10,10,10,20,1000)
+      cols.ad2 <- c(0,20,20,20,40,2000)
+      dt.meas.farm[, er_total := er_climate + er_soil + er_water + er_landscape + er_biodiversity]
+      crops <- length(unique(B_LU_BRP))
+      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0, B_IDX := crops / (dt.farm$area_cultivated/10000)]
+      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX <= 0.05, c(cols.sel) := 0]
+      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.07 & B_IDX <= 0.10, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.10, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+
+      # copy dt.meas.farm to be used later
+      dt.region <- copy(dt.meas.farm)
+      
+      # farm measures do not have a field_id
+      scols <- colnames(dt.meas.farm)[grepl('^er_|bbwp_id|bbwp_conflict',colnames(dt.meas.farm))]
+      dt.meas.farm <- unique(dt.meas.farm[,mget(scols)])
       
       # multiply by (political) urgency
       dt3 <- melt(dt.meas.farm, 
@@ -271,12 +300,77 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt4[, oid := frank(-total, ties.method = 'first',na.last = 'keep'),by = c('bbwp_conflict')]
       dt4[oid > 1, c(cols) := 0]
       
+      # measure index crop diversification (score dependent on cultivated area)
+      dt4[grepl('B189|B190|B191',bbwp_id), c(cols) := lapply(.SD, function (x) x * dt.farm$area_cultivated/dt.farm$area_farm), .SDcols = cols]
+
       # add correction reward
-      cfr <- weighted.mean(x = dt$reward_cf, w = dt$B_AREA)
+      dt5 <- merge(dt.region[,c("id","bbwp_id","regio_factor")], dt[,c("id","reward_cf")], by = "id")
+      dt4 <- merge(dt4,dt5[, c("bbwp_id","regio_factor","reward_cf")], by = "bbwp_id")
+      dt4[, cfr := fifelse(regio_factor == 1, reward_cf, 1)]
+
+      # calculate the applicable area of farm level measures that apply on specific area of farm based on crop type and get score per farm
+      # farm level measures that are applicable on specific area of farm based on crop type
+      dt.ha <- dt4[grepl("B104|B107|B115|B116|B117|B118|B124|B125|B126|B127|B128|B129|B130|B133|B134|B135|B136", bbwp_id),]
       
-      # sum total score (score per hectare)
-      dt.farm.score <- dt4[,lapply(.SD,sum), .SDcols = cols]
-      dt.farm.reward <- dt4[,list(er_reward = cfr * (max(euro_ha[total>0],0) + max(euro_farm[total>0],0) / dt.farm$area_farm))]
+      # check whether measures to be calculated are present
+      if(nrow(dt.ha) > 0){
+        
+      # get eco_id of measures and merge with measures taken
+      dt.measures <- as.data.table(BBWPC::bbwp_measures)
+      dt.measures <- dt.measures[, c("bbwp_id","eco_id")]
+      dt.ha <- merge(dt.ha,
+                     dt.measures, by = "bbwp_id")
+      
+      # get eco_id's of measures
+      eco.dt <- dt.ha[,c("eco_id")]
+     
+      # get crop types on farm and corresponding area
+      crop.dt <- dt[, c("B_LU_BRP","B_AREA")]
+     
+      # get all combinations of B_LU_BRP and eco_id of farm measures taken
+      combi.dt <- setkey(crop.dt[,c(k=1,.SD)],k)[eco.dt[,c(k=1,.SD)],allow.cartesian=TRUE][,k:=NULL]
+      
+      # combine columns to be used for check on applicability
+      combi.dt[, combi := paste0(B_LU_BRP,eco_id)]
+      dt.meas.eco[, combi := paste0(B_LU_BRP,eco_id)]
+      
+      # set appl to 1 when combination of eco_id and crop exists
+      appl.dt <- combi.dt[, appl := fifelse(combi %in% dt.meas.eco$combi,1,0)]
+      
+      # sum up area to which the measure applies per measure
+      appl.dt <- appl.dt[appl ==1 , area_appl := sum(B_AREA)/10000, by = "eco_id"]
+      
+      # get per measures the area to which the measure applies
+      appl.dt <- appl.dt[!is.na(area_appl), c("eco_id","area_appl")]
+      appl.dt <- unique(appl.dt)
+      
+      # merge applicable area into original table
+      dt.ha <- merge(dt.ha,appl.dt, by = "eco_id", all.x = T)
+      
+      # when measure has no applicable area, set area_appl to 0 and remove eco_id column
+      dt.ha[, area_appl := fifelse(is.na(area_appl),0,area_appl)][,eco_id := NULL]
+      
+      # select cols
+      #cols <- c('biodiversity', 'climate', 'landscape', 'soil','water','total','euro_ha')
+      
+      # get score and euro per farm for measures with specific application area (in score/farm)
+      dt.ha[, c(cols) := lapply(.SD, function(x) x * area_appl), .SDcols = cols]
+      dt.ha <- dt.ha[!is.na(euro_ha), euro_farm := euro_ha * area_appl][,euro_ha := 0]
+      
+      # remove area_appl column 
+      dt.ha <- dt.ha[, area_appl := NULL]
+      
+      # rbind dt.ha with remaining measures of dt4
+      dt4 <- rbind(dt.ha,dt4[!grepl("B104|B107|B115|B116|B117|B118|B124|B125|B126|B127|B128|B129|B130|B133|B134|B135|B136", bbwp_id)])
+      
+    }
+      
+      # sum total score (score per farm to score per ha)
+      #cols <- c('biodiversity', 'climate', 'landscape', 'soil','water','total')
+      dt6 <- dt4[,lapply(.SD,sum), .SDcols = cols]
+      dt.farm.score <- dt6[, c(cols):= lapply(.SD, function (x) x / (dt.farm$area_farm/10000)) , .SDcols = cols]
+      dt.farm.reward <- dt4[,list(er_reward = cfr * ( max(euro_ha[total>0],0) + max(euro_farm[total>0],0) / (dt.farm$area_farm/10000) ))][1]
+      
       
     } else {
       
@@ -288,14 +382,25 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                                   total = 0)
       dt.farm.reward <- data.table(er_reward = 0)
     }
+  
+    # total score for farm measures and crop rotation
+    out <- dt.farm.score + dt.field.score
+    out[,farmid := 1]
+    out[, total := biodiversity + climate + landscape + soil + water]
+    out[,S_ER_REWARD := dt.farm.reward + dt.field.reward]
+    setcolorder(out,'farmid') 
     
-    
-  # total score for farm measures and crop rotation
-  out <- dt.farm.score + dt.field.score
-  out[,farmid := 1]
-  out[, total := biodiversity + climate + landscape + soil + water]
-  out[,S_ER_REWARD := dt.farm.reward + dt.field.reward]
-  setcolorder(out,'farmid')
+    # data table with measures applied on field and farm level and corresponding scores (in score/ha) to be used for pdf 
+    if(pdf == TRUE){
+      
+      pdf <- er_pdf(croprotation = TRUE,
+                    measurescores = FALSE,
+                    dt.field.measures = dt2,
+                    dt.farm.measures = dt4, 
+                    B_AREA = B_AREA)
+      out <- list(out = out, pdf = pdf)
+
+    }
   
   # return the Ecoregelingen Score based on Crop Rotation and Farm Measures
   # output has units score / ha and euro/ha

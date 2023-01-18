@@ -1,6 +1,172 @@
-# BBWPC v0.9.2
+
+# BBWPC v0.10.19 (18-01-23)
+
 ## Fixed
 * Fixes error in the equation to calculate D_RISK_PSW
+
+# BBWPC v.0.10.18
+
+## Changed
+* ecoregeling norms for landscape and water (on peat soil) were changed from 0 to 0.05 in `er_scoring`
+* in `er_farm_aim` the aims for landscape and water (on peat soils) got aims based on the new norms and were not set to 0 anymore
+* output of `er_main` now also includes values for `$farm$s_er_landscape_bronze` and `$farm$s_er_landscape_silver`
+* threshold values for bronze, silver and gold were changed into 15, 22.5 and 40 respectively in `er_farm_aim` 
+* the `er_measures` table was extended from 7720 rows to 10457 rows
+
+# BBPC v.0.10.17
+
+## Changed
+* the documentation of internal bbwp tables is updated in `bbwp_tables` 
+
+# BBPC v.0.10.16
+
+## Fixed
+* update version of pandex package and `bbwp_parms`  
+
+# BBPC v.0.10.15
+
+## Removed
+* Removed upper boundary in checkmates for S_ER scores
+
+# BBPC v.0.10.14
+
+## Fixed
+* total of farm measures was calculated as weighted mean and is now added together instead for pdf.5 in `ecoregeling` pdf output
+* the total score per field in pdf.6 in the `ecoregeling` pdf output is now only based on field level measures and not on both field and farm level measures anymore
+
+# BBPC v.0.10.13
+
+## Fixed
+* farm measures were duplicated when BBWP-service combines field and farm measures. Duplicates are removed, issue #BBWP-23
+* `s_er_tot` in farm score of the er output is set to `s_er_farm_tot`
+* total area in pdf.5 in `er_pdf` is updated
+* avoid warnings in fs2 corrections in `er_meas_scores`
+
+# BBPC v.0.10.12
+
+## Fixed
+* farm-measure EB10 gives an error when no measures are given on field level, issue #BBWP-24
+
+# BBPC v.0.10.11
+
+## Fixed
+* URL of measures BWP9 does not work and seems not to exist, URL of measure BWP9 therefore removed from database.
+
+# BBPC v.0.10.10
+
+## Changed
+* the columns `waterkwaliteit`, `bodemkwaliteit`, `klimaat`, `biodiversiteit`, `landschap` and `categories` were updated in the internal database `measures.csv`.
+* update values in internal table `eco_brp.csv`.
+* maximum score for `s_er_landscape` in `er_main` is now also equal to aim for golden medal instead of 1.
+
+# BBPC v.0.10.9
+
+## Changed
+* function `er_croprotation` calculates score for farm level measures that apply to measure specific area based on the specific area instead of the total farm area
+
+# BBPC v.0.10.8
+
+## Added
+* function er_pdf to prepare all output needed for the ER farm report
+* functions `er_croprotation`,`er_main`, `er_meas_rank`,`er_meas_scores`, `er_fieldscores` updated to give desired output for the ER farm report. New argument `pdf` (boolean) is added. By default set to FALSE.
+
+# BBPC v.0.10.7
+## Changed
+* maximum scores in `er_main` are now equal to aim for golden medal
+* the threshold for landscape and water on peat soil is set to 0 in `er_farm_aim` 
+* differentiation of costs based on economic region for farm level measures now depends on boolean region factor in the function `er_croprotation`
+* the score for crop diversification index is now automatically rewarded in `er_croprotation` based on the index, while the measure is still selectable in the measures list 
+* in `er_meas_score` measures EG13 and EG14 are now independent of crop type and relative area is based on total area ditch 
+* in `er_meas_score` measures for non-productive area have changed from farm to field level and are corrected on relative area
+* in `er_meas_score` scores for different medailles are updated 
+* bbwp_measures datatable is updated (see additions below)
+
+## Added
+* five columns were added to the internal database `measures.csv` to select the ER theme to which the measures applies most, namely `waterkwaliteit`, `bodemkwaliteit`, `klimaat`, `biodiversiteit` en `landschap`.
+* one column categories is added representing all categories that apply for a given measure
+
+# BBWPC v.0.10.6
+## Fixed
+* correction on calculation of `S_ER_REWARD` in `er_croprotation`, costs of farm level measures per farm are now per hectare instead of per m2 so the costs of farm level measures per ha and farm level measures per farm are now added up correctly 
+* correction on brp codes to which the measures apply in internal table `er_measures`
+
+# BBWPC v.0.10.5
+## Changed
+* changed name of `TOTAL` into `FARM_TOT` in input dt for `er_medal` in order to get the merge with aims right
+
+## Fixed
+* `s_er_water` in `er_main` and `er_opi` are no longer showing score for soil but for water now
+* correction on calculation of `s_er_costs_silver` in `er_farm_aim`
+* `S_ER_FARM_TOT` in `er_opi` is now the sum of the five eco theme scores
+
+# BBWPC v0.10.4
+## Added
+* the function `ecoregeling` in er_main gives an additional output object besides `farm` and `field`, named `farm_tresholds`
+* farm thresholds are given for 7 aims of Ecoregeling, differentiated for level `bronze`, `silver` or `gold`
+
+## Changed
+* thresholds for costs changed from absolute values to percentages in `out` of `ecoregeling`
+* field scores in output of `er_opi` have maximum levels similar to maximum levels of farm scores now
+
+# BBWPC v0.10.3
+
+## Changed
+* Set maxima for the five eco scores to 15 and for `s_er_farm_tot` to 50.
+* Set maximum for `s_er_costs` to 175 and convert to percentage between 0 and 100
+* Set aim for landscape to 1 and set aim for water to 1 in case all fields have `B_SOILTYPE_AGR` "veen".
+* Update `test-er`
+
+# BBWPC v0.10.2
+## Fixed
+* correction on calculation of `S_ER_FARM_SCORE`: now averaged over the five eco themes
+* the eco scores or eco aims are set to 0.001 when these are 0, to prevent outputs of NA's.
+
+## Added
+* argument `thresholds` to `er_farm_aim` for medals 
+* `s_er_tot` to the field output
+* aim for total farm score and costs as threshold for medals
+
+## Changed
+* maximum costs is set to 250
+* changed order of output from `ecoregeling` in `er_main`
+* update tests
+
+# BBWPC v0.10.1
+## Fixed
+* reward is now corresponding with the medal and a fixed value for bronze, silver and gold
+* minor error in test data `test-er`
+
+## Added
+* visible binding `s_er_reward` added to `er_main`
+
+## Changed
+* the field score is set equal to the farm score for Ecoregeling method
+* input arguments `B_CT_??` are removed from `er_crop_rotation`,`er_field_score`
+* input argument `E_ER_TOT` is removed from `er_farm_score`
+* adjust targets for landscape in the final scoring in `er_medal` and `er_opi`; there is no minimum needed.
+* the indicator score is set to the contribution of single fields to the farm score. The function `er_field_score` givers therefore the actual score per hectare, and not the relative score given target.
+* measures table is updated (some levels (field vs farm) have been altered)
+
+# BBWPC v0.10.0
+## Fixed
+* test csv files removed from package directory and dev directory
+* threshold of scores for medals are set to zero for indicators climate and water (only on peat soils)
+* the absolute total score is used for medal check instead of the integrative total score 
+* no "terras" measures are recommended for fields where B_SLOPE_DEGREE is less than 2\% (fix in `bbwp_meas_rank`)
+
+## Added
+* function `er_opi` to estimate the contribution of single fields to the farm score
+* exception for measure G20 is added to `er_meas_rank`, `er_meas_score` and `er_crop_rotation`.
+
+## Changed
+* the field score is set equal to the farm score for Ecoregeling method
+* input arguments `B_CT_??` are removed from `er_crop_rotation`,`er_field_score`
+* input argument `E_ER_TOT` is removed from `er_farm_score`
+* adjust targets for landscape in the final scoring in `er_medal` and `er_opi`; there is no minimum needed.
+* the indicator score is set to the contribution of single fields to the farm score. The function `er_field_score` givers therefore the actual score per hectare, and not the relative score given target.
+* measures table is updated (some levels (field vs farm) have been altered)
+
+>>>>>>> main
 
 # BBWPC v0.9.1
 ## Added

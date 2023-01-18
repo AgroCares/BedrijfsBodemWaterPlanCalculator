@@ -120,11 +120,6 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, M_
                              B_LU_CULTIVATED_ER = dt$B_LU_CULTIVATED_ER,
                              B_AER_CBS = dt$B_AER_CBS,
                              B_AREA = dt$B_AREA,
-                             B_CT_SOIL = dt$B_CT_SOIL,
-                             B_CT_WATER = dt$B_CT_WATER,
-                             B_CT_CLIMATE = dt$B_CT_CLIMATE,
-                             B_CT_BIO = dt$B_CT_BIO,
-                             B_CT_LANDSCAPE = dt$B_CT_LANDSCAPE,
                              measures = measures,
                              sector = sector)
   
@@ -139,7 +134,16 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, M_
                 dt.meas.eco, 
                 by = c('B_LU_BRP','eco_id'),
                 all.x = TRUE)
-    dt[is.na(eco_app),eco_app := 0]
+    
+    # remove crop measures when current crop is already used for farm score
+    dt[!is.na(eco_app) & grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id), eco_app := 0]
+    
+    # add crop rotation measures when current crop is not applicable
+    dt[is.na(eco_app) & grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id), eco_app := 1]
+    
+    # ensure that EG20 is always applicable
+    dt[is.na(eco_app) & !grepl('EG20',eco_id),eco_app := 0]
+    dt[is.na(eco_app) & grepl('EG20',eco_id), eco_app := 1]
     
   # rank is zero when measures are not applicable given the crop type
   
@@ -167,12 +171,12 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, M_
     dt[eco_app == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     
     # lower the score  when not applicable as arable/productive/cultivated measure
-    dt[B_LU_ARABLE_ER  == TRUE & b_lu_arable_er  == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_PRODUCTIVE_ER == TRUE & b_lu_productive_er == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_CULTIVATED_ER  == TRUE & b_lu_cultivated_er == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_ARABLE_ER  == FALSE & b_lu_arable_er  == 1, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_PRODUCTIVE_ER == FALSE & b_lu_productive_er == 1, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_CULTIVATED_ER  == FALSE & b_lu_cultivated_er == 1, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_ARABLE_ER  == TRUE & b_lu_arable_er  == 0 & !grepl('EG20',eco_id), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_PRODUCTIVE_ER == TRUE & b_lu_productive_er == 0 & !grepl('EG20',eco_id), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_CULTIVATED_ER  == TRUE & b_lu_cultivated_er == 0 & !grepl('EG20',eco_id), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_ARABLE_ER  == FALSE & b_lu_arable_er  == 1 & !grepl('EG20',eco_id), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_PRODUCTIVE_ER == FALSE & b_lu_productive_er == 1 & !grepl('EG20',eco_id), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+    dt[B_LU_CULTIVATED_ER  == FALSE & b_lu_cultivated_er == 1 & !grepl('EG20',eco_id), c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     
     # lower the score when the sector limits the applicability of measures
     
@@ -218,7 +222,7 @@ er_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, M_
     dt[, er_soil := er_soil * pmax(0.1,1 - dt.farm$soil/B_CT_SOIL)]
     dt[, er_climate := er_climate * pmax(0.1,1 - dt.farm$climate / B_CT_CLIMATE)]
     dt[, er_biodiversity := er_biodiversity * pmax(0.1,1 - dt.farm$biodiversity / B_CT_BIO)]
-    dt[, er_landscape := er_landscape * pmax(0.1,1 - dt.farm$landscape/B_CT_LANDSCAPE)]
+    dt[, er_landscape := er_landscape * pmax(0.1,1 - dt.farm$landscape/max(B_CT_LANDSCAPE,0.001))]
     dt[, er_reward := dt.farm$S_ER_REWARD]
     
     # Calculate total measurement score given the distance to target

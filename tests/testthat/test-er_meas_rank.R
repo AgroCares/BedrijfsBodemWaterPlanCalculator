@@ -9,7 +9,7 @@ require(testthat)
   B_LU_PRODUCTIVE_ER = c(T,T,T,T)
   B_LU_CULTIVATED_ER = c(T,T,T,T)
   B_GWL_CLASS = rep('GtIII',4)
-  B_AREA = c(45,18,0.8,6)
+  B_AREA = c(450000,180000,8000,60000)
   B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland")
   B_SLOPE_DEGREE = rep(2.5,4)
   M_DRAIN = rep(TRUE,4)
@@ -37,7 +37,7 @@ test <- er_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
                      B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland"),
                      M_DRAIN = TRUE,
                      D_SA_W = 0.5,
-                     B_AREA = c(45,18,0.8,6),
+                     B_AREA = c(450000,180000,8000,60000),
                      B_CT_SOIL = B_CT_SOIL, 
                      B_CT_WATER = B_CT_WATER,
                      B_CT_CLIMATE = B_CT_CLIMATE,
@@ -64,7 +64,7 @@ test_that("check er_meas_rank", {
 test_that("check er_meas_rank", {
   expect_equal(
     object = test$top_er_tot[c(1,4,9,15)],
-    expected = c("B162",'B114','B166','G20'),
+    expected = c("B183",'B139','B145','B145'),
     tolerance = 0.01)
 })
 
@@ -90,7 +90,7 @@ test <- er_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
                      B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12","Westelijk Holland"),
                      M_DRAIN = TRUE,
                      D_SA_W = 0.5,
-                     B_AREA = c(45,18,0.8,6),
+                     B_AREA = c(450000,180000,8000,60000),
                      B_CT_SOIL = B_CT_SOIL, 
                      B_CT_WATER = B_CT_WATER,
                      B_CT_CLIMATE = B_CT_CLIMATE,
@@ -117,7 +117,7 @@ test_that("check er_meas_rank", {
 test_that("check er_meas_rank", {
   expect_equal(
     object = test$top_er_tot[c(1,4,8,15)],
-    expected = c("B162", "B114", "B145", "G20"),
+    expected = c("B183", "B166", "B149", "B163"),
     tolerance = 0.01)
 })
 
