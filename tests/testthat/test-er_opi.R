@@ -47,7 +47,7 @@ test_that("check er_opi", {
 test_that("check er_opi", {
   expect_equal(
     test$dt.farm.score,
-    expected = 77,
+    expected = 70,
     tolerance = 0.01)
 })
 
