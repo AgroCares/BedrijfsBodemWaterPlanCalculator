@@ -1,3 +1,8 @@
+
+# BBWPC v0.10.19 2023-01-18
+## Fixed
+* Fixes error in the equation to calculate D_RISK_PSW
+
 # BBWPC v.0.10.18
 
 ## Changed
@@ -159,7 +164,6 @@
 * adjust targets for landscape in the final scoring in `er_medal` and `er_opi`; there is no minimum needed.
 * the indicator score is set to the contribution of single fields to the farm score. The function `er_field_score` givers therefore the actual score per hectare, and not the relative score given target.
 * measures table is updated (some levels (field vs farm) have been altered)
-
 
 # BBWPC v0.9.1
 ## Added
