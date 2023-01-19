@@ -166,8 +166,6 @@
 * the indicator score is set to the contribution of single fields to the farm score. The function `er_field_score` givers therefore the actual score per hectare, and not the relative score given target.
 * measures table is updated (some levels (field vs farm) have been altered)
 
->>>>>>> main
-
 # BBWPC v0.9.1
 ## Added
 * Added table with BBWPC variable from pandex to standardise parameter checks
