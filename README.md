@@ -1,7 +1,7 @@
 # BedrijfsBodemWaterPlanCalculator (BBWPC)
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![Codecov test coverage](https://codecov.io/gh/AgroCares/BedrijfsBodemWaterPlanCalculator/branch/main/graph/badge.svg)](https://app.codecov.io/gh/AgroCares/BedrijfsBodemWaterPlanCalculator?branch=main)
 [![R-CMD-check](https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/workflows/R-CMD-check/badge.svg)](https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/actions)
 <!-- badges: end -->
