@@ -36,5 +36,4 @@ Suggests:
     patchwork,
     covr,
     sf
-VignetteBuilder: knitr
 Config/testthat/edition: 3
