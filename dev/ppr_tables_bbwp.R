@@ -63,7 +63,7 @@ require(data.table);library(usethis)
     bbwp_measures[biodiversiteit == 1 & is.na(categories), categories := "biodiversiteit"]
     bbwp_measures[landschap == 1 & !is.na(categories), categories := paste0(categories,"||landschap"),by = .I]
     bbwp_measures[landschap == 1 & is.na(categories), categories := "landschap"]
-    bbwp_measures[!is.na(categories), categories := paste0(categories,"||alles")]
+    bbwp_measures[!is.na(eco_id), categories := paste0(categories,"||Ecoregeling_alles")]
     
     # add the bbwp category
     bbwp_measures[!is.na(categories),categories := paste0(categories,"||",category),by = .I]
