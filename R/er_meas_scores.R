@@ -229,7 +229,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     cols.ad2 <- c(2,0,2,6,10,0)
     dt[grepl('^EG20',eco_id),B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_farm]
     dt[grepl('^EG20',eco_id) & B_AREA_REL < 1 & er_total > 0, c(cols.sel) := 0]
-    dt[grepl('^EG20',eco_id) & B_AREA_REL > 3 & B_AREA_REL < 5 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    dt[grepl('^EG20',eco_id) & B_AREA_REL > 3 & B_AREA_REL <= 5 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
     dt[grepl('^EG20',eco_id) & B_AREA_REL > 5 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
     
     # measure EG13. inzet baggerspuit (check na update maatregelentabel, EG13 kan 1 keer per perceel voorkomen)
