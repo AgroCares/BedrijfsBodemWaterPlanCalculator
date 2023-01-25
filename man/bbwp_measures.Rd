@@ -5,7 +5,7 @@
 \alias{bbwp_measures}
 \title{Agronomic measures that can be applied}
 \format{
-A data.table with 169 rows and 70 columns:
+A data.table with 157 rows and 70 columns:
 \describe{
   \item{bbwp_id}{The unique BBWP measure id based on the van Gerven number of the measure, related to the study by Van Gerven et al. (2020)}
   \item{nr_mok}{A mock up code for bbwp measure id}

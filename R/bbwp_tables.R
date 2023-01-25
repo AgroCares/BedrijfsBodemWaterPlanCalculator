@@ -2,7 +2,7 @@
 #' 
 #' This table contains a series of agronomic measures, their applicability and effectiveness for multiple ecosystem services
 #' 
-#' @format A data.table with 169 rows and 70 columns:
+#' @format A data.table with 157 rows and 70 columns:
 #' \describe{
 #'   \item{bbwp_id}{The unique BBWP measure id based on the van Gerven number of the measure, related to the study by Van Gerven et al. (2020)}
 #'   \item{nr_mok}{A mock up code for bbwp measure id}
@@ -111,7 +111,7 @@
 #' 
 #' This table contains the crops for which the Ecoregeling method counts scores and rewards
 #' 
-#' @format A data.table with 11519 rows and 3 columns:
+#' @format A data.table with 10456 rows and 3 columns:
 #' \describe{
 #'   \item{eco_id}{The Ecoregeling measure id}
 #'   \item{B_lU_BRP}{The Dutch crop id from the BRP}

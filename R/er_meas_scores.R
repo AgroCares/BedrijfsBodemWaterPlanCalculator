@@ -103,8 +103,8 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
               dt.meas.eco, 
               by = c('B_LU_BRP','eco_id'),
               all.x = TRUE)
-  dt[is.na(eco_app) & !grepl('EG20|EG13|EG14',eco_id),eco_app := 0]
-  dt[is.na(eco_app) & grepl('EG20|EG13|EG14',eco_id), eco_app := 1]
+  dt[is.na(eco_app) & !grepl('EG13|EG14',eco_id),eco_app := 0]
+  dt[is.na(eco_app) & grepl('EG13|EG14',eco_id), eco_app := 1]
   
   # measures that apply to crops cultivated after main crop (vanggewassen en groenbemesters) and FAB-stroken are applicable on all main crops 
   dt[grepl("EB17|EB10|EB23", eco_id) & grepl("gras_tijdelijk|rustgewas|rooivrucht|groenten|bollensierteelt|boomfruitteelt|mais|eiwitgewas",B_LU_BBWP), eco_app := 1]
@@ -223,18 +223,14 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt[grepl('^EG11',eco_id) & B_AREA_REL > 25 & B_AREA_REL <= 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
     dt[grepl('^EG11',eco_id) & B_AREA_REL > 50 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
     
-    # measure EG20. Not productive land # Does not work in BBWP now # farmers indicate percentage themselves
+    # measure EG20. Not productive land (does not take into account GLMC requirements)
     # reken uit per perceel
     cols.ad1 <- c(1,0,1,3,5,0)
     cols.ad2 <- c(2,0,2,6,10,0)
-    dt[,area_fr := 0]
-    dt[grepl('^EG20A',eco_id), area_fr := 0.04 + 0.03]
-    dt[grepl('^EG20B',eco_id), area_fr := 0.04 + 0.05]
-    dt[grepl('^EG20C',eco_id), area_fr := 0.04 + 1.00]
-    dt[grepl('^EG20',eco_id),B_AREA_REL := sum(B_AREA * area_fr) * 100 / dt.farm$area_farm]
-    dt[grepl('^EG20',eco_id) & B_AREA_REL < 5 & er_total > 0, c(cols.sel) := 0]
-    dt[grepl('^EG20',eco_id) & B_AREA_REL > 7 & B_AREA_REL < 9 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)] 
-    dt[grepl('^EG20',eco_id) & B_AREA_REL > 9 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+    dt[grepl('^EG20',eco_id),B_AREA_REL := sum(B_AREA) * 100 / dt.farm$area_farm]
+    dt[grepl('^EG20',eco_id) & B_AREA_REL < 1 & er_total > 0, c(cols.sel) := 0]
+    dt[grepl('^EG20',eco_id) & B_AREA_REL > 3 & B_AREA_REL <= 5 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+    dt[grepl('^EG20',eco_id) & B_AREA_REL > 5 & er_total > 0, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
     
     # measure EG13. inzet baggerspuit (check na update maatregelentabel, EG13 kan 1 keer per perceel voorkomen)
     cols.ad1 <- c(0,0,5,0,5,0)
