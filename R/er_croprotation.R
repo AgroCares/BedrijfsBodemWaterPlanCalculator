@@ -134,8 +134,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                     dt.meas.eco, 
                     by = c('B_LU_BRP','eco_id'),
                     all.x = TRUE)
-  dt.field[is.na(eco_app) & !grepl('EG20',eco_id),eco_app := 0]
-  dt.field[is.na(eco_app) & grepl('EG20',eco_id), eco_app := 1]
+  dt.field[is.na(eco_app),eco_app := 0]
   
     # columns with the Ecoregelingen ranks and reward
     cols <- c('er_soil','er_water','er_biodiversity','er_climate','er_landscape','er_euro_ha', 'er_euro_farm')
@@ -268,7 +267,11 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       cols.ad1 <- c(0,10,10,10,20,1000)
       cols.ad2 <- c(0,20,20,20,40,2000)
       dt.meas.farm[, er_total := er_climate + er_soil + er_water + er_landscape + er_biodiversity]
-      crops <- length(unique(B_LU_BRP))
+      
+        # select only the unique crops that count for measure EB10
+        crops <- unique(B_LU_BRP)
+        crops <- sum(crops %in% dt.meas.eco[grepl('EB10',eco_id),B_LU_BRP], na.rm=TRUE) 
+        
       dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0, B_IDX := crops / (dt.farm$area_cultivated/10000)]
       dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX <= 0.05, c(cols.sel) := 0]
       dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.07 & B_IDX <= 0.10, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
@@ -310,7 +313,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
 
       # calculate the applicable area of farm level measures that apply on specific area of farm based on crop type and get score per farm
       # farm level measures that are applicable on specific area of farm based on crop type
-      dt.ha <- dt4[grepl("B104|B107|B115|B116|B117|B118|B124|B125|B126|B127|B128|B129|B130|B133|B134|B135|B136", bbwp_id),]
+      dt.ha <- dt4[grepl("B115|B116|B117|B118|B124|B125|B126|B127|B128|B129|B130|B133|B134|B135|B136", bbwp_id),]
       
       # check whether measures to be calculated are present
       if(nrow(dt.ha) > 0){
@@ -361,7 +364,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt.ha <- dt.ha[, area_appl := NULL]
       
       # rbind dt.ha with remaining measures of dt4
-      dt4 <- rbind(dt.ha,dt4[!grepl("B104|B107|B115|B116|B117|B118|B124|B125|B126|B127|B128|B129|B130|B133|B134|B135|B136", bbwp_id)])
+      dt4 <- rbind(dt.ha,dt4[!grepl("B115|B116|B117|B118|B124|B125|B126|B127|B128|B129|B130|B133|B134|B135|B136", bbwp_id)])
       
     }
       

@@ -8,7 +8,7 @@ test <- bbwp_check_meas(dt = NULL,eco = FALSE, score = FALSE)
 test_that("check bbwp_check_meas", {
   expect_equal(
     object = dim(test),
-    expected = c(169,65),
+    expected = c(157,65),
     tolerance = 0.01)
 })
 
@@ -19,7 +19,7 @@ test <- bbwp_check_meas(dt = NULL,eco = TRUE, score = FALSE)
 test_that("check bbwp_check_meas", {
   expect_equal(
     object = dim(test),
-    expected = c(94,65),
+    expected = c(82,65),
     tolerance = 0.01)
 })
 
@@ -58,7 +58,7 @@ test <- bbwp_check_meas(dt = measures,eco = TRUE, score = FALSE)
 test_that("check bbwp_check_meas", {
   expect_equal(
     object = dim(test),
-    expected = c(95,65),
+    expected = c(83,65),
     tolerance = 0.01)
 })
 

@@ -74,7 +74,7 @@ test_that("check er_meas_scores", {
       id = 1:4,
       D_MEAS_BIO = c(31,0,35,0),
       D_MEAS_CLIM = c(14,0,0,0),
-      D_MEAS_LAND = c(5,0,10,0),
+      D_MEAS_LAND = c(21,0,10,0),
       D_MEAS_SOIL = c(7,0,22,0),
       D_MEAS_WAT = c(26,0,25,0),
       D_MEAS_TOT = c(93,0,108,0),
