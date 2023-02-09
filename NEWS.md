@@ -1,3 +1,8 @@
+# BBWPC v.1.0.1 2023-02-09
+
+## Changed
+* add url to description in `bbwp_measures` for ER measures only, youtrack #BBWP-33
+
 # BBWPC v.1.0.0 2023-01-20
 
 ## Changed
