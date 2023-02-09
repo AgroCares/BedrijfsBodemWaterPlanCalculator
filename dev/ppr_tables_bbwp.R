@@ -69,6 +69,12 @@ require(data.table);library(usethis)
     bbwp_measures[!is.na(categories),categories := paste0(categories,"||",category),by = .I]
     bbwp_measures[is.na(categories),categories := category]
     
+    # add the site link to the summary description (seen when hovering the i in the application)
+    bbwp_measures[!is.na(eco_id),description := paste0(description,' (Meer informatie vind u hier: ',url,')'),by = .I]
+    
+    # when description is ntb, replace by summary
+    bbwp_measures[description == 'ntb', description := summary]
+    
   # save measures as bbwp table
   use_data(bbwp_measures, overwrite = TRUE)
   
