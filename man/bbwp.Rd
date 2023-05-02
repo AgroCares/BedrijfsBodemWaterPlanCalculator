@@ -118,7 +118,7 @@ Estimate the potential to contribute to agronomic and environmental challenges i
 A high BBWP score is indicative for the number of opportunities to improve soil quality and land use.
 }
 \details{
-B_SLOPE respresents the slope of the field as a boolean variable (is the slope bigger than 2\% or not) and was used in previous versions of BBWP. This has been replaced by B_SLOPE_DEGREE.
-LSW is by default a data.table with LSW properties.Sending only oow_id is sufficient to retreive the LSW properties from BBWP internal package table.
-If needed, one can also send in a sf object to retreive the LSW properties.
+B_SLOPE represents the slope of the field as a Boolean variable (is the slope bigger than 2\% or not) and was used in previous versions of BBWP. This has been replaced by B_SLOPE_DEGREE.
+LSW is by default a data.table with LSW properties.Sending only oow_id is sufficient to retrieve the LSW properties from BBWP internal package table.
+If needed, one can also send in a sf object to retrieve the LSW properties.
 }
