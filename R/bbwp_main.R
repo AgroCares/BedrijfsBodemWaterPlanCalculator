@@ -36,7 +36,7 @@
 #' @param a_lat (numeric) Latitude of the field (required if no LSW is submitted)
 #' @param a_lon (numeric) Longitude of the field (required if no LSW is submitted)
 #' @param measures (data.table) the measures planned / done per fields
-#' @param sector (string) a vector with the farm type given the agricultural sector (options: options: 'diary', 'arable', 'tree_nursery', 'bulbs')
+#' @param sector (string) a vector with the farm type given the agricultural sector (options: options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
 #' @param output (string) a vector specifying the output type of the function. Options: scores, measures 
 #' 
 #' @details 
