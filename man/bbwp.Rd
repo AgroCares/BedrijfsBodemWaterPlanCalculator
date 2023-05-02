@@ -109,7 +109,7 @@ bbwp(
 
 \item{measures}{(data.table) the measures planned / done per fields}
 
-\item{sector}{(string) a vector with the farm type given the agricultural sector (options: options: 'diary', 'arable', 'tree_nursery', 'bulbs')}
+\item{sector}{(string) a vector with the farm type given the agricultural sector (options: options: 'dairy', 'arable', 'tree_nursery', 'bulbs')}
 
 \item{output}{(string) a vector specifying the output type of the function. Options: scores, measures}
 }
