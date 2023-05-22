@@ -51,7 +51,7 @@ bbwp_meas_score(
 
 \item{measures}{(data.table) the measures planned / done per fields}
 
-\item{sector}{(string) a vector with the farm type given the agricultural sector (options: 'diary', 'arable', 'tree_nursery', 'bulbs')}
+\item{sector}{(string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')}
 }
 \description{
 Estimate the score for agronomic measures taken to improve soil and water management on agricultural farms.
