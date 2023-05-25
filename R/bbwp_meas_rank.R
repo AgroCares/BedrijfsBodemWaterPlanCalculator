@@ -87,6 +87,9 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     value = NA_real_
   )
   
+  # add sector for regional studies
+  if(length(sector)==nrow(dt)){dt[,sector := sector]}
+  
   # do check op Gt
   dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS, B_AER_CBS = B_AER_CBS)]
   
@@ -141,6 +144,16 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     dt[,c(fs1) := 1]
     if(length(fs2) >= 1){ dt[,c(fs2) := 0] }
     
+    if('sector' %in% colnames(dt)){
+      
+      dt[,c('fdairy','farable','ftree_nursery','fbulbs') := 1]
+      dt[sector == 'dairy', c('ftree_nursery','farable','fbulbs') := 0]
+      dt[sector == 'arable', c('ftree_nursery','fdairy','fbulbs') := 0]
+      dt[sector == 'bulbs', c('ftree_nursery','fdairy','farable') := 0]
+      dt[sector == 'tree_nursery', c('fbulbs','fdairy','farable') := 0]
+    
+    }
+
     # estimate whether sector allows applicability
     dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs]
     
