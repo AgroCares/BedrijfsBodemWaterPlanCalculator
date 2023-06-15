@@ -23,13 +23,13 @@
 #' @param D_PSW_PCC (numeric) The relative score of P levels in soil solution for P loss to surface water
 #' @param D_PSW_PSG (numeric) The relative score of P saturation degree for P loss to surface water
 #' @param D_PSW_PRET (numeric) The relative score of P retention capacity for P loss to surface water
-#' @param D_NUE_WRI (numeric) The relative score of soil water stress for improved eficiency of N and P inputs
-#' @param D_NUE_PBI (numeric) The relative score of P availability for improved eficiency of N and P inputs
-#' @param D_NUE_WDRI (numeric) The relative score of drought stress for improved eficiency of N and P inputs
-#' @param D_NUE_NLV (numeric) The relative score of N mineralization for improved eficiency of N and P inputs
-#' @param D_WUE_WWRI (numeric) The relative score of soil wetness stress for improved eficiency of water
-#' @param D_WUE_WDRI (numeric) The relative score of drought stress for improved eficiency of water
-#' @param D_WUE_WHC (numeric) The relative score of drought stress for improved eficiency of water
+#' @param D_NUE_WRI (numeric) The relative score of soil water stress for improved efficiency of N and P inputs
+#' @param D_NUE_PBI (numeric) The relative score of P availability for improved efficiency of N and P inputs
+#' @param D_NUE_WDRI (numeric) The relative score of drought stress for improved efficiency of N and P inputs
+#' @param D_NUE_NLV (numeric) The relative score of N mineralization for improved efficiency of N and P inputs
+#' @param D_WUE_WWRI (numeric) The relative score of soil wetness stress for improved efficiency of water
+#' @param D_WUE_WDRI (numeric) The relative score of drought stress for improved efficiency of water
+#' @param D_WUE_WHC (numeric) The relative score of drought stress for improved efficiency of water
 #' 
 #' @import data.table
 #' @import OBIC

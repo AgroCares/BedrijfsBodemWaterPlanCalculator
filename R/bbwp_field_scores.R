@@ -22,7 +22,7 @@
 #' @param B_CT_PSW_MAX (numeric) the max critical target for P reduction loss (kg P / ha)
 #' @param B_CT_NSW_MAX (numeric) the max critical target for N reduction loss (kg N / ha)
 #' @param measures (data.table) the measures planned / done per fields
-#' @param sector (string) a vector with the farm type given the agricultural sector (options: 'melkveehouderij','akkerbouw','vollegrondsgroente','boomteelt','bollen','veehouderij','overig')
+#' @param sector (string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
 #' 
 #'   
 #' @import data.table

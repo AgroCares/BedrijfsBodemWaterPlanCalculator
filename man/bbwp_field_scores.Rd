@@ -69,7 +69,7 @@ bbwp_field_scores(
 
 \item{measures}{(data.table) the measures planned / done per fields}
 
-\item{sector}{(string) a vector with the farm type given the agricultural sector (options: 'melkveehouderij','akkerbouw','vollegrondsgroente','boomteelt','bollen','veehouderij','overig')}
+\item{sector}{(string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')}
 }
 \description{
 Estimate the potential to contribute to agronomic and environmental challenges in a region
