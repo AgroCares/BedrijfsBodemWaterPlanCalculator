@@ -176,11 +176,11 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   dt[,D_OPI_WB :=  pmax(0,1 - pmax(0, D_OPI_WB - D_MEAS_WB))]
   
   # Convert form 0-1 to 0-100 and reverse score
-  dt[,D_OPI_NGW := 100-(100 * D_OPI_NGW)]
-  dt[,D_OPI_NSW := 100-(100 * D_OPI_NSW)]
-  dt[,D_OPI_PSW := 100-(100 * D_OPI_PSW)]
-  dt[,D_OPI_NUE := 100-(100 * D_OPI_NUE)]
-  dt[,D_OPI_WB :=  100-(100 * D_OPI_WB)]
+  dt[,D_OPI_NGW := 100 * D_OPI_NGW]
+  dt[,D_OPI_NSW := 100 * D_OPI_NSW]
+  dt[,D_OPI_PSW := 100 * D_OPI_PSW]
+  dt[,D_OPI_NUE := 100 * D_OPI_NUE]
+  dt[,D_OPI_WB :=  100 * D_OPI_WB]
   
   dt[,D_OPI_TOT := (D_OPI_NGW * wf(D_OPI_NGW, type="score") + 
                     D_OPI_NSW * wf(D_OPI_NSW, type="score") + 
