@@ -159,11 +159,11 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
       dt[B_SLOPE_DEGREE <= 2 & bbwp_id == 'G21',c(cols) := 0]
       
   # add impact score for measure per opportunity index
-  dt[, D_MEAS_NGW := D_OPI_NGW * effect_ngw]
-  dt[, D_MEAS_NSW := D_OPI_NSW * effect_nsw]
-  dt[, D_MEAS_PSW := D_OPI_PSW * effect_psw]
-  dt[, D_MEAS_NUE := D_OPI_NUE * effect_nue]
-  dt[, D_MEAS_WB := D_OPI_WB * effect_wb]
+  dt[, D_MEAS_NGW := (100-D_OPI_NGW) * effect_ngw]
+  dt[, D_MEAS_NSW := (100-D_OPI_NSW) * effect_nsw]
+  dt[, D_MEAS_PSW := (100-D_OPI_PSW) * effect_psw]
+  dt[, D_MEAS_NUE := (100-D_OPI_NUE) * effect_nue]
+  dt[, D_MEAS_WB := (100-D_OPI_WB) * effect_wb]
   
   # columns to be adapted given applicability
   scols <- c('D_MEAS_NGW','D_MEAS_NSW','D_MEAS_PSW','D_MEAS_NUE','D_MEAS_WB','D_MEAS_TOT')
