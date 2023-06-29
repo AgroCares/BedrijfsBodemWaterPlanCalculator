@@ -139,6 +139,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
     # calculate the total score per indicator 
     if(nrow(dt.measures) > 0){
       
+      
       # calculate
       dt.meas.impact <- bbwp_meas_score(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR, 
                                         B_LU_BBWP = dt$B_LU_BBWP,
@@ -175,7 +176,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   dt[,D_OPI_NUE := pmax(0,1 - pmax(0, D_OPI_NUE - D_MEAS_NUE))]
   dt[,D_OPI_WB :=  pmax(0,1 - pmax(0, D_OPI_WB - D_MEAS_WB))]
   
-  # Convert form 0-1 to 0-100 and reverse score
+  # Convert form 0-1 to 0-100 
   dt[,D_OPI_NGW := 100 * D_OPI_NGW]
   dt[,D_OPI_NSW := 100 * D_OPI_NSW]
   dt[,D_OPI_PSW := 100 * D_OPI_PSW]
