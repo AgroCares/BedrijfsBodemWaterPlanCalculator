@@ -175,25 +175,22 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   dt[,D_OPI_WB :=  pmax(0,1 - pmax(0, D_OPI_WB - D_MEAS_WB))]
   
   # Convert form 0-1 to 0-100 
-  dt[,D_OPI_NGW := 100 * D_OPI_NGW]
-  dt[,D_OPI_NSW := 100 * D_OPI_NSW]
-  dt[,D_OPI_PSW := 100 * D_OPI_PSW]
-  dt[,D_OPI_NUE := 100 * D_OPI_NUE]
-  dt[,D_OPI_WB :=  100 * D_OPI_WB]
+  dt[,S_BBWP_NGW := 100 * D_OPI_NGW]
+  dt[,S_BBWP_NSW := 100 * D_OPI_NSW]
+  dt[,S_BBWP_PSW := 100 * D_OPI_PSW]
+  dt[,S_BBWP_NUE := 100 * D_OPI_NUE]
+  dt[,S_BBWP_TOT := 100 * D_OPI_WB]
   
-  dt[,D_OPI_TOT := (D_OPI_NGW * wf(D_OPI_NGW, type="score") + 
-                    D_OPI_NSW * wf(D_OPI_NSW, type="score") + 
-                    D_OPI_PSW * wf(D_OPI_PSW, type="score") + 
-                    D_OPI_NUE * wf(D_OPI_NUE, type="score") + 
-                    D_OPI_WB * wf(D_OPI_WB, type="score")) /
-       (wf(D_OPI_NGW, type="score") + wf(D_OPI_NSW, type="score") +  wf(D_OPI_PSW, type="score") +  wf(D_OPI_NUE, type="score") +  wf(D_OPI_WB, type="score"))]
+  dt[,D_OPI_TOT := (S_BBWP_NGW * wf(S_BBWP_NGW, type="score") + 
+                      S_BBWP_NSW * wf(S_BBWP_NSW, type="score") + 
+                      S_BBWP_PSW * wf(S_BBWP_PSW, type="score") + 
+                      S_BBWP_NUE * wf(S_BBWP_NUE, type="score") + 
+                      S_BBWP_WB * wf(S_BBWP_WB, type="score")) /
+       (wf(S_BBWP_NGW, type="score") + wf(S_BBWP_NSW, type="score") +  wf(S_BBWP_PSW, type="score") +  
+          wf(S_BBWP_NUE, type="score") +  wf(S_BBWP_WB, type="score"))]
   
   # order the fields
   setorder(dt, id)
-  
-  # rename the opportunity indexes to the final score
-  setnames(dt,c('D_OPI_NGW','D_OPI_NSW','D_OPI_PSW','D_OPI_NUE','D_OPI_WB','D_OPI_TOT'),
-           c('S_BBWP_NGW','S_BBWP_NSW','S_BBWP_PSW','S_BBWP_NUE','S_BBWP_WB','S_BBWP_TOT'))
   
   # extract value
   value <- dt[,mget(c('S_BBWP_NGW','S_BBWP_NSW','S_BBWP_PSW','S_BBWP_NUE','S_BBWP_WB','S_BBWP_TOT'))]
