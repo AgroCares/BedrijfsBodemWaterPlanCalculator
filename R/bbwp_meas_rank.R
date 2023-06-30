@@ -137,22 +137,22 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     dt[B_LU_BBWP == 'eiwitgewas' & nc12 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     
   # set the score to zero when the measure is not applicable
-    
-    # add columns for the sector to which the farms belong
-    fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
-    fs1 <- paste0('f',sector)
-    fs2 <- fs0[!fs0 %in% fs1]
-    dt[,c(fs1) := 1]
-    if(length(fs2) >= 1){ dt[,c(fs2) := 0] }
-    
-    if('sector' %in% colnames(dt)){
+  if('sector' %in% colnames(dt)){
       
+      # sector correction for desk studies where sector is available / added per field
       dt[,c('fdairy','farable','ftree_nursery','fbulbs') := 1]
       dt[sector == 'dairy', c('ftree_nursery','farable','fbulbs') := 0]
       dt[sector == 'arable', c('ftree_nursery','fdairy','fbulbs') := 0]
       dt[sector == 'bulbs', c('ftree_nursery','fdairy','farable') := 0]
       dt[sector == 'tree_nursery', c('fbulbs','fdairy','farable') := 0]
     
+    } else {
+      
+      fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
+      fs1 <- paste0('f',sector)
+      fs2 <- fs0[!fs0 %in% fs1]
+      dt[,c(fs1) := 1]
+      if(length(fs2) >= 1){ dt[,c(fs2) := 0] }
     }
 
     # estimate whether sector allows applicability
