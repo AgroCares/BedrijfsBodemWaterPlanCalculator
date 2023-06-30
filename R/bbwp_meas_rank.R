@@ -11,11 +11,11 @@
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
-#' @param D_OPI_NGW (numeric) the opportunity index (risk x impact) for nitrate leaching to groundwater given field properties
-#' @param D_OPI_NSW (numeric) the opportunity index (risk x impact) for nitrate leaching and runoff to surface water given field properties
-#' @param D_OPI_PSW (numeric) the opportunity index (risk x impact) for phosphorus leaching and runoff to surface water given field properties
-#' @param D_OPI_NUE (numeric) the opportunity index (risk x impact) to improve the efficiency of nitrogen and phosphorus fertilizer use given field properties
-#' @param D_OPI_WB (numeric) the opportunity index (risk x impact) to improve the potential to buffer and store water and efficiently use water for plant growth given field properties
+#' @param S_BBWP_NGW (numeric) the BBWP score for nitrate leaching to groundwater given field properties (0-100, with 100 equals targets met)
+#' @param S_BBWP_NSW (numeric) the BBWP score for nitrate leaching and runoff to surface water given field properties (0-100, with 100 equals targets met)
+#' @param S_BBWP_PSW (numeric) the BBWP score for phosphorus leaching and runoff to surface water given field properties (0-100, with 100 equals targets met)
+#' @param S_BBWP_NUE (numeric) the BBWP score for potential improvement of the efficiency of nitrogen and phosphorus fertilizer use given field properties (0-100, with 100 equals targets met)
+#' @param S_BBWP_WB (numeric) the BBWP score for potential improvement of the potential to buffer and store water and efficiently use water for plant growth given field properties (0-100, with 100 equals targets met)
 #' @param measures (data.table) table with the properties of the available measures
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'diary', 'arable', 'tree_nursery', 'bulbs')
 #' 
@@ -26,7 +26,7 @@
 # rank the measures given their effectiveness to improve the sustainability of the farm
 bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE, B_LU_BBWP,B_AER_CBS,
                            M_DRAIN, D_SA_W,
-                           D_OPI_NGW, D_OPI_NSW, D_OPI_PSW, D_OPI_NUE, D_OPI_WB,
+                           S_BBWP_NGW, S_BBWP_NSW, S_BBWP_PSW, S_BBWP_NUE, S_BBWP_WB,
                            measures, sector){
   
   # add visual bindings
@@ -42,8 +42,8 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
   bbwp_parms <- BBWPC::bbwp_parms
   
   # check length of the inputs
-  arg.length <- max(length(D_OPI_NGW), length(D_OPI_NSW), length(D_OPI_PSW), length(D_OPI_NUE),
-                    length(D_OPI_WB), length(B_SOILTYPE_AGR), length(B_GWL_CLASS), length(M_DRAIN),
+  arg.length <- max(length(S_BBWP_NGW), length(S_BBWP_NSW), length(S_BBWP_PSW), length(S_BBWP_NUE),
+                    length(S_BBWP_WB), length(B_SOILTYPE_AGR), length(B_GWL_CLASS), length(M_DRAIN),
                     length(A_P_SG), length(B_SLOPE_DEGREE), length(B_LU_BBWP),length(B_AER_CBS),
                     length(D_SA_W))
   
@@ -58,11 +58,11 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
   checkmate::assert_numeric(A_P_SG, lower = bbwp_parms[code == "A_P_SG", value_min], upper = bbwp_parms[code == "A_P_SG", value_max],len = arg.length)
   checkmate::assert_numeric(B_SLOPE_DEGREE,lower = bbwp_parms[code == "B_SLOPE_DEGREE", value_min], upper = bbwp_parms[code == "B_SLOPE_DEGREE", value_max],len = arg.length)
   checkmate::assert_numeric(D_SA_W, lower = 0, upper = 100,len = arg.length)
-  checkmate::assert_numeric(D_OPI_NGW, lower = 0, upper = 100,len = arg.length)
-  checkmate::assert_numeric(D_OPI_NSW, lower = 0, upper = 100,len = arg.length)
-  checkmate::assert_numeric(D_OPI_PSW, lower = 0, upper = 100,len = arg.length)
-  checkmate::assert_numeric(D_OPI_NUE, lower = 0, upper = 100,len = arg.length)
-  checkmate::assert_numeric(D_OPI_WB, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(S_BBWP_NGW, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(S_BBWP_NSW, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(S_BBWP_PSW, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(S_BBWP_NUE, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(S_BBWP_WB, lower = 0, upper = 100,len = arg.length)
   checkmate::assert_subset(sector, choices = c('dairy', 'arable', 'tree_nursery', 'bulbs'))
   
   # load, check and update the measures database
@@ -79,11 +79,11 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     B_AER_CBS = B_AER_CBS,
     M_DRAIN = M_DRAIN,
     D_SA_W = D_SA_W,
-    D_OPI_NGW = D_OPI_NGW,
-    D_OPI_NSW = D_OPI_NSW,
-    D_OPI_PSW = D_OPI_PSW,
-    D_OPI_NUE = D_OPI_NUE,
-    D_OPI_WB = D_OPI_WB,
+    S_BBWP_NGW = S_BBWP_NGW,
+    S_BBWP_NSW = S_BBWP_NSW,
+    S_BBWP_PSW = S_BBWP_PSW,
+    S_BBWP_NUE = S_BBWP_NUE,
+    S_BBWP_WB = S_BBWP_WB,
     value = NA_real_
   )
   
@@ -171,11 +171,11 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     dt[B_SLOPE_DEGREE <= 2 & bbwp_id == 'G21',c(cols) := 0]
     
     # add impact score for measure per opportunity index
-    dt[, D_MEAS_NGW := (100-D_OPI_NGW) * effect_ngw]
-    dt[, D_MEAS_NSW := (100-D_OPI_NSW) * effect_nsw]
-    dt[, D_MEAS_PSW := (100-D_OPI_PSW) * effect_psw]
-    dt[, D_MEAS_NUE := (100-D_OPI_NUE) * effect_nue]
-    dt[, D_MEAS_WB := (100-D_OPI_WB) * effect_wb]
+    dt[, D_MEAS_NGW := (100-S_BBWP_NGW) * effect_ngw]
+    dt[, D_MEAS_NSW := (100-S_BBWP_NSW) * effect_nsw]
+    dt[, D_MEAS_PSW := (100-S_BBWP_PSW) * effect_psw]
+    dt[, D_MEAS_NUE := (100-S_BBWP_NUE) * effect_nue]
+    dt[, D_MEAS_WB := (100-S_BBWP_WB) * effect_wb]
   
   
   # Calculate total measure score
