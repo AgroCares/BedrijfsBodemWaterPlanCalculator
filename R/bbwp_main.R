@@ -166,7 +166,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
   # return output when preferred measures are requested
   if(output == 'measures'){
     
-    # Retreive the best measures to improve
+    # Retreive the best measures to improve. note that here the BBWP field score is input (varying 0 and 100) where 100 equals "targets met"
     dt.meas <- bbwp_meas_rank(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                               B_GWL_CLASS = B_GWL_CLASS,
                               A_P_SG = A_P_SG,
@@ -175,11 +175,11 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                               B_AER_CBS = B_AER_CBS,
                               M_DRAIN = M_DRAIN,
                               D_SA_W = D_SA_W,
-                              D_OPI_NGW = dt.fields$S_BBWP_NGW,
-                              D_OPI_NSW = dt.fields$S_BBWP_NSW,
-                              D_OPI_PSW = dt.fields$S_BBWP_PSW,
-                              D_OPI_NUE = dt.fields$S_BBWP_NUE,
-                              D_OPI_WB = dt.fields$S_BBWP_WB,
+                              S_BBWP_NGW = dt.fields$S_BBWP_NGW,
+                              S_BBWP_NSW = dt.fields$S_BBWP_NSW,
+                              S_BBWP_PSW = dt.fields$S_BBWP_PSW,
+                              S_BBWP_NUE = dt.fields$S_BBWP_NUE,
+                              S_BBWP_WB = dt.fields$S_BBWP_WB,
                               measures = NULL,
                               sector = sector
                               )
