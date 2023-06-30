@@ -124,15 +124,13 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
     # correction for need for increased nutrient use efficiency
     dt[, cfnue := 0.5]
   
-  # calculate the individual opportunity indexes
-  dt[,D_OPI_NGW := OBIC::evaluate_logistic(D_RISK_NGW, b=7, x0=0.5 - cfngw * .1, v=.7)]
-  dt[,D_OPI_NSW := OBIC::evaluate_logistic(D_RISK_NSW, b=7, x0=0.5 - cfnsw * .1, v=.7)]
-  dt[,D_OPI_PSW := OBIC::evaluate_logistic(D_RISK_PSW, b=7, x0=0.5 - cfpsw * .1, v=.7)]
-  dt[,D_OPI_NUE := OBIC::evaluate_logistic(D_RISK_NUE, b=7, x0=0.5 - cfnue * .1, v=.7)]
-  dt[,D_OPI_WB := OBIC::evaluate_logistic(D_RISK_WB, b=7, x0=0.5 - cfwb * .1, v=.7)]
-  
-  # calculate the change in opportunity indexes given the measures taken
-  
+    # calculate the individual opportunity indexes
+    dt[,D_OPI_NGW := (0.5 + cfngw/2) * OBIC::evaluate_logistic(D_RISK_NGW, b=6, x0=0.4, v=.7)]
+    dt[,D_OPI_NSW := (0.5 + cfnsw/2) * OBIC::evaluate_logistic(D_RISK_NSW, b=6, x0=0.4, v=.7)]
+    dt[,D_OPI_PSW := (0.5 + cfpsw/2) * OBIC::evaluate_logistic(D_RISK_PSW, b=6, x0=0.4, v=.7)]
+    dt[,D_OPI_NUE := (0.5 + cfnue/2) * OBIC::evaluate_logistic(D_RISK_NUE, b=6, x0=0.4, v=.7)]
+    dt[,D_OPI_WB := (0.5 + cfwb/2) * OBIC::evaluate_logistic(D_RISK_WB, b=6, x0=0.4, v=.7)]
+    
     # column names for impact of measures on the five indexes (do not change order)
     mcols <- c('D_MEAS_NGW', 'D_MEAS_NSW', 'D_MEAS_PSW', 'D_MEAS_NUE', 'D_MEAS_WB', 'D_MEAS_TOT')
     
