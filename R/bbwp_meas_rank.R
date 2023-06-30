@@ -112,7 +112,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     dt[! B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_high]
     
     # Add bonus points for grassland
-    dt[B_LU_BBWP %in% c(1,2), effect_ngw := effect_ngw + ngw_grassland]
+    dt[B_LU_BBWP %in% c('gras_permanent','gras_tijdelijk'), effect_ngw := effect_ngw + ngw_grassland]
   
   # set scores to zero when measures are not applicable given the crop type
   
