@@ -107,7 +107,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
     dt[A_P_SG >= 75, effect_psw := effect_psw + psw_psg_high]
     dt[B_SLOPE_DEGREE <= 2, effect_psw := effect_psw + psw_noslope]
     dt[B_LU_BBWP == 6, effect_psw := effect_psw + psw_bulbs]
-    dt[M_DRAIN == TRUE, effect_psw := effect_psw + effect_nsw]
+    dt[M_DRAIN == TRUE, effect_psw := effect_psw + nsw_drains]
     
     # Add bonus points for nsw
     dt[M_DRAIN == TRUE, effect_nsw := effect_nsw + nsw_drains]
