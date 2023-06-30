@@ -138,7 +138,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
     if(nrow(dt.measures) > 0){
       
       
-      # calculate
+      # calculate (using the opportunity index as weighing, where 1 means high risk = high opportunity for measures to be taken)
       dt.meas.impact <- bbwp_meas_score(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR, 
                                         B_LU_BBWP = dt$B_LU_BBWP,
                                         B_GWL_CLASS = dt$B_GWL_CLASS,
