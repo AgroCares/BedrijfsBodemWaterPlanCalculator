@@ -13,11 +13,11 @@ bbwp_meas_rank(
   B_AER_CBS,
   M_DRAIN,
   D_SA_W,
-  D_OPI_NGW,
-  D_OPI_NSW,
-  D_OPI_PSW,
-  D_OPI_NUE,
-  D_OPI_WB,
+  S_BBWP_NGW,
+  S_BBWP_NSW,
+  S_BBWP_PSW,
+  S_BBWP_NUE,
+  S_BBWP_WB,
   measures,
   sector
 )
@@ -39,15 +39,15 @@ bbwp_meas_rank(
 
 \item{D_SA_W}{(numeric) The wet perimeter index of the field, fraction that field is surrounded by water}
 
-\item{D_OPI_NGW}{(numeric) the opportunity index (risk x impact) for nitrate leaching to groundwater given field properties}
+\item{S_BBWP_NGW}{(numeric) the BBWP score for nitrate leaching to groundwater given field properties (0-100, with 100 equals targets met)}
 
-\item{D_OPI_NSW}{(numeric) the opportunity index (risk x impact) for nitrate leaching and runoff to surface water given field properties}
+\item{S_BBWP_NSW}{(numeric) the BBWP score for nitrate leaching and runoff to surface water given field properties (0-100, with 100 equals targets met)}
 
-\item{D_OPI_PSW}{(numeric) the opportunity index (risk x impact) for phosphorus leaching and runoff to surface water given field properties}
+\item{S_BBWP_PSW}{(numeric) the BBWP score for phosphorus leaching and runoff to surface water given field properties (0-100, with 100 equals targets met)}
 
-\item{D_OPI_NUE}{(numeric) the opportunity index (risk x impact) to improve the efficiency of nitrogen and phosphorus fertilizer use given field properties}
+\item{S_BBWP_NUE}{(numeric) the BBWP score for potential improvement of the efficiency of nitrogen and phosphorus fertilizer use given field properties (0-100, with 100 equals targets met)}
 
-\item{D_OPI_WB}{(numeric) the opportunity index (risk x impact) to improve the potential to buffer and store water and efficiently use water for plant growth given field properties}
+\item{S_BBWP_WB}{(numeric) the BBWP score for potential improvement of the potential to buffer and store water and efficiently use water for plant growth given field properties (0-100, with 100 equals targets met)}
 
 \item{measures}{(data.table) table with the properties of the available measures}
 

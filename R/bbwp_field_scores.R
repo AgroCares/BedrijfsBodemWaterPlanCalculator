@@ -39,6 +39,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   D_OPI_NGW = D_OPI_NSW = D_OPI_PSW = D_OPI_NUE = D_OPI_WB = NULL
   D_MEAS_NGW = D_MEAS_NSW = D_MEAS_PSW = D_MEAS_NUE = D_OPI_TOT = NULL 
   D_MEAS_WB = D_MES_PSW = D_MEAS_NGW = D_MEAS_PSW = effect_Wb = id = NULL
+  S_BBWP_NGW = S_BBWP_NSW = S_BBWP_PSW = S_BBWP_NUE = S_BBWP_WB = S_BBWP_TOT = NULL
   code = value_min = value_max = choices = NULL
   
   # Load bbwp_parms
@@ -112,10 +113,10 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
     dt[,cfwb := fifelse(B_AREA_DROUGHT, 1, 0.5)]
     
     # correction when field is in a region with high target for N load reduction surface water
-    dt[,cfnsw := B_CT_NSW / B_CT_NSW_MAX]
+    dt[,cfnsw := pmax(0,pmin(1,B_CT_NSW / B_CT_NSW_MAX))]
     
     # correction when field is in a region with high target for P load reduction surface water
-    dt[,cfpsw := B_CT_PSW / B_CT_PSW_MAX]
+    dt[,cfpsw := pmax(0,pmin(1,B_CT_PSW / B_CT_PSW_MAX))]
     
     # replace to max critical limit when no information is ready
     dt[is.na(cfpsw), cfpsw := 1]
@@ -179,9 +180,9 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   dt[,S_BBWP_NSW := 100 * D_OPI_NSW]
   dt[,S_BBWP_PSW := 100 * D_OPI_PSW]
   dt[,S_BBWP_NUE := 100 * D_OPI_NUE]
-  dt[,S_BBWP_TOT := 100 * D_OPI_WB]
+  dt[,S_BBWP_WB := 100 * D_OPI_WB]
   
-  dt[,D_OPI_TOT := (S_BBWP_NGW * wf(S_BBWP_NGW, type="score") + 
+  dt[,S_BBWP_TOT := (S_BBWP_NGW * wf(S_BBWP_NGW, type="score") + 
                       S_BBWP_NSW * wf(S_BBWP_NSW, type="score") + 
                       S_BBWP_PSW * wf(S_BBWP_PSW, type="score") + 
                       S_BBWP_NUE * wf(S_BBWP_NUE, type="score") + 

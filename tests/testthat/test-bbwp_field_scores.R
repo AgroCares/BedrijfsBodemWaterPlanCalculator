@@ -52,12 +52,12 @@ test_that("check bbwp_field_scores", {
   expect_equal(
     object = test,
     expected = data.table(
-      S_BBWP_NGW = c(99, 58, 2),
-      S_BBWP_NSW = c(99, 0, 0),
-      S_BBWP_PSW = c(99, 0, 0),
-      S_BBWP_NUE = c(99, 53, 3),
-      S_BBWP_WB = c(98, 53, 2),
-      S_BBWP_TOT = c(99, 16,1)
+      S_BBWP_NGW = c(98,67,4),
+      S_BBWP_NSW = c(99,46,4),
+      S_BBWP_PSW = c(99,46,4),
+      S_BBWP_NUE = c(98,60,28),
+      S_BBWP_WB = c(97,60,4),
+      S_BBWP_TOT = c(98,55,6)
     ),
     tolerance = 0.01)
 })
@@ -102,12 +102,12 @@ test_that("check bbwp_field_scores", {
   expect_equal(
     object = test,
     expected = data.table(
-      S_BBWP_NGW = c(99,58,57),
-      S_BBWP_NSW = c(100,0,38),
-      S_BBWP_PSW = c(99,0,12),
-      S_BBWP_NUE = c(100,53,100),
-      S_BBWP_WB = c(99,53,25),
-      S_BBWP_TOT = c(99,16,35)
+      S_BBWP_NGW = c(99,67,58),
+      S_BBWP_NSW = c(99,46,40),
+      S_BBWP_PSW = c(99,46,16),
+      S_BBWP_NUE = c(99,60,100),
+      S_BBWP_WB = c(98,60,26),
+      S_BBWP_TOT = c(99,55,37)
     ),
     tolerance = 0.01)
 })
