@@ -1,3 +1,15 @@
+# BBWPC v1.1.1 2023-07-01
+
+## Fixed
+* grassland impacts on nitrogen losses 
+* update D_PSW_SLOPE check in `bbwp_field_indicators`
+
+## Changed
+* added drainage effect for effect P measures in `bbwp_rank_measures` and `bbwp_measure_score`
+* impact of regional goals and objectives is increased in `bbwp_fieldscores` 
+* arguments of `bbwp_meas_rank` are updated (scores are required rather than opi)
+* update of a few effect scores in `bbwp_measures`
+
 # BBWPC v.1.0.1 2023-05-19
 
 ## Fixed
@@ -332,17 +344,6 @@
 * remove duplicated NA outputs in `bbwp_meas_rank` when D_OPI is zero
 * add pmax on D_OPI in `bbwp_field_scores`
 * include `bbwp_check_meas` in all bbwp_functions to load, check and update the measures input data.table
-
-# BBWPC v0.4.0
-## Fixed
-* grassland impacts on nitrogen losses 
-* update D_PSW_SLOPE check in `bbwp_field_indicators`
-
-## Changed
-* added drainage effect for effect P measures in `bbwp_rank_measures` and `bbwp_measure_score`
-* impact of regional goals and objectives is increased in `bbwp_fieldscores` 
-* arguments of `bbwp_meas_rank` are updated (scores are required rather than opi)
-* update of a few effect scores in `bbwp_measures`
 
 # BBWPC v0.3.1
 ## Added
