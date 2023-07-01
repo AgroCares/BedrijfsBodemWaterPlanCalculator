@@ -1,4 +1,4 @@
-# BBWPC v1.1.1 2023-07-01
+# BBWPC v1.1.0 2023-07-01
 
 ## Fixed
 * grassland impacts on nitrogen losses, #BBWP-47 
@@ -9,6 +9,8 @@
 * impact of regional goals and objectives is increased in `bbwp_fieldscores`, #BBWP-45
 * arguments of `bbwp_meas_rank` are updated (scores are required rather than opi)
 * update of a few effect scores in `bbwp_measures`, #BBWP-47
+* set pmin and pmax on derivation regional targets in `bbwp_field_scores` for nsw and psw
+* update tests for `bbwp`,` bbwp_field_scores` and `bbwp_rank_measures` 
 
 # BBWPC v.1.0.1 2023-05-19
 
