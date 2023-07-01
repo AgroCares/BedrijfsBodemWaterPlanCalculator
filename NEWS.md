@@ -1,14 +1,14 @@
 # BBWPC v1.1.1 2023-07-01
 
 ## Fixed
-* grassland impacts on nitrogen losses 
-* update D_PSW_SLOPE check in `bbwp_field_indicators`
+* grassland impacts on nitrogen losses, #BBWP-47 
+* update D_PSW_SLOPE check in `bbwp_field_indicators`, #BBWP-47
 
 ## Changed
-* added drainage effect for effect P measures in `bbwp_rank_measures` and `bbwp_measure_score`
-* impact of regional goals and objectives is increased in `bbwp_fieldscores` 
+* added drainage effect for effect P measures in `bbwp_rank_measures` and `bbwp_measure_score`, #BBWP-47
+* impact of regional goals and objectives is increased in `bbwp_fieldscores`, #BBWP-45
 * arguments of `bbwp_meas_rank` are updated (scores are required rather than opi)
-* update of a few effect scores in `bbwp_measures`
+* update of a few effect scores in `bbwp_measures`, #BBWP-47
 
 # BBWPC v.1.0.1 2023-05-19
 
