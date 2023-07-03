@@ -40,7 +40,8 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
                                   D_NSW_SCR,D_NSW_GWT,D_NSW_RO,D_NSW_SLOPE, D_NSW_WS,D_NSW_NLV,
                                   D_PSW_SCR,D_PSW_GWT,D_PSW_RO,D_PSW_SLOPE,D_PSW_WS,D_PSW_PCC,D_PSW_PSG,D_PSW_PRET,
                                   D_NUE_WRI,D_NUE_PBI,D_NUE_WDRI,D_NUE_NLV,
-                                  D_WUE_WWRI,D_WUE_WDRI,D_WUE_WHC){
+                                  D_WUE_WWRI,D_WUE_WDRI,D_WUE_WHC,
+                                  B_SOILTYPE_AGR, D_SA_W, B_GWL_CLASS){
   
   D_RISK_NGW = D_RISK_NSW = D_RISK_PSW = D_RISK_NUE = D_RISK_WB = id = NULL
   
@@ -50,7 +51,7 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
     length(D_NSW_SCR),length(D_NSW_GWT),length(D_NSW_RO),length(D_NSW_WS),length(D_NSW_NLV),length(D_NSW_SLOPE),
     length(D_PSW_SCR),length(D_PSW_GWT),length(D_PSW_RO),length(D_PSW_SLOPE),length(D_PSW_WS),length(D_PSW_PCC),length(D_PSW_PSG),length(D_PSW_PRET),
     length(D_NUE_WRI),length(D_NUE_PBI),length(D_NUE_WDRI),length(D_NUE_NLV),
-    length(D_WUE_WWRI),length(D_WUE_WDRI),length(D_WUE_WHC)
+    length(D_WUE_WWRI),length(D_WUE_WDRI),length(D_WUE_WHC),length(B_SOILTYPE_AGR),length(D_SA_W),length(B_GWL_CLASS)
   )
   
   # add checks on input
@@ -118,8 +119,14 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
        (2 * wf(D_PSW_SCR) + wf(D_PSW_GWT) + 2 * wf(D_PSW_RO) + wf(D_PSW_SLOPE) + 2 * wf(D_PSW_WS) + wf(D_PSW_PCC) + wf(D_PSW_PSG) + wf(D_PSW_PRET))]
   
   # minimize risks when there are no ditches around (wet surrounding fraction < 0.2)
-  dt[D_PSW_WS <= 0.2 & D_PSW_SLOPE < 1,D_RISK_PSW := 0.01]
-  dt[D_NSW_WS <= 0.2 & D_PSW_SLOPE < 1,D_RISK_NSW := 0.01]
+  dt[D_SA_W <= 0.2  & D_PSW_SLOPE < 1,D_RISK_PSW := 0.1]
+  dt[D_SA_W <= 0.2  & D_PSW_SLOPE < 1,D_RISK_NSW := 0.1]
+  dt[D_SA_W <= 0.1  & D_PSW_SLOPE < 1,D_RISK_PSW := 0.01]
+  dt[D_SA_W <= 0.1  & D_PSW_SLOPE < 1,D_RISK_NSW := 0.01]
+  
+  # lower the risk for nitrate leaching in both wet soils and peat soils
+  dt[B_GWL_CLASS %in% c('GtI','GtII','GtIII'), D_RISK_NGW:= 0.5 * D_RISK_NGW]
+  dt[B_SOILTYPE_AGR %in% c("veen"), D_RISK_NGW:= 0.1* D_RISK_NGW]
   
   # integrate all relative field risk indicators into one for indictor for N and P efficiency of inputs
   dt[, D_RISK_NUE := (wf(D_NUE_WRI) * D_NUE_WRI + 2 * wf(D_NUE_PBI) * D_NUE_PBI + wf(D_NUE_NLV) * D_NUE_NLV + wf(D_NUE_WDRI) * D_NUE_WDRI) /
