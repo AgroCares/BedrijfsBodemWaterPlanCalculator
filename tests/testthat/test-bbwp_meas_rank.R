@@ -105,4 +105,109 @@ test_that("check bbwp_meas_rank", {
     tolerance = 0.01)
 })
 
+# run example without any measures taken and a high risk for N and P loss to surface water
+test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
+                       B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
+                       B_GWL_CLASS = 'GtIII', 
+                       A_P_SG = rep(55,4) ,
+                       B_SLOPE_DEGREE = rep(2.5,4),
+                       B_AER_CBS = c('LG05','LG14','LG03','LG02'),
+                       M_DRAIN = rep(TRUE,4),
+                       D_SA_W = rep(.9,4),
+                       S_BBWP_NGW  = c(99,99,99,99), 
+                       S_BBWP_NSW = c(10,10,10,10),  
+                       S_BBWP_PSW = c(10,10,10,10),  
+                       S_BBWP_NUE = c(99,99,99,99),   
+                       S_BBWP_WB = c(99,99,99,99), 
+                       measures = NULL,
+                       sector = 'dairy'
+)
 
+test_that("check bbwp_meas_rank", {
+  expect_equal(
+    object = test[id==1,top_bbwp_tot],
+    expected = c("G19" , "G17",  "G16", "G80" , 'G68'),
+    tolerance = 0.01)
+})
+
+# run example without any measures taken and a high risk for N leaching
+test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
+                       B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
+                       B_GWL_CLASS = 'GtIII', 
+                       A_P_SG = rep(55,4) ,
+                       B_SLOPE_DEGREE = rep(2.5,4),
+                       B_AER_CBS = c('LG05','LG14','LG03','LG02'),
+                       M_DRAIN = rep(TRUE,4),
+                       D_SA_W = rep(.9,4),
+                       S_BBWP_NGW  = c(10,10,10,10), 
+                       S_BBWP_NSW = c(99,99,99,99),  
+                       S_BBWP_PSW = c(99,99,99,99),  
+                       S_BBWP_NUE = c(99,99,99,99),   
+                       S_BBWP_WB = c(99,99,99,99), 
+                       measures = NULL,
+                       sector = 'dairy'
+)
+
+test_that("check bbwp_meas_rank", {
+  expect_equal(
+    object = test[id==1,top_bbwp_tot],
+    expected = c('B131','G65','G27','G25','G12BWP10'),
+    tolerance = 0.01)
+})
+
+
+# run example without any measures taken and a high risk for water retention and supply
+test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
+                       B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
+                       B_GWL_CLASS = 'GtIII', 
+                       A_P_SG = rep(55,4) ,
+                       B_SLOPE_DEGREE = rep(2.5,4),
+                       B_AER_CBS = c('LG05','LG14','LG03','LG02'),
+                       M_DRAIN = rep(TRUE,4),
+                       D_SA_W = rep(.9,4),
+                       S_BBWP_NGW  = c(99,99,99,99), 
+                       S_BBWP_NSW = c(99,99,99,99),  
+                       S_BBWP_PSW = c(99,99,99,99),  
+                       S_BBWP_NUE = c(99,99,99,99),   
+                       S_BBWP_WB = c(10,10,10,10), 
+                       measures = NULL,
+                       sector = 'dairy'
+)
+
+test_that("check bbwp_meas_rank", {
+  expect_equal(
+    object = test[id==1,top_bbwp_tot],
+    expected = c("G8BWP4","G6BWP1","G12BWP10", "G53","B112"),
+    tolerance = 0.01)
+})
+
+
+
+# run example without any measures taken and a high risk for low nutrient use efficiency
+test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
+                       B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
+                       B_GWL_CLASS = 'GtIII', 
+                       A_P_SG = rep(55,4) ,
+                       B_SLOPE_DEGREE = rep(2.5,4),
+                       B_AER_CBS = c('LG05','LG14','LG03','LG02'),
+                       M_DRAIN = rep(TRUE,4),
+                       D_SA_W = rep(.9,4),
+                       S_BBWP_NGW  = c(99,99,99,99), 
+                       S_BBWP_NSW = c(99,99,99,99),  
+                       S_BBWP_PSW = c(99,99,99,99),  
+                       S_BBWP_NUE = c(10,10,10,10),   
+                       S_BBWP_WB = c(99,99,99,99), 
+                       measures = NULL,
+                       sector = 'dairy'
+)
+
+test_that("check bbwp_meas_rank", {
+  expect_equal(
+    object = test[id==1,top_bbwp_tot],
+    expected = c("G36","G53","G84", "B131","G25"),
+    tolerance = 0.01)
+})
+
+
+
+#merge(test[id==1],BBWPC::bbwp_measures[,.(bbwp_id,summary)],by.x='top_bbwp_tot',by.y='bbwp_id')

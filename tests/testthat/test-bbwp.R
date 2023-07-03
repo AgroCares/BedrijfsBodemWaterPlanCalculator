@@ -297,4 +297,131 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
       tolerance = 0.01)
   })
   
+# example with high PSW loss risk
+  # run example 1 without any measures taken
+  test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
+               B_GWL_CLASS = c('GtI', 'GtI', 'GtI'),
+               B_SC_WENR = c(4, 4,4),
+               B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
+               B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
+               A_P_SG = c(50, 80, 65),
+               A_CLAY_MI = c(15, 5,8),
+               A_SAND_MI = c(45, 65,15),
+               A_SILT_MI = c(40, 30,45),
+               A_SOM_LOI = c(5, 15,3) ,
+               A_N_RT = c(4200, 1000,3000),
+               A_FE_OX = c(500, 500,800),
+               A_AL_OX = c(150, 150,145),
+               A_P_CC = c(15, 10,16),
+               A_P_AL = c(165, 150,140),
+               A_P_WA = c(100, 100,100),
+               B_SLOPE_DEGREE = c(2,4,2),
+               B_LU_BBWP =  c('rooivrucht','rooivrucht','rooivrucht'),
+               M_DRAIN = c(TRUE, FALSE, TRUE),
+               D_SA_W = c(1.0, 1.0, 1),
+               D_RO_R = c(.9, 0.9,0.9),
+               B_AREA = c(100,80,2.5),
+               B_GWP = c(TRUE, FALSE, TRUE),
+               B_AREA_DROUGHT = c(TRUE, FALSE, TRUE),
+               B_CT_PSW = c(1.0, 1.0, 1.0),
+               B_CT_NSW = c(5, 5, 5),
+               B_CT_PSW_MAX = 0.5,
+               B_CT_NSW_MAX = 5.0,
+               measures = NULL,
+               sector = c('dairy', 'arable'),
+               output = 'scores',
+               LSW = LSW
+  )
   
+  test_that("check bbwp", {
+    expect_equal(
+      object = as.numeric(unlist(test$farm)),
+      expected = c(22,62,6,7,32,84),
+      tolerance = 0.01)
+  })
+  
+  
+  # example with high nitrate leaching risk
+  # run example 1 without any measures taken
+  test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
+               B_GWL_CLASS = c('GtVI', 'GtVI', 'GtVI'),
+               B_SC_WENR = c(1, 1,1),
+               B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
+               B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
+               A_P_SG = c(5, 5, 5),
+               A_CLAY_MI = c(15, 5,8),
+               A_SAND_MI = c(45, 65,15),
+               A_SILT_MI = c(40, 30,45),
+               A_SOM_LOI = c(5, 15,3) ,
+               A_N_RT = c(4200, 1000,3000),
+               A_FE_OX = c(500, 500,800),
+               A_AL_OX = c(150, 150,145),
+               A_P_CC = c(1.5, 1.0,1.6),
+               A_P_AL = c(16, 15,14),
+               A_P_WA = c(10, 10,10),
+               B_SLOPE_DEGREE = c(1.2,1.4,1.2),
+               B_LU_BBWP =  c('rooivrucht','rooivrucht','rooivrucht'),
+               M_DRAIN = c(TRUE, FALSE, TRUE),
+               D_SA_W = c(1.0, 1.0, 1),
+               D_RO_R = c(.9, 0.9,0.9),
+               B_AREA = c(50,50,50),
+               B_GWP = c(TRUE, TRUE, TRUE),
+               B_AREA_DROUGHT = c(TRUE, TRUE, TRUE),
+               B_CT_PSW = c(.10, .10, .10),
+               B_CT_NSW = c(0.5, 0.5, 0.5),
+               B_CT_PSW_MAX = 0.5,
+               B_CT_NSW_MAX = 5.0,
+               measures = NULL,
+               sector = c('dairy', 'arable'),
+               output = 'scores',
+               LSW = LSW
+  )
+  
+  test_that("check bbwp", {
+    expect_equal(
+      object = as.numeric(unlist(test$farm)),
+      expected = c(44,14,51,49,82,88),
+      tolerance = 0.01)
+  })
+  
+  # run example with low regional targets for region
+  test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
+               B_GWL_CLASS = c('GtI', 'GtI', 'GtI'),
+               B_SC_WENR = c(4, 4,4),
+               B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
+               B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
+               A_P_SG = c(50, 80, 65),
+               A_CLAY_MI = c(15, 5,8),
+               A_SAND_MI = c(45, 65,15),
+               A_SILT_MI = c(40, 30,45),
+               A_SOM_LOI = c(5, 15,3) ,
+               A_N_RT = c(4200, 1000,3000),
+               A_FE_OX = c(500, 500,800),
+               A_AL_OX = c(150, 150,145),
+               A_P_CC = c(15, 10,16),
+               A_P_AL = c(165, 150,140),
+               A_P_WA = c(100, 100,100),
+               B_SLOPE_DEGREE = c(2,4,2),
+               B_LU_BBWP =  c('rooivrucht','rooivrucht','rooivrucht'),
+               M_DRAIN = c(TRUE, FALSE, TRUE),
+               D_SA_W = c(1.0, 1.0, 1),
+               D_RO_R = c(.9, 0.9,0.9),
+               B_AREA = c(100,80,2.5),
+               B_GWP = c(TRUE, FALSE, TRUE),
+               B_AREA_DROUGHT = c(TRUE, FALSE, TRUE),
+               B_CT_PSW = c(0.1, 0.1, 0.1),
+               B_CT_NSW = c(0.5, 0.5, 0.5),
+               B_CT_PSW_MAX = 0.5,
+               B_CT_NSW_MAX = 5.0,
+               measures = NULL,
+               sector = c('dairy', 'arable'),
+               output = 'scores',
+               LSW = LSW
+  )
+  
+  test_that("check bbwp", {
+    expect_equal(
+      object = as.numeric(unlist(test$farm)),
+      expected = c(48,62,48,44,32,84),
+      tolerance = 0.01)
+  })
