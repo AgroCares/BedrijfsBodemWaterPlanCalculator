@@ -13,6 +13,7 @@
 * update of a few effect scores in `bbwp_measures`, #BBWP-47
 * set pmin and pmax on derivation regional targets in `bbwp_field_scores` for nsw and psw
 * update tests for `bbwp`,` bbwp_field_scores` and `bbwp_rank_measures` 
+* make D_SA_W a generic risk indicator rather than a ranking risk indicator, #BBWP-47
 
 # BBWPC v.1.0.1 2023-05-19
 
