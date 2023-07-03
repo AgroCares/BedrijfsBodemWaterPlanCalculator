@@ -4,16 +4,17 @@ require(testthat)
   # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
   # B_LU_BRP = c(265,2005,256,259)
   # B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais')
-  # B_GWL_CLASS = 'GtIII' 
-  # A_P_SG = rep(25,4) 
+  # B_AER_CBS = c('LG05','LG14','LG03','LG02')
+  # B_GWL_CLASS = 'GtIII'
+  # A_P_SG = rep(25,4)
   # B_SLOPE_DEGREE = rep(2.5,4)
   # M_DRAIN = rep(TRUE,4)
   # D_SA_W = rep(0.5,4)
-  # D_OPI_NGW = c(0,0.1, 0.5, 1)
-  # D_OPI_NSW = c(0,0.1, 0.5, 1)
-  # D_OPI_PSW = c(0,0.1, 0.5, 1) 
-  # D_OPI_NUE = c(0,0.1, 0.5, 1)  
-  # D_OPI_WB = c(0, 0.1,0.5, 1) 
+  # S_BBWP_NGW = c(0,0.1, 0.5, 1)*100
+  # S_BBWP_NSW = c(0,0.1, 0.5, 1)*100
+  # S_BBWP_PSW = c(0,0.1, 0.5, 1)*100
+  # S_BBWP_NUE = c(0,0.1, 0.5, 1)*100
+  # S_BBWP_WB = c(0, 0.1,0.5, 1)*100
   # measures = NULL
   # sector = 'dairy'
 
@@ -38,7 +39,7 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = dim(test),
-    expected = c(16,7),
+    expected = c(20,7),
     tolerance = 0.01)
 })
 
@@ -87,7 +88,7 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = dim(test),
-    expected = c(16,7),
+    expected = c(20,7),
     tolerance = 0.01)
 })
 
@@ -101,7 +102,7 @@ test_that("check bbwp_meas_rank", {
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_tot[c(1,2,5,9,16)],
-    expected = c("G53" , "G8BWP4",  "G11aBWP3", "G54" , NA),
+    expected = c("G53" , "G8BWP4",  "G11aBWP3", "G54" , "B137"),
     tolerance = 0.01)
 })
 

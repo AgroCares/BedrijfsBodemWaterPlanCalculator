@@ -3,6 +3,8 @@
 ## Fixed
 * grassland impacts on nitrogen losses, #BBWP-47 
 * update D_PSW_SLOPE check in `bbwp_field_indicators`, #BBWP-47
+* avoid NA (missing recommendations) from `bbwp_rank_measures` when the farm score equals 100
+* assessment of measure impact given the distance to target, #BBWP-46
 
 ## Changed
 * added drainage effect for effect P measures in `bbwp_rank_measures` and `bbwp_measure_score`, #BBWP-47
