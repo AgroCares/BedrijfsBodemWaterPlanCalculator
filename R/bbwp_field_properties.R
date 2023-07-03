@@ -197,9 +197,9 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   # with fields with slope > 2% being vulnerabile (Groenendijk, 2020)
   dt[,nsw_slope := pmax(0.2,pmin(1,B_SLOPE_DEGREE/2))]
   
-  # rank the risk for wet surroundings (Van Gerven, 2018)
+  # assess the risk for wet surroundings (Van Gerven, 2018): a high fraction equals a high risk
   # higher risk is associated to increased risks for N runoff
-  dt[,nsw_ws := pnorm(q = D_SA_W, mean = mean_sa_w, sd = sd_sa_w)]
+  dt[,nsw_ws := pmin(1,pmax(0,D_SA_W))]
   
   # rank the risk for N pool in soil: higher NLV is associated to increased risks for N runoff
   dt[,nsw_nlv := ngw_nlv]

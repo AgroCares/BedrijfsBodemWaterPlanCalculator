@@ -28,8 +28,8 @@ test_that("check bbwp_field_indicators", {
     ),
     expected = data.table(
       D_RISK_NGW = c(0, 0.2, 0.4, 0.6, 0.8, 1),
-      D_RISK_NSW = c(0.01,0.01,0.4,0.6,0.8,1),
-      D_RISK_PSW = c(0.01,0.01,0.4,0.6,0.8,1),
+      D_RISK_NSW = c(0.01,0.1,0.4,0.6,0.8,1),
+      D_RISK_PSW = c(0.01,0.1,0.4,0.6,0.8,1),
       D_RISK_NUE = c(0, 0.2, 0.4, 0.6, 0.8, 1),
       D_RISK_WB = c(0, 0.2, 0.4, 0.6, 0.8, 1)
     ),
