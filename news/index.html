@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BBWPC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,6 +44,27 @@
       <small>Source: <a href="https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.0" id="bbwpc-v110-2023-07-01">BBWPC v1.1.0 2023-07-01<a class="anchor" aria-label="anchor" href="#bbwpc-v110-2023-07-01"></a></h2>
+<div class="section level3">
+<h3 id="fixed-1-1-0">Fixed<a class="anchor" aria-label="anchor" href="#fixed-1-1-0"></a></h3>
+<ul><li>grassland impacts on nitrogen losses, #BBWP-47</li>
+<li>update D_PSW_SLOPE check in <code>bbwp_field_indicators</code>, #BBWP-47</li>
+<li>avoid NA (missing recommendations) from <code>bbwp_rank_measures</code> when the farm score equals 100</li>
+<li>assessment of measure impact given the distance to target, #BBWP-46</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changed-1-1-0">Changed<a class="anchor" aria-label="anchor" href="#changed-1-1-0"></a></h3>
+<ul><li>added drainage effect for effect P measures in <code>bbwp_rank_measures</code> and <code>bbwp_measure_score</code>, #BBWP-47</li>
+<li>impact of regional goals and objectives is increased in <code>bbwp_fieldscores</code>, #BBWP-45</li>
+<li>arguments of <code>bbwp_meas_rank</code> are updated (scores are required rather than opi)</li>
+<li>update of a few effect scores in <code>bbwp_measures</code>, #BBWP-47</li>
+<li>set pmin and pmax on derivation regional targets in <code>bbwp_field_scores</code> for nsw and psw</li>
+<li>update tests for <code>bbwp</code>,<code>bbwp_field_scores</code> and <code>bbwp_rank_measures</code>
+</li>
+<li>make D_SA_W a generic risk indicator rather than a ranking risk indicator, #BBWP-47</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.10.19" id="bbwpc-v01019-2023-01-18">BBWPC v0.10.19 2023-01-18<a class="anchor" aria-label="anchor" href="#bbwpc-v01019-2023-01-18"></a></h2>
 <div class="section level3">

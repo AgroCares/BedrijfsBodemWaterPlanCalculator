@@ -12,7 +12,7 @@ And send an ordered list back of the most suitable measures."><!-- mathjax --><s
     
     <a class="navbar-brand me-2" href="../index.html">BBWPC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,11 +63,11 @@ And send an ordered list back of the most suitable measures.</p>
 <span>  <span class="va">B_AER_CBS</span>,</span>
 <span>  <span class="va">M_DRAIN</span>,</span>
 <span>  <span class="va">D_SA_W</span>,</span>
-<span>  <span class="va">D_OPI_NGW</span>,</span>
-<span>  <span class="va">D_OPI_NSW</span>,</span>
-<span>  <span class="va">D_OPI_PSW</span>,</span>
-<span>  <span class="va">D_OPI_NUE</span>,</span>
-<span>  <span class="va">D_OPI_WB</span>,</span>
+<span>  <span class="va">S_BBWP_NGW</span>,</span>
+<span>  <span class="va">S_BBWP_NSW</span>,</span>
+<span>  <span class="va">S_BBWP_PSW</span>,</span>
+<span>  <span class="va">S_BBWP_NUE</span>,</span>
+<span>  <span class="va">S_BBWP_WB</span>,</span>
 <span>  <span class="va">measures</span>,</span>
 <span>  <span class="va">sector</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -107,24 +107,24 @@ And send an ordered list back of the most suitable measures.</p>
 <dd><p>(numeric) The wet perimeter index of the field, fraction that field is surrounded by water</p></dd>
 
 
-<dt>D_OPI_NGW</dt>
-<dd><p>(numeric) the opportunity index (risk x impact) for nitrate leaching to groundwater given field properties</p></dd>
+<dt>S_BBWP_NGW</dt>
+<dd><p>(numeric) the BBWP score for nitrate leaching to groundwater given field properties (0-100, with 100 equals targets met)</p></dd>
 
 
-<dt>D_OPI_NSW</dt>
-<dd><p>(numeric) the opportunity index (risk x impact) for nitrate leaching and runoff to surface water given field properties</p></dd>
+<dt>S_BBWP_NSW</dt>
+<dd><p>(numeric) the BBWP score for nitrate leaching and runoff to surface water given field properties (0-100, with 100 equals targets met)</p></dd>
 
 
-<dt>D_OPI_PSW</dt>
-<dd><p>(numeric) the opportunity index (risk x impact) for phosphorus leaching and runoff to surface water given field properties</p></dd>
+<dt>S_BBWP_PSW</dt>
+<dd><p>(numeric) the BBWP score for phosphorus leaching and runoff to surface water given field properties (0-100, with 100 equals targets met)</p></dd>
 
 
-<dt>D_OPI_NUE</dt>
-<dd><p>(numeric) the opportunity index (risk x impact) to improve the efficiency of nitrogen and phosphorus fertilizer use given field properties</p></dd>
+<dt>S_BBWP_NUE</dt>
+<dd><p>(numeric) the BBWP score for potential improvement of the efficiency of nitrogen and phosphorus fertilizer use given field properties (0-100, with 100 equals targets met)</p></dd>
 
 
-<dt>D_OPI_WB</dt>
-<dd><p>(numeric) the opportunity index (risk x impact) to improve the potential to buffer and store water and efficiently use water for plant growth given field properties</p></dd>
+<dt>S_BBWP_WB</dt>
+<dd><p>(numeric) the BBWP score for potential improvement of the potential to buffer and store water and efficiently use water for plant growth given field properties (0-100, with 100 equals targets met)</p></dd>
 
 
 <dt>measures</dt>
