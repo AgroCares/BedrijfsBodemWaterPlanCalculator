@@ -4,6 +4,7 @@
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![Codecov test coverage](https://codecov.io/gh/AgroCares/BedrijfsBodemWaterPlanCalculator/branch/main/graph/badge.svg)](https://app.codecov.io/gh/AgroCares/BedrijfsBodemWaterPlanCalculator?branch=main)
 [![R-CMD-check](https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/workflows/R-CMD-check/badge.svg)](https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/actions)
+[![R-CMD-check](https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 ![bedrijfsbodembaterplan_rgb](https://user-images.githubusercontent.com/37927107/139035649-5244795c-6687-42a5-a15d-169a54050903.png)
