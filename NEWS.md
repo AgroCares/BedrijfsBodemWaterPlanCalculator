@@ -1,3 +1,7 @@
+# BBPWC v1.0.2 2023-07-05
+## Fixed
+* Fixes failed GitHub Actions by upgrading to latest version
+
 # BBWPC v.1.0.1 2023-05-19
 
 ## Fixed
