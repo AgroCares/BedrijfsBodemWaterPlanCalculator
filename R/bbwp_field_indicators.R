@@ -42,6 +42,7 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
                                   D_NUE_WRI,D_NUE_PBI,D_NUE_WDRI,D_NUE_NLV,
                                   D_WUE_WWRI,D_WUE_WDRI,D_WUE_WHC){
   
+  # add visual bindings
   D_RISK_NGW = D_RISK_NSW = D_RISK_PSW = D_RISK_NUE = D_RISK_WB = id = NULL
   
   # check length inputs
@@ -118,8 +119,10 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
        (2 * wf(D_PSW_SCR) + wf(D_PSW_GWT) + 2 * wf(D_PSW_RO) + wf(D_PSW_SLOPE) + 2 * wf(D_PSW_WS) + wf(D_PSW_PCC) + wf(D_PSW_PSG) + wf(D_PSW_PRET))]
   
   # minimize risks when there are no ditches around (wet surrounding fraction < 0.2)
-  dt[D_PSW_WS <= 0.2 & D_PSW_SLOPE < 2,D_RISK_PSW := 0.01]
-  dt[D_NSW_WS <= 0.2 & D_PSW_SLOPE < 2,D_RISK_NSW := 0.01]
+  dt[D_NSW_WS <= 0.2 & D_PSW_SLOPE < 1,D_RISK_PSW := 0.1]
+  dt[D_NSW_WS <= 0.2 & D_PSW_SLOPE < 1,D_RISK_NSW := 0.1]
+  dt[D_NSW_WS <= 0.1 & D_PSW_SLOPE < 1,D_RISK_PSW := 0.01]
+  dt[D_NSW_WS <= 0.1 & D_PSW_SLOPE < 1,D_RISK_NSW := 0.01]
   
   # integrate all relative field risk indicators into one for indictor for N and P efficiency of inputs
   dt[, D_RISK_NUE := (wf(D_NUE_WRI) * D_NUE_WRI + 2 * wf(D_NUE_PBI) * D_NUE_PBI + wf(D_NUE_NLV) * D_NUE_NLV + wf(D_NUE_WDRI) * D_NUE_WDRI) /

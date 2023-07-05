@@ -1,4 +1,22 @@
+# BBWPC v1.1.0 2023-07-01
+
+## Fixed
+* grassland impacts on nitrogen losses, #BBWP-47 
+* update D_PSW_SLOPE check in `bbwp_field_indicators`, #BBWP-47
+* avoid NA (missing recommendations) from `bbwp_rank_measures` when the farm score equals 100
+* assessment of measure impact given the distance to target, #BBWP-46
+
+## Changed
+* added drainage effect for effect P measures in `bbwp_rank_measures` and `bbwp_measure_score`, #BBWP-47
+* impact of regional goals and objectives is increased in `bbwp_fieldscores`, #BBWP-45
+* arguments of `bbwp_meas_rank` are updated (scores are required rather than opi)
+* update of a few effect scores in `bbwp_measures`, #BBWP-47
+* set pmin and pmax on derivation regional targets in `bbwp_field_scores` for nsw and psw
+* update tests for `bbwp`,` bbwp_field_scores` and `bbwp_rank_measures` 
+* make D_SA_W a generic risk indicator rather than a ranking risk indicator, #BBWP-47
+
 # BBPWC v1.0.2 2023-07-05
+
 ## Fixed
 * Fixes failed GitHub Actions by upgrading to latest version
 

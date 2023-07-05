@@ -39,6 +39,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   D_OPI_NGW = D_OPI_NSW = D_OPI_PSW = D_OPI_NUE = D_OPI_WB = NULL
   D_MEAS_NGW = D_MEAS_NSW = D_MEAS_PSW = D_MEAS_NUE = D_OPI_TOT = NULL 
   D_MEAS_WB = D_MES_PSW = D_MEAS_NGW = D_MEAS_PSW = effect_Wb = id = NULL
+  S_BBWP_NGW = S_BBWP_NSW = S_BBWP_PSW = S_BBWP_NUE = S_BBWP_WB = S_BBWP_TOT = NULL
   code = value_min = value_max = choices = NULL
   
   # Load bbwp_parms
@@ -104,7 +105,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
     # correction when field is in a ground water protection zone
     dt[,cfngw := fifelse(B_GWP, 1, 0.5)]
 
-    # lower the risk for nitrate leaching in both wet soils and peat soils
+    # lower the regional target for nitrate leaching (compared to the general target 1)
     dt[B_GWL_CLASS %in% c('GtI','GtII','GtIII'), cfngw := cfngw * 0.5]
     dt[B_SOILTYPE_AGR == 'veen', cfngw := cfngw * 0.1]
     
@@ -112,10 +113,10 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
     dt[,cfwb := fifelse(B_AREA_DROUGHT, 1, 0.5)]
     
     # correction when field is in a region with high target for N load reduction surface water
-    dt[,cfnsw := B_CT_NSW / B_CT_NSW_MAX]
+    dt[,cfnsw := pmax(0,pmin(1,B_CT_NSW / B_CT_NSW_MAX))]
     
     # correction when field is in a region with high target for P load reduction surface water
-    dt[,cfpsw := B_CT_PSW / B_CT_PSW_MAX]
+    dt[,cfpsw := pmax(0,pmin(1,B_CT_PSW / B_CT_PSW_MAX))]
     
     # replace to max critical limit when no information is ready
     dt[is.na(cfpsw), cfpsw := 1]
@@ -124,22 +125,21 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
     # correction for need for increased nutrient use efficiency
     dt[, cfnue := 0.5]
   
-  # calculate the individual opportunity indexes
-  dt[,D_OPI_NGW := OBIC::evaluate_logistic(D_RISK_NGW, b=7, x0=0.5 - cfngw * .1, v=.7)]
-  dt[,D_OPI_NSW := OBIC::evaluate_logistic(D_RISK_NSW, b=7, x0=0.5 - cfnsw * .1, v=.7)]
-  dt[,D_OPI_PSW := OBIC::evaluate_logistic(D_RISK_PSW, b=7, x0=0.5 - cfpsw * .1, v=.7)]
-  dt[,D_OPI_NUE := OBIC::evaluate_logistic(D_RISK_NUE, b=7, x0=0.5 - cfnue * .1, v=.7)]
-  dt[,D_OPI_WB := OBIC::evaluate_logistic(D_RISK_WB, b=7, x0=0.5 - cfwb * .1, v=.7)]
-  
-  # calculate the change in opportunity indexes given the measures taken
-  
+    # calculate the individual opportunity indexes
+    dt[,D_OPI_NGW := (0.5 + cfngw/2) * OBIC::evaluate_logistic(D_RISK_NGW, b=6, x0=0.4, v=.7)]
+    dt[,D_OPI_NSW := (0.5 + cfnsw/2) * OBIC::evaluate_logistic(D_RISK_NSW, b=6, x0=0.4, v=.7)]
+    dt[,D_OPI_PSW := (0.5 + cfpsw/2) * OBIC::evaluate_logistic(D_RISK_PSW, b=6, x0=0.4, v=.7)]
+    dt[,D_OPI_NUE := (0.5 + cfnue/2) * OBIC::evaluate_logistic(D_RISK_NUE, b=6, x0=0.4, v=.7)]
+    dt[,D_OPI_WB := (0.5 + cfwb/2) * OBIC::evaluate_logistic(D_RISK_WB, b=6, x0=0.4, v=.7)]
+    
     # column names for impact of measures on the five indexes (do not change order)
     mcols <- c('D_MEAS_NGW', 'D_MEAS_NSW', 'D_MEAS_PSW', 'D_MEAS_NUE', 'D_MEAS_WB', 'D_MEAS_TOT')
     
     # calculate the total score per indicator 
     if(nrow(dt.measures) > 0){
       
-      # calculate
+      
+      # calculate (using the opportunity index as weighing, where 1 means high risk = high opportunity for measures to be taken)
       dt.meas.impact <- bbwp_meas_score(B_SOILTYPE_AGR = dt$B_SOILTYPE_AGR, 
                                         B_LU_BBWP = dt$B_LU_BBWP,
                                         B_GWL_CLASS = dt$B_GWL_CLASS,
@@ -175,26 +175,23 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   dt[,D_OPI_NUE := pmax(0,1 - pmax(0, D_OPI_NUE - D_MEAS_NUE))]
   dt[,D_OPI_WB :=  pmax(0,1 - pmax(0, D_OPI_WB - D_MEAS_WB))]
   
-  # Convert form 0-1 to 0-100
-  dt[,D_OPI_NGW := 100 * D_OPI_NGW]
-  dt[,D_OPI_NSW := 100 * D_OPI_NSW]
-  dt[,D_OPI_PSW := 100 * D_OPI_PSW]
-  dt[,D_OPI_NUE := 100 * D_OPI_NUE]
-  dt[,D_OPI_WB :=  100 * D_OPI_WB]
+  # Convert form 0-1 to 0-100 
+  dt[,S_BBWP_NGW := 100 * D_OPI_NGW]
+  dt[,S_BBWP_NSW := 100 * D_OPI_NSW]
+  dt[,S_BBWP_PSW := 100 * D_OPI_PSW]
+  dt[,S_BBWP_NUE := 100 * D_OPI_NUE]
+  dt[,S_BBWP_WB := 100 * D_OPI_WB]
   
-  dt[,D_OPI_TOT := (D_OPI_NGW * wf(D_OPI_NGW, type="score") + 
-                    D_OPI_NSW * wf(D_OPI_NSW, type="score") + 
-                    D_OPI_PSW * wf(D_OPI_PSW, type="score") + 
-                    D_OPI_NUE * wf(D_OPI_NUE, type="score") + 
-                    D_OPI_WB * wf(D_OPI_WB, type="score")) /
-       (wf(D_OPI_NGW, type="score") + wf(D_OPI_NSW, type="score") +  wf(D_OPI_PSW, type="score") +  wf(D_OPI_NUE, type="score") +  wf(D_OPI_WB, type="score"))]
+  dt[,S_BBWP_TOT := (S_BBWP_NGW * wf(S_BBWP_NGW, type="score") + 
+                      S_BBWP_NSW * wf(S_BBWP_NSW, type="score") + 
+                      S_BBWP_PSW * wf(S_BBWP_PSW, type="score") + 
+                      S_BBWP_NUE * wf(S_BBWP_NUE, type="score") + 
+                      S_BBWP_WB * wf(S_BBWP_WB, type="score")) /
+       (wf(S_BBWP_NGW, type="score") + wf(S_BBWP_NSW, type="score") +  wf(S_BBWP_PSW, type="score") +  
+          wf(S_BBWP_NUE, type="score") +  wf(S_BBWP_WB, type="score"))]
   
   # order the fields
   setorder(dt, id)
-  
-  # rename the opportunity indexes to the final score
-  setnames(dt,c('D_OPI_NGW','D_OPI_NSW','D_OPI_PSW','D_OPI_NUE','D_OPI_WB','D_OPI_TOT'),
-           c('S_BBWP_NGW','S_BBWP_NSW','S_BBWP_PSW','S_BBWP_NUE','S_BBWP_WB','S_BBWP_TOT'))
   
   # extract value
   value <- dt[,mget(c('S_BBWP_NGW','S_BBWP_NSW','S_BBWP_PSW','S_BBWP_NUE','S_BBWP_WB','S_BBWP_TOT'))]

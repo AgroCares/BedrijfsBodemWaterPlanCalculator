@@ -11,11 +11,11 @@
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
 #' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
-#' @param D_OPI_NGW (numeric) the opportunity index (risk x impact) for nitrate leaching to groundwater given field properties
-#' @param D_OPI_NSW (numeric) the opportunity index (risk x impact) for nitrate leaching and runoff to surface water given field properties
-#' @param D_OPI_PSW (numeric) the opportunity index (risk x impact) for phosphorus leaching and runoff to surface water given field properties
-#' @param D_OPI_NUE (numeric) the opportunity index (risk x impact) to improve the efficiency of nitrogen and phosphorus fertilizer use given field properties
-#' @param D_OPI_WB (numeric) the opportunity index (risk x impact) to improve the potential to buffer and store water and efficiently use water for plant growth given field properties
+#' @param S_BBWP_NGW (numeric) the BBWP score for nitrate leaching to groundwater given field properties (0-100, with 100 equals targets met)
+#' @param S_BBWP_NSW (numeric) the BBWP score for nitrate leaching and runoff to surface water given field properties (0-100, with 100 equals targets met)
+#' @param S_BBWP_PSW (numeric) the BBWP score for phosphorus leaching and runoff to surface water given field properties (0-100, with 100 equals targets met)
+#' @param S_BBWP_NUE (numeric) the BBWP score for potential improvement of the efficiency of nitrogen and phosphorus fertilizer use given field properties (0-100, with 100 equals targets met)
+#' @param S_BBWP_WB (numeric) the BBWP score for potential improvement of the potential to buffer and store water and efficiently use water for plant growth given field properties (0-100, with 100 equals targets met)
 #' @param measures (data.table) table with the properties of the available measures
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'diary', 'arable', 'tree_nursery', 'bulbs')
 #' 
@@ -26,7 +26,7 @@
 # rank the measures given their effectiveness to improve the sustainability of the farm
 bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE, B_LU_BBWP,B_AER_CBS,
                            M_DRAIN, D_SA_W,
-                           D_OPI_NGW, D_OPI_NSW, D_OPI_PSW, D_OPI_NUE, D_OPI_WB,
+                           S_BBWP_NGW, S_BBWP_NSW, S_BBWP_PSW, S_BBWP_NUE, S_BBWP_WB,
                            measures, sector){
   
   # add visual bindings
@@ -42,8 +42,8 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
   bbwp_parms <- BBWPC::bbwp_parms
   
   # check length of the inputs
-  arg.length <- max(length(D_OPI_NGW), length(D_OPI_NSW), length(D_OPI_PSW), length(D_OPI_NUE),
-                    length(D_OPI_WB), length(B_SOILTYPE_AGR), length(B_GWL_CLASS), length(M_DRAIN),
+  arg.length <- max(length(S_BBWP_NGW), length(S_BBWP_NSW), length(S_BBWP_PSW), length(S_BBWP_NUE),
+                    length(S_BBWP_WB), length(B_SOILTYPE_AGR), length(B_GWL_CLASS), length(M_DRAIN),
                     length(A_P_SG), length(B_SLOPE_DEGREE), length(B_LU_BBWP),length(B_AER_CBS),
                     length(D_SA_W))
   
@@ -58,11 +58,11 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
   checkmate::assert_numeric(A_P_SG, lower = bbwp_parms[code == "A_P_SG", value_min], upper = bbwp_parms[code == "A_P_SG", value_max],len = arg.length)
   checkmate::assert_numeric(B_SLOPE_DEGREE,lower = bbwp_parms[code == "B_SLOPE_DEGREE", value_min], upper = bbwp_parms[code == "B_SLOPE_DEGREE", value_max],len = arg.length)
   checkmate::assert_numeric(D_SA_W, lower = 0, upper = 100,len = arg.length)
-  checkmate::assert_numeric(D_OPI_NGW, lower = 0, upper = 100,len = arg.length)
-  checkmate::assert_numeric(D_OPI_NSW, lower = 0, upper = 100,len = arg.length)
-  checkmate::assert_numeric(D_OPI_PSW, lower = 0, upper = 100,len = arg.length)
-  checkmate::assert_numeric(D_OPI_NUE, lower = 0, upper = 100,len = arg.length)
-  checkmate::assert_numeric(D_OPI_WB, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(S_BBWP_NGW, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(S_BBWP_NSW, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(S_BBWP_PSW, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(S_BBWP_NUE, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(S_BBWP_WB, lower = 0, upper = 100,len = arg.length)
   checkmate::assert_subset(sector, choices = c('dairy', 'arable', 'tree_nursery', 'bulbs'))
   
   # load, check and update the measures database
@@ -79,13 +79,16 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     B_AER_CBS = B_AER_CBS,
     M_DRAIN = M_DRAIN,
     D_SA_W = D_SA_W,
-    D_OPI_NGW = D_OPI_NGW,
-    D_OPI_NSW = D_OPI_NSW,
-    D_OPI_PSW = D_OPI_PSW,
-    D_OPI_NUE = D_OPI_NUE,
-    D_OPI_WB = D_OPI_WB,
+    S_BBWP_NGW = S_BBWP_NGW,
+    S_BBWP_NSW = S_BBWP_NSW,
+    S_BBWP_PSW = S_BBWP_PSW,
+    S_BBWP_NUE = S_BBWP_NUE,
+    S_BBWP_WB = S_BBWP_WB,
     value = NA_real_
   )
+  
+  # add sector for regional studies
+  if(length(sector)==nrow(dt)){dt[,sector := sector]}
   
   # do check op Gt
   dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS, B_AER_CBS = B_AER_CBS)]
@@ -101,6 +104,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     dt[A_P_SG >= 75, effect_psw := effect_psw + psw_psg_high]
     dt[B_SLOPE_DEGREE <= 2, effect_psw := effect_psw + psw_noslope]
     dt[B_LU_BBWP == 6, effect_psw := effect_psw + psw_bulbs]
+    dt[M_DRAIN == TRUE, effect_psw := effect_psw + nsw_drains]
     
     # Add bonus points for nsw
     dt[M_DRAIN == TRUE, effect_nsw := effect_nsw + nsw_drains]
@@ -108,7 +112,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     dt[! B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_high]
     
     # Add bonus points for grassland
-    dt[B_LU_BBWP %in% c(1,2), effect_ngw := effect_ngw + ngw_grassland]
+    dt[B_LU_BBWP %in% c('gras_permanent','gras_tijdelijk'), effect_ngw := effect_ngw + ngw_grassland]
   
   # set scores to zero when measures are not applicable given the crop type
   
@@ -133,14 +137,24 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     dt[B_LU_BBWP == 'eiwitgewas' & nc12 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
     
   # set the score to zero when the measure is not applicable
+  if('sector' %in% colnames(dt)){
+      
+      # sector correction for desk studies where sector is available / added per field
+      dt[,c('fdairy','farable','ftree_nursery','fbulbs') := 1]
+      dt[sector == 'dairy', c('ftree_nursery','farable','fbulbs') := 0]
+      dt[sector == 'arable', c('ftree_nursery','fdairy','fbulbs') := 0]
+      dt[sector == 'bulbs', c('ftree_nursery','fdairy','farable') := 0]
+      dt[sector == 'tree_nursery', c('fbulbs','fdairy','farable') := 0]
     
-    # add columns for the sector to which the farms belong
-    fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
-    fs1 <- paste0('f',sector)
-    fs2 <- fs0[!fs0 %in% fs1]
-    dt[,c(fs1) := 1]
-    if(length(fs2) >= 1){ dt[,c(fs2) := 0] }
-    
+    } else {
+      
+      fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
+      fs1 <- paste0('f',sector)
+      fs2 <- fs0[!fs0 %in% fs1]
+      dt[,c(fs1) := 1]
+      if(length(fs2) >= 1){ dt[,c(fs2) := 0] }
+    }
+
     # estimate whether sector allows applicability
     dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs]
     
@@ -157,11 +171,11 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     dt[B_SLOPE_DEGREE <= 2 & bbwp_id == 'G21',c(cols) := 0]
     
     # add impact score for measure per opportunity index
-    dt[, D_MEAS_NGW := D_OPI_NGW * effect_ngw]
-    dt[, D_MEAS_NSW := D_OPI_NSW * effect_nsw]
-    dt[, D_MEAS_PSW := D_OPI_PSW * effect_psw]
-    dt[, D_MEAS_NUE := D_OPI_NUE * effect_nue]
-    dt[, D_MEAS_WB := D_OPI_WB * effect_wb]
+    dt[, D_MEAS_NGW := (100-S_BBWP_NGW) * effect_ngw]
+    dt[, D_MEAS_NSW := (100-S_BBWP_NSW) * effect_nsw]
+    dt[, D_MEAS_PSW := (100-S_BBWP_PSW) * effect_psw]
+    dt[, D_MEAS_NUE := (100-S_BBWP_NUE) * effect_nue]
+    dt[, D_MEAS_WB := (100-S_BBWP_WB) * effect_wb]
   
   
   # Calculate total measure score
@@ -180,22 +194,22 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
   for (i in 1:arg.length) {
     
     # Get the overall top measures
-    top_bbwp_tot <- dt[id == i & D_MEAS_TOT > 0, ][order(oid,-D_MEAS_TOT)][1:5,bbwp_id]
+    top_bbwp_tot <- dt[id == i & D_MEAS_TOT >= 0, ][order(oid,-D_MEAS_TOT)][1:5,bbwp_id]
     
     # Get the top measures for nitrate losses groundwater
-    top_bbwp_ngw <- dt[id == i & D_MEAS_NGW > 0, ][order(oid,-D_MEAS_NGW)][1:5,bbwp_id]
+    top_bbwp_ngw <- dt[id == i & D_MEAS_NGW >= 0, ][order(oid,-D_MEAS_NGW)][1:5,bbwp_id]
     
     # Get the top measures for nitrogen loss surface water
-    top_bbwp_nsw <- dt[id == i & D_MEAS_NSW > 0, ][order(oid,-D_MEAS_NSW)][1:5,bbwp_id]
+    top_bbwp_nsw <- dt[id == i & D_MEAS_NSW >= 0, ][order(oid,-D_MEAS_NSW)][1:5,bbwp_id]
     
     # Get the top measures for phosphorus loss surface water
-    top_bbwp_psw <- dt[id == i & D_MEAS_PSW > 0, ][order(oid,-D_MEAS_PSW)][1:5,bbwp_id]
+    top_bbwp_psw <- dt[id == i & D_MEAS_PSW >= 0, ][order(oid,-D_MEAS_PSW)][1:5,bbwp_id]
     
     # Get the top measures for water retention and availability
-    top_bbwp_wb <- dt[id == i & D_MEAS_WB > 0, ][order(oid,-D_MEAS_WB)][1:5,bbwp_id]
+    top_bbwp_wb <- dt[id == i & D_MEAS_WB >= 0, ][order(oid,-D_MEAS_WB)][1:5,bbwp_id]
     
     # Get the top measures for nutrient use efficiency
-    top_bbwp_nue <- dt[id == i & D_MEAS_NUE > 0, ][order(oid,-D_MEAS_NUE)][1:5,bbwp_id]
+    top_bbwp_nue <- dt[id == i & D_MEAS_NUE >= 0, ][order(oid,-D_MEAS_NUE)][1:5,bbwp_id]
     
     # add them to list
     list.meas[[i]] <- data.table(id = i,
