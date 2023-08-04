@@ -1,3 +1,7 @@
+# BBWPC v1.1.0.9999
+## Fixed
+* cryptic error when both neither `B_SLOPE` or `B_SLOPE_DEGREE` are supplied and relying on their defaults, resolves #79
+
 # BBWPC v1.1.0 2023-07-01
 
 ## Fixed
