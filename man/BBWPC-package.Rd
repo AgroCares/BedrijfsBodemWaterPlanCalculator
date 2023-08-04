@@ -12,6 +12,7 @@ The BBWP Calculator can be used to calculate the opportunities and suitability o
 Useful links:
 \itemize{
   \item \url{https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator}
+  \item \url{https://agrocares.github.io/BedrijfsBodemWaterPlanCalculator/}
   \item Report bugs at \url{https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/issues}
 }
 
@@ -30,6 +31,7 @@ Other contributors:
   \item Yuki Fujita \email{yuki.fujita@nmi-agro.nl} [contributor]
   \item Kees van den Dool \email{kees.vandendool@nmi-agro.nl} [contributor]
   \item Astrid Berndsen \email{astrid.berndsen@nmi-agro.nl} [contributor]
+  \item Brent Riechelman \email{brent.riechelman@nmi-agro.nl} (\href{https://orcid.org/0000-0003-1501-1573}{ORCID}) [contributor]
   \item Nutriënten Managment Instituut \email{nmi@nmi-agro.nl} [copyright holder]
 }
 

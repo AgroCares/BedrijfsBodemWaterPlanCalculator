@@ -9,6 +9,7 @@ Authors@R: c(
     person("Yuki", "Fujita", email = "yuki.fujita@nmi-agro.nl", role = "ctb"),
     person("Kees", "van den Dool", email = "kees.vandendool@nmi-agro.nl", role = "ctb"),
     person("Astrid", "Berndsen", email = "astrid.berndsen@nmi-agro.nl", role = "ctb"),
+    person("Brent", "Riechelman", email = "brent.riechelman@nmi-agro.nl", role = "ctb", comment = c(ORCID = "0000-0003-1501-1573")),
     person("Nutriënten Managment Instituut", email = "nmi@nmi-agro.nl", role = "cph"))
 Description: The BBWP Calculator can be used to calculate the opportunities and suitability of agronomic measures to improve the sustainability of agriculture.
     It includes the framework of the BedrijfsBodemWaterPlan (BBWP) developed in the Netherlands (Ros et al., 2020), as well the Dutch Ecoregelingen Framework developed by Boerennatuur and associated agricultural farmers collectives.
