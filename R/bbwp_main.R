@@ -59,11 +59,17 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
   # add visual binding
   field_id = NULL
   
+  # check inputs =====
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
   checkmate::assert_subset(output,choices = c('scores','measures'))
   
-  # check B_SLOPE, B_SLOPE_DEGREE overrules
+  # check that either B_SLOPE_DEGREE or B_SLOPE is present
+  checkmate::assert_false(all(
+    is.null(B_SLOPE_DEGREE),
+    is.null(B_SLOPE)))
+  
+  # use B_SLOPE only if B_SLOPE_DEGREE == NULL
   if(is.null(B_SLOPE_DEGREE)){
     
     # check is B_SLOPE is logical
@@ -71,6 +77,10 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
     
     # set B_SLOPE_DEGREE to default depending on B_SLOPE classification
     if(B_SLOPE){B_SLOPE_DEGREE = 3} else {B_SLOPE_DEGREE = 0.1}
+  } else {
+    checkmate::assert_numeric(B_SLOPE_DEGREE,
+                              lower = bbwp_parms[code == "B_SLOPE_DEGREE", value_min],
+                              upper = bbwp_parms[code == "B_SLOPE_DEGREE", value_max])
   }
     
   # convert soil properties to a BBWP risk indicator
