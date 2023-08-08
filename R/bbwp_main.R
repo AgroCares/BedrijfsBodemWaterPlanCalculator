@@ -8,7 +8,7 @@
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param B_SC_WENR (character) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006)
 #' @param B_HELP_WENR (character) The soil type abbreviation, derived from 1:50.000 soil map
-#' @param B_SLOPE (boolean) DEPRECATED, use B_SLOPE_DEGREE instead. Is the slope of the field, steeper than 2\%?
+#' @param B_SLOPE (boolean) DEPRECATED, use B_SLOPE_DEGREE instead. Is the slope of the field, steeper than 3\%?
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param B_GWP (boolean) is the field located in a groundwater protected area (options: TRUE or FALSE)
@@ -74,6 +74,9 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
     
     # check is B_SLOPE is logical
     checkmate::assert_logical(B_SLOPE)
+    
+    # warn
+    warning('B_SLOPE_DEGREE is missing, using B_SLOPE to set B_SLOPE_DEGREE to 3 when B_SLOPE == TRUE, else to 0.1. It is recommended to supply B_SLOPE_DEGREE, see function documentation.')
     
     # set B_SLOPE_DEGREE to default depending on B_SLOPE classification
     if(B_SLOPE){B_SLOPE_DEGREE = 3} else {B_SLOPE_DEGREE = 0.1}
