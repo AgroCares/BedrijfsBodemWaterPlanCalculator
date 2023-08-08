@@ -8,7 +8,7 @@
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param B_SC_WENR (character) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006)
 #' @param B_HELP_WENR (character) The soil type abbreviation, derived from 1:50.000 soil map
-#' @param B_SLOPE (boolean) The slope of the field, steeper than 2\%
+#' @param B_SLOPE (boolean) DEPRECATED, use B_SLOPE_DEGREE instead. Is the slope of the field, steeper than 2\%?
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param B_GWP (boolean) is the field located in a groundwater protected area (options: TRUE or FALSE)
