@@ -57,7 +57,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                  measures, sector,output = 'scores'){
   
   # add visual binding
-  field_id = NULL
+  field_id = code = value_min = value_max = bbwp_parms = NULL
   
   # check inputs =====
   # check wrapper inputs that are not checked in the bbwp functions
