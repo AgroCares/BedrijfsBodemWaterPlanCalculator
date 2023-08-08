@@ -53,7 +53,7 @@ bbwp(
 
 \item{B_HELP_WENR}{(character) The soil type abbreviation, derived from 1:50.000 soil map}
 
-\item{B_SLOPE}{(boolean) DEPRECATED, use B_SLOPE_DEGREE instead. Is the slope of the field, steeper than 2\%?}
+\item{B_SLOPE}{(boolean) DEPRECATED, use B_SLOPE_DEGREE instead. Is the slope of the field, steeper than 3\%?}
 
 \item{B_SLOPE_DEGREE}{(numeric) The slope of the field (degrees)}
 
