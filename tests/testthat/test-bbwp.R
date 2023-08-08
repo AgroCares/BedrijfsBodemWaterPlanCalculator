@@ -426,7 +426,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
       tolerance = 0.01)
   })
   
-  test_that('B_SLOPE and B_SLOPE_DEGREE can both be used but at leatst one needst to be given',
+  test_that('B_SLOPE and B_SLOPE_DEGREE can both be used but at leatst one needs to be given',
             # missing both degree parameters
             expect_error(bbwp(B_SOILTYPE_AGR = c('dekzand'),
                               B_GWL_CLASS = c('GtIII'),
