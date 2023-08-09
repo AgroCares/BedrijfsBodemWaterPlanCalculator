@@ -8,7 +8,7 @@
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param B_SC_WENR (character) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006)
 #' @param B_HELP_WENR (character) The soil type abbreviation, derived from 1:50.000 soil map
-#' @param B_SLOPE (boolean) The slope of the field, steeper than 2\%
+#' @param B_SLOPE (boolean) DEPRECATED, use B_SLOPE_DEGREE instead. Is the slope of the field, steeper than 3\%?
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
 #' @param B_GWP (boolean) is the field located in a groundwater protected area (options: TRUE or FALSE)
@@ -40,7 +40,7 @@
 #' @param output (string) a vector specifying the output type of the function. Options: scores, measures 
 #' 
 #' @details 
-#' B_SLOPE represents the slope of the field as a Boolean variable (is the slope bigger than 2\% or not) and was used in previous versions of BBWP. This has been replaced by B_SLOPE_DEGREE.
+#' B_SLOPE_DEGREE should be used, for backwards compatibility B_SLOPE can still be used. At least one of the must be used, when both are supplied, B_SLOPE is ignored.
 #' LSW is by default a data.table with LSW properties.Sending only oow_id is sufficient to retrieve the LSW properties from BBWP internal package table.
 #' If needed, one can also send in a sf object to retrieve the LSW properties.
 #' 
@@ -57,20 +57,34 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                  measures, sector,output = 'scores'){
   
   # add visual binding
-  field_id = NULL
+  field_id = code = value_min = value_max = NULL
+  bbwp_parms <- BBWPC::bbwp_parms
   
+  # check inputs =====
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
   checkmate::assert_subset(output,choices = c('scores','measures'))
   
-  # check B_SLOPE, B_SLOPE_DEGREE overrules
+  # check that either B_SLOPE_DEGREE or B_SLOPE is present
+  checkmate::assert_false(all(
+    is.null(B_SLOPE_DEGREE),
+    is.null(B_SLOPE)))
+  
+  # use B_SLOPE only if B_SLOPE_DEGREE == NULL
   if(is.null(B_SLOPE_DEGREE)){
     
     # check is B_SLOPE is logical
     checkmate::assert_logical(B_SLOPE)
     
+    # warn
+    warning('B_SLOPE_DEGREE is missing, using B_SLOPE to set B_SLOPE_DEGREE to 3 when B_SLOPE == TRUE, else to 0.1. It is recommended to supply B_SLOPE_DEGREE, see function documentation.')
+    
     # set B_SLOPE_DEGREE to default depending on B_SLOPE classification
     if(B_SLOPE){B_SLOPE_DEGREE = 3} else {B_SLOPE_DEGREE = 0.1}
+  } else {
+    checkmate::assert_numeric(B_SLOPE_DEGREE,
+                              lower = bbwp_parms[code == "B_SLOPE_DEGREE", value_min],
+                              upper = bbwp_parms[code == "B_SLOPE_DEGREE", value_max])
   }
     
   # convert soil properties to a BBWP risk indicator

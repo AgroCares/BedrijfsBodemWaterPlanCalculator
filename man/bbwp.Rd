@@ -53,7 +53,7 @@ bbwp(
 
 \item{B_HELP_WENR}{(character) The soil type abbreviation, derived from 1:50.000 soil map}
 
-\item{B_SLOPE}{(boolean) The slope of the field, steeper than 2\%}
+\item{B_SLOPE}{(boolean) DEPRECATED, use B_SLOPE_DEGREE instead. Is the slope of the field, steeper than 3\%?}
 
 \item{B_SLOPE_DEGREE}{(numeric) The slope of the field (degrees)}
 
@@ -118,7 +118,7 @@ Estimate the potential to contribute to agronomic and environmental challenges i
 A high BBWP score is indicative for the number of opportunities to improve soil quality and land use.
 }
 \details{
-B_SLOPE represents the slope of the field as a Boolean variable (is the slope bigger than 2\% or not) and was used in previous versions of BBWP. This has been replaced by B_SLOPE_DEGREE.
+B_SLOPE_DEGREE should be used, for backwards compatibility B_SLOPE can still be used. At least one of the must be used, when both are supplied, B_SLOPE is ignored.
 LSW is by default a data.table with LSW properties.Sending only oow_id is sufficient to retrieve the LSW properties from BBWP internal package table.
 If needed, one can also send in a sf object to retrieve the LSW properties.
 }

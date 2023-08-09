@@ -9,14 +9,11 @@ library(pandex);library(data.table);library(stringr)
                                        "A_P_WA", "A_P_SG","B_CT_PSW","B_CT_NSW","B_CT_PSW_MAX","B_CT_NSW_MAX","D_SA_W","D_RO_R", "B_AREA")]
   
   # Unpack options
-  bbwp_parms[code == 'B_AER_CBS', choices := list(pandex::enum_opts("B_AER_CBS"))]
-  bbwp_parms[code == 'B_SOILTYPE_AGR', choices := list(pandex::enum_opts("B_SOILTYPE_AGR"))]
+  for(this.code in bbwp_parms[enum == TRUE, code]){
+    bbwp_parms[code == this.code, choices := list(pandex::enum_opts(this.code))]
+  }
   bbwp_parms[code == 'B_GWL_CLASS', choices := list(paste0('Gt',pandex::enum_opts("B_GWL_CLASS")))]
-  bbwp_parms[code == 'B_HELP_WENR', choices := list(pandex::enum_opts("B_HELP_WENR"))]
-  bbwp_parms[code == 'B_LU_BBWP', choices := list(pandex::enum_opts("B_LU_BBWP"))]
-  bbwp_parms[code == 'B_LU_BRP', choices := list(pandex::enum_opts("B_LU_BRP"))]
-  bbwp_parms[code == 'B_SC_WENR', choices := list(pandex::enum_opts("B_SC_WENR"))]
-  
+
   # Set upper for B_AREA
   bbwp_parms[code == 'B_AREA', value_max := 500000000]
   

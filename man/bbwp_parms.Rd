@@ -5,7 +5,15 @@
 \alias{bbwp_parms}
 \title{A table with the BBWP parameters}
 \format{
-A data.table with 21 rows and 14 columns:
+An object of class \code{data.table} (inherits from \code{data.frame}) with 26 rows and 14 columns.
+}
+\usage{
+bbwp_parms
+}
+\description{
+This table contains the BBWP variables and their possible values according to pandex to standardize checks
+}
+\details{
 \describe{
  \item{code}{The parameter code}
  \item{parameter}{Brief description of the parameter}
@@ -25,11 +33,5 @@ A data.table with 21 rows and 14 columns:
  \item{options}{Allowed values for a parameter of type enum seperated by "||"}
  \item{choices}{Vectorized version of options}
  }
-}
-\usage{
-bbwp_parms
-}
-\description{
-This table contains the BBWP variables and their possible values according to pandex to standardize checks
 }
 \keyword{datasets}
