@@ -12,7 +12,7 @@ A high BBWP score is indicative for the number of opportunities to improve soil 
     
     <a class="navbar-brand me-2" href="../index.html">BBWPC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -116,7 +116,7 @@ A high BBWP score is indicative for the number of opportunities to improve soil 
 
 
 <dt>B_SLOPE</dt>
-<dd><p>(boolean) The slope of the field, steeper than 2%</p></dd>
+<dd><p>(boolean) DEPRECATED, use B_SLOPE_DEGREE instead. Is the slope of the field, steeper than 3%?</p></dd>
 
 
 <dt>B_SLOPE_DEGREE</dt>
@@ -237,7 +237,7 @@ A high BBWP score is indicative for the number of opportunities to improve soil 
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>B_SLOPE represents the slope of the field as a Boolean variable (is the slope bigger than 2% or not) and was used in previous versions of BBWP. This has been replaced by B_SLOPE_DEGREE.
+    <p>B_SLOPE_DEGREE should be used, for backwards compatibility B_SLOPE can still be used. At least one of the must be used, when both are supplied, B_SLOPE is ignored.
 LSW is by default a data.table with LSW properties.Sending only oow_id is sufficient to retrieve the LSW properties from BBWP internal package table.
 If needed, one can also send in a sf object to retrieve the LSW properties.</p>
     </div>
