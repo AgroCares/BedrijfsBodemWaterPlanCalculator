@@ -89,9 +89,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
                    D_MEAS_TOT = NA_real_
                   )
   
-  
-  # add sector for regional studies
-  if(length(sector)==nrow(dt)){dt[,sector := sector]}
+
   
   # do check op Gt
   dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS,B_AER_CBS=B_AER_CBS)]
@@ -115,7 +113,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
     dt[! B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_high]
     
     # Add bonus points for grassland
-    dt[B_LU_BBWP %in% c('gras_permanent','gras_tijdelijk'), effect_ngw := effect_ngw + ngw_grassland]
+    dt[B_LU_BBWP %in% c(1,2), effect_ngw := effect_ngw + ngw_grassland]
  
   # set scores to zero when measures are not applicable given the crop type
   
@@ -140,24 +138,13 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
     dt[B_LU_BBWP == 'eiwitgewas' & nc12 == 0, c(cols) := 0]
   
     # set the score to zero when the measure is not applicable
-    if('sector' %in% colnames(dt)){
-        
-        # sector correction for desk studies where sector is available / added per field
-        dt[,c('fdairy','farable','ftree_nursery','fbulbs') := 1]
-        dt[sector == 'dairy', c('ftree_nursery','farable','fbulbs') := 0]
-        dt[sector == 'arable', c('ftree_nursery','fdairy','fbulbs') := 0]
-        dt[sector == 'bulbs', c('ftree_nursery','fdairy','farable') := 0]
-        dt[sector == 'tree_nursery', c('fbulbs','fdairy','farable') := 0]
-        
-      } else {
-        
-        # add columns for the sector to which the farms belong
-        fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
-        fs1 <- paste0('f',sector)
-        fs2 <- fs0[!fs0 %in% fs1]
-        dt[,c(fs1) := 1]
-        dt[,c(fs2) := 0]
-      }
+  
+      # add columns for the sector to which the farms belong
+      fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
+      fs1 <- paste0('f',sector)
+      fs2 <- fs0[!fs0 %in% fs1]
+      dt[,c(fs1) := 1]
+      dt[,c(fs2) := 0]
   
       # estimate whether sector allows applicability
       dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs]
@@ -173,13 +160,14 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   
       # adapt the score for slope dependent
       dt[B_SLOPE_DEGREE <= 2 & bbwp_id == 'G21',c(cols) := 0]
+      dt[M_DRAIN == FALSE & bbwp_id]
       
-  # add impact score for measure per opportunity index => measures are more effective when risks are high
-  dt[, D_MEAS_NGW := D_OPI_NGW * effect_ngw]
-  dt[, D_MEAS_NSW := D_OPI_NSW * effect_nsw]
-  dt[, D_MEAS_PSW := D_OPI_PSW * effect_psw]
-  dt[, D_MEAS_NUE := D_OPI_NUE * effect_nue]
-  dt[, D_MEAS_WB := D_OPI_WB * effect_wb]
+  # add impact score for measure per opportunity index
+  dt[, D_MEAS_NGW := (100-D_OPI_NGW) * effect_ngw]
+  dt[, D_MEAS_NSW := (100-D_OPI_NSW) * effect_nsw]
+  dt[, D_MEAS_PSW := (100-D_OPI_PSW) * effect_psw]
+  dt[, D_MEAS_NUE := (100-D_OPI_NUE) * effect_nue]
+  dt[, D_MEAS_WB := (100-D_OPI_WB) * effect_wb]
   
   # columns to be adapted given applicability
   scols <- c('D_MEAS_NGW','D_MEAS_NSW','D_MEAS_PSW','D_MEAS_NUE','D_MEAS_WB','D_MEAS_TOT')
@@ -201,7 +189,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   # replace NA values (when no measures are taken) by 0
   dt.meas[, c(scols) := lapply(.SD,function(x) fifelse(is.na(x), 0, x)), .SDcols = scols]
   
-  # it should be possible to fill all requirements with two very effective measures per field, equal to +6 points per field
+  # it should be possible to fill all requirements with two very effective measures per field, equal to +4 points per field
   # so the change in score can increase from 0 to 1 when 6 effectiveness unit points via measures are collected
   # so each effectiveness unit point is equal to 1/6 score units
   dt.meas[ ,c(scols) := lapply(.SD,function(x) x * (1 / 4)), .SDcols = scols]
