@@ -89,7 +89,8 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
                    D_MEAS_TOT = NA_real_
                   )
   
-
+  # add sector for regional studies
+  if(length(sector)==nrow(dt)){dt[,sector := sector]}
   
   # do check op Gt
   dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS,B_AER_CBS=B_AER_CBS)]
@@ -138,13 +139,23 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
     dt[B_LU_BBWP == 'eiwitgewas' & nc12 == 0, c(cols) := 0]
   
     # set the score to zero when the measure is not applicable
-  
-      # add columns for the sector to which the farms belong
+    if('sector' %in% colnames(dt)){
+      
+      # sector correction for desk studies where sector is available / added per field
+      dt[,c('fdairy','farable','ftree_nursery','fbulbs') := 1]
+      dt[sector == 'dairy', c('ftree_nursery','farable','fbulbs') := 0]
+      dt[sector == 'arable', c('ftree_nursery','fdairy','fbulbs') := 0]
+      dt[sector == 'bulbs', c('ftree_nursery','fdairy','farable') := 0]
+      dt[sector == 'tree_nursery', c('fbulbs','fdairy','farable') := 0]
+      
+    } else {
+      
       fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
       fs1 <- paste0('f',sector)
       fs2 <- fs0[!fs0 %in% fs1]
       dt[,c(fs1) := 1]
-      dt[,c(fs2) := 0]
+      if(length(fs2) >= 1){ dt[,c(fs2) := 0] }
+    }
   
       # estimate whether sector allows applicability
       dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs]
@@ -160,7 +171,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   
       # adapt the score for slope dependent
       dt[B_SLOPE_DEGREE <= 2 & bbwp_id == 'G21',c(cols) := 0]
-      dt[M_DRAIN == FALSE & nodrain == TRUE, c(cols) := 0]
+      dt[M_DRAIN == FALSE & nodrains == TRUE, c(cols) := 0]
       
   # add impact score for measure per opportunity index
   dt[, D_MEAS_NGW := (100-D_OPI_NGW) * effect_ngw]

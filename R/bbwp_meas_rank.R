@@ -169,6 +169,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     
     # adapt the score for slope dependent
     dt[B_SLOPE_DEGREE <= 2 & bbwp_id == 'G21',c(cols) := 0]
+    dt[M_DRAIN == FALSE & nodrains == TRUE, c(cols) := 0]
     
     # add impact score for measure per opportunity index
     dt[, D_MEAS_NGW := (100-S_BBWP_NGW) * effect_ngw]
