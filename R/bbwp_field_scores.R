@@ -9,7 +9,7 @@
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param B_LU_BBWP (character) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
-#' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
+#' @param Score (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
 #' @param D_RISK_NGW (numeric) the risk for nitrate leaching to groundwater given field properties
 #' @param D_RISK_NSW (numeric) the risk for nitrate leaching and runoff to surface water given field properties
 #' @param D_RISK_PSW (numeric) the risk for phosphorus leaching and runoff to surface water given field properties
@@ -123,7 +123,6 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
     dt[is.na(cfnsw), cfnsw := 1]
     
     # correction for need for increased nutrient use efficiency
-    dt[, cfnue := 0.5]
   
     # calculate the individual opportunity indexes
     dt[,D_OPI_NGW := (0.5 + cfngw/2) * OBIC::evaluate_logistic(D_RISK_NGW, b=6, x0=0.4, v=.7)]
