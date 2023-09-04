@@ -110,7 +110,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
     dt[B_SOILTYPE_AGR == 'veen', cfngw := cfngw * 0.1]
     
     # correction when field is in a region with high water deficiency risks
-    dt[,nue := fifelse(B_AREA_DROUGHT, 1, 0.5)]
+    dt[,cfwb := fifelse(B_AREA_DROUGHT, 1, 0.5)]
     
     # correction when field is in a region with high target for N load reduction surface water
     dt[,cfnsw := pmax(0,pmin(1,B_CT_NSW / B_CT_NSW_MAX))]
