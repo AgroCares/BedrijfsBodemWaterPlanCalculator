@@ -1,3 +1,9 @@
+# BBWPC v1.2.1 2023-09-06
+## Changed
+* remove function `bbwp_check_lsw` and internal package table `lsw`, #BBWP-50
+* add argument `B_LSW_ID` to functions `bbwp` and `bbwp_field_indicators`
+* remove arguments `a_lon` and `a_lat` from functions `bbwp` and `bbwp_field_indicators`
+
 # BBWPC v1.1.1 2023-08-08
 ## Fixed
 * cryptic error when both neither `B_SLOPE` or `B_SLOPE_DEGREE` are supplied and relying on their defaults, resolves #79
