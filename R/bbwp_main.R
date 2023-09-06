@@ -32,17 +32,15 @@
 #' @param D_RO_R (numeric) The risk that surface water runs off the parcel
 #' @param B_AREA (numeric) the area of the field (m2) 
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
-#' @param LSW (data.table) A data.table with the LSW properties including oow_id. See details. 
-#' @param a_lat (numeric) Latitude of the field (required if no LSW is submitted)
-#' @param a_lon (numeric) Longitude of the field (required if no LSW is submitted)
+#' @param B_LSW_ID (integer) An unique identifier for each Local Surface Water per field
+#' @param LSW (data.table) The averaged soil properties (mean and sd) per Local Surface Water. Can be derived from bbwp_lsw_properties.
 #' @param measures (data.table) the measures planned / done per fields
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
 #' @param output (string) a vector specifying the output type of the function. Options: scores, measures 
 #' 
 #' @details 
 #' B_SLOPE_DEGREE should be used, for backwards compatibility B_SLOPE can still be used. At least one of the must be used, when both are supplied, B_SLOPE is ignored.
-#' LSW is by default a data.table with LSW properties.Sending only oow_id is sufficient to retrieve the LSW properties from BBWP internal package table.
-#' If needed, one can also send in a sf object to retrieve the LSW properties.
+#' LSW is by default a data.table with LSW properties, being calculated from bbwp_lsw_properties. Note that all B_LSW_IDs should be preset in the LSW data.table.
 #' 
 #' @import data.table
 #' @import OBIC
@@ -53,14 +51,13 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                  A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
                  B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW,B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, 
                  D_SA_W, D_RO_R, B_AREA, 
-                 M_DRAIN, LSW, a_lat = NULL, a_lon = NULL,
+                 M_DRAIN, B_LSW_ID, LSW = NULL,
                  measures, sector,output = 'scores'){
   
   # add visual binding
   field_id = code = value_min = value_max = NULL
   bbwp_parms <- BBWPC::bbwp_parms
   
-  # check inputs =====
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
   checkmate::assert_subset(output,choices = c('scores','measures'))
@@ -81,12 +78,35 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
     
     # set B_SLOPE_DEGREE to default depending on B_SLOPE classification
     if(B_SLOPE){B_SLOPE_DEGREE = 3} else {B_SLOPE_DEGREE = 0.1}
+    
   } else {
     checkmate::assert_numeric(B_SLOPE_DEGREE,
                               lower = bbwp_parms[code == "B_SLOPE_DEGREE", value_min],
                               upper = bbwp_parms[code == "B_SLOPE_DEGREE", value_max])
   }
     
+  # estimate and check LSW properties
+  if(is.null(LSW)){
+    
+    # set LSW to country mean properties
+    LSW <- bbwp_lsw_properties(B_LSW_ID = 1:length(A_SOM_LOI))
+  
+    } else {
+      
+    # desired column names in LSW
+    cols <- c("B_LSW_ID","B_SOM_LOI","B_CLAY_MI","B_SAND_MI","B_SILT_MI","B_N_RT","B_P_AL","B_P_CC","B_P_WA","B_P_SG",
+              "B_FE_OX","B_AL_OX","B_SA_W","B_RO_R","B_SOM_LOI_SD", "B_CLAY_MI_SD", "B_SAND_MI_SD", "B_SILT_MI_SD", "B_N_RT_SD","B_P_AL_SD","B_P_CC_SD",
+              "B_P_WA_SD","B_P_SG_SD","B_FE_OX_SD","B_AL_OX_SD","B_SA_W_SD","B_RO_R_SD")
+    
+    # check LSW format and column names
+    checkmate::assert_data_table(LSW,nrow = length(A_SOM_LOI))
+    checkmate::assert_subset(colnames(LSW),choices = cols)
+    
+    # check if all B_LSW_ID are in the LSW data.table
+    checkmate::assert_subset(LSW$B_LSW_ID,choices = B_LSW_ID)
+    
+  }
+  
   # convert soil properties to a BBWP risk indicator
   dt <- bbwp_field_properties(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
                               B_LU_BBWP = B_LU_BBWP,
@@ -108,9 +128,8 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                               A_P_SG = A_P_SG,
                               D_SA_W = D_SA_W, 
                               D_RO_R =  D_RO_R, 
-                              LSW = LSW, 
-                              a_lat = a_lat, 
-                              a_lon = a_lon)
+                              B_LSW_ID = B_LSW_ID,
+                              LSW = LSW)
   
   # Aggregate BBWP risk indicators into five indicators
   dt.ind <- bbwp_field_indicators(D_NGW_SCR = dt$ngw_scr,
