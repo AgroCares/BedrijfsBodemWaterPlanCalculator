@@ -25,9 +25,8 @@ bbwp_field_properties(
   A_P_SG,
   D_SA_W,
   D_RO_R,
-  LSW,
-  a_lat = NULL,
-  a_lon = NULL
+  B_LSW_ID,
+  LSW
 )
 }
 \arguments{
@@ -71,11 +70,9 @@ bbwp_field_properties(
 
 \item{D_RO_R}{(numeric) The risk that surface water runs off the parcel}
 
-\item{LSW}{(data.table) The surface water polygon for catchment or polder (NULL if not available, lat/lon should be provided)}
+\item{B_LSW_ID}{(integer) An unique identifier for each Local Surface Water per field}
 
-\item{a_lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
-
-\item{a_lon}{(numeric) Longitude of the field (required if no LSW is submitted)}
+\item{LSW}{(data.table) The averaged soil properties (mean and sd) per Local Surface Water}
 }
 \description{
 Estimate the relative ranking of field properties given their contribution to nutrient losses to aquatic ecosystems as well as nutrient and water efficiency.
