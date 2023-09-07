@@ -1,4 +1,4 @@
-# BBWPC v1.2.1 2023-09-06
+# BBWPC v2.0.0 2023-09-06
 ## Changed
 * remove function `bbwp_check_lsw` and internal package table `lsw`, #BBWP-50
 * add argument `B_LSW_ID` to functions `bbwp` and `bbwp_field_indicators`
