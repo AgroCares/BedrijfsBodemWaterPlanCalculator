@@ -92,7 +92,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   
   # copy input in one data.table
   dt <- data.table(id = 1:arg.length,
-                   B_SOILTYPE_AAGR = B_SOILTYPE_AGR,
+                   B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                    B_LU_BBWP = B_LU_BBWP,
                    B_GWL_CLASS = B_GWL_CLASS,
                    B_SC_WENR = B_SC_WENR, 
@@ -119,7 +119,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   
   # add crop names and categories
   dt <- merge(dt, LSW, by = 'B_LSW_ID')
-  dt <- merge(dt, soils.obic[, list(soiltype, soiltype.n)], by.x = "B_SOILTYPE_AAGR", by.y = "soiltype")
+  dt <- merge(dt, soils.obic[, list(soiltype, soiltype.n)], by.x = "B_SOILTYPE_AGR", by.y = "soiltype")
   
   # add crop categories
   dt[B_LU_BBWP %in% c('gras_permanent','gras_tijdelijk'), crop_category := 'grasland']
