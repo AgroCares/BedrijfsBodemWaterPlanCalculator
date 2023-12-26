@@ -1,3 +1,12 @@
+# BBWPC v2.1.0 2023-12-26
+## Changed
+* update effect of bufferstrips and helofytenfilter in `bbwp_measures`, `bbwp_meas_scores` and `bbwp_meas_rank`
+* four obsolete columns removed from `bbwp_measures` including p_ow,p_ow2,n_ow,and n_ow2
+
+## Fixed
+* reference to B_LU_BBWP updated, was character and not an integer, in `bbwp_meas_scores` and `bbwp_meas_rank`
+* fix errors in UTF-8 in summary descriptions of meaures in `bbwp_measures`
+
 # BBWPC v2.0.0 2023-09-06
 ## Changed
 * remove function `bbwp_check_lsw` and internal package table `lsw`, #BBWP-50
