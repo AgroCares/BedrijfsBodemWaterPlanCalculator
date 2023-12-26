@@ -91,6 +91,9 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
     # set LSW to country mean properties
     LSW <- bbwp_lsw_properties(B_LSW_ID = 1:length(A_SOM_LOI))
   
+    # print warning
+    warning('There are no LSW properties supplied. The missing LSW properties have been replaced by mean soil properties from the Netherlands.')
+    
     } else {
       
     # desired column names in LSW
@@ -105,7 +108,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
     # check if all B_LSW_ID are in the LSW data.table
     checkmate::assert_subset(LSW$B_LSW_ID,choices = B_LSW_ID)
     
-  }
+    }
   
   # convert soil properties to a BBWP risk indicator
   dt <- bbwp_field_properties(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
