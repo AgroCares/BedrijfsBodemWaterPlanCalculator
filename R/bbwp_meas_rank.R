@@ -103,7 +103,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     dt[A_P_SG >= 50 & A_P_SG < 75, effect_psw := effect_psw + psw_psg_medium]
     dt[A_P_SG >= 75, effect_psw := effect_psw + psw_psg_high]
     dt[B_SLOPE_DEGREE <= 2, effect_psw := effect_psw + psw_noslope]
-    dt[B_LU_BBWP == 6, effect_psw := effect_psw + psw_bulbs]
+    dt[grepl('bollen',B_LU_BBWP), effect_psw := effect_psw + psw_bulbs]
     dt[M_DRAIN == TRUE, effect_psw := effect_psw + nsw_drains]
     
     # Add bonus points for nsw
