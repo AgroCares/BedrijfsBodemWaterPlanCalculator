@@ -1,3 +1,9 @@
+# BBWPC v2.0.0 2023-09-06
+## Changed
+* remove function `bbwp_check_lsw` and internal package table `lsw`, #BBWP-50
+* add argument `B_LSW_ID` to functions `bbwp` and `bbwp_field_indicators`
+* remove arguments `a_lon` and `a_lat` from functions `bbwp` and `bbwp_field_indicators`
+
 # BBWPC v1.1.1 2023-08-08
 ## Fixed
 * cryptic error when both neither `B_SLOPE` or `B_SLOPE_DEGREE` are supplied and relying on their defaults, resolves #79
@@ -24,12 +30,12 @@
 ## Fixed
 * Fixes failed GitHub Actions by upgrading to latest version
 
-# BBWPC v.1.0.1 2023-05-19
+# BBWPC v1.0.1 2023-05-19
 
 ## Fixed
 * confusing typos in function documentation
 
-# BBWPC v.1.0.0 2023-01-20
+# BBWPC v1.0.0 2023-01-20
 
 ## Changed
 * update csv files for internal tables `bbwp_measures` and `eco_brp` (reduce variants of EG20 from 18 to 6) 
@@ -48,7 +54,7 @@
 ## Fixed
 * Fixes error in the equation to calculate D_RISK_PSW
 
-# BBWPC v.0.10.18
+# BBWPC v0.10.18
 
 ## Changed
 * ecoregeling norms for landscape and water (on peat soil) were changed from 0 to 0.05 in `er_scoring`
@@ -57,28 +63,28 @@
 * threshold values for bronze, silver and gold were changed into 15, 22.5 and 40 respectively in `er_farm_aim` 
 * the `er_measures` table was extended from 7720 rows to 10457 rows
 
-# BBPC v.0.10.17
+# BBWPC v0.10.17
 
 ## Changed
 * the documentation of internal bbwp tables is updated in `bbwp_tables` 
 
-# BBPC v.0.10.16
+# BBWPC v0.10.16
 
 ## Fixed
 * update version of pandex package and `bbwp_parms`  
 
-# BBPC v.0.10.15
+# BBWPC v0.10.15
 
 ## Removed
 * Removed upper boundary in checkmates for S_ER scores
 
-# BBPC v.0.10.14
+# BBWPC v0.10.14
 
 ## Fixed
 * total of farm measures was calculated as weighted mean and is now added together instead for pdf.5 in `ecoregeling` pdf output
 * the total score per field in pdf.6 in the `ecoregeling` pdf output is now only based on field level measures and not on both field and farm level measures anymore
 
-# BBPC v.0.10.13
+# BBWPC v0.10.13
 
 ## Fixed
 * farm measures were duplicated when BBWP-service combines field and farm measures. Duplicates are removed, issue #BBWP-23
@@ -86,35 +92,35 @@
 * total area in pdf.5 in `er_pdf` is updated
 * avoid warnings in fs2 corrections in `er_meas_scores`
 
-# BBPC v.0.10.12
+# BBWPC v0.10.12
 
 ## Fixed
 * farm-measure EB10 gives an error when no measures are given on field level, issue #BBWP-24
 
-# BBPC v.0.10.11
+# BBWPC v0.10.11
 
 ## Fixed
 * URL of measures BWP9 does not work and seems not to exist, URL of measure BWP9 therefore removed from database.
 
-# BBPC v.0.10.10
+# BBWPC v0.10.10
 
 ## Changed
 * the columns `waterkwaliteit`, `bodemkwaliteit`, `klimaat`, `biodiversiteit`, `landschap` and `categories` were updated in the internal database `measures.csv`.
 * update values in internal table `eco_brp.csv`.
 * maximum score for `s_er_landscape` in `er_main` is now also equal to aim for golden medal instead of 1.
 
-# BBPC v.0.10.9
+# BBWPC v0.10.9
 
 ## Changed
 * function `er_croprotation` calculates score for farm level measures that apply to measure specific area based on the specific area instead of the total farm area
 
-# BBPC v.0.10.8
+# BBWPC v0.10.8
 
 ## Added
 * function er_pdf to prepare all output needed for the ER farm report
 * functions `er_croprotation`,`er_main`, `er_meas_rank`,`er_meas_scores`, `er_fieldscores` updated to give desired output for the ER farm report. New argument `pdf` (boolean) is added. By default set to FALSE.
 
-# BBPC v.0.10.7
+# BBWPC v0.10.7
 ## Changed
 * maximum scores in `er_main` are now equal to aim for golden medal
 * the threshold for landscape and water on peat soil is set to 0 in `er_farm_aim` 
@@ -129,12 +135,12 @@
 * five columns were added to the internal database `measures.csv` to select the ER theme to which the measures applies most, namely `waterkwaliteit`, `bodemkwaliteit`, `klimaat`, `biodiversiteit` en `landschap`.
 * one column categories is added representing all categories that apply for a given measure
 
-# BBWPC v.0.10.6
+# BBWPC v0.10.6
 ## Fixed
 * correction on calculation of `S_ER_REWARD` in `er_croprotation`, costs of farm level measures per farm are now per hectare instead of per m2 so the costs of farm level measures per ha and farm level measures per farm are now added up correctly 
 * correction on brp codes to which the measures apply in internal table `er_measures`
 
-# BBWPC v.0.10.5
+# BBWPC v0.10.5
 ## Changed
 * changed name of `TOTAL` into `FARM_TOT` in input dt for `er_medal` in order to get the merge with aims right
 

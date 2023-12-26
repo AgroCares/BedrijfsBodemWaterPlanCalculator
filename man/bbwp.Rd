@@ -34,9 +34,8 @@ bbwp(
   D_RO_R,
   B_AREA,
   M_DRAIN,
-  LSW,
-  a_lat = NULL,
-  a_lon = NULL,
+  B_LSW_ID,
+  LSW = NULL,
   measures,
   sector,
   output = "scores"
@@ -101,11 +100,9 @@ bbwp(
 
 \item{M_DRAIN}{(boolean) is there tube drainage present in the field}
 
-\item{LSW}{(data.table) A data.table with the LSW properties including oow_id. See details.}
+\item{B_LSW_ID}{(integer) An unique identifier for each Local Surface Water per field}
 
-\item{a_lat}{(numeric) Latitude of the field (required if no LSW is submitted)}
-
-\item{a_lon}{(numeric) Longitude of the field (required if no LSW is submitted)}
+\item{LSW}{(data.table) The averaged soil properties (mean and sd) per Local Surface Water. Can be derived from bbwp_lsw_properties.}
 
 \item{measures}{(data.table) the measures planned / done per fields}
 
@@ -119,6 +116,5 @@ A high BBWP score is indicative for the number of opportunities to improve soil 
 }
 \details{
 B_SLOPE_DEGREE should be used, for backwards compatibility B_SLOPE can still be used. At least one of the must be used, when both are supplied, B_SLOPE is ignored.
-LSW is by default a data.table with LSW properties.Sending only oow_id is sufficient to retrieve the LSW properties from BBWP internal package table.
-If needed, one can also send in a sf object to retrieve the LSW properties.
+LSW is by default a data.table with LSW properties, being calculated from bbwp_lsw_properties. Note that all B_LSW_IDs should be preset in the LSW data.table.
 }
