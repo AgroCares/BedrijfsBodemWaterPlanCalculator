@@ -30,7 +30,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   
   # add visual bindings
   effect_psw = psw_psg_medium = psw_psg_high = effect_nsw = nsw_drains = nsw_gwl_low = nsw_gwl_high = psw_noslope = NULL
-  effect_ngw = ngw_grassland = psw_bulbs = D_MEAs_NGW = D_MEAS_NSW = D_MEAS_NUE = effect_nue = D_MEAS_WB = effect_Wb = diary = NULL
+  effect_ngw = ngw_grassland = psw_bulbs = D_MEAs_NGW = D_MEAS_NSW = D_MEAS_NUE = effect_nue = D_MEAS_WB = effect_Wb = diary = nodrains = NULL
   arable = tree_nursery = bulbs = clay = sand = peat = loess = D_MEAS_TOT = id = NULL
   D_MEAS_PSW = D_MEAS_NGW = D_MEAS_PSW = effect_wb = NULL
   nc1 = nc2 = nc3 = nc4 = nc5 = nc6 = nc7 = nc8 = nc9 = nc10 = nc11 = nc12 = NULL
@@ -105,7 +105,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
     dt[A_P_SG >= 50 & A_P_SG < 75, effect_psw := effect_psw + psw_psg_medium]
     dt[A_P_SG >= 75, effect_psw := effect_psw + psw_psg_high]
     dt[B_SLOPE_DEGREE <= 2, effect_psw := effect_psw + psw_noslope]
-    dt[B_LU_BBWP == 6, effect_psw := effect_psw + psw_bulbs]
+    dt[grepl('bollen',B_LU_BBWP), effect_psw := effect_psw + psw_bulbs]
     dt[M_DRAIN == TRUE, effect_psw := effect_psw + nsw_drains]
     
     # Add bonus points for nsw
@@ -114,7 +114,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
     dt[! B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_high]
     
     # Add bonus points for grassland
-    dt[B_LU_BBWP %in% c(1,2), effect_ngw := effect_ngw + ngw_grassland]
+    dt[B_LU_BBWP %in% c('gras_permanent','gras_tijdelijk'), effect_ngw := effect_ngw + ngw_grassland]
  
   # set scores to zero when measures are not applicable given the crop type
   
@@ -171,14 +171,16 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   
       # adapt the score for slope dependent
       dt[B_SLOPE_DEGREE <= 2 & bbwp_id == 'G21',c(cols) := 0]
+      
+      # zuiveren drainage alleen als er ook drains zijn
       dt[M_DRAIN == FALSE & nodrains == TRUE, c(cols) := 0]
       
-  # add impact score for measure per opportunity index
-  dt[, D_MEAS_NGW := (100-D_OPI_NGW) * effect_ngw]
-  dt[, D_MEAS_NSW := (100-D_OPI_NSW) * effect_nsw]
-  dt[, D_MEAS_PSW := (100-D_OPI_PSW) * effect_psw]
-  dt[, D_MEAS_NUE := (100-D_OPI_NUE) * effect_nue]
-  dt[, D_MEAS_WB := (100-D_OPI_WB) * effect_wb]
+  # add impact score for measure per opportunity index => measures are more effective when risks are high
+  dt[, D_MEAS_NGW := D_OPI_NGW * effect_ngw]
+  dt[, D_MEAS_NSW := D_OPI_NSW * effect_nsw]
+  dt[, D_MEAS_PSW := D_OPI_PSW * effect_psw]
+  dt[, D_MEAS_NUE := D_OPI_NUE * effect_nue]
+  dt[, D_MEAS_WB := D_OPI_WB * effect_wb]
   
   # columns to be adapted given applicability
   scols <- c('D_MEAS_NGW','D_MEAS_NSW','D_MEAS_PSW','D_MEAS_NUE','D_MEAS_WB','D_MEAS_TOT')
@@ -201,8 +203,8 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   dt.meas[, c(scols) := lapply(.SD,function(x) fifelse(is.na(x), 0, x)), .SDcols = scols]
   
   # it should be possible to fill all requirements with two very effective measures per field, equal to +4 points per field
-  # so the change in score can increase from 0 to 1 when 6 effectiveness unit points via measures are collected
-  # so each effectiveness unit point is equal to 1/6 score units
+  # so the change in score can increase from 0 to 1 when 4 effectiveness unit points via measures are collected
+  # so each effectiveness unit point is equal to 1/4 score units
   dt.meas[ ,c(scols) := lapply(.SD,function(x) x * (1 / 4)), .SDcols = scols]
   
   # order
