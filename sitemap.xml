@@ -25,9 +25,6 @@
     <loc>https://agrocares.github.io/BedrijfsBodemWaterPlanCalculator/reference/bbwp_check_gt.html</loc>
   </url>
   <url>
-    <loc>https://agrocares.github.io/BedrijfsBodemWaterPlanCalculator/reference/bbwp_check_lsw.html</loc>
-  </url>
-  <url>
     <loc>https://agrocares.github.io/BedrijfsBodemWaterPlanCalculator/reference/bbwp_check_meas.html</loc>
   </url>
   <url>
@@ -44,6 +41,9 @@
   </url>
   <url>
     <loc>https://agrocares.github.io/BedrijfsBodemWaterPlanCalculator/reference/bbwp_format_aer.html</loc>
+  </url>
+  <url>
+    <loc>https://agrocares.github.io/BedrijfsBodemWaterPlanCalculator/reference/bbwp_lsw_properties.html</loc>
   </url>
   <url>
     <loc>https://agrocares.github.io/BedrijfsBodemWaterPlanCalculator/reference/bbwp_meas_rank.html</loc>
@@ -107,9 +107,6 @@
   </url>
   <url>
     <loc>https://agrocares.github.io/BedrijfsBodemWaterPlanCalculator/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://agrocares.github.io/BedrijfsBodemWaterPlanCalculator/reference/lsw.html</loc>
   </url>
   <url>
     <loc>https://agrocares.github.io/BedrijfsBodemWaterPlanCalculator/reference/wf.html</loc>
