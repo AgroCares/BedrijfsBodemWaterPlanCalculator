@@ -34,33 +34,34 @@ require(BBWPC)
   # sector = c('dairy', 'arable')
   # output = 'scores'
 
-  LSW = data.table(sd_wp = rep(0.27, 3),
-                   mean_wp = 0.33,
-                   sd_n_rt = 371.4,
-                   sd_p_al = 10.6,
-                   sd_p_cc = 1.34,
-                   sd_p_sg = 7.92,
-                   sd_p_wa = 12.5,
-                   sd_ro_r = 0.305,
-                   sd_al_ox = 3.99,
-                   sd_fe_ox = 6.25,
-                   mean_n_rt = 1599.9,
-                   mean_p_al=  63.2,
-                   mean_p_cc =3.27,
-                   mean_p_sg = 59.5,
-                   mean_p_wa = 56.781,
-                   mean_ro_r = 0.471,
-                   mean_al_ox = 36.401,
-                   mean_fe_ox = 27.877,
-                   sd_clay_mi = 0.583,
-                   sd_sand_mi = 5.93,
-                   sd_silt_mi = 4.158,
-                   sd_som_loi = 0.799,
-                   mean_clay_mi = 2.00,
-                   mean_sand_mi = 83.96,
-                   mean_silt_mi = 12.81,
-                   mean_som_loi = 3.92
-  )
+  LSW = data.table(B_LSW_ID = 1:3, 
+                   B_SOM_LOI = 8.65,
+                   B_CLAY_MI = 15.8,
+                   B_SAND_MI = 60.5,
+                   B_SILT_MI = 23.71,
+                   B_N_RT = 3834,
+                   B_P_AL = 49,
+                   B_P_CC = 2.71,
+                   B_P_WA = 40,
+                   B_P_SG = 22, 
+                   B_FE_OX = 83,
+                   B_AL_OX = 40,
+                   B_SA_W = 0.47,
+                   B_RO_R = 0.5,
+                   B_SOM_LOI_SD = 6.67,
+                   B_CLAY_MI_SD = 13.45,
+                   B_SAND_MI_SD = 23.5,
+                   B_SILT_MI_SD = 11.7,
+                   B_N_RT_SD = 2928,
+                   B_P_AL_SD = 13.5,
+                   B_P_CC_SD = 1.51,
+                   B_P_WA_SD = 15.6,
+                   B_P_SG_SD = 14, 
+                   B_FE_OX_SD = 59,
+                   B_AL_OX_SD = 19,
+                   B_SA_W_SD = 0.33,
+                   B_RO_R_SD = 0.3)
+  
 # run example 1 without any measures taken
 test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
              B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
@@ -93,6 +94,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
              measures = NULL,
              sector = c('dairy', 'arable'),
              output = 'scores',
+             B_LSW_ID = 1:3,
              LSW = LSW
             )
 
@@ -112,14 +114,14 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
     test_that("check bbwp", {
       expect_equal(
         object = test$fields$s_bbwp_tot,
-        expected = c(60,44,20),
+        expected = c(69,45,29),
         tolerance = 0.01)
     })
     
     test_that("check bbwp", {
       expect_equal(
         object = as.numeric(unlist(test$farm)),
-        expected = c(52,56,63,66,41,90),
+        expected = c(58,77,62,66,46,90),
         tolerance = 0.01)
     })
 
@@ -156,6 +158,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
              measures = NULL,
              sector = c('dairy', 'arable'),
              output = 'measures',
+             B_LSW_ID = 1:3,
              LSW = LSW
 )
 
@@ -169,7 +172,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
     test_that("check bbwp", {
       expect_equal(
         object = test$measures[[1]]$top_bbwp_tot,
-        expected = c("G36","B131", "G53", "G25", "G37"))
+        expected = c("G36","G53", "B131", "G25", "G37"))
     })
 
 
@@ -215,6 +218,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
              measures = measures,
              sector = c('dairy', 'arable'),
              output = 'scores',
+             B_LSW_ID = 1:3,
              LSW = LSW
 )
 
@@ -222,19 +226,19 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check bbwp", {
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(86,44,52),
+      expected = c(90,45,55),
       tolerance = 0.01)
   })
   
   test_that("check bbwp", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(67,75,64,67,66,92),
+      expected = c(70,85,63,67,72,92),
       tolerance = 0.01)
   })
 
   
-  # run example 3 without any measures taken and LSW id
+  # run example 3 without any measures taken and LSW equal to NULL
   test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
                B_SC_WENR = c(4, 2,2),
@@ -266,8 +270,8 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                measures = NULL,
                sector = c('dairy', 'arable'),
                output = 'scores',
-               LSW = data.table(oow_id = c(1,1295,84))
-  )
+               B_LSW_ID = 1:3,
+               LSW = NULL)
   
   
   # run tests on format and output values
@@ -286,14 +290,14 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check bbwp", {
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(60,43,21),
+      expected = c(69,45,29),
       tolerance = 0.01)
   })
   
   test_that("check bbwp", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(52,56,63,65,40,90),
+      expected = c(58,77,62,66,46,90),
       tolerance = 0.01)
   })
   
@@ -330,13 +334,14 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                measures = NULL,
                sector = c('dairy', 'arable'),
                output = 'scores',
+               B_LSW_ID = 1:3,
                LSW = LSW
   )
   
   test_that("check bbwp", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(22,62,6,7,32,84),
+      expected = c(24,86,8,6,32,84),
       tolerance = 0.01)
   })
   
@@ -374,13 +379,14 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                measures = NULL,
                sector = c('dairy', 'arable'),
                output = 'scores',
+               B_LSW_ID = 1:3,
                LSW = LSW
   )
   
   test_that("check bbwp", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(43,14,51,49,82,88),
+      expected = c(52,24,55,49,82,88),
       tolerance = 0.01)
   })
   
@@ -416,13 +422,14 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                measures = NULL,
                sector = c('dairy', 'arable'),
                output = 'scores',
+               B_LSW_ID = 1:3,
                LSW = LSW
   )
   
   test_that("check bbwp", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(48,62,48,44,32,84),
+      expected = c(53,86,49,43,32,84),
       tolerance = 0.01)
   })
   
@@ -459,7 +466,8 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
       measures = NULL,
       sector = c('dairy'),
       output = 'scores',
-      LSW = LSW
+      B_LSW_ID = 1,
+      LSW = NULL
     ))
   })
   
@@ -496,7 +504,8 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
       measures = NULL,
       sector = c('dairy'),
       output = 'scores',
-      LSW = LSW
+      B_LSW_ID = 1,
+      LSW = NULL
     ))
   })
   
