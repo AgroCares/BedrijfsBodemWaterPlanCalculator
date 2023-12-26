@@ -33,8 +33,8 @@ require(BBWPC)
   # measures = NULL
   # sector = c('dairy', 'arable')
   # output = 'scores'
-
-  LSW = data.table(B_LSW_ID = 1:3, 
+  # 
+  LSW = data.table(B_LSW_ID = 1:3,
                    B_SOM_LOI = 8.65,
                    B_CLAY_MI = 15.8,
                    B_SAND_MI = 60.5,
@@ -43,7 +43,7 @@ require(BBWPC)
                    B_P_AL = 49,
                    B_P_CC = 2.71,
                    B_P_WA = 40,
-                   B_P_SG = 22, 
+                   B_P_SG = 22,
                    B_FE_OX = 83,
                    B_AL_OX = 40,
                    B_SA_W = 0.47,
@@ -56,11 +56,12 @@ require(BBWPC)
                    B_P_AL_SD = 13.5,
                    B_P_CC_SD = 1.51,
                    B_P_WA_SD = 15.6,
-                   B_P_SG_SD = 14, 
+                   B_P_SG_SD = 14,
                    B_FE_OX_SD = 59,
                    B_AL_OX_SD = 19,
                    B_SA_W_SD = 0.33,
                    B_RO_R_SD = 0.3)
+  # B_LSW_ID <- LSW$B_LSW_ID
   
 # run example 1 without any measures taken
 test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),

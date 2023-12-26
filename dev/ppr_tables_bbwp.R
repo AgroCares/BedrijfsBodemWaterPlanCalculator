@@ -69,6 +69,9 @@ require(data.table);library(usethis)
     bbwp_measures[!is.na(categories),categories := paste0(categories,"||",category),by = .I]
     bbwp_measures[is.na(categories),categories := category]
     
+  # update all buffer strips
+    bbwp_measures[grepl('buffer',summary) & effect_psw == 0.25, effect_psw := 1]
+    
   # save measures as bbwp table
   use_data(bbwp_measures, overwrite = TRUE)
   

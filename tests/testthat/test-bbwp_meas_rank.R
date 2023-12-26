@@ -127,7 +127,7 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test[id==1,top_bbwp_tot],
-    expected = c("G19" , "G17",  "G16", "G80" , 'G68'),
+    expected = c("G17" , "G16",  "G19", "G80" , 'G68'),
     tolerance = 0.01)
 })
 

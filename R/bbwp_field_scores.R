@@ -123,7 +123,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
     dt[is.na(cfnsw), cfnsw := 1]
     
     # correction for need for increased nutrient use efficiency
-    dt[, cfnue := 0.5]
+    dt[,cfnue := 0.5]
   
     # calculate the individual opportunity indexes
     dt[,D_OPI_NGW := (0.5 + cfngw/2) * OBIC::evaluate_logistic(D_RISK_NGW, b=6, x0=0.4, v=.7)]
