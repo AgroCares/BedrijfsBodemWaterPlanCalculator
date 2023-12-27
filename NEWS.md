@@ -1,3 +1,11 @@
+# BBWPC v2.1.1 2023-12-27
+## Added
+* function `bbwp_format_sc_wenr` to ensure that B_SC_WENR is an integer conform format Van den Akker (2006), #BBWP-66
+
+## Changed
+* argument description of B_SC_WENR as input has changed, was character, is now integer
+* argument description of B_LSW_ID as input has changed, was integer, is now character
+
 # BBWPC v2.1.0 2023-12-26
 ## Changed
 * update effect of bufferstrips and helofytenfilter in `bbwp_measures`, `bbwp_meas_scores` and `bbwp_meas_rank`
