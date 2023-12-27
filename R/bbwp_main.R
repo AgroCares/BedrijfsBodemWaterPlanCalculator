@@ -6,7 +6,7 @@
 #' @param B_SOILTYPE_AGR (character) The type of soil, using agronomic classification
 #' @param B_LU_BBWP (character) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_GWL_CLASS (character) The groundwater table class
-#' @param B_SC_WENR (character) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006)
+#' @param B_SC_WENR (integer) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006). Options include: 1,2,3,4,5,10,11,401,901 and 902.
 #' @param B_HELP_WENR (character) The soil type abbreviation, derived from 1:50.000 soil map
 #' @param B_SLOPE (boolean) DEPRECATED, use B_SLOPE_DEGREE instead. Is the slope of the field, steeper than 3\%?
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
@@ -32,7 +32,7 @@
 #' @param D_RO_R (numeric) The risk that surface water runs off the parcel
 #' @param B_AREA (numeric) the area of the field (m2) 
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
-#' @param B_LSW_ID (integer) An unique identifier for each Local Surface Water per field
+#' @param B_LSW_ID (character) An unique identifier for each Local Surface Water per field
 #' @param LSW (data.table) The averaged soil properties (mean and sd) per Local Surface Water. Can be derived from bbwp_lsw_properties.
 #' @param measures (data.table) the measures planned / done per fields
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
