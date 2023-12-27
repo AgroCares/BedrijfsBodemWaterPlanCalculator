@@ -260,10 +260,8 @@ bbwp_format_aer <- function(B_AER_CBS) {
 #' @export
 bbwp_format_sc_wenr <- function(B_SC_WENR) {
   
-  # convert UTF-8 encoded strings to latin1 if required
-  if('UTF-8' %in% Encoding(B_SC_WENR)) {
-    B_SC_WENR <- iconv(B_SC_WENR, from = '', to = 'latin1')
-  }
+  # ensure B_SC_WENR is a character
+  B_SC_WENR <- as.character(B_SC_WENR)
   
   # options for B_SC_WENR
   bsc.text <- c('Zeer beperkt','Beperkt','Matig','Groot','Zeer groot','Beperkt door veenlagen','Van nature dicht',
@@ -283,6 +281,9 @@ bbwp_format_sc_wenr <- function(B_SC_WENR) {
   
   # replace numeric values with strings
   B_SC_WENR[B_SC_WENR %in% bsc.text] <- bsc.code[var.sel]
+  
+  # convert to an integer
+  B_SC_WENR <- as.integer(B_SC_WENR)
   
   # Return B_SC_WENR
   return(B_SC_WENR)
