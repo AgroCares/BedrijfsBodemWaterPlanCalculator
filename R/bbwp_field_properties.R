@@ -57,8 +57,9 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
                     length(D_SA_W), length(D_RO_R)
                   )
   
-  # reformat B_AER_CBS
+  # reformat B_AER_CBS and B_CS_WENR
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
+  B_SC_WENR <- bbwp_format_sc_wenr(B_SC_WENR)
   
   # check inputs B parameters
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
