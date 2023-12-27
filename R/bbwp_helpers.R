@@ -242,3 +242,48 @@ bbwp_format_aer <- function(B_AER_CBS) {
   return(B_AER_CBS)
 }
   
+#' Convert possible B_SC_WENR values to standardized values
+#' 
+#' This function formats information of subsoil compaction so it can be understood by BBWP functions
+#' 
+#' @param B_SC_WENR (character) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006)
+#' 
+#' @import data.table
+#' 
+#' @examples 
+#' bbwp_format_sc_wenr(c("1","5"))
+#' bbwp_format_sc_wenr(c("Zeer beperkt","Water",'4'))
+#' 
+#' @return 
+#' A standardized B_SC_WENR value as required for the BBWP functions. A character string.
+#' 
+#' @export
+bbwp_format_sc_wenr <- function(B_SC_WENR) {
+  
+  # convert UTF-8 encoded strings to latin1 if required
+  if('UTF-8' %in% Encoding(B_SC_WENR)) {
+    B_SC_WENR <- iconv(B_SC_WENR, from = '', to = 'latin1')
+  }
+  
+  # options for B_SC_WENR
+  bsc.text <- c('Zeer beperkt','Beperkt','Matig','Groot','Zeer groot','Beperkt door veenlagen','Van nature dicht',
+                'Glastuinbouw, niet beoordeeld','Bebouwing en infrastructuur','Water')
+  
+  # options for B_SC_WENR
+  bsc.code <- c(1,2,3,4,5,10,11,401,901,902)
+  
+  # all input options
+  bsc.all <- c(bsc.text,bsc.code)
+  
+  # Check if B_GT values are appropriate
+  checkmate::assert_subset(B_SC_WENR, empty.ok = FALSE, choices = bsc.all)
+  
+  # which of the input values are database codes
+  var.sel <- match(B_SC_WENR,bsc.text,nomatch = 0)
+  
+  # replace numeric values with strings
+  B_SC_WENR[B_SC_WENR %in% bsc.text] <- bsc.code[var.sel]
+  
+  # Return B_SC_WENR
+  return(B_SC_WENR)
+}
