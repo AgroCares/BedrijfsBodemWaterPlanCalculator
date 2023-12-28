@@ -3,6 +3,9 @@
 * possibility to falisfy the weighing fraction for evaluation of risks in `wf` function, default set to TRUE, #BBWP-67
 * argument `penalty` added to the functions `bbwp_field_indicators`, `bbwp_field_scores` and `bbwp_main`, #BBWP-67
 
+## Changed
+* function `bbwp_field_indicators` is simplified
+
 # BBWPC v2.1.1 2023-12-27
 ## Added
 * function `bbwp_format_sc_wenr` to ensure that B_SC_WENR is an integer conform format Van den Akker (2006), #BBWP-66
