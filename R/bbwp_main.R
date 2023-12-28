@@ -37,7 +37,8 @@
 #' @param measures (data.table) the measures planned / done per fields
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
 #' @param output (string) a vector specifying the output type of the function. Options: scores, measures 
-#' 
+#' @param penalty (boolean) the option to apply a penalty for high risk BBWP field indicators
+#'  
 #' @details 
 #' B_SLOPE_DEGREE should be used, for backwards compatibility B_SLOPE can still be used. At least one of the must be used, when both are supplied, B_SLOPE is ignored.
 #' LSW is by default a data.table with LSW properties, being calculated from bbwp_lsw_properties. Note that all B_LSW_IDs should be preset in the LSW data.table.
@@ -52,7 +53,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                  B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW,B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, 
                  D_SA_W, D_RO_R, B_AREA, 
                  M_DRAIN, B_LSW_ID, LSW = NULL,
-                 measures, sector,output = 'scores'){
+                 measures, sector,output = 'scores',penalty=TRUE){
   
   # add visual binding
   field_id = code = value_min = value_max = NULL
@@ -158,7 +159,8 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                                   D_NUE_NLV = dt$npe_nlv,
                                   D_WUE_WWRI = dt$wue_wwri,
                                   D_WUE_WDRI = dt$wue_wdri,
-                                  D_WUE_WHC = dt$wue_whc
+                                  D_WUE_WHC = dt$wue_whc,
+                                  penalty = penalty
                                 )
   
   # Calculate BBWP field scores
@@ -187,7 +189,8 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                                     B_CT_PSW_MAX = B_CT_PSW_MAX, 
                                     B_CT_NSW_MAX = B_CT_NSW_MAX,
                                     measures = measures,
-                                    sector = sector
+                                    sector = sector,
+                                    penalty = penalty
                                   )
   
   # Calculate the BBWP farm score
