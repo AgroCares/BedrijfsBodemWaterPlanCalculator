@@ -1,7 +1,7 @@
 # BBWPC v2.2.1 2023-12-28
 ## Added
 * possibility to falisfy the weighing fraction for evaluation of risks in `wf` function, default set to TRUE, #BBWP-67
-* argument `penalty` added to the functions `bbwp_field_indicators`, `bbwp_field_scores` and `bbwp_main`
+* argument `penalty` added to the functions `bbwp_field_indicators`, `bbwp_field_scores` and `bbwp_main`, #BBWP-67
 
 # BBWPC v2.1.1 2023-12-27
 ## Added

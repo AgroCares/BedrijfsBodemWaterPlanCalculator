@@ -38,7 +38,8 @@ bbwp(
   LSW = NULL,
   measures,
   sector,
-  output = "scores"
+  output = "scores",
+  penalty = TRUE
 )
 }
 \arguments{
@@ -109,6 +110,8 @@ bbwp(
 \item{sector}{(string) a vector with the farm type given the agricultural sector (options: options: 'dairy', 'arable', 'tree_nursery', 'bulbs')}
 
 \item{output}{(string) a vector specifying the output type of the function. Options: scores, measures}
+
+\item{penalty}{(boolean) the option to apply a penalty for high risk BBWP field indicators}
 }
 \description{
 Estimate the potential to contribute to agronomic and environmental challenges in a region for a farm and assess the impact of farm measures taken.

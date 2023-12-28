@@ -182,13 +182,13 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   dt[,S_BBWP_NUE := 100 * D_OPI_NUE]
   dt[,S_BBWP_WB := 100 * D_OPI_WB]
   
-  dt[,S_BBWP_TOT := (S_BBWP_NGW * wf(S_BBWP_NGW, type="score",penalty) + 
-                      S_BBWP_NSW * wf(S_BBWP_NSW, type="score",penalty) + 
-                      S_BBWP_PSW * wf(S_BBWP_PSW, type="score",penalty) + 
-                      S_BBWP_NUE * wf(S_BBWP_NUE, type="score",penalty) + 
+  dt[,S_BBWP_TOT := (S_BBWP_NGW * wf(S_BBWP_NGW, type="score",penalty = penalty) + 
+                      S_BBWP_NSW * wf(S_BBWP_NSW, type="score",penalty = penalty) + 
+                      S_BBWP_PSW * wf(S_BBWP_PSW, type="score",penalty = penalty) + 
+                      S_BBWP_NUE * wf(S_BBWP_NUE, type="score",penalty = penalty) + 
                       S_BBWP_WB * wf(S_BBWP_WB, type="score",penalty)) /
-       (wf(S_BBWP_NGW, type="score",penalty) + wf(S_BBWP_NSW, type="score",penalty) +  wf(S_BBWP_PSW, type="score",penalty) +  
-          wf(S_BBWP_NUE, type="score",penalty) +  wf(S_BBWP_WB, type="score",penalty))]
+       (wf(S_BBWP_NGW, type="score",penalty = penalty) + wf(S_BBWP_NSW, type="score",penalty = penalty) +  wf(S_BBWP_PSW, type="score",penalty = penalty) +  
+          wf(S_BBWP_NUE, type="score",penalty = penalty) +  wf(S_BBWP_WB, type="score",penalty = penalty))]
   
   # order the fields
   setorder(dt, id)
