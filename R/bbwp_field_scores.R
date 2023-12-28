@@ -23,7 +23,7 @@
 #' @param B_CT_NSW_MAX (numeric) the max critical target for N reduction loss (kg N / ha)
 #' @param measures (data.table) the measures planned / done per fields
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
-#' 
+#' @param penalty (boolean) the option to apply a penalty for high risk BBWP field indicators 
 #'   
 #' @import data.table
 #'
@@ -32,7 +32,7 @@
 bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BBWP,B_AER_CBS,
                               M_DRAIN, D_SA_W, D_RISK_NGW, D_RISK_NSW, D_RISK_PSW, D_RISK_NUE, D_RISK_WB,
                               B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW, 
-                              B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, measures, sector){
+                              B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, measures, sector,penalty = TRUE){
   
   # add visual bindings
   cfngw = cfwb = cfnsw = cfpsw = cfnue = NULL
@@ -182,13 +182,13 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   dt[,S_BBWP_NUE := 100 * D_OPI_NUE]
   dt[,S_BBWP_WB := 100 * D_OPI_WB]
   
-  dt[,S_BBWP_TOT := (S_BBWP_NGW * wf(S_BBWP_NGW, type="score") + 
-                      S_BBWP_NSW * wf(S_BBWP_NSW, type="score") + 
-                      S_BBWP_PSW * wf(S_BBWP_PSW, type="score") + 
-                      S_BBWP_NUE * wf(S_BBWP_NUE, type="score") + 
-                      S_BBWP_WB * wf(S_BBWP_WB, type="score")) /
-       (wf(S_BBWP_NGW, type="score") + wf(S_BBWP_NSW, type="score") +  wf(S_BBWP_PSW, type="score") +  
-          wf(S_BBWP_NUE, type="score") +  wf(S_BBWP_WB, type="score"))]
+  dt[,S_BBWP_TOT := (S_BBWP_NGW * wf(S_BBWP_NGW, type="score",penalty) + 
+                      S_BBWP_NSW * wf(S_BBWP_NSW, type="score",penalty) + 
+                      S_BBWP_PSW * wf(S_BBWP_PSW, type="score",penalty) + 
+                      S_BBWP_NUE * wf(S_BBWP_NUE, type="score",penalty) + 
+                      S_BBWP_WB * wf(S_BBWP_WB, type="score",penalty)) /
+       (wf(S_BBWP_NGW, type="score",penalty) + wf(S_BBWP_NSW, type="score",penalty) +  wf(S_BBWP_PSW, type="score",penalty) +  
+          wf(S_BBWP_NUE, type="score",penalty) +  wf(S_BBWP_WB, type="score",penalty))]
   
   # order the fields
   setorder(dt, id)
