@@ -115,14 +115,14 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
     test_that("check bbwp", {
       expect_equal(
         object = test$fields$s_bbwp_tot,
-        expected = c(69,45,29),
+        expected = c(68,45,28),
         tolerance = 0.01)
     })
     
     test_that("check bbwp", {
       expect_equal(
         object = as.numeric(unlist(test$farm)),
-        expected = c(58,77,62,66,46,90),
+        expected = c(57,72,62,66,46,90),
         tolerance = 0.01)
     })
 
@@ -227,14 +227,14 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check bbwp", {
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(90,45,55),
+      expected = c(89,45,55),
       tolerance = 0.01)
   })
   
   test_that("check bbwp", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(70,85,63,67,72,92),
+      expected = c(69,82,63,67,72,92),
       tolerance = 0.01)
   })
 
@@ -291,14 +291,14 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check bbwp", {
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(69,45,29),
+      expected = c(68,45,28),
       tolerance = 0.01)
   })
   
   test_that("check bbwp", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(58,77,62,66,46,90),
+      expected = c(57,72,62,66,46,90),
       tolerance = 0.01)
   })
   
@@ -342,7 +342,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check bbwp", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(24,86,8,6,32,84),
+      expected = c(24,81,8,6,32,84),
       tolerance = 0.01)
   })
   
@@ -430,7 +430,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test_that("check bbwp", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(53,86,49,43,32,84),
+      expected = c(52,81,49,43,32,84),
       tolerance = 0.01)
   })
   
