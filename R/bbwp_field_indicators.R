@@ -95,8 +95,8 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
   
   # add manual weighing factor for risks
   dt.melt[,mcf := 1]
-  dt.melt[group=='NGW' & grepl('_LEA$',risk), mcf := 2]
-  dt.melt[group=='NGW' & grepl('_NLV$',risk), mcf := 3]
+  dt.melt[group=='NGW' & grepl('_LEA$',risk), mcf := 3]
+  dt.melt[group=='NGW' & grepl('_NLV$',risk), mcf := 2]
   dt.melt[group=='NSW' & grepl('_NLV$',risk), mcf := 3]
   dt.melt[group=='PSW' & grepl('_SCR$|_RO$|_WS$',risk), mcf := 2]
   dt.melt[group=='NUE' & grepl('_PBI$',risk), mcf := 2]
