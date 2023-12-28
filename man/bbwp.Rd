@@ -48,7 +48,7 @@ bbwp(
 
 \item{B_GWL_CLASS}{(character) The groundwater table class}
 
-\item{B_SC_WENR}{(character) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006)}
+\item{B_SC_WENR}{(integer) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006). Options include: 1,2,3,4,5,10,11,401,901 and 902.}
 
 \item{B_HELP_WENR}{(character) The soil type abbreviation, derived from 1:50.000 soil map}
 
@@ -100,7 +100,7 @@ bbwp(
 
 \item{M_DRAIN}{(boolean) is there tube drainage present in the field}
 
-\item{B_LSW_ID}{(integer) An unique identifier for each Local Surface Water per field}
+\item{B_LSW_ID}{(character) An unique identifier for each Local Surface Water per field}
 
 \item{LSW}{(data.table) The averaged soil properties (mean and sd) per Local Surface Water. Can be derived from bbwp_lsw_properties.}
 

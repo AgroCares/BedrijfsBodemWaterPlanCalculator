@@ -6,7 +6,7 @@
 #' @param B_SOILTYPE_AGR (character) The type of soil, using agronomic classification
 #' @param B_LU_BBWP (character) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_GWL_CLASS (character) The groundwater table class
-#' @param B_SC_WENR (character) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006)
+#' @param B_SC_WENR (integer) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006). Options include: 1,2,3,4,5,10,11,401,901 and 902.
 #' @param B_HELP_WENR (character) The soil type abbreviation, derived from 1:50.000 soil map
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
@@ -23,7 +23,7 @@
 #' @param A_P_SG (numeric) The P-saturation index (\%)
 #' @param D_SA_W (numeric) The wet perimeter index of the field, fraction that field is surrounded by water
 #' @param D_RO_R (numeric) The risk that surface water runs off the parcel
-#' @param B_LSW_ID (integer) An unique identifier for each Local Surface Water per field
+#' @param B_LSW_ID (character) An unique identifier for each Local Surface Water per field
 #' @param LSW (data.table) The averaged soil properties (mean and sd) per Local Surface Water
 #'  
 #' @import data.table
@@ -57,8 +57,9 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
                     length(D_SA_W), length(D_RO_R)
                   )
   
-  # reformat B_AER_CBS
+  # reformat B_AER_CBS and B_CS_WENR
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
+  B_SC_WENR <- bbwp_format_sc_wenr(B_SC_WENR)
   
   # check inputs B parameters
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
