@@ -28,7 +28,8 @@ bbwp_field_indicators(
   D_NUE_NLV,
   D_WUE_WWRI,
   D_WUE_WDRI,
-  D_WUE_WHC
+  D_WUE_WHC,
+  penalty = TRUE
 )
 }
 \arguments{
@@ -79,6 +80,8 @@ bbwp_field_indicators(
 \item{D_WUE_WDRI}{(numeric) The relative score of drought stress for improved efficiency of water}
 
 \item{D_WUE_WHC}{(numeric) The relative score of drought stress for improved efficiency of water}
+
+\item{penalty}{(boolean) the option to apply a penalty for high risk BBWP field indicators}
 }
 \description{
 These include indicators: 

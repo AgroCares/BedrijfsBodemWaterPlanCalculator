@@ -510,3 +510,4 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
     ))
   })
   
+  

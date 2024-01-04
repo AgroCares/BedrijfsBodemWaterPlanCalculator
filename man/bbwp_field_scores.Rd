@@ -25,7 +25,8 @@ bbwp_field_scores(
   B_CT_PSW_MAX = 0.5,
   B_CT_NSW_MAX = 5,
   measures,
-  sector
+  sector,
+  penalty = TRUE
 )
 }
 \arguments{
@@ -70,6 +71,8 @@ bbwp_field_scores(
 \item{measures}{(data.table) the measures planned / done per fields}
 
 \item{sector}{(string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')}
+
+\item{penalty}{(boolean) the option to apply a penalty for high risk BBWP field indicators}
 }
 \description{
 Estimate the potential to contribute to agronomic and environmental challenges in a region

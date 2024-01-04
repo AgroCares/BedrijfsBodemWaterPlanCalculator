@@ -30,6 +30,7 @@
 #' @param D_WUE_WWRI (numeric) The relative score of soil wetness stress for improved efficiency of water
 #' @param D_WUE_WDRI (numeric) The relative score of drought stress for improved efficiency of water
 #' @param D_WUE_WHC (numeric) The relative score of drought stress for improved efficiency of water
+#' @param penalty (boolean) the option to apply a penalty for high risk BBWP field indicators
 #' 
 #' @import data.table
 #' @import OBIC
@@ -40,10 +41,11 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
                                   D_NSW_SCR,D_NSW_GWT,D_NSW_RO,D_NSW_SLOPE, D_NSW_WS,D_NSW_NLV,
                                   D_PSW_SCR,D_PSW_GWT,D_PSW_RO,D_PSW_SLOPE,D_PSW_WS,D_PSW_PCC,D_PSW_PSG,D_PSW_PRET,
                                   D_NUE_WRI,D_NUE_PBI,D_NUE_WDRI,D_NUE_NLV,
-                                  D_WUE_WWRI,D_WUE_WDRI,D_WUE_WHC){
+                                  D_WUE_WWRI,D_WUE_WDRI,D_WUE_WHC, penalty = TRUE){
   
   # add visual bindings
   D_RISK_NGW = D_RISK_NSW = D_RISK_PSW = D_RISK_NUE = D_RISK_WB = id = NULL
+  risk_cor = value = group = risk = mcf = WS = SLOPE = NULL
   
   # check length inputs
   arg.length <- max(
@@ -54,86 +56,73 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
     length(D_WUE_WWRI),length(D_WUE_WDRI),length(D_WUE_WHC)
   )
   
-  # add checks on input
-  
-  
   # copy input in one data.table
-  dt <- data.table(
-    id = 1:arg.length,
-    D_NGW_SCR = D_NGW_SCR,
-    D_NGW_LEA = D_NGW_LEA,
-    D_NGW_NLV = D_NGW_NLV,
-    D_NSW_SCR = D_NSW_SCR,
-    D_NSW_GWT = D_NSW_GWT,
-    D_NSW_RO = D_NSW_RO,
-    D_NSW_SLOPE = D_NSW_SLOPE,
-    D_NSW_WS = D_NSW_WS,
-    D_NSW_NLV = D_NSW_NLV,
-    D_PSW_SCR = D_PSW_SCR,
-    D_PSW_GWT = D_PSW_GWT,
-    D_PSW_RO = D_PSW_RO,
-    D_PSW_SLOPE = D_PSW_SLOPE,
-    D_PSW_WS = D_PSW_WS,
-    D_PSW_PCC = D_PSW_PCC,
-    D_PSW_PSG = D_PSW_PSG,
-    D_PSW_PRET = D_PSW_PRET,
-    D_NUE_WRI = D_NUE_WRI,
-    D_NUE_PBI = D_NUE_PBI,
-    D_NUE_WDRI = D_NUE_WDRI,
-    D_NUE_NLV = D_NUE_NLV,
-    D_WUE_WWRI = D_WUE_WWRI,
-    D_WUE_WDRI = D_WUE_WDRI,
-    D_WUE_WHC = D_WUE_WHC,
-    D_RISK_NGW = NA_real_,
-    D_RISK_NSW = NA_real_,
-    D_RISK_PSW = NA_real_,
-    D_RISK_NUE = NA_real_,
-    D_RISK_WB = NA_real_
-  )
+  dt <- data.table(id = 1:arg.length,
+                   D_NGW_SCR = D_NGW_SCR,
+                   D_NGW_LEA = D_NGW_LEA,
+                   D_NGW_NLV = D_NGW_NLV,
+                   D_NSW_SCR = D_NSW_SCR,
+                   D_NSW_GWT = D_NSW_GWT,
+                   D_NSW_RO = D_NSW_RO,
+                   D_NSW_SLOPE = D_NSW_SLOPE,
+                   D_NSW_WS = D_NSW_WS,
+                   D_NSW_NLV = D_NSW_NLV,
+                   D_PSW_SCR = D_PSW_SCR,
+                   D_PSW_GWT = D_PSW_GWT,
+                   D_PSW_RO = D_PSW_RO,
+                   D_PSW_SLOPE = D_PSW_SLOPE,
+                   D_PSW_WS = D_PSW_WS,
+                   D_PSW_PCC = D_PSW_PCC,
+                   D_PSW_PSG = D_PSW_PSG,
+                   D_PSW_PRET = D_PSW_PRET,
+                   D_NUE_WRI = D_NUE_WRI,
+                   D_NUE_PBI = D_NUE_PBI,
+                   D_NUE_WDRI = D_NUE_WDRI,
+                   D_NUE_NLV = D_NUE_NLV,
+                   D_WUE_WWRI = D_WUE_WWRI,
+                   D_WUE_WDRI = D_WUE_WDRI,
+                   D_WUE_WHC = D_WUE_WHC
+                  )
   
+  # melt the data.table to simplify corrections
+  dt.melt <- data.table::melt(dt, id.vars = 'id',variable.name = 'risk')
   
-  # integrate all relative field risk indicators into one for indictor for N loss to groundwater
-  dt[, D_RISK_NGW := (wf(D_NGW_SCR) * D_NGW_SCR + 
-                  3 * wf(D_NGW_LEA) * D_NGW_LEA + 
-                  2 * wf(D_NGW_NLV) * D_NGW_NLV) /
-       (wf(D_NGW_SCR) + 3 * wf(D_NGW_LEA) + 2 * wf(D_NGW_NLV))]
+  # add correction factor based on risk itself
+  dt.melt[,risk_cor := wf(value,type = "indicators",penalty = penalty)]
   
-  # integrate all relative field risk indicators into one for indictor for N loss to surface water
-  dt[, D_RISK_NSW := (wf(D_NSW_SCR) * D_NSW_SCR + 
-                      wf(D_NSW_GWT) * D_NSW_GWT + 
-                      wf(D_NSW_SLOPE) * D_NSW_SLOPE +
-                      wf(D_NSW_RO) * D_NSW_RO + 
-                      wf(D_NSW_WS) * D_NSW_WS + 
-                  3 * wf(D_NSW_NLV) * D_NSW_NLV ) /
-       (wf(D_NSW_SCR) + wf(D_NSW_GWT) + wf(D_NSW_SLOPE) + wf(D_NSW_RO) + wf(D_NSW_WS) + 3 * wf(D_NSW_NLV))]
+  # add groups of risk indicators
+  dt.melt[,group := gsub('_[A-Z]+$','',gsub('D_','',risk))]
   
-  # integrate all relative field risk indicators into one for indictor for P loss to surface water
-  dt[, D_RISK_PSW := (2 * wf(D_PSW_SCR) * D_PSW_SCR + 
-                          wf(D_PSW_GWT) * D_PSW_GWT + 
-                      2 * wf(D_PSW_RO) * D_PSW_RO + 
-                          wf(D_PSW_SLOPE) * D_PSW_SLOPE +
-                      2 * wf(D_PSW_WS) * D_PSW_WS + 
-                          wf(D_PSW_PCC) * D_PSW_PCC + 
-                          wf(D_PSW_PSG) * D_PSW_PSG + 
-                          wf(D_PSW_PRET) * D_PSW_PRET) /
-       (2 * wf(D_PSW_SCR) + wf(D_PSW_GWT) + 2 * wf(D_PSW_RO) + wf(D_PSW_SLOPE) + 2 * wf(D_PSW_WS) + wf(D_PSW_PCC) + wf(D_PSW_PSG) + wf(D_PSW_PRET))]
+  # add manual weighing factor for risks
+  dt.melt[,mcf := 1]
+  dt.melt[group=='NGW' & grepl('_LEA$',risk), mcf := 3]
+  dt.melt[group=='NGW' & grepl('_NLV$',risk), mcf := 2]
+  dt.melt[group=='NSW' & grepl('_NLV$',risk), mcf := 3]
+  dt.melt[group=='PSW' & grepl('_SCR$|_RO$|_WS$',risk), mcf := 2]
+  dt.melt[group=='NUE' & grepl('_PBI$',risk), mcf := 2]
+  dt.melt[group=='WUE' & grepl('_WHC$',risk), mcf := 2]
   
-  # minimize risks when there are no ditches around (wet surrounding fraction < 0.2)
-  dt[D_NSW_WS <= 0.2 & D_PSW_SLOPE < 1,D_RISK_PSW := 0.1]
-  dt[D_NSW_WS <= 0.2 & D_PSW_SLOPE < 1,D_RISK_NSW := 0.1]
-  dt[D_NSW_WS <= 0.1 & D_PSW_SLOPE < 1,D_RISK_PSW := 0.01]
-  dt[D_NSW_WS <= 0.1 & D_PSW_SLOPE < 1,D_RISK_NSW := 0.01]
+   
+  # minimize risks when there are no ditches around the field (wet surrounding fraction < 0.2)
   
-  # integrate all relative field risk indicators into one for indictor for N and P efficiency of inputs
-  dt[, D_RISK_NUE := (wf(D_NUE_WRI) * D_NUE_WRI + 2 * wf(D_NUE_PBI) * D_NUE_PBI + wf(D_NUE_NLV) * D_NUE_NLV + wf(D_NUE_WDRI) * D_NUE_WDRI) /
-       (wf(D_NUE_WRI) + 2 * wf(D_NUE_PBI) + wf(D_NUE_NLV) + wf(D_NUE_WDRI))]
+    # add criteria properties as column (to use as filter)
+    dt.melt[,WS := value[risk=='D_NSW_WS'],by='id']
+    dt.melt[,SLOPE := value[risk=='D_NSW_SLOPE'],by='id']
+    
+    # ensure that the final risk after aggregation gets the value 0.1 or 0.01
+    dt.melt[WS <= 0.2 & SLOPE < 1 & group %in% c('NSW','PSW'), c('mcf','risk_cor','value') :=  list(1,1000,0.1)]
+    dt.melt[WS <= 0.1 & SLOPE < 1 & group %in% c('NSW','PSW'), c('mcf','risk_cor','value') :=  list(1,1000,0.01)]
+    dt.melt[,c('WS','SLOPE') := NULL]
   
-  # integrate all relative field risk indicators into one for indictor for water retention and efficiency
-  dt[, D_RISK_WB := (wf(D_WUE_WWRI) * D_WUE_WWRI + wf(D_WUE_WDRI) * D_WUE_WDRI + 2 * wf(D_WUE_WHC) * D_WUE_WHC) / (wf(D_WUE_WWRI) + wf(D_WUE_WDRI) + 2 * wf(D_WUE_WHC))]
+  # calculate the mean aggregated risk indicators
+  dt <- dt.melt[,list(risk = sum(risk_cor * value * mcf)/sum(risk_cor * mcf)),by=c('id','group')]
+  dt <- dcast(dt,id~group,value.var='risk')
   
-  # normalise these indicators ???
+  # replace output names
+  setnames(dt,old=c('NGW','NSW','NUE','PSW','WUE'),new = c('D_RISK_NGW','D_RISK_NSW','D_RISK_NUE','D_RISK_PSW','D_RISK_WB'))
   
-  setorder(dt, id)
+  # sort output based on id
+  setorder(dt,id)
   
   # extract output
   out <- dt[,mget(c('D_RISK_NGW','D_RISK_NSW','D_RISK_PSW','D_RISK_NUE','D_RISK_WB'))]

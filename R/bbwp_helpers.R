@@ -33,18 +33,22 @@ cdf_rank <- function(smean,ssd,svalue){
 #' 
 #' @param x The risk or score value to be weighted
 #' @param type Use the weighing function for indicators or score
+#' @param penalty (boolean) the option to apply a penalty for high risk BBWP field indicators
 #' 
 #' @export
-wf <- function(x, type = "indicators") {
+wf <- function(x, type = "indicators", penalty = TRUE) {
   
-  if (type == "indicators") {
+  if (type == "indicators" & penalty == TRUE) {
     
     y <- 1 / (1 - x + 0.2)
     
-  } else if (type == "score") {
+  } else if (type == "score" & penalty == TRUE) {
     
     y <- 1 / (x * 0.01 + 0.2)
     
+  } else if(penalty == FALSE){
+    
+    y = 1
   }
   
   return(y)
