@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BBWPC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,7 +72,8 @@
 <span>  B_CT_PSW_MAX <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  B_CT_NSW_MAX <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  <span class="va">measures</span>,</span>
-<span>  <span class="va">sector</span></span>
+<span>  <span class="va">sector</span>,</span>
+<span>  penalty <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -160,6 +161,10 @@
 
 <dt>sector</dt>
 <dd><p>(string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')</p></dd>
+
+
+<dt>penalty</dt>
+<dd><p>(boolean) the option to apply a penalty for high risk BBWP field indicators</p></dd>
 
 </dl></div>
 
