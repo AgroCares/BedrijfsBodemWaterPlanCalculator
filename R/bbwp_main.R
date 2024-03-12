@@ -246,7 +246,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
     dt.fields[,field_id := .I]
     
     # set output object
-    out <- list(farm = as.list(dt.farm),fields = dt.fields)
+    out <- list(farm = as.list(dt.farm),fields = copy(dt.fields))
     
   }
   
