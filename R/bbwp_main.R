@@ -103,8 +103,9 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
               "B_P_WA_SD","B_P_SG_SD","B_FE_OX_SD","B_AL_OX_SD","B_SA_W_SD","B_RO_R_SD")
     
     # check LSW format and column names
-    checkmate::assert_data_table(LSW,nrow = length(A_SOM_LOI))
+    checkmate::assert_data_table(LSW,nrow = length(unique(B_LSW_ID)))
     checkmate::assert_subset(colnames(LSW),choices = cols)
+    checkmate::assert_subset(B_LSW_ID, choices = LSW$B_LSW_ID)
     
     # check if all B_LSW_ID are in the LSW data.table
     checkmate::assert_subset(LSW$B_LSW_ID,choices = B_LSW_ID)
