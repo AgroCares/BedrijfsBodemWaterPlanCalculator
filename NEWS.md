@@ -1,3 +1,7 @@
+# UNRELEASED
+### Added
+* Adds BRP cultivation codes from 2023 [BBWP-76]
+
 # BBWPC v2.2.1 2023-12-28
 ## Added
 * possibility to falisfy the weighing fraction for evaluation of risks in `wf` function, default set to TRUE, #BBWP-67

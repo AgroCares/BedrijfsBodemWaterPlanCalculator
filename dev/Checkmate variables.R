@@ -18,4 +18,4 @@ library(pandex);library(data.table);library(stringr)
   bbwp_parms[code == 'B_AREA', value_max := 500000000]
   
   # Save data
-  usethis::use_data(bbwp_parms,overwrite = TRUE)
+  usethis::use_data(bbwp_parms,overwrite = TRUE, version = 3, compress = 'xz')
