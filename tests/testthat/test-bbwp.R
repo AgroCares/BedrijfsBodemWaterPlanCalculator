@@ -33,7 +33,7 @@ require(BBWPC)
   # measures = NULL
   # sector = c('dairy', 'arable')
   # output = 'scores'
-  # 
+
   LSW = data.table(B_LSW_ID = 1:3,
                    B_SOM_LOI = 8.65,
                    B_CLAY_MI = 15.8,
