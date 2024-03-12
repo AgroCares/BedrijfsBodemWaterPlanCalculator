@@ -121,6 +121,20 @@ require(data.table);library(usethis)
   er_crops <- fread('dev/er_crops.csv', encoding = 'UTF-8')
   er_crops[er_crops == ''] <- NA
   
+  # WORKAROUND: add new cultivation from 2023 as grassland
+  dt.b_lu_brp.new <- pandex::b_lu_brp[!pandex::b_lu_brp$B_LU_BRP %in% unique(er_crops$B_LU_BRP), ]
+  dt.er_new <- data.table(
+    B_LU_BRP = dt.b_lu_brp.new$B_LU_BRP,
+    B_LU_NAME = dt.b_lu_brp.new$B_LU_NAME,
+    crop_cat1 = 1,
+    bouwland = 0,
+    beteelbaar = 1,
+    productive = 1,
+    SUM = 1
+  )
+  er_crops <- rbindlist(list(er_crops, dt.er_new), fill = TRUE)
+  er_crops[is.na(er_crops)] <- 0
+  
   # transform old cropcategories in new categories
   er_crops[,nc1:= fifelse(crop_cat1==1,1,0)]
   er_crops[,nc2:= fifelse(crop_cat2==1,1,0)]
@@ -159,9 +173,9 @@ require(data.table);library(usethis)
   setcolorder(er_crops,c('B_LU_BRP','B_LU_NAME','B_LU_BBWP'))
   
   # save measures as bbwp table
-  use_data(er_crops, overwrite = TRUE)
+  usethis::use_data(er_crops, overwrite = TRUE, version = 3, compress = 'xz')
   
-# -- prepare correction factors for financial reward per Agricultural Economic Region for Ecoregelingen ---
+  # -- prepare correction factors for financial reward per Agricultural Economic Region for Ecoregelingen ---
   
   # load in csv
   er_aer_reward <- as.data.table(fread('dev/220519 ecoregeling reward weging.csv',dec=','))
