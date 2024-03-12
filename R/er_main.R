@@ -211,7 +211,7 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     
     # add thresholds
     out <- list(farm = c(as.list(out.farm),dt.farm.thresholds),
-                fields = out.field)
+                fields = copy(out.field))
     
     }
   
@@ -401,17 +401,17 @@ ecoregeling <- function(B_SOILTYPE_AGR, B_LU_BRP,B_LU_BBWP,
     
     
     # add pdf table to output when pdf is requested
-    out <-list(r1 = pdf.1,
+    out <-list(r1 = copy(pdf.1),
                r1_title = r1_title,
-               r2 = pdf.2,
+               r2 = copy(pdf.2),
                r2_title = r2_title,
-               r3 = pdf.3,
+               r3 = copy(pdf.3),
                r3_title = r3_title,
-               r4 = pdf.4,
+               r4 = copy(pdf.4),
                r4_title = r4_title,
-               r5 = pdf.5,
+               r5 = copy(pdf.5),
                r5_title = r5_title,
-               r6 = pdf.6,
+               r6 = copy(pdf.6),
                r6_title = r6_title,
                r7 = NULL,
                r7_title = r7_title)

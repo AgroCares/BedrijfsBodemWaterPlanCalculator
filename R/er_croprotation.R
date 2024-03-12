@@ -201,9 +201,9 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     # multiply by (political) urgency
     
       # melt dt
-      dt.field <- melt(dt.field,
+      dt.field <- data.table::melt(dt.field,
                id.vars = c('id','bbwp_id','soiltype','bbwp_conflict','reward_cf','regio_factor'),
-               measure = patterns(erscore = "^er_"),
+               measure.vars = patterns("^er_"),
                variable.name = 'indicator',
                value.name = 'value')
       dt.field[,indicator := gsub('er_', '',indicator)]
@@ -287,7 +287,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       # multiply by (political) urgency
       dt3 <- melt(dt.meas.farm, 
                   id.vars = c('bbwp_id','bbwp_conflict'),
-                  measure = patterns(erscore = "^er_"),
+                  measure = patterns("^er_"),
                   variable.name = 'indicator',
                   value.name = 'value')
       dt3[,indicator := gsub('er_', '',indicator)]
@@ -401,7 +401,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                     dt.field.measures = dt2,
                     dt.farm.measures = dt4, 
                     B_AREA = B_AREA)
-      out <- list(out = out, pdf = pdf)
+      out <- list(out = copy(out), pdf = copy(pdf))
 
     }
   
