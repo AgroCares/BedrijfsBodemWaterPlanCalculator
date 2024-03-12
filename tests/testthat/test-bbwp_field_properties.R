@@ -72,11 +72,11 @@ test_that("check bbwp_field_properties", {
       psw_pcc = c(0.94, 0.13),
       psw_psg = c(0.87, 0.999),
       psw_pret = c(0, 0),
-      npe_wri = c(0.095, 0.25),
+      npe_wri = c(0.055, 0.25),
       npe_pbi = c(0.97577, 0.02158),
       npe_wdri = c(0, 0.23),
       npe_nlv = c(0.95, 0.83),
-      wue_wwri = c(0.095, 0.03),
+      wue_wwri = c(0.055, 0.03),
       wue_wdri = c(0, 0.23),
       wue_whc = c(0.2338, 0.055)
     ),
