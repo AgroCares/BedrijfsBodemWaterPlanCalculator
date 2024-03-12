@@ -83,11 +83,20 @@ require(data.table);library(usethis)
   # remove brp codes that do not occur in pandex
   er_measures <- er_measures[B_LU_BRP < 7000 & B_LU_BRP != 305,]
   
+  # WORKAROUND: add measure applicability for new cultivations
+  b_lu_brp.new <- pandex::b_lu_brp$B_LU_BRP[! pandex::b_lu_brp$B_LU_BRP %in% unique(er_measures$B_LU_BRP)]
+  dt.er_new <- CJ(
+    eco_id = unique(er_measures$eco_id),
+    B_LU_BRP = b_lu_brp.new,
+    eco_app = 1
+  )
+  er_measures <- rbindlist(list(er_measures, dt.er_new))
+  
   # add a column with applicability
   er_measures[, eco_app := 1]
   
   # save measures as bbwp table
-  use_data(er_measures, overwrite = TRUE)
+  usethis::use_data(er_measures, overwrite = TRUE, version = 3, compress = 'xz')
   
     
 # -- prepare ecoregeling objectives ---
