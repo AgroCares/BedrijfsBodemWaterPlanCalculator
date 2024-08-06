@@ -69,9 +69,6 @@ require(data.table);library(usethis)
     bbwp_measures[!is.na(categories),categories := paste0(categories,"||",category),by = .I]
     bbwp_measures[is.na(categories),categories := category]
     
-  # update all buffer strips
-    bbwp_measures[grepl('buffer',summary) & effect_psw == 0.25, effect_psw := 1]
-    
   # save measures as bbwp table
   use_data(bbwp_measures, overwrite = TRUE)
   
@@ -108,49 +105,11 @@ require(data.table);library(usethis)
   
 # -- prepare crop specific tables for Ecoregelingen ---
   
-  # load in csv with crop list
-  er_crops <- fread('dev/er_crops.csv', encoding = 'UTF-8')
-  er_crops[er_crops == ''] <- NA
-  
-  # transform old cropcategories in new categories
-  er_crops[,nc1:= fifelse(crop_cat1==1,1,0)]
-  er_crops[,nc2:= fifelse(crop_cat2==1,1,0)]
-  er_crops[,nc3:= fifelse(crop_cat3==1,1,0)]
-  er_crops[,nc4:= fifelse(crop_cat4==1,1,0)]
-  er_crops[,nc5:= fifelse(crop_cat5==1,1,0)]
-  er_crops[,nc6:= fifelse(crop_cat6==1,1,0)]
-  er_crops[,nc7:= fifelse(crop_cat7==1,1,0)]
-  er_crops[,nc8:= fifelse(crop_cat8==1,1,0)] 
-  er_crops[,nc9:= fifelse(crop_cat9==1,1,0)] 
-  er_crops[,nc10:= fifelse(c10==1,1,0)] 
-  er_crops[,nc11:= fifelse(c11==1,1,0)] 
-  er_crops[,nc12:= fifelse(c12==1,1,0)] 
-  
-  # each BBWP category in one column
-  er_crops[nc1==1, B_LU_BBWP := 'gras_permanent']
-  er_crops[nc2==1, B_LU_BBWP := 'gras_tijdelijk']
-  er_crops[nc3==1, B_LU_BBWP := 'rustgewas']
-  er_crops[nc4==1, B_LU_BBWP := 'rooivrucht']
-  er_crops[nc5==1, B_LU_BBWP := 'groenten']
-  er_crops[nc6==1, B_LU_BBWP := 'bollensierteelt']
-  er_crops[nc7==1, B_LU_BBWP := 'boomfruitteelt']
-  er_crops[nc8==1, B_LU_BBWP := 'natuur']
-  er_crops[nc9==1, B_LU_BBWP := 'mais']
-  er_crops[nc10==1, B_LU_BBWP := 'randensloot']
-  er_crops[nc11==1, B_LU_BBWP := 'vanggewas']
-  er_crops[nc12==1, B_LU_BBWP := 'eiwitgewas']
-  
-  # remove columns not needed
-  cols.rem <- c(paste0('crop_cat',1:9),paste0('c',10:29),paste0('nc',1:12),'SUM')
-  
-  # keep relevant columns and remove rows without B_LU_BRP code
-  er_crops[,c(cols.rem):= NULL]
-
-  # reorder
-  setcolorder(er_crops,c('B_LU_BRP','B_LU_NAME','B_LU_BBWP'))
+  er_crops <- pandex::b_lu_brp[,.(B_LU_BRP, B_LU_NAME, B_LU_BBWP, B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER, B_LU_CULTIVATED_ER)]
   
   # save measures as bbwp table
   use_data(er_crops, overwrite = TRUE)
+  fwrite(er_crops, 'dev/er_crops.csv', quote = TRUE)
   
 # -- prepare correction factors for financial reward per Agricultural Economic Region for Ecoregelingen ---
   
