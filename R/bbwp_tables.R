@@ -2,7 +2,6 @@
 #' 
 #' This table contains a series of agronomic measures, their applicability and effectiveness for multiple ecosystem services
 #' 
-#' @format A data.table with 157 rows and 70 columns:
 #' \describe{
 #'   \item{bbwp_id}{The unique BBWP measure id based on the van Gerven number of the measure, related to the study by Van Gerven et al. (2020)}
 #'   \item{nr_mok}{A mock up code for bbwp measure id}
@@ -81,7 +80,6 @@
 #' 
 #' This table contains the objective scoring and correction factors to estimate score for Ecoregeling
 #' 
-#' @format A data.table with 8 rows and 7 columns:
 #' \describe{
 #'   \item{soiltype}{Agricultural soil type}
 #'   \item{type}{The type of weighting factor: urgency (distribution of scores depending on political urgency) or aim (distribution of scores depending on aim for environmental challenges)}
@@ -97,7 +95,6 @@
 #' 
 #' This table contains the scores of crop rotation related farm measures for Ecoregeling
 #' 
-#' @format A data.table with 45 rows and 5 columns:
 #' \describe{
 #'   \item{id}{Unique id for each impact score related to crop rotation measures per environmental theme}
 #'   \item{indicator}{The environmental theme, choices: "soil", "water", "biodiversity", "climate" or "landscape"}
@@ -111,7 +108,6 @@
 #' 
 #' This table contains the crops for which the Ecoregeling method counts scores and rewards
 #' 
-#' @format A data.table with 10456 rows and 3 columns:
 #' \describe{
 #'   \item{eco_id}{The Ecoregeling measure id}
 #'   \item{B_lU_BRP}{The Dutch crop id from the BRP}
@@ -123,7 +119,6 @@
 #' 
 #' This table contains the crop ids (B_LU_BRP) with applicability on ER categories arable, productive and cultivated
 #' 
-#' @format A data.table with 463 rows and 6 columns:
 #' \describe{
 #'   \item{B_LU_BRP}{The Dutch crop code from the BRP}
 #'   \item{B_LU_NAME}{The Dutch crop name}
@@ -138,7 +133,6 @@
 #' 
 #' This table contains the correction factor for the financial reward differentiated per Agricultural Economic Region
 #' 
-#' @format A data.table with 14 rows and 3 columns:
 #' \describe{
 #'   \item{statcode}{The unique code of the Agricultural Economic Region}
 #'   \item{statname}{The name of the Agricultural Economic Region}

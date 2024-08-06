@@ -5,7 +5,15 @@
 \alias{er_crops}
 \title{An overview of crop lists used in Ecoregelingen}
 \format{
-A data.table with 463 rows and 6 columns:
+An object of class \code{data.table} (inherits from \code{data.frame}) with 521 rows and 6 columns.
+}
+\usage{
+er_crops
+}
+\description{
+This table contains the crop ids (B_LU_BRP) with applicability on ER categories arable, productive and cultivated
+}
+\details{
 \describe{
   \item{B_LU_BRP}{The Dutch crop code from the BRP}
   \item{B_LU_NAME}{The Dutch crop name}
@@ -14,11 +22,5 @@ A data.table with 463 rows and 6 columns:
   \item{B_LU_PRODUCTIVE_ER}{(boolean) indication whether the crop falls within the ER category "productive"}
   \item{B_LU_CULTIVATED_ER}{(boolean) indication whether the crop falls within the ER category "cultivated"}
 }
-}
-\usage{
-er_crops
-}
-\description{
-This table contains the crop ids (B_LU_BRP) with applicability on ER categories arable, productive and cultivated
 }
 \keyword{datasets}
