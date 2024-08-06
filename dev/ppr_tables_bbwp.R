@@ -45,7 +45,7 @@ require(data.table);library(usethis)
     
     # update names
     setnames(bbwp_measures, 
-             old = c('bouwland', 'productief', 'beteelbaar'), 
+             old = c('B_LU_ARABLE_ER', 'B_LU_PRODUCTIVE_ER', 'B_LU_CULTIVATED_ER'), 
              new = c('b_lu_arable_er','b_lu_productive_er','b_lu_cultivated_er'))
   
     # remove duplicated columns

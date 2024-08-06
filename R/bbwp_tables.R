@@ -128,9 +128,9 @@
 #'   \item{B_LU_BRP}{The Dutch crop code from the BRP}
 #'   \item{B_LU_NAME}{The Dutch crop name}
 #'   \item{B_LU_BBWP}{The Dutch BBWP category used for allocation of measures to BBWP crop categories}
-#'   \item{bouwland}{(boolean) indication whether the crop falls within the ER category "arable"}
-#'   \item{productive}{(boolean) indication whether the crop falls within the ER category "productive"}
-#'   \item{beteelbaar}{(boolean) indication whether the crop falls within the ER category "cultivated"}
+#'   \item{B_LU_ARABLE_ER}{(boolean) indication whether the crop falls within the ER category "arable"}
+#'   \item{B_LU_PRODUCTIVE_ER}{(boolean) indication whether the crop falls within the ER category "productive"}
+#'   \item{B_LU_CULTIVATED_ER}{(boolean) indication whether the crop falls within the ER category "cultivated"}
 #' }
 "er_crops"
 
