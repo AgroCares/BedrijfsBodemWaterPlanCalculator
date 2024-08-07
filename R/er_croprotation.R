@@ -204,15 +204,14 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt.field <- melt(dt.field,
                id.vars = c('id','bbwp_id','soiltype','bbwp_conflict','reward_cf','regio_factor'),
                measure = patterns(erscore = "^er_"),
-               variable.name = 'indicator',
-               value.name = 'value')
+               variable.name = 'indicator')
       dt.field[,indicator := gsub('er_', '',indicator)]
     
     # merge with urgency table
     dt.field <- merge(dt.field,dt.er.urgency, by= c('soiltype','indicator'),all.x = TRUE)
     
     # adapt the score based on urgency
-    dt.field[!grepl('euro',indicator), value := value * urgency]
+    dt.field[!grepl('euro',indicator), value := erscore * urgency]
     
     # add area
     dt.field <- merge(dt.field,dt[,.(id,B_AREA)],by='id')
@@ -288,13 +287,12 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt3 <- melt(dt.meas.farm, 
                   id.vars = c('bbwp_id','bbwp_conflict'),
                   measure = patterns(erscore = "^er_"),
-                  variable.name = 'indicator',
-                  value.name = 'value')
+                  variable.name = 'indicator')
       dt3[,indicator := gsub('er_', '',indicator)]
       dt3 <- merge(dt3,dt.farm.urgency[,.(indicator,urgency)],by= 'indicator',all.x = T)
       
       # adapt the score based on urgency
-      dt3[!grepl('euro',indicator), value := value * urgency]
+      dt3[!grepl('euro',indicator), value := erscore * urgency]
       
       # dcast to add totals, to be used to update scores when measures are conflicting
       cols <- c('biodiversity', 'climate', 'landscape', 'soil','water','total')
