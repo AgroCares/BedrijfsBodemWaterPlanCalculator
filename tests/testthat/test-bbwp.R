@@ -502,7 +502,7 @@ test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
       sector = c('dairy'),
       output = 'scores',
       B_LSW_ID = 1,
-      LSW = NULL
+      LSW = LSW[1]
     ))
   })
   
