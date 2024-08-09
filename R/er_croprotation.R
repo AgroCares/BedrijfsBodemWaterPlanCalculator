@@ -62,7 +62,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt.meas.idx <- bbwp_check_meas(dt = NULL, eco = TRUE, score = FALSE)
     
   # subset measurement tables # Add EB18 here Gerard
-  dt.meas.field <- dt.meas.field[grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field',]
+  dt.meas.field <- dt.meas.field[grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field',] # these are measures teel rustgewassen als hoofdteelt or teelt of either eiwitgewassen, meerjarige gewassen, diepwortelende gewassen, gewassen met gunstige spruit:wortel verhouding
   dt.meas.idx <- dt.meas.idx[grepl('EB10A',eco_id) & level == 'farm']
   dt.meas.farm <- dt.meas.farm[level == 'farm',]
  
