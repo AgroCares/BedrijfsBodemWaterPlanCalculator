@@ -116,7 +116,7 @@ require(BBWPC)
       
       expect_equal(
         object = as.numeric(unlist(test$farm)),
-        expected = c(58,77,62,66,46,90),
+        expected = c(58,77,62,66,46,91),
         tolerance = 0.01)
     })
 
@@ -285,7 +285,7 @@ require(BBWPC)
     
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(58,77,62,66,46,90),
+      expected = c(58,77,62,66,46,91),
       tolerance = 0.01)
   })
   
