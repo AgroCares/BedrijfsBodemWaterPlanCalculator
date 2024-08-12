@@ -53,7 +53,7 @@ measures <- rbind(data.table(id = 1, dt.measures[grepl('B189|G50|G3|B137|B172|G8
                   data.table(id = 3, dt.measures[grepl('B135|G84|B118|G58|B146',bbwp_id)]))
 measures$bbwp_status <- 'given for ANLB'
 
-# run example 2 without any measures taken
+# run example 2 with measures taken
 test <- er_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                         B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                         B_LU_BRP = c(265,2741,2741,259),
@@ -67,7 +67,7 @@ test <- er_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','vee
 )
 
 
-test_that("check er_field_scores", {
+test_that("check er_field_scores with field and farm level measures", {
   expect_equal(
     object = test,
     expected = data.table(
