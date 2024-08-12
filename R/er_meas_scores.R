@@ -64,20 +64,6 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt.meas.taken <- dt.meas.taken[!(grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field'),]
   dt.meas.taken <- dt.meas.taken[level != 'farm']
   
-  # add a row to dt.meas.taken if no measures were selected
-  if(nrow(dt.meas.taken) == 0) {
-    # empty.row <- data.table(matrix(0, nrow = 1, ncol = 63))
-    # dt.meas.taken <- setnames(empty.row, names(empty.row),names(dt.meas.taken))
-    # dt.meas.taken <- rbind(dt.meas.taken, empty.row)
-    dt.meas.taken <- copy(bbwp_measures)[1:arg.length]
-    dt.meas.taken[, c('nr_mok', 'boot22_id', 'summary', 'description', 'url') := NULL]
-    dt.meas.taken[,bbwp_status := '']
-    char_cols <- names(dt.meas.taken)[sapply(dt.meas.taken, is.character)]
-    num_cols <- names(dt.meas.taken)[!names(dt.meas.taken) %in% char_cols]
-    dt.meas.taken[,c(num_cols) := 0]
-    dt.meas.taken[,c(char_cols) := '']
-    dt.meas.taken[,id := 1:arg.length]
-  }
   
   # add bbwp table for financial reward correction factor per AER
   dt.er.reward <- as.data.table(BBWPC::er_aer_reward)
