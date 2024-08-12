@@ -296,6 +296,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       
       # adapt the score based on urgency
       dt3[!grepl('euro',indicator), value := erscore * urgency]
+      dt3[grepl('euro', indicator), value := erscore]
       
       # dcast to add totals, to be used to update scores when measures are conflicting
       cols <- c('biodiversity', 'climate', 'landscape', 'soil','water','total')
