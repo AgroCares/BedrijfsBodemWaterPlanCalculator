@@ -26,21 +26,29 @@ test <- er_croprotation(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','vee
                         sector = 'dairy'
                         )
 
-test_that("check er_croprotation", {
+test_that("Test er_croprotation works without measures", {
+  test <- er_croprotation(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
+                          B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
+                          B_LU_BRP = c(265,2741,2741,259),
+                          B_LU_ARABLE_ER = c(T,T,T,T),
+                          B_LU_PRODUCTIVE_ER = c(T,T,T,T),
+                          B_LU_CULTIVATED_ER = c(T,T,T,T),
+                          B_AER_CBS = c('Bouwhoek en Hogeland','LG14','LG12','Westelijk Holland'),
+                          B_AREA = c(450000,180000,8000,60000),
+                          measures = NULL,
+                          sector = 'dairy'
+  )
+  
   expect_equal(
     object = dim(test),
     expected = c(1,8),
     tolerance = 0.01)
-})
-
-test_that("check er_croprotation", {
+  
   expect_equal(
     object = colnames(test),
     expected = c('farmid','biodiversity','climate','landscape','soil','water','total','S_ER_REWARD'),
     tolerance = 0.01)
-})
-
-test_that("check er_croprotation", {
+  
   expect_equal(
     object = as.numeric(test),
     expected = c(1,0,0,0,0,0,0,0),
