@@ -263,8 +263,8 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       cols.sel <- c('er_climate','er_soil','er_water','er_landscape','er_biodiversity','er_euro_farm')
       
       # measure EB10: Crop diversification index
-      cols.ad1 <- c(0,10,10,10,20,1000)
-      cols.ad2 <- c(0,20,20,20,40,2000)
+      # cols.ad1 <- c(0,10,10,10,20,1000)
+      # cols.ad2 <- c(0,20,20,20,40,2000)
       dt.meas.farm[, er_total := er_climate + er_soil + er_water + er_landscape + er_biodiversity]
       
         # select only the unique crops that count for measure EB10
@@ -273,8 +273,11 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
         
       dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0, B_IDX := crops / (dt.farm$area_cultivated/10000)]
       dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX <= 0.05, c(cols.sel) := 0]
-      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.07 & B_IDX <= 0.10, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
-      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.10, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+      # dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.07 & B_IDX <= 0.10, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
+      # dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.10, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.05 & B_IDX <= 0.07, c(cols.sel) := Map('+',mget(cols.sel), c(0, 25, 25, 50, 50, 1000))]
+      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.07 & B_IDX <= 0.10, c(cols.sel) := Map('+',mget(cols.sel), c(0, 35, 35, 60, 70, 2000))]
+      dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.10                , c(cols.sel) := Map('+',mget(cols.sel), c(0, 45, 45, 70, 90, 3000))]
 
       # copy dt.meas.farm to be used later
       dt.region <- copy(dt.meas.farm)
