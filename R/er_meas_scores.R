@@ -85,11 +85,16 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   # get internal table with importance of environmental challenges
   dt.er.scoring <- as.data.table(BBWPC::er_scoring)
   setnames(dt.er.scoring,gsub('cf_','',colnames(dt.er.scoring)))
+  # add financial urgency
+  dt.er.scoring[,c('euro_farm', 'euro_ha') := 1]
+  
   dt.er.urgency <- melt(dt.er.scoring[type=='urgency'],
                         id.vars='soiltype',
-                        measure.vars = c('soil', 'water', 'climate',  'biodiversity', 'landscape'),
+                        measure.vars = c('soil', 'water', 'climate',  'biodiversity', 'landscape', 'euro_farm', 'euro_ha'),
                         variable.name = 'indicator',
                         value.name = 'urgency')
+  # add financial urgency
+  dt.er.urgency[,c('euro_farm', 'euro_ha') := 1]
   
   # collect data in one data.table
   dt <- data.table(id = 1:arg.length,
@@ -282,7 +287,7 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     dt <- merge(dt,dt.er.urgency, by= c('soiltype','indicator'),all.x = TRUE)
     
   # adapt the score based on urgency
-  dt[!grepl('euro',indicator), value := erscore * urgency]
+  dt[, value := erscore * urgency]
     
   # dcast to add totals, to be used to update scores when measures are conflicting
     cols <- c('biodiversity', 'climate', 'landscape', 'soil','water','total')

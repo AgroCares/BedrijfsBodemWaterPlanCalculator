@@ -99,6 +99,9 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                         variable.name = 'indicator',
                         value.name = 'urgency')
   
+  # add financial urgency
+  dt.er.urgency[,c('euro_farm', 'euro_ha') := 1]
+  
   # collect total areas on farm level
   dt.farm <- data.table(area_farm = sum(B_AREA),
                         area_arable = sum(B_AREA * B_LU_ARABLE_ER),
