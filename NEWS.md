@@ -1,3 +1,10 @@
+# BBWPC v2.2.2 2024-08-12
+## Added
+* add and re-format tests for `er_croprotation` without measures
+
+## Fixed
+* wrong output format after melt has been updated, #BBWP-119
+
 # BBWPC v2.2.1 2023-12-28
 ## Added
 * possibility to falisfy the weighing fraction for evaluation of risks in `wf` function, default set to TRUE, #BBWP-67
