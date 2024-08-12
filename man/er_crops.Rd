@@ -5,20 +5,22 @@
 \alias{er_crops}
 \title{An overview of crop lists used in Ecoregelingen}
 \format{
-A data.table with 463 rows and 6 columns:
-\describe{
-  \item{B_LU_BRP}{The Dutch crop code from the BRP}
-  \item{B_LU_NAME}{The Dutch crop name}
-  \item{B_LU_BBWP}{The Dutch BBWP category used for allocation of measures to BBWP crop categories}
-  \item{bouwland}{(boolean) indication whether the crop falls within the ER category "arable"}
-  \item{productive}{(boolean) indication whether the crop falls within the ER category "productive"}
-  \item{beteelbaar}{(boolean) indication whether the crop falls within the ER category "cultivated"}
-}
+An object of class \code{data.table} (inherits from \code{data.frame}) with 521 rows and 6 columns.
 }
 \usage{
 er_crops
 }
 \description{
 This table contains the crop ids (B_LU_BRP) with applicability on ER categories arable, productive and cultivated
+}
+\details{
+\describe{
+  \item{B_LU_BRP}{The Dutch crop code from the BRP}
+  \item{B_LU_NAME}{The Dutch crop name}
+  \item{B_LU_BBWP}{The Dutch BBWP category used for allocation of measures to BBWP crop categories}
+  \item{B_LU_ARABLE_ER}{(boolean) indication whether the crop falls within the ER category "arable"}
+  \item{B_LU_PRODUCTIVE_ER}{(boolean) indication whether the crop falls within the ER category "productive"}
+  \item{B_LU_CULTIVATED_ER}{(boolean) indication whether the crop falls within the ER category "cultivated"}
+}
 }
 \keyword{datasets}

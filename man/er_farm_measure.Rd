@@ -5,7 +5,15 @@
 \alias{er_farm_measure}
 \title{The impact score of farm based measures}
 \format{
-A data.table with 45 rows and 5 columns:
+An object of class \code{data.table} (inherits from \code{data.frame}) with 45 rows and 5 columns.
+}
+\usage{
+er_farm_measure
+}
+\description{
+This table contains the scores of crop rotation related farm measures for Ecoregeling
+}
+\details{
 \describe{
   \item{id}{Unique id for each impact score related to crop rotation measures per environmental theme}
   \item{indicator}{The environmental theme, choices: "soil", "water", "biodiversity", "climate" or "landscape"}
@@ -13,11 +21,5 @@ A data.table with 45 rows and 5 columns:
   \item{description}{Short description of the Ecoregeling measure}
   \item{er_score}{The impact score of the Ecoregeling measure}
 }
-}
-\usage{
-er_farm_measure
-}
-\description{
-This table contains the scores of crop rotation related farm measures for Ecoregeling
 }
 \keyword{datasets}

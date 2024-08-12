@@ -5,7 +5,15 @@
 \alias{er_scoring}
 \title{The importance and scoring of environmental challenges for Ecoregelingen}
 \format{
-A data.table with 8 rows and 7 columns:
+An object of class \code{data.table} (inherits from \code{data.frame}) with 8 rows and 7 columns.
+}
+\usage{
+er_scoring
+}
+\description{
+This table contains the objective scoring and correction factors to estimate score for Ecoregeling
+}
+\details{
 \describe{
   \item{soiltype}{Agricultural soil type}
   \item{type}{The type of weighting factor: urgency (distribution of scores depending on political urgency) or aim (distribution of scores depending on aim for environmental challenges)}
@@ -15,11 +23,5 @@ A data.table with 8 rows and 7 columns:
   \item{cf_biodiversity}{Weighting factor for biodiversity}
   \item{cf_landscape}{Weighting factor for landscape}
 }
-}
-\usage{
-er_scoring
-}
-\description{
-This table contains the objective scoring and correction factors to estimate score for Ecoregeling
 }
 \keyword{datasets}

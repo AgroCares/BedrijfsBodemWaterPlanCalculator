@@ -5,17 +5,19 @@
 \alias{er_aer_reward}
 \title{An overview of correction factors per economic agricultural area}
 \format{
-A data.table with 14 rows and 3 columns:
-\describe{
-  \item{statcode}{The unique code of the Agricultural Economic Region}
-  \item{statname}{The name of the Agricultural Economic Region}
-  \item{er_cf}{The value of the correction factor for the financial reward differentiated per Agricutural Economic Region}
-}
+An object of class \code{data.table} (inherits from \code{data.frame}) with 14 rows and 3 columns.
 }
 \usage{
 er_aer_reward
 }
 \description{
 This table contains the correction factor for the financial reward differentiated per Agricultural Economic Region
+}
+\details{
+\describe{
+  \item{statcode}{The unique code of the Agricultural Economic Region}
+  \item{statname}{The name of the Agricultural Economic Region}
+  \item{er_cf}{The value of the correction factor for the financial reward differentiated per Agricutural Economic Region}
+}
 }
 \keyword{datasets}
