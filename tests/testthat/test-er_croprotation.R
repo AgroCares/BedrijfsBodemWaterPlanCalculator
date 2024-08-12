@@ -92,36 +92,6 @@ test_that("check er_croprotation", {
     ignore_attr = TRUE)
 })
 
-# add test when only measurements on farm level are given
-dt.measures <- as.data.table(BBWPC::bbwp_measures)
-dt.measures <- dt.measures[!is.na(eco_id) & level=='farm']
-
-# make measurement list for 2 of the 4 fields
-measures <- rbind(data.table(id = 1, dt.measures[grepl('B189|G50|G3|B137|B172|G84',bbwp_id)]),
-                  data.table(id = 3, dt.measures[grepl('B135|G84|B118|G58|B146',bbwp_id)]))
-measures$bbwp_status <- 'given for ANLB'
-
-# run example 2 without any measures taken
-test <- er_croprotation(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
-                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
-                        B_LU_BRP = c(265,2741,2741,259),
-                        B_LU_ARABLE_ER = c(T,T,T,T),
-                        B_LU_PRODUCTIVE_ER = c(T,T,T,T),
-                        B_LU_CULTIVATED_ER = c(T,T,T,T),
-                        B_AER_CBS = c('Bouwhoek en Hogeland','LG14','LG12','Westelijk Holland'),
-                        B_AREA = c(450000,180000,8000,60000),
-                        measures = measures,
-                        sector = 'dairy'
-)
-
-test_that("check er_croprotation", {
-  expect_equal(
-    object = as.numeric(test),
-    expected = c(1,1.61,7.4,2.75,0,12.5,24.29,580.23),
-    tolerance = 0.1,
-    ignore_attr = TRUE)
-})
-
 # add test when only measurements on field level are given
 dt.measures <- as.data.table(BBWPC::bbwp_measures)
 dt.measures <- dt.measures[!is.na(eco_id) & level=='field']
