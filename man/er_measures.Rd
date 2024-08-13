@@ -5,17 +5,19 @@
 \alias{er_measures}
 \title{The applicability of Ecoregeling Measures per crop type}
 \format{
-A data.table with 10456 rows and 3 columns:
-\describe{
-  \item{eco_id}{The Ecoregeling measure id}
-  \item{B_lU_BRP}{The Dutch crop id from the BRP}
-  \item{eco_app}{A helper variable telling that the measure is applicable for that crop}
-}
+An object of class \code{data.table} (inherits from \code{data.frame}) with 10450 rows and 3 columns.
 }
 \usage{
 er_measures
 }
 \description{
 This table contains the crops for which the Ecoregeling method counts scores and rewards
+}
+\details{
+\describe{
+  \item{eco_id}{The Ecoregeling measure id}
+  \item{B_lU_BRP}{The Dutch crop id from the BRP}
+  \item{eco_app}{A helper variable telling that the measure is applicable for that crop}
+}
 }
 \keyword{datasets}

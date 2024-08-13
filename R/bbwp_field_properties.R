@@ -119,8 +119,8 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS,B_AER_CBS = B_AER_CBS)]
   
   # add crop names and categories
-  dt <- merge(dt, LSW, by = 'B_LSW_ID')
-  dt <- merge(dt, soils.obic[, list(soiltype, soiltype.n)], by.x = "B_SOILTYPE_AGR", by.y = "soiltype")
+  dt <- merge(dt, LSW, by = 'B_LSW_ID',all.x = TRUE)
+  dt <- merge(dt, soils.obic[, list(soiltype, soiltype.n)], by.x = "B_SOILTYPE_AGR", by.y = "soiltype",all.x=TRUE)
   
   # add crop categories
   dt[B_LU_BBWP %in% c('gras_permanent','gras_tijdelijk'), crop_category := 'grasland']

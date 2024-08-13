@@ -89,8 +89,11 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
   # estimate and check LSW properties
   if(is.null(LSW)){
     
+    # check whether B_LSW_ID is present for each field
+    if(length(B_LSW_ID) != length(A_SOM_LOI)){B_LSW_ID <- 1:length(A_SOM_LOI)}
+    
     # set LSW to country mean properties
-    LSW <- bbwp_lsw_properties(B_LSW_ID = 1:length(A_SOM_LOI))
+    LSW <- bbwp_lsw_properties(B_LSW_ID = B_LSW_ID)
   
     # print warning
     warning('There are no LSW properties supplied. The missing LSW properties have been replaced by mean soil properties from the Netherlands.')
@@ -103,8 +106,9 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
               "B_P_WA_SD","B_P_SG_SD","B_FE_OX_SD","B_AL_OX_SD","B_SA_W_SD","B_RO_R_SD")
     
     # check LSW format and column names
-    checkmate::assert_data_table(LSW,nrow = length(A_SOM_LOI))
+    checkmate::assert_data_table(LSW,nrow = length(unique(B_LSW_ID)))
     checkmate::assert_subset(colnames(LSW),choices = cols)
+    checkmate::assert_subset(B_LSW_ID, choices = LSW$B_LSW_ID)
     
     # check if all B_LSW_ID are in the LSW data.table
     checkmate::assert_subset(LSW$B_LSW_ID,choices = B_LSW_ID)

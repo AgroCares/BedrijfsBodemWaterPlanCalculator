@@ -62,7 +62,7 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
   dt.meas.idx <- bbwp_check_meas(dt = NULL, eco = TRUE, score = FALSE)
     
   # subset measurement tables # Add EB18 here Gerard
-  dt.meas.field <- dt.meas.field[grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field',]
+  dt.meas.field <- dt.meas.field[grepl('EB1$|EB2$|EB3$|EB8|EB9',eco_id) & level == 'field',] # these are measures teel rustgewassen als hoofdteelt or teelt of either eiwitgewassen, meerjarige gewassen, diepwortelende gewassen, gewassen met gunstige spruit:wortel verhouding
   dt.meas.idx <- dt.meas.idx[grepl('EB10A',eco_id) & level == 'farm']
   dt.meas.farm <- dt.meas.farm[level == 'farm',]
  
@@ -98,6 +98,9 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
                         measure.vars = c('soil', 'water', 'climate',  'biodiversity', 'landscape'),
                         variable.name = 'indicator',
                         value.name = 'urgency')
+  
+  # add financial urgency
+  dt.er.urgency[,c('euro_farm', 'euro_ha') := 1]
   
   # collect total areas on farm level
   dt.farm <- data.table(area_farm = sum(B_AREA),
@@ -204,15 +207,14 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt.field <- melt(dt.field,
                id.vars = c('id','bbwp_id','soiltype','bbwp_conflict','reward_cf','regio_factor'),
                measure = patterns(erscore = "^er_"),
-               variable.name = 'indicator',
-               value.name = 'value')
+               variable.name = 'indicator')
       dt.field[,indicator := gsub('er_', '',indicator)]
     
     # merge with urgency table
     dt.field <- merge(dt.field,dt.er.urgency, by= c('soiltype','indicator'),all.x = TRUE)
     
     # adapt the score based on urgency
-    dt.field[!grepl('euro',indicator), value := value * urgency]
+    dt.field[!grepl('euro',indicator), value := erscore * urgency]
     
     # add area
     dt.field <- merge(dt.field,dt[,.(id,B_AREA)],by='id')
@@ -276,6 +278,9 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX <= 0.05, c(cols.sel) := 0]
       dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.07 & B_IDX <= 0.10, c(cols.sel) := Map('+',mget(cols.sel),cols.ad1)]
       dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.10, c(cols.sel) := Map('+',mget(cols.sel),cols.ad2)]
+      # dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.05 & B_IDX <= 0.07, c(cols.sel) := Map('+',mget(cols.sel), c(0, 25, 25, 50, 50, 1000))]
+      # dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.07 & B_IDX <= 0.10, c(cols.sel) := Map('+',mget(cols.sel), c(0, 35, 35, 60, 70, 2000))]
+      # dt.meas.farm[grepl("B189", bbwp_id) & er_total > 0 & B_IDX > 0.10                , c(cols.sel) := Map('+',mget(cols.sel), c(0, 45, 45, 70, 90, 3000))]
 
       # copy dt.meas.farm to be used later
       dt.region <- copy(dt.meas.farm)
@@ -288,13 +293,13 @@ er_croprotation <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
       dt3 <- melt(dt.meas.farm, 
                   id.vars = c('bbwp_id','bbwp_conflict'),
                   measure = patterns(erscore = "^er_"),
-                  variable.name = 'indicator',
-                  value.name = 'value')
+                  variable.name = 'indicator')
       dt3[,indicator := gsub('er_', '',indicator)]
       dt3 <- merge(dt3,dt.farm.urgency[,.(indicator,urgency)],by= 'indicator',all.x = T)
       
       # adapt the score based on urgency
-      dt3[!grepl('euro',indicator), value := value * urgency]
+      dt3[!grepl('euro',indicator), value := erscore * urgency]
+      dt3[grepl('euro', indicator), value := erscore]
       
       # dcast to add totals, to be used to update scores when measures are conflicting
       cols <- c('biodiversity', 'climate', 'landscape', 'soil','water','total')

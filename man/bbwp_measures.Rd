@@ -5,7 +5,15 @@
 \alias{bbwp_measures}
 \title{Agronomic measures that can be applied}
 \format{
-A data.table with 157 rows and 70 columns:
+An object of class \code{data.table} (inherits from \code{data.frame}) with 158 rows and 66 columns.
+}
+\usage{
+bbwp_measures
+}
+\description{
+This table contains a series of agronomic measures, their applicability and effectiveness for multiple ecosystem services
+}
+\details{
 \describe{
   \item{bbwp_id}{The unique BBWP measure id based on the van Gerven number of the measure, related to the study by Van Gerven et al. (2020)}
   \item{nr_mok}{A mock up code for bbwp measure id}
@@ -78,11 +86,5 @@ A data.table with 157 rows and 70 columns:
   \item{nc12}{Applicability of the measure on crop category "eiwitgewas"}
   \item{categories}{Eco and/or BBWP categories to which the measure greatly contributes}
 }
-}
-\usage{
-bbwp_measures
-}
-\description{
-This table contains a series of agronomic measures, their applicability and effectiveness for multiple ecosystem services
 }
 \keyword{datasets}
