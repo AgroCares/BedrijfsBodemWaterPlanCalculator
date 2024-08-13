@@ -89,8 +89,11 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
   # estimate and check LSW properties
   if(is.null(LSW)){
     
+    # check whether B_LSW_ID is present for each field
+    if(length(B_LSW_ID) != length(A_SOM_LOI)){B_LSW_ID <- 1:length(A_SOM_LOI)}
+    
     # set LSW to country mean properties
-    LSW <- bbwp_lsw_properties(B_LSW_ID = 1:length(A_SOM_LOI))
+    LSW <- bbwp_lsw_properties(B_LSW_ID = B_LSW_ID)
   
     # print warning
     warning('There are no LSW properties supplied. The missing LSW properties have been replaced by mean soil properties from the Netherlands.')
