@@ -1,9 +1,12 @@
 # BBWPC v2.2.2 2024-08-12
 ## Added
 * add and re-format tests for `er_croprotation` without measures
+* BRP codes from 2023 and 2024 have been added to `bbwp_parms` following pandex@5.10.0
+* check on B_LSW_ID in `bbwp_main` that LSW has only unique properties per LSW_ID
 
 ## Fixed
 * wrong output format after melt has been updated, #BBWP-119
+* check on LSW_IDS
 
 # BBWPC v2.2.1 2023-12-28
 ## Added
