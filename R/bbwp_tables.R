@@ -73,6 +73,11 @@
 #'   \item{nc11}{Applicability of the measure on crop category "vanggewas"}
 #'   \item{nc12}{Applicability of the measure on crop category "eiwitgewas"}
 #'   \item{categories}{Eco and/or BBWP categories to which the measure greatly contributes}
+#'   \item{hoge_gronden}{weighing factor of effect_wb for the landscape category hoge gronden}
+#'   \item{flanken}{weighing factor of effect_wb for the landscape category flanken}
+#'   \item{beekdalen}{weighing factor of effect_wb for the landscape category beekdalen}
+#'   \item{lokale_laagtes}{weighing factor of effect_wb for the landscape category lokale laagtes}
+#'   \item{polders}{weighing factor of effect_wb for the landscape category polders}
 #' }
 "bbwp_measures"
 
