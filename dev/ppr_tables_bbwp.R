@@ -72,7 +72,21 @@ require(data.table);library(usethis)
   # save measures as bbwp table
   use_data(bbwp_measures, overwrite = TRUE)
   
-# -- prepare table for which ER measures can be used on which crops ---
+  
+# -- prepare measures table (with landscape category)-----
+  
+# load updated measure table, which includes weighing factor for 5 landscape category and effect_wb was updated
+# (for hydrological module, made for project 2044.N.24)
+# The table was made in Github Repository "NMI-DATA_scripts"
+# (https://github.com/AgroCares/NMI-DATA_scripts/blob/main/watersysteem/bbwp_hydrologische_module/bbwp_hydro_meas.R)
+bbwp_measures <- fread('dev/bbwp_measures2.csv', encoding = 'UTF-8')
+bbwp_measures[, V1 := NULL]
+  
+# Overwrite bbwp measure table
+use_data(bbwp_measures, overwrite = TRUE)
+  
+  
+# -- prepare table for which ER measures can be used on which crops ----
 
   # load in csv  
   er_measures <- fread('dev/eco_brp.csv', encoding = 'UTF-8')
@@ -87,7 +101,7 @@ require(data.table);library(usethis)
   use_data(er_measures, overwrite = TRUE)
   
     
-# -- prepare ecoregeling objectives ---
+# -- prepare ecoregeling objectives ----
   
   # load in csv
   er_scoring <- as.data.table(fread('dev/220519 ecorelingen opgave.csv',dec=','))
@@ -95,7 +109,7 @@ require(data.table);library(usethis)
   # save measures as bbwp table
   use_data(er_scoring, overwrite = TRUE)
   
-# -- prepare table for scores per farm-measure ---
+# -- prepare table for scores per farm-measure ----
   
   # load in csv
   er_farm_measure <- as.data.table(fread('dev/220517 farm measures.csv',dec=','))
@@ -103,7 +117,7 @@ require(data.table);library(usethis)
   # save measures as bbwp table
   use_data(er_farm_measure, overwrite = TRUE)
   
-# -- prepare crop specific tables for Ecoregelingen ---
+# -- prepare crop specific tables for Ecoregelingen ----
   
   er_crops <- pandex::b_lu_brp[,.(B_LU_BRP, B_LU_NAME, B_LU_BBWP, B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER, B_LU_CULTIVATED_ER)]
   
@@ -111,7 +125,7 @@ require(data.table);library(usethis)
   use_data(er_crops, overwrite = TRUE)
   fwrite(er_crops, 'dev/er_crops.csv', quote = TRUE)
   
-# -- prepare correction factors for financial reward per Agricultural Economic Region for Ecoregelingen ---
+# -- prepare correction factors for financial reward per Agricultural Economic Region for Ecoregelingen ----
   
   # load in csv
   er_aer_reward <- as.data.table(fread('dev/220519 ecoregeling reward weging.csv',dec=','))
@@ -124,7 +138,7 @@ require(data.table);library(usethis)
   use_data(er_aer_reward, overwrite = TRUE)
   
   
-# -- prepare LSW table
+# -- prepare LSW table ----
   
   
   # library(sf); library(DBI); library(RPostgres)
