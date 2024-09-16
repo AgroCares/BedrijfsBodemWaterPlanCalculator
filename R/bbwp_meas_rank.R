@@ -18,7 +18,8 @@
 #' @param S_BBWP_WB (numeric) the BBWP score for potential improvement of the potential to buffer and store water and efficiently use water for plant growth given field properties (0-100, with 100 equals targets met)
 #' @param measures (data.table) table with the properties of the available measures
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'diary', 'arable', 'tree_nursery', 'bulbs')
-#' 
+#' @param B_LS_HYDROCAT (character) Landscape category for differentiating effect of measures on water buffering.
+#' (options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")
 #'   
 #' @import data.table
 #'
@@ -27,7 +28,7 @@
 bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE, B_LU_BBWP,B_AER_CBS,
                            M_DRAIN, D_SA_W,
                            S_BBWP_NGW, S_BBWP_NSW, S_BBWP_PSW, S_BBWP_NUE, S_BBWP_WB,
-                           measures, sector){
+                           measures, sector, B_LS_HYDROCAT){
   
   # add visual bindings
   effect_psw = psw_psg_medium = psw_psg_high = effect_nsw = nsw_drains = nsw_gwl_low = nsw_gwl_high = psw_noslope = effect_ngw = NULL
@@ -113,6 +114,13 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     
     # Add bonus points for grassland
     dt[B_LU_BBWP %in% c('gras_permanent','gras_tijdelijk'), effect_ngw := effect_ngw + ngw_grassland]
+    
+    # adjust effect scores for water buffering with landscape-category-specific weighing factor
+    dt[B_LS_HYDROCAT == "hoge_gronden", effect_wb := effect_wb * hoge_gronden]
+    dt[B_LS_HYDROCAT == "flanken", effect_wb := effect_wb * flanken]
+    dt[B_LS_HYDROCAT == "beekdalen", effect_wb := effect_wb * beekdalen]
+    dt[B_LS_HYDROCAT == "lokale_laagtes", effect_wb := effect_wb * lokale_laagtes]
+    dt[B_LS_HYDROCAT == "polders", effect_wb := effect_wb * polders]
   
   # set scores to zero when measures are not applicable given the crop type
   

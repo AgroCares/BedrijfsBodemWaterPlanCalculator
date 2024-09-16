@@ -196,7 +196,8 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                                     B_CT_NSW_MAX = B_CT_NSW_MAX,
                                     measures = measures,
                                     sector = sector,
-                                    penalty = penalty
+                                    penalty = penalty,
+                                    B_LS_HYDROCAT = B_LS_HYDROCAT
                                   )
   
   # Calculate the BBWP farm score
