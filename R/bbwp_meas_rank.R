@@ -114,71 +114,83 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     # Add bonus points for grassland
     dt[B_LU_BBWP %in% c('gras_permanent','gras_tijdelijk'), effect_ngw := effect_ngw + ngw_grassland]
   
-  # set scores to zero when measures are not applicable given the crop type
-  
-    # columns with the Ecoregelingen ranks
-    cols <- c('effect_psw','effect_nsw', 'effect_ngw','effect_wb','effect_nue')
     
-    # set first all missing data impacts to 0
-    dt[,c(cols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = cols]
-    
-    # set the score to zero when not applicable for given crop category
-    dt[B_LU_BBWP == 'gras_permanent' & nc1 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 'gras_tijdelijk' & nc2 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 'rustgewas' & nc3 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 'rooivrucht' & nc4 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 'groenten' & nc5 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 'bollensierteelt' & nc6 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 'boomfruitteelt' & nc7 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 'natuur' & nc8 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 'mais' & nc9 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 'randensloot' & nc10 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 'vanggewas' & nc11 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    dt[B_LU_BBWP == 'eiwitgewas' & nc12 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
-    
-  # set the score to zero when the measure is not applicable
-  if('sector' %in% colnames(dt)){
-      
-      # sector correction for desk studies where sector is available / added per field
-      dt[,c('fdairy','farable','ftree_nursery','fbulbs') := 1]
-      dt[sector == 'dairy', c('ftree_nursery','farable','fbulbs') := 0]
-      dt[sector == 'arable', c('ftree_nursery','fdairy','fbulbs') := 0]
-      dt[sector == 'bulbs', c('ftree_nursery','fdairy','farable') := 0]
-      dt[sector == 'tree_nursery', c('fbulbs','fdairy','farable') := 0]
-    
-    } else {
-      
-      fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
-      fs1 <- paste0('f',sector)
-      fs2 <- fs0[!fs0 %in% fs1]
-      dt[,c(fs1) := 1]
-      if(length(fs2) >= 1){ dt[,c(fs2) := 0] }
-    }
+    # Filter measures applicable for the field
+    dt[, app := bbwp_meas_filter(bbwp_id, B_LU_BBWP, sector, B_SOILTYPE_AGR, B_SLOPE_DEGREE,  
+                                 M_DRAIN, dt.measures)]
 
-    # estimate whether sector allows applicability
-    dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs]
-    
-    # adapt the score when measure is not applicable
-    dt[fsector == 0, c(cols) := 0]
-    
-    # adapt the score when the soil type limits the applicability of measures
-    dt[grepl('klei', B_SOILTYPE_AGR) & clay == FALSE , c(cols) := 0]
-    dt[grepl('zand|dal', B_SOILTYPE_AGR) & sand == FALSE , c(cols) := 0]
-    dt[grepl('veen', B_SOILTYPE_AGR) & peat == FALSE , c(cols) := 0]
-    dt[grepl('loess', B_SOILTYPE_AGR) & loess == FALSE , c(cols) := 0]
-    
-    # adapt the score for slope dependent
-    dt[B_SLOPE_DEGREE <= 2 & bbwp_id == 'G21',c(cols) := 0]
-    
-    # zuiveren drainage alleen als er ook drains zijn
-    dt[M_DRAIN == FALSE & nodrains == TRUE, c(cols) := 0]
-    
     # add impact score for measure per opportunity index
-    dt[, D_MEAS_NGW := (100-S_BBWP_NGW) * effect_ngw]
-    dt[, D_MEAS_NSW := (100-S_BBWP_NSW) * effect_nsw]
-    dt[, D_MEAS_PSW := (100-S_BBWP_PSW) * effect_psw]
-    dt[, D_MEAS_NUE := (100-S_BBWP_NUE) * effect_nue]
-    dt[, D_MEAS_WB := (100-S_BBWP_WB) * effect_wb]
+    dt[, D_MEAS_NGW := (100-S_BBWP_NGW) * effect_ngw * app]
+    dt[, D_MEAS_NSW := (100-S_BBWP_NSW) * effect_nsw * app]
+    dt[, D_MEAS_PSW := (100-S_BBWP_PSW) * effect_psw * app]
+    dt[, D_MEAS_NUE := (100-S_BBWP_NUE) * effect_nue * app]
+    dt[, D_MEAS_WB := (100-S_BBWP_WB) * effect_wb * app]
+    
+  # # set scores to zero when measures are not applicable given the crop type
+  # 
+  #   # columns with the Ecoregelingen ranks
+  #   cols <- c('effect_psw','effect_nsw', 'effect_ngw','effect_wb','effect_nue')
+  #   
+  #   # set first all missing data impacts to 0
+  #   dt[,c(cols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = cols]
+  #   
+  #   # set the score to zero when not applicable for given crop category
+  #   dt[B_LU_BBWP == 'gras_permanent' & nc1 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+  #   dt[B_LU_BBWP == 'gras_tijdelijk' & nc2 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+  #   dt[B_LU_BBWP == 'rustgewas' & nc3 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+  #   dt[B_LU_BBWP == 'rooivrucht' & nc4 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+  #   dt[B_LU_BBWP == 'groenten' & nc5 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+  #   dt[B_LU_BBWP == 'bollensierteelt' & nc6 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+  #   dt[B_LU_BBWP == 'boomfruitteelt' & nc7 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+  #   dt[B_LU_BBWP == 'natuur' & nc8 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+  #   dt[B_LU_BBWP == 'mais' & nc9 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+  #   dt[B_LU_BBWP == 'randensloot' & nc10 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+  #   dt[B_LU_BBWP == 'vanggewas' & nc11 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+  #   dt[B_LU_BBWP == 'eiwitgewas' & nc12 == 0, c(cols) := lapply(.SD,function(x) x * 0.1), .SDcols = cols]
+  #   
+  # # set the score to zero when the measure is not applicable
+  # if('sector' %in% colnames(dt)){
+  #     
+  #     # sector correction for desk studies where sector is available / added per field
+  #     dt[,c('fdairy','farable','ftree_nursery','fbulbs') := 1]
+  #     dt[sector == 'dairy', c('ftree_nursery','farable','fbulbs') := 0]
+  #     dt[sector == 'arable', c('ftree_nursery','fdairy','fbulbs') := 0]
+  #     dt[sector == 'bulbs', c('ftree_nursery','fdairy','farable') := 0]
+  #     dt[sector == 'tree_nursery', c('fbulbs','fdairy','farable') := 0]
+  #   
+  #   } else {
+  #     
+  #     fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
+  #     fs1 <- paste0('f',sector)
+  #     fs2 <- fs0[!fs0 %in% fs1]
+  #     dt[,c(fs1) := 1]
+  #     if(length(fs2) >= 1){ dt[,c(fs2) := 0] }
+  #   }
+  # 
+  #   # estimate whether sector allows applicability
+  #   dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs]
+  #   
+  #   # adapt the score when measure is not applicable
+  #   dt[fsector == 0, c(cols) := 0]
+  #   
+  #   # adapt the score when the soil type limits the applicability of measures
+  #   dt[grepl('klei', B_SOILTYPE_AGR) & clay == FALSE , c(cols) := 0]
+  #   dt[grepl('zand|dal', B_SOILTYPE_AGR) & sand == FALSE , c(cols) := 0]
+  #   dt[grepl('veen', B_SOILTYPE_AGR) & peat == FALSE , c(cols) := 0]
+  #   dt[grepl('loess', B_SOILTYPE_AGR) & loess == FALSE , c(cols) := 0]
+  #   
+  #   # adapt the score for slope dependent
+  #   dt[B_SLOPE_DEGREE <= 2 & bbwp_id == 'G21',c(cols) := 0]
+  #   
+  #   # zuiveren drainage alleen als er ook drains zijn
+  #   dt[M_DRAIN == FALSE & nodrains == TRUE, c(cols) := 0]
+  #   
+  #   # add impact score for measure per opportunity index
+  #   dt[, D_MEAS_NGW := (100-S_BBWP_NGW) * effect_ngw]
+  #   dt[, D_MEAS_NSW := (100-S_BBWP_NSW) * effect_nsw]
+  #   dt[, D_MEAS_PSW := (100-S_BBWP_PSW) * effect_psw]
+  #   dt[, D_MEAS_NUE := (100-S_BBWP_NUE) * effect_nue]
+  #   dt[, D_MEAS_WB := (100-S_BBWP_WB) * effect_wb]
   
   
   # Calculate total measure score

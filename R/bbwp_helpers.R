@@ -292,3 +292,119 @@ bbwp_format_sc_wenr <- function(B_SC_WENR) {
   # Return B_SC_WENR
   return(B_SC_WENR)
 }
+
+#' Filter measures applicable for the field
+#' 
+#' This function selects, from a set of all measures, measures which are applicable for the field based on the field properties
+#' 
+#' @param bbwp_id (character) The unique BBWP measure id based on the van Gerven number of the measure, related to the study by Van Gerven et al. (2020)
+#' @param B_LU_BBWP (character) The BBWP category used for allocation of measures to BBWP crop categories
+#' @param sector (string) a vector with the farm type given the agricultural sector (options: 'diary', 'arable', 'tree_nursery', 'bulbs')
+#' @param B_SOILTYPE_AGR (character) The type of soil
+#' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
+#' @param M_DRAIN (boolean) is there tube drainage present in the field
+#' @param dt.measures (data table) A table of measures with properties. This should include:
+#' bbwp_id, nc1, nc2, nc3, nc4, nc5, nc6, nc7, nc8, nc9, nc10, nc11, nc12,
+#' dairy, arable, tree_nursery, bulbs, clay, sand, peat, loess, nodrains
+#' 
+#' @import data.table
+#' 
+#' @examples
+#' 
+#' @return 
+#' app (integer) whether the measure is applicable for the field (1) or not (0)
+#' 
+#' @export
+bbwp_meas_filter <-function(bbwp_id,
+                            B_LU_BBWP, 
+                            sector,  
+                            B_SOILTYPE_AGR, 
+                            B_SLOPE_DEGREE, 
+                            M_DRAIN, 
+                            dt.measures){
+
+  # check length of the inputs
+  arg.length <- max(length(B_LU_BBWP), length(sector), length(B_SOILTYPE_AGR), length(B_SLOPE_DEGREE),
+                    length(M_DRAIN),length(bbwp_id))
+  
+  # collect data in one data.table
+  dt <- data.table(id = 1:arg.length,
+                   bbwp_id = bbwp_id,
+                   B_LU_BBWP = B_LU_BBWP,
+                   sector = sector,
+                   B_SOILTYPE_AGR = B_SOILTYPE_AGR,
+                   B_SLOPE_DEGREE = B_SLOPE_DEGREE,
+                   M_DRAIN = M_DRAIN
+                   )
+  
+  # merge measure properties
+  # this should include: 
+  # nc1, nc2, nc3, nc4, nc5, nc6, nc7, nc8, nc9, nc10, nc11, nc12,
+  # dairy, arable, tree_nursery, bulbs,
+  # clay, sand, peat, loess,
+  # nodrains
+  dt <- merge(dt, dt.measures, by = "bbwp_id", all.x = T)
+  
+  
+  # Assign zero when measures are not applicable given the crop type
+  cols <- c('app_psw','app_nsw', 'app_ngw','app_wb','app_nue')
+  
+  # set first 1 for all
+  dt[,app := 1]
+  
+  # set the score to zero when not applicable for given crop category
+  dt[B_LU_BBWP == 'gras_permanent' & nc1 == 0, app := app * 0.1]
+  dt[B_LU_BBWP == 'gras_tijdelijk' & nc2 == 0, app := app * 0.1]
+  dt[B_LU_BBWP == 'rustgewas' & nc3 == 0, app := app * 0.1]
+  dt[B_LU_BBWP == 'rooivrucht' & nc4 == 0, app := app * 0.1]
+  dt[B_LU_BBWP == 'groenten' & nc5 == 0, app := app * 0.1]
+  dt[B_LU_BBWP == 'bollensierteelt' & nc6 == 0, app := app * 0.1]
+  dt[B_LU_BBWP == 'boomfruitteelt' & nc7 == 0, app := app * 0.1]
+  dt[B_LU_BBWP == 'natuur' & nc8 == 0, app := app * 0.1]
+  dt[B_LU_BBWP == 'mais' & nc9 == 0, app := app * 0.1]
+  dt[B_LU_BBWP == 'randensloot' & nc10 == 0, app := app * 0.1]
+  dt[B_LU_BBWP == 'vanggewas' & nc11 == 0, app := app * 0.1]
+  dt[B_LU_BBWP == 'eiwitgewas' & nc12 == 0, app := app * 0.1]
+  
+  # set the score to zero when the measure is not applicable for the sector
+  if('sector' %in% colnames(dt)){
+    
+    # sector correction for desk studies where sector is available / added per field
+    dt[,c('fdairy','farable','ftree_nursery','fbulbs') := 1]
+    dt[sector == 'dairy', c('ftree_nursery','farable','fbulbs') := 0]
+    dt[sector == 'arable', c('ftree_nursery','fdairy','fbulbs') := 0]
+    dt[sector == 'bulbs', c('ftree_nursery','fdairy','farable') := 0]
+    dt[sector == 'tree_nursery', c('fbulbs','fdairy','farable') := 0]
+    
+  } else {
+    
+    fs0 <- c('fdairy','farable','ftree_nursery','fbulbs')
+    fs1 <- paste0('f',sector)
+    fs2 <- fs0[!fs0 %in% fs1]
+    dt[,c(fs1) := 1]
+    if(length(fs2) >= 1){ dt[,c(fs2) := 0] }
+  }
+  
+  # estimate whether sector allows applicability
+  dt[, fsector := fdairy * dairy + farable * arable + ftree_nursery * tree_nursery + fbulbs * bulbs]
+  
+  # adapt the score when measure is not applicable
+  dt[fsector == 0, app := 0]
+  
+  # adapt the score when the soil type limits the applicability of measures
+  dt[grepl('klei', B_SOILTYPE_AGR) & clay == FALSE , app := 0]
+  dt[grepl('zand|dal', B_SOILTYPE_AGR) & sand == FALSE , app := 0]
+  dt[grepl('veen', B_SOILTYPE_AGR) & peat == FALSE , app := 0]
+  dt[grepl('loess', B_SOILTYPE_AGR) & loess == FALSE , app := 0]
+  
+  # adapt the score for slope dependent
+  dt[B_SLOPE_DEGREE <= 2 & bbwp_id == 'G21',app := 0]
+  
+  # zuiveren drainage alleen als er ook drains zijn
+  dt[M_DRAIN == FALSE & nodrains == TRUE, app := 0]
+  
+  # order
+  setorder(dt, id)
+  
+  return(dt[, app])
+}
