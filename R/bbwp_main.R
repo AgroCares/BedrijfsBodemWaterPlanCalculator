@@ -227,7 +227,8 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                               S_BBWP_NUE = dt.fields$S_BBWP_NUE,
                               S_BBWP_WB = dt.fields$S_BBWP_WB,
                               measures = NULL,
-                              sector = sector
+                              sector = sector,
+                              B_LS_HYDROCAT = B_LS_HYDROCAT
                               )
     
     # convert dt.meas to a splitted list
