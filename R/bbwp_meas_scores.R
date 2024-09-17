@@ -40,6 +40,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = fbulbs = bulbs = NULL
   oid = bbwp_id = NULL
   code = value_min = value_max =  choices = NULL
+  hoge_gronden = flanken = beekdalen = lokale_laagtes = polders = NULL
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
