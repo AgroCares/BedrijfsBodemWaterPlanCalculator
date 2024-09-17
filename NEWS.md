@@ -1,3 +1,9 @@
+# BBWPC v2.2.3 2024-09-17
+## Changed
+* A new input parameter for landscape category `B_LS_HYDROCAT` is added to the function `bbwp`, `bbwp_field_scores`, and `bbwp_meas_rank`
+* Measure table (bbwp_measures) were updated, with which effect scores for water buffering (effect_wb) are updated
+* and landscape-category-specific weighing factors are added 
+
 # BBWPC v2.2.2 2024-08-12
 ## Added
 * add and re-format tests for `er_croprotation` without measures
