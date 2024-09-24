@@ -44,7 +44,8 @@ test <- bbwp_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                           B_CT_PSW_MAX = 0.5, 
                           B_CT_NSW_MAX = 5.0, 
                           measures = NULL,
-                          sector = c('dairy', 'arable')
+                          sector = c('dairy', 'arable'),
+                          B_LS_HYDROCAT = 'flanken'
                           )
 
 
@@ -94,7 +95,8 @@ test <- bbwp_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                           B_CT_PSW_MAX = 0.5, 
                           B_CT_NSW_MAX = 5.0, 
                           measures = measures,
-                          sector = c('dairy', 'arable')
+                          sector = c('dairy', 'arable'),
+                          B_LS_HYDROCAT = 'flanken'
 )
 
 
@@ -106,8 +108,8 @@ test_that("check bbwp_field_scores", {
       S_BBWP_NSW = c(99,46,40),
       S_BBWP_PSW = c(99,46,16),
       S_BBWP_NUE = c(99,60,100),
-      S_BBWP_WB = c(98,60,26),
-      S_BBWP_TOT = c(99,55,37)
+      S_BBWP_WB = c(97,60,16),
+      S_BBWP_TOT = c(99,55,33)
     ),
     tolerance = 0.01)
 })

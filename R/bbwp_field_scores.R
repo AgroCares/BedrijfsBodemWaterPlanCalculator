@@ -24,6 +24,8 @@
 #' @param measures (data.table) the measures planned / done per fields
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
 #' @param penalty (boolean) the option to apply a penalty for high risk BBWP field indicators 
+#' @param B_LS_HYDROCAT (character) Landscape category for differentiating effect of measures on water buffering.
+#' (options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")
 #'   
 #' @import data.table
 #'
@@ -32,7 +34,8 @@
 bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BBWP,B_AER_CBS,
                               M_DRAIN, D_SA_W, D_RISK_NGW, D_RISK_NSW, D_RISK_PSW, D_RISK_NUE, D_RISK_WB,
                               B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW, 
-                              B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, measures, sector,penalty = TRUE){
+                              B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, measures, sector,penalty = TRUE, 
+                              B_LS_HYDROCAT){
   
   # add visual bindings
   cfngw = cfwb = cfnsw = cfpsw = cfnue = NULL
@@ -154,7 +157,8 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
                                         D_OPI_NUE = dt$D_OPI_NUE,
                                         D_OPI_WB = dt$D_OPI_WB,
                                         measures = measures, 
-                                        sector = sector)
+                                        sector = sector,
+                                        B_LS_HYDROCAT = B_LS_HYDROCAT)
       
       # merge with dt
       dt <- merge(dt,dt.meas.impact,by='id')

@@ -33,7 +33,8 @@ test <- bbwp_meas_score(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','vee
                         D_OPI_NUE = c(0,0.1, 0.5, 1),  
                         D_OPI_WB = c(0, 0.1,0.5, 1), 
                         measures = NULL,
-                        sector = 'dairy'
+                        sector = 'dairy',
+                        B_LS_HYDROCAT = 'flanken'
                         )
 
 test_that("check bbwp_meas_scores", {
@@ -76,7 +77,8 @@ test <- bbwp_meas_score(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','vee
                       D_OPI_NUE = c(0.33,0.1, 0.5, 1),  
                       D_OPI_WB = c(0.9, 0.1,0.5, 1), 
                       measures = measures,
-                      sector = c('dairy','arable')
+                      sector = c('dairy','arable'),
+                      B_LS_HYDROCAT = 'flanken'
 )
 
 

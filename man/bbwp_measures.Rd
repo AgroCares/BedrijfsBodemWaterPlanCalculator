@@ -5,7 +5,7 @@
 \alias{bbwp_measures}
 \title{Agronomic measures that can be applied}
 \format{
-An object of class \code{data.table} (inherits from \code{data.frame}) with 158 rows and 66 columns.
+An object of class \code{data.table} (inherits from \code{data.frame}) with 169 rows and 71 columns.
 }
 \usage{
 bbwp_measures
@@ -85,6 +85,11 @@ This table contains a series of agronomic measures, their applicability and effe
   \item{nc11}{Applicability of the measure on crop category "vanggewas"}
   \item{nc12}{Applicability of the measure on crop category "eiwitgewas"}
   \item{categories}{Eco and/or BBWP categories to which the measure greatly contributes}
+  \item{hoge_gronden}{weighing factor of effect_wb for the landscape category hoge gronden}
+  \item{flanken}{weighing factor of effect_wb for the landscape category flanken}
+  \item{beekdalen}{weighing factor of effect_wb for the landscape category beekdalen}
+  \item{lokale_laagtes}{weighing factor of effect_wb for the landscape category lokale laagtes}
+  \item{polders}{weighing factor of effect_wb for the landscape category polders}
 }
 }
 \keyword{datasets}

@@ -1,5 +1,5 @@
 require(testthat)
-require(data.table)
+#require(data.table)
 require(BBWPC)
   # # default input for testing
   # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei')
@@ -165,7 +165,7 @@ require(BBWPC)
       
       expect_equal(
         object = test$measures[[1]]$top_bbwp_tot,
-        expected = c("G36","G53", "B131", "G25", "G37"))
+        expected = c("G36","G53", "B132", "G25", "G37"))
     })
 
 

@@ -3,76 +3,29 @@ require(data.table);library(usethis)
 
 # -- prepare measures table -----
 
-  # load measures table
-  bbwp_measures <- fread('dev/measures.csv', encoding = 'UTF-8')
-  bbwp_measures[bbwp_measures == ''] <- NA
+# load measures table
+# Table was made in Github Repo 'NMI-DATA_script/bbwp/ppr_bbwp_measures.R'
+# This is the table used for < version 2.3.0  
+bbwp_measures <- fread('dev/bbwp_measures.csv', encoding = 'UTF-8')
 
-  # setcolorder
-  setcolorder(bbwp_measures,'bbwp_id')
-  
-  # set effect values to 0 when NA
-  scols <- colnames(bbwp_measures)[grepl('^nsw|^ngw|^psw|^p_|^n_|^effect|^er|^regio',colnames(bbwp_measures))]
-  bbwp_measures[,c(scols) := lapply(.SD, as.numeric), .SDcols = scols]
-  bbwp_measures[,c(scols) := lapply(.SD,function(x) fifelse(is.na(x),0,x)),.SDcols = scols]
+# save measures as bbwp table
+use_data(bbwp_measures, overwrite = TRUE)
 
-  # create new crop categories in new columns bbwp, eco1 and eco2
+
+# -- prepare measures table (with landscape category)-----
+
+# load updated measure table, which includes weighing factor for 5 landscape category and effect_wb was updated
+# (for hydrological module, made for project 2044.N.24)
+# The table was made in Github Repository "NMI-DATA_scripts"
+# (https://github.com/AgroCares/NMI-DATA_scripts/blob/main/watersysteem/bbwp_hydrologische_module/bbwp_hydro_meas.R)
+# This is the table userd for >= version 2.3.0
+bbwp_measures <- fread('dev/bbwp_measures2.csv', encoding = 'UTF-8')
+
+# Overwrite bbwp measure table
+use_data(bbwp_measures, overwrite = TRUE)
   
-    # set BBWP categories where a measure can be applied
-    
-    # cat1 is permanent grassland, cat2 tijdelijk grasland, graszaad etc
-    bbwp_measures[,nc1:= fifelse(c1==1,1,0)]
-    bbwp_measures[,nc2:= fifelse(c2==1,1,0)]
-    
-    # cat3 is rustgewassen (niet gras), cat4 is rooivrucht
-    bbwp_measures[,nc3:= fifelse(c3==1,1,0)]
-    bbwp_measures[,nc4:= fifelse(c4==1,1,0)]
-    
-    # cat5 is groenten, cat6 zijn bloembollen en sierteelt
-    bbwp_measures[,nc5:= fifelse(c5==1,1,0)]
-    bbwp_measures[,nc6:= fifelse(c6==1,1,0)]
-    
-    # cat7 is boomteelt, fruit, etc, cat8 is natuur
-    bbwp_measures[,nc7:= fifelse(c7==1,1,0)]
-    bbwp_measures[,nc8:= fifelse(c8==1,1,0)] 
-    
-    # cat9 is mais, cat10 is (kruidenrijke) randen / sloten
-    bbwp_measures[,nc9:= fifelse(c9==1,1,0)] 
-    bbwp_measures[,nc10:= fifelse(c10==1,1,0)]
-    
-    # cat11 is vanggewas, cat12 is eiwitgewas
-    bbwp_measures[,nc11:= fifelse(c11==1,1,0)]
-    bbwp_measures[,nc12:= fifelse(c12==1,1,0)]
-    
-    # update names
-    setnames(bbwp_measures, 
-             old = c('B_LU_ARABLE_ER', 'B_LU_PRODUCTIVE_ER', 'B_LU_CULTIVATED_ER'), 
-             new = c('b_lu_arable_er','b_lu_productive_er','b_lu_cultivated_er'))
   
-    # remove duplicated columns
-    bbwp_measures[,c(paste0('c',1:12)) := NULL]
-    
-  # update the measure categories
-    
-    # set the ecoregeling array
-    bbwp_measures[klimaat == 1, categories := "klimaat"]
-    bbwp_measures[bodemkwaliteit == 1 & !is.na(categories), categories := paste0(categories,"||bodemkwaliteit"),by = .I]
-    bbwp_measures[bodemkwaliteit == 1 & is.na(categories), categories := "bodemkwaliteit"]
-    bbwp_measures[waterkwaliteit == 1 & !is.na(categories), categories := paste0(categories,"||waterkwaliteit"),by = .I]
-    bbwp_measures[waterkwaliteit == 1 & is.na(categories), categories := "waterkwaliteit"]
-    bbwp_measures[biodiversiteit == 1 & !is.na(categories), categories := paste0(categories,"||biodiversiteit"),by = .I]
-    bbwp_measures[biodiversiteit == 1 & is.na(categories), categories := "biodiversiteit"]
-    bbwp_measures[landschap == 1 & !is.na(categories), categories := paste0(categories,"||landschap"),by = .I]
-    bbwp_measures[landschap == 1 & is.na(categories), categories := "landschap"]
-    bbwp_measures[!is.na(eco_id), categories := paste0(categories,"||Ecoregeling")]
-    
-    # add the bbwp category
-    bbwp_measures[!is.na(categories),categories := paste0(categories,"||",category),by = .I]
-    bbwp_measures[is.na(categories),categories := category]
-    
-  # save measures as bbwp table
-  use_data(bbwp_measures, overwrite = TRUE)
-  
-# -- prepare table for which ER measures can be used on which crops ---
+# -- prepare table for which ER measures can be used on which crops ----
 
   # load in csv  
   er_measures <- fread('dev/eco_brp.csv', encoding = 'UTF-8')
@@ -87,7 +40,7 @@ require(data.table);library(usethis)
   use_data(er_measures, overwrite = TRUE)
   
     
-# -- prepare ecoregeling objectives ---
+# -- prepare ecoregeling objectives ----
   
   # load in csv
   er_scoring <- as.data.table(fread('dev/220519 ecorelingen opgave.csv',dec=','))
@@ -95,7 +48,7 @@ require(data.table);library(usethis)
   # save measures as bbwp table
   use_data(er_scoring, overwrite = TRUE)
   
-# -- prepare table for scores per farm-measure ---
+# -- prepare table for scores per farm-measure ----
   
   # load in csv
   er_farm_measure <- as.data.table(fread('dev/220517 farm measures.csv',dec=','))
@@ -103,7 +56,7 @@ require(data.table);library(usethis)
   # save measures as bbwp table
   use_data(er_farm_measure, overwrite = TRUE)
   
-# -- prepare crop specific tables for Ecoregelingen ---
+# -- prepare crop specific tables for Ecoregelingen ----
   
   er_crops <- pandex::b_lu_brp[,.(B_LU_BRP, B_LU_NAME, B_LU_BBWP, B_LU_ARABLE_ER, B_LU_PRODUCTIVE_ER, B_LU_CULTIVATED_ER)]
   
@@ -111,7 +64,7 @@ require(data.table);library(usethis)
   use_data(er_crops, overwrite = TRUE)
   fwrite(er_crops, 'dev/er_crops.csv', quote = TRUE)
   
-# -- prepare correction factors for financial reward per Agricultural Economic Region for Ecoregelingen ---
+# -- prepare correction factors for financial reward per Agricultural Economic Region for Ecoregelingen ----
   
   # load in csv
   er_aer_reward <- as.data.table(fread('dev/220519 ecoregeling reward weging.csv',dec=','))
@@ -124,7 +77,7 @@ require(data.table);library(usethis)
   use_data(er_aer_reward, overwrite = TRUE)
   
   
-# -- prepare LSW table
+# -- prepare LSW table ----
   
   
   # library(sf); library(DBI); library(RPostgres)

@@ -17,6 +17,9 @@
 #' @param D_OPI_WB (numeric) the opportunity index (risk x impact) to improve the potential to buffer and store water and efficiently use water for plant growth given field properties
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
 #' @param measures (data.table) the measures planned / done per fields
+#' @param sector (string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
+#' @param B_LS_HYDROCAT (character) Landscape category for differentiating effect of measures on water buffering.
+#' (options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")
 #' 
 #'   
 #' @import data.table
@@ -26,7 +29,7 @@
 bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE, B_LU_BBWP, B_AER_CBS,
                             M_DRAIN, D_SA_W,
                             D_OPI_NGW, D_OPI_NSW, D_OPI_PSW, D_OPI_NUE, D_OPI_WB,
-                            measures = NULL, sector){
+                            measures = NULL, sector, B_LS_HYDROCAT){
   
   # add visual bindings
   effect_psw = psw_psg_medium = psw_psg_high = effect_nsw = nsw_drains = nsw_gwl_low = nsw_gwl_high = psw_noslope = NULL
@@ -37,6 +40,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = fbulbs = bulbs = NULL
   oid = bbwp_id = NULL
   code = value_min = value_max =  choices = NULL
+  hoge_gronden = flanken = beekdalen = lokale_laagtes = polders = NULL
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
@@ -81,6 +85,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
                    D_OPI_PSW = D_OPI_PSW,
                    D_OPI_NUE = D_OPI_NUE,
                    D_OPI_WB = D_OPI_WB,
+                   B_LS_HYDROCAT = B_LS_HYDROCAT,
                    D_MEAS_NGW = NA_real_,
                    D_MEAS_NSW = NA_real_,
                    D_MEAS_PSW = NA_real_,
@@ -101,6 +106,8 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
   # merge with input
   dt <- merge(dt, dt.measures, by = 'id', all = TRUE)
   
+    ## Adjust effect scores
+  
     # Add bonus points for psw
     dt[A_P_SG >= 50 & A_P_SG < 75, effect_psw := effect_psw + psw_psg_medium]
     dt[A_P_SG >= 75, effect_psw := effect_psw + psw_psg_high]
@@ -113,8 +120,15 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE
     dt[B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_low]
     dt[! B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_high]
     
-    # Add bonus points for grassland
+    # Add bonus points for grassland for ngw
     dt[B_LU_BBWP %in% c('gras_permanent','gras_tijdelijk'), effect_ngw := effect_ngw + ngw_grassland]
+    
+    # adjust effect scores for water buffering with landscape-category-specific weighing factor
+    dt[B_LS_HYDROCAT == "hoge_gronden", effect_wb := effect_wb * hoge_gronden]
+    dt[B_LS_HYDROCAT == "flanken", effect_wb := effect_wb * flanken]
+    dt[B_LS_HYDROCAT == "beekdalen", effect_wb := effect_wb * beekdalen]
+    dt[B_LS_HYDROCAT == "lokale_laagtes", effect_wb := effect_wb * lokale_laagtes]
+    dt[B_LS_HYDROCAT == "polders", effect_wb := effect_wb * polders]
  
   # set scores to zero when measures are not applicable given the crop type
   
