@@ -1,3 +1,11 @@
+# BBWPC v2.3.1 2024-09-27
+## Changed
+* A category of measures (column 'category' of table bbwp_measures), watervasthouden, is split into 2 categories: watervasthouden_effecientie and watervasthouden_irrigatie
+
+## Fixed
+* Duplictes of measure titles were removed, new names were given
+
+
 # BBWPC v2.3.0 2024-09-17
 ## Changed
 * A new input parameter for landscape category `B_LS_HYDROCAT` is added to the function `bbwp`, `bbwp_field_scores`, and `bbwp_meas_rank`
