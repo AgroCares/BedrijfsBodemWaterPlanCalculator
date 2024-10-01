@@ -1,3 +1,8 @@
+# BBWPC v2.3.2 2024-10-01
+## Changed
+* Category of measures (column 'categories' of table bbwp_measures) are updated. Now 'Watervasthouden' is split into 'irrigatie', 'drainage', 'watervasthouden', or 'erf'.
+* Changes made in the column 'category' (in v2.3.1) are reset
+
 # BBWPC v2.3.1 2024-09-27
 ## Changed
 * A category of measures (column 'category' of table bbwp_measures), watervasthouden, is split into 2 categories: watervasthouden_effecientie and watervasthouden_irrigatie
