@@ -105,7 +105,7 @@ test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_tot[c(1,2,5,9,16)],
     #expected = c("G53" , "G8BWP4",  "G11aBWP3", "G54" , "B137"),
-    expected = c("G11aBWP4", "B132", "G36", "G17", "B137"),
+    expected = c("G11aBWP4","G6BWP6", "G25", "G17", "B137"),
     tolerance = 0.01)
 })
 
@@ -186,8 +186,7 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test[id==1,top_bbwp_tot],
-    #expected = c("G8BWP4","G6BWP1","G12BWP10", "G53","B112"),
-    expected = c("G11aBWP4", "BWP13", "G6BWP6","B110H2", "G18H1"),
+    expected = c("BWP13", "G11aBWP4", "G6BWP6", "B110H1","B112"),
     tolerance = 0.01)
 })
 
@@ -247,7 +246,13 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = rep('dekzand', 6),
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_wb[c(1,6,11,16,21,26)], # top 1 WB measures for each field
-    expected = c( "B132", "G11aBWP4", "BWP13", "BWP13", "BWP13", "BWP13"),
+    expected = c("BWP13", "BWP13", "BWP13", "BWP13", "BWP13", "BWP13"),
+    tolerance = 0.01)
+})
+test_that("check bbwp_meas_rank", {
+  expect_equal(
+    object = test$top_bbwp_wb[c(1,6,11,16,21,26) + 1], # top 2 WB measures for each field
+    expected = c( "G11aBWP4", "G11aBWP4", "G6BWP6", "G6BWP6", "G6BWP6", "G11aBWP4"),
     tolerance = 0.01)
 })
 
@@ -257,3 +262,4 @@ test_that("check bbwp_meas_rank", {
     expected = rep( "B132", 6),
     tolerance = 0.01)
 })
+
