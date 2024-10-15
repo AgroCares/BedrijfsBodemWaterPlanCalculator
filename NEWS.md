@@ -1,3 +1,8 @@
+# BBWPC v2.3.3 2024-10-11
+## Changed
+* Weighing factor for effects on WB is updated
+* Summary text of measure G11aBWP4 is updated
+
 # BBWPC v2.3.2 2024-10-01
 ## Changed
 * Category of measures (column 'categories' of table bbwp_measures) are updated. Now 'Watervasthouden' is split into 'irrigatie', 'drainage', 'watervasthouden', or 'erf', 'Ecoregeling' is removed.
