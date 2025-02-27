@@ -1,3 +1,7 @@
+# BBWPC v2.3.4 2025-02-27
+## Fixed
+* avoid NA in reward calculation `er_croprotation` when no measures lead to reward, #BBWP-142
+
 # BBWPC v2.3.3 2024-10-11
 ## Changed
 * Weighing factor for effects on WB is updated
