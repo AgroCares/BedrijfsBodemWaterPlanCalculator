@@ -265,7 +265,8 @@ er_meas_score <- function(B_SOILTYPE_AGR, B_AER_CBS,B_AREA,
     # melt dt
     dt <- melt(dt,
                id.vars = c('id','bbwp_id','soiltype','bbwp_conflict','B_AREA','reward_cf','regio_factor'),
-               measure = patterns(erscore = "^er_"),
+               measure.vars = patterns("^er_"),
+               value.name = "erscore",
                variable.name = 'indicator')
     dt[,indicator := gsub('er_', '',indicator)]
     

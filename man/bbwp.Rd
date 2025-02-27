@@ -39,7 +39,8 @@ bbwp(
   measures,
   sector,
   output = "scores",
-  penalty = TRUE
+  penalty = TRUE,
+  B_LS_HYDROCAT = NULL
 )
 }
 \arguments{
@@ -112,6 +113,9 @@ bbwp(
 \item{output}{(string) a vector specifying the output type of the function. Options: scores, measures}
 
 \item{penalty}{(boolean) the option to apply a penalty for high risk BBWP field indicators}
+
+\item{B_LS_HYDROCAT}{(character) Landscape category for differentiating effect of measures on water buffering.
+(options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")}
 }
 \description{
 Estimate the potential to contribute to agronomic and environmental challenges in a region for a farm and assess the impact of farm measures taken.

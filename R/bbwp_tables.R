@@ -11,7 +11,7 @@
 #'   \item{description}{An elaborate description of the measure}
 #'   \item{url}{The URL refers to a web resource containing a fact sheet of the specific measure}
 #'   \item{level}{The spatial scale at which the measure is valid: "field" or "farm"}
-#'   \item{category}{The measure category, choices: "teeltmaatregel", "bodemverbetering", "bedrijf", "slootkantbeheer", "gewasbescherming", "precisiebemesting", "niet_productief", "watervasthouden" or "erf"}
+#'   \item{category}{The measure category, choices: "teeltmaatregel", "bodemverbetering", "bedrijf", "slootkantbeheer", "gewasbescherming", "precisiebemesting", "niet_productief", "watervasthouden", or "erf"}
 #'   \item{dairy}{Applicability of the measure in the dairy sector}
 #'   \item{arable}{Applicability of the measure in the arable sector}
 #'   \item{vegetables_outdoor}{Applicability of the measure in the (outdoor) vegetables sector}
@@ -73,6 +73,11 @@
 #'   \item{nc11}{Applicability of the measure on crop category "vanggewas"}
 #'   \item{nc12}{Applicability of the measure on crop category "eiwitgewas"}
 #'   \item{categories}{Eco and/or BBWP categories to which the measure greatly contributes}
+#'   \item{hoge_gronden}{weighing factor of effect_wb for the landscape category hoge gronden}
+#'   \item{flanken}{weighing factor of effect_wb for the landscape category flanken}
+#'   \item{beekdalen}{weighing factor of effect_wb for the landscape category beekdalen}
+#'   \item{lokale_laagtes}{weighing factor of effect_wb for the landscape category lokale laagtes}
+#'   \item{polders}{weighing factor of effect_wb for the landscape category polders}
 #' }
 "bbwp_measures"
 

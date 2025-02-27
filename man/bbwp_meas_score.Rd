@@ -19,7 +19,8 @@ bbwp_meas_score(
   D_OPI_NUE,
   D_OPI_WB,
   measures = NULL,
-  sector
+  sector,
+  B_LS_HYDROCAT
 )
 }
 \arguments{
@@ -52,6 +53,9 @@ bbwp_meas_score(
 \item{measures}{(data.table) the measures planned / done per fields}
 
 \item{sector}{(string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')}
+
+\item{B_LS_HYDROCAT}{(character) Landscape category for differentiating effect of measures on water buffering.
+(options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")}
 }
 \description{
 Estimate the score for agronomic measures taken to improve soil and water management on agricultural farms.

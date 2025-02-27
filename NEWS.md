@@ -1,6 +1,26 @@
-# BBWPC v2.2.3 2024-08-14
+# BBWPC v2.3.3 2024-10-11
+## Changed
+* Weighing factor for effects on WB is updated
+* Summary text of measure G11aBWP4 is updated
+
+# BBWPC v2.3.2 2024-10-01
+## Changed
+* Category of measures (column 'categories' of table bbwp_measures) are updated. Now 'Watervasthouden' is split into 'irrigatie', 'drainage', 'watervasthouden', or 'erf', 'Ecoregeling' is removed.
+* Changes made in the column 'category' (in v2.3.1) are reset
+
+# BBWPC v2.3.1 2024-09-27
+## Changed
+* A category of measures (column 'category' of table bbwp_measures), watervasthouden, is split into 2 categories: watervasthouden_effecientie and watervasthouden_irrigatie
+
 ## Fixed
-* error for BRP codes above 7000
+* Duplictes of measure titles were removed, new names were given
+
+
+# BBWPC v2.3.0 2024-09-17
+## Changed
+* A new input parameter for landscape category `B_LS_HYDROCAT` is added to the function `bbwp`, `bbwp_field_scores`, and `bbwp_meas_rank`
+* Measure table (bbwp_measures) were updated, with which effect scores for water buffering (effect_wb) are updated
+* and landscape-category-specific weighing factors are added 
 
 # BBWPC v2.2.2 2024-08-12
 ## Added
