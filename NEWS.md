@@ -1,5 +1,4 @@
 # BBWPC v2.3.4 2025-02-27
-
 ## Fixed
 * avoid NA in reward calculation `er_croprotation` when no measures lead to reward, #BBWP-142
 
