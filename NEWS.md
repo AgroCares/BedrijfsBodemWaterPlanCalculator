@@ -1,3 +1,7 @@
+# BBWPC v2.2.3 2024-08-14
+## Fixed
+* error for BRP codes above 7000
+
 # BBWPC v2.2.2 2024-08-12
 ## Added
 * add and re-format tests for `er_croprotation` without measures
