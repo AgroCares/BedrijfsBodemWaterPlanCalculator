@@ -5,7 +5,8 @@
 #' @param B_SOILTYPE_AGR (character) The type of soil
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param M_DRAIN (boolean) is there tube drainage present in the field
-#' @param A_P_SG (numeric) 
+#' @param A_P_CC (numeric) The plant available P content, measured via 0.01M CaCl2 extraction (mg / kg)
+#' @param A_P_AL (numeric) The plant extractable P content, measured via ammonium lactate extraction (mg / kg)
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param B_LU_BBWP (character) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
@@ -31,7 +32,7 @@
 #'
 #' @export
 # calculate the opportunities for a set of fields
-bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGREE, B_LU_BBWP,B_AER_CBS,
+bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOPE_DEGREE, B_LU_BBWP,B_AER_CBS,
                               M_DRAIN, D_SA_W, D_RISK_NGW, D_RISK_NSW, D_RISK_PSW, D_RISK_NUE, D_RISK_WB,
                               B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW, 
                               B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, measures, sector,penalty = TRUE, 
@@ -50,7 +51,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   
   
   # check length of the inputs
-  arg.length <- max(length(B_SOILTYPE_AGR),length(B_GWL_CLASS), length(A_P_SG),length(B_AER_CBS),
+  arg.length <- max(length(B_SOILTYPE_AGR),length(B_GWL_CLASS), length(A_P_CC),length(A_P_AL),length(B_AER_CBS),
                     length(B_SLOPE_DEGREE), length(B_LU_BBWP),length(M_DRAIN),length(D_SA_W),
                     length(D_RISK_NGW),length(D_RISK_NSW),length(D_RISK_PSW),length(D_RISK_NUE),
                     length(D_RISK_WB),length(B_GWP),length(B_AREA_DROUGHT),length(B_CT_PSW),
@@ -60,7 +61,8 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
   checkmate::assert_subset(B_LU_BBWP, choices = unlist(bbwp_parms[code == "B_LU_BBWP", choices]))
   checkmate::assert_character(B_LU_BBWP, len = arg.length)
-  checkmate::assert_numeric(A_P_SG, lower = bbwp_parms[code == "A_P_SG", value_min], upper = bbwp_parms[code == "A_P_SG", value_max],len = arg.length)
+  checkmate::assert_numeric(A_P_CC, lower = bbwp_parms[code == "A_P_CC", value_min], upper = bbwp_parms[code == "A_P_CC", value_max],len = arg.length)
+  checkmate::assert_numeric(A_P_AL, lower = bbwp_parms[code == "A_P_AL", value_min], upper = bbwp_parms[code == "A_P_AL", value_max],len = arg.length)
   checkmate::assert_numeric(B_SLOPE_DEGREE,lower = bbwp_parms[code == "B_SLOPE_DEGREE", value_min], upper = bbwp_parms[code == "B_SLOPE_DEGREE", value_max],len = arg.length)
   checkmate::assert_logical(M_DRAIN,len = arg.length)
   checkmate::assert_numeric(D_SA_W, lower = 0, upper = 1, len = arg.length)
@@ -81,7 +83,8 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
   dt <- data.table(id = 1:arg.length,
                     B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                     B_GWL_CLASS = B_GWL_CLASS,
-                    A_P_SG = A_P_SG,
+                    A_P_CC = A_P_CC,
+                    A_P_AL = A_P_AL,
                     B_SLOPE_DEGREE = B_SLOPE_DEGREE,
                     B_LU_BBWP = B_LU_BBWP,
                     B_AER_CBS = B_AER_CBS,
@@ -147,7 +150,8 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_SG, B_SLOPE_DEGRE
                                         B_LU_BBWP = dt$B_LU_BBWP,
                                         B_GWL_CLASS = dt$B_GWL_CLASS,
                                         B_AER_CBS = dt$B_AER_CBS,
-                                        A_P_SG = dt$A_P_SG,
+                                        A_P_CC = dt$A_P_CC,
+                                        A_P_AL = dt$A_P_AL,
                                         B_SLOPE_DEGREE = dt$B_SLOPE_DEGREE,
                                         M_DRAIN = dt$M_DRAIN,
                                         D_SA_W = dt$D_SA_W,
