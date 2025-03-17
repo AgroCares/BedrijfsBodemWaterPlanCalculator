@@ -7,7 +7,8 @@
 bbwp_field_scores(
   B_SOILTYPE_AGR,
   B_GWL_CLASS,
-  A_P_SG,
+  A_P_CC,
+  A_P_AL,
   B_SLOPE_DEGREE,
   B_LU_BBWP,
   B_AER_CBS,
@@ -35,7 +36,9 @@ bbwp_field_scores(
 
 \item{B_GWL_CLASS}{(character) The groundwater table class}
 
-\item{A_P_SG}{(numeric)}
+\item{A_P_CC}{(numeric) The plant available P content, measured via 0.01M CaCl2 extraction (mg / kg)}
+
+\item{A_P_AL}{(numeric) The plant extractable P content, measured via ammonium lactate extraction (mg / kg)}
 
 \item{B_SLOPE_DEGREE}{(numeric) The slope of the field (degrees)}
 
