@@ -111,14 +111,11 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_CC,A_P_AL, B_SLOPE
   
     ## Adjust effect scores
   
-    # Add bonus points for psw measure mining
-    dt[A_P_AL <= 18 | A_P_CC <= 1.5 & bbwp_id=="G68", effect_psw := effect_psw + psw_psg_low]
-    dt[A_P_AL > 50 | A_P_CC > 3.4 & bbwp_id=="G68", effect_psw := effect_psw + psw_psg_high]
+    # Add bonus points for measures on (slightly) P saturated soils
+    dt[(A_P_AL > 18 & A_P_AL <= 50 & A_P_CC > 1.5 & A_P_CC <= 3.4), effect_psw := effect_psw + psw_psg_medium]
+    dt[(A_P_AL > 50 | A_P_CC > 3.4), effect_psw := effect_psw + psw_psg_high]
     
-    # Add bonus points for all other measures
-    dt[(A_P_AL > 18 & A_P_AL <= 50 & A_P_CC > 1.5 & A_P_CC <= 3.4) & !bbwp_id=="G68", effect_psw := effect_psw + psw_psg_medium]
-    dt[(A_P_AL > 50 | A_P_CC > 3.4) & !bbwp_id=="G68", effect_psw := effect_psw + psw_psg_high]
-    
+    # Add bonus points for other aspects psw
     dt[B_SLOPE_DEGREE <= 2, effect_psw := effect_psw + psw_noslope]
     dt[grepl('bollen',B_LU_BBWP), effect_psw := effect_psw + psw_bulbs]
     dt[M_DRAIN == TRUE, effect_psw := effect_psw + nsw_drains]

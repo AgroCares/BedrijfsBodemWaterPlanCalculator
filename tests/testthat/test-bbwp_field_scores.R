@@ -108,10 +108,10 @@ test_that("check bbwp_field_scores", {
     expected = data.table(
       S_BBWP_NGW = c(99,67,58),
       S_BBWP_NSW = c(99,46,40),
-      S_BBWP_PSW = c(99,46,52),
+      S_BBWP_PSW = c(99,46,34),
       S_BBWP_NUE = c(99,60,100),
       S_BBWP_WB = c(97,60,16),
-      S_BBWP_TOT = c(99,55,43)
+      S_BBWP_TOT = c(99,55,39)
     ),
     tolerance = 0.01)
 })
