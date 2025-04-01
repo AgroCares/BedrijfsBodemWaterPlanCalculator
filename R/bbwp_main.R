@@ -177,7 +177,8 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
     # calculate BBWP field scores
     dt.fields  <- bbwp_field_scores(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                                     B_GWL_CLASS = B_GWL_CLASS,
-                                    A_P_SG = A_P_SG,
+                                    A_P_CC = A_P_CC,
+                                    A_P_AL = A_P_AL,
                                     B_SLOPE_DEGREE = B_SLOPE_DEGREE,
                                     B_LU_BBWP = B_LU_BBWP,
                                     B_AER_CBS = B_AER_CBS,
@@ -215,7 +216,8 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
     # Retreive the best measures to improve. note that here the BBWP field score is input (varying 0 and 100) where 100 equals "targets met"
     dt.meas <- bbwp_meas_rank(B_SOILTYPE_AGR = B_SOILTYPE_AGR,
                               B_GWL_CLASS = B_GWL_CLASS,
-                              A_P_SG = A_P_SG,
+                              A_P_CC = A_P_CC,
+                              A_P_AL = A_P_AL,
                               B_SLOPE_DEGREE = B_SLOPE_DEGREE,
                               B_LU_BBWP = B_LU_BBWP,
                               B_AER_CBS = B_AER_CBS,

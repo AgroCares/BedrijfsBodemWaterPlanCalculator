@@ -221,7 +221,7 @@ require(BBWPC)
     # run tests on format and output values
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(90,45,55),
+      expected = c(90,45,64),
       tolerance = 0.01)
     
     expect_equal(

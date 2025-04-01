@@ -26,7 +26,8 @@
 # test 1 with no measures applied
 test <- bbwp_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'), 
                           B_GWL_CLASS = c('-', 'GtI', 'GtV'), 
-                          A_P_SG = c(0.4, 0.8, 1), 
+                          A_P_CC = c(0.4, 0.8, 1), 
+                          A_P_AL = c(40,80,100),
                           B_SLOPE_DEGREE =  c(1.5,4,1.5),
                           B_AER_CBS = c('LG05','LG14','LG03'),
                           B_LU_BBWP = c('gras_permanent','rooivrucht','gras_permanent'),
@@ -77,7 +78,8 @@ measures$bbwp_status <- 'given for ANLB'
 # test 2 with  measures applied
 test <- bbwp_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'), 
                           B_GWL_CLASS = c('-', 'GtI', 'GtV'), 
-                          A_P_SG = c(0.4, 0.8, 1), 
+                          A_P_CC = c(0.4, 0.8, 1), 
+                          A_P_AL = c(40,80,100),
                           B_SLOPE_DEGREE =  c(1.5,4,1.5),
                           B_LU_BBWP = c('gras_permanent','rooivrucht','gras_permanent'),
                           B_AER_CBS = c('LG05','LG14','LG03'),
@@ -106,10 +108,10 @@ test_that("check bbwp_field_scores", {
     expected = data.table(
       S_BBWP_NGW = c(99,67,58),
       S_BBWP_NSW = c(99,46,40),
-      S_BBWP_PSW = c(99,46,16),
+      S_BBWP_PSW = c(99,46,34),
       S_BBWP_NUE = c(99,60,100),
       S_BBWP_WB = c(97,60,16),
-      S_BBWP_TOT = c(99,55,33)
+      S_BBWP_TOT = c(99,55,39)
     ),
     tolerance = 0.01)
 })

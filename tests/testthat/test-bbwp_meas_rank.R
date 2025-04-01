@@ -6,7 +6,8 @@ require(testthat)
   # B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais')
   # B_AER_CBS = c('LG05','LG14','LG03','LG02')
   # B_GWL_CLASS = 'GtIII'
-  # A_P_SG = rep(25,4)
+  # A_P_CC = rep(2.5,4)
+  # A_P_AL = rep(45,4)
   # B_SLOPE_DEGREE = rep(2.5,4)
   # M_DRAIN = rep(TRUE,4)
   # D_SA_W = rep(0.5,4)
@@ -17,12 +18,14 @@ require(testthat)
   # S_BBWP_WB = c(0, 0.1,0.5, 1)*100
   # measures = NULL
   # sector = 'dairy'
-
+  # B_LS_HYDROCAT = 'flanken'
+  
 # run example 1 without any measures taken
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                        B_GWL_CLASS = 'GtIII', 
-                       A_P_SG = rep(25,4) ,
+                       A_P_CC = rep(2.5,4),
+                       A_P_AL = rep(45,4),
                        B_SLOPE_DEGREE = rep(2.5,4),
                        B_AER_CBS = c('LG05','LG14','LG03','LG02'),
                        M_DRAIN = rep(TRUE,4),
@@ -54,7 +57,7 @@ test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_tot[c(1,2,7,12,15)],
     #expected = c('G53',"G27",'G21','G27','G17'),
-    expected = c("G11aBWP4", "B132", "G27", "G27", "G68"),
+    expected = c("G11aBWP4", "B132", "G18H1", "G18H1", "G20"),
     tolerance = 0.01)
 })
 
@@ -72,7 +75,8 @@ measures$bbwp_status <- 'given for ANLB'
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                        B_GWL_CLASS = c('GtIII', 'GtVII','GtII','GtIV'),
-                       A_P_SG = rep(25,4) ,
+                       A_P_CC = rep(2.5,4),
+                       A_P_AL = rep(45,4),
                        B_SLOPE_DEGREE = rep(2.5,4),
                        B_AER_CBS = c('LG05','LG14','LG03','LG02'),
                        M_DRAIN = rep(TRUE,4),
@@ -113,7 +117,8 @@ test_that("check bbwp_meas_rank", {
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                        B_GWL_CLASS = 'GtIII', 
-                       A_P_SG = rep(55,4) ,
+                       A_P_CC = rep(2.5,4),
+                       A_P_AL = rep(55,4),
                        B_SLOPE_DEGREE = rep(2.5,4),
                        B_AER_CBS = c('LG05','LG14','LG03','LG02'),
                        M_DRAIN = rep(TRUE,4),
@@ -140,7 +145,8 @@ test_that("check bbwp_meas_rank", {
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                        B_GWL_CLASS = 'GtIII', 
-                       A_P_SG = rep(55,4) ,
+                       A_P_CC = rep(5.5,4),
+                       A_P_AL = rep(75,4),
                        B_SLOPE_DEGREE = rep(2.5,4),
                        B_AER_CBS = c('LG05','LG14','LG03','LG02'),
                        M_DRAIN = rep(TRUE,4),
@@ -168,7 +174,8 @@ test_that("check bbwp_meas_rank", {
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                        B_GWL_CLASS = 'GtIII', 
-                       A_P_SG = rep(55,4) ,
+                       A_P_CC = rep(2.5,4),
+                       A_P_AL = rep(45,4),
                        B_SLOPE_DEGREE = rep(2.5,4),
                        B_AER_CBS = c('LG05','LG14','LG03','LG02'),
                        M_DRAIN = rep(TRUE,4),
@@ -196,7 +203,8 @@ test_that("check bbwp_meas_rank", {
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
                        B_GWL_CLASS = 'GtIII', 
-                       A_P_SG = rep(55,4) ,
+                       A_P_CC = rep(2.5,4),
+                       A_P_AL = rep(45,4),
                        B_SLOPE_DEGREE = rep(2.5,4),
                        B_AER_CBS = c('LG05','LG14','LG03','LG02'),
                        M_DRAIN = rep(TRUE,4),
@@ -228,7 +236,8 @@ test_that("check bbwp_meas_rank", {
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = rep('dekzand', 6),
                        B_LU_BBWP = rep('gras_permanent', 6),
                        B_GWL_CLASS = 'GtIII', 
-                       A_P_SG = rep(55, 6) ,
+                       A_P_CC = rep(2.5,6),
+                       A_P_AL = rep(45,6),
                        B_SLOPE_DEGREE = rep(2.5, 6),
                        B_AER_CBS = rep('LG05', 6),
                        M_DRAIN = rep(TRUE,6),

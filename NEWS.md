@@ -1,3 +1,11 @@
+# BBWPC v2.4.0 2025-03-17
+## Changed
+* adjust effect of volvelds uitmijnen G68 as function of A_P_CC and A_P_AL rather than A_P_SG, #BBWP-143
+* adjust name of measure G68 in `bbwp_measures`
+* adjust P input arguments in `bbwp_meas_rank`, `bbwp_meas_scores` and `bbwp_field_scores`
+* update test functions for `bbwp_meas_rank`, `bbwp_meas_scores` and `bbwp_field_scores` and `bbwp`
+* add effects PSG for measures in the lower class
+
 # BBWPC v2.3.4 2025-02-27
 ## Fixed
 * avoid NA in reward calculation `er_croprotation` when no measures lead to reward, #BBWP-142

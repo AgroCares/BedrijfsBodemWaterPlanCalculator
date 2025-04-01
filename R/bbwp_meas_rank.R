@@ -5,7 +5,8 @@
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil
 #' @param B_GWL_CLASS (character) The groundwater table class
-#' @param A_P_SG (numeric) 
+#' @param A_P_CC (numeric) The plant available P content, measured via 0.01M CaCl2 extraction (mg / kg)
+#' @param A_P_AL (numeric) The plant extractable P content, measured via ammonium lactate extraction (mg / kg)
 #' @param B_SLOPE_DEGREE (numeric) The slope of the field (degrees)
 #' @param B_LU_BBWP (character) The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_AER_CBS (character) The agricultural economic region in the Netherlands (CBS, 2016)
@@ -25,7 +26,7 @@
 #'
 #' @export
 # rank the measures given their effectiveness to improve the sustainability of the farm
-bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE, B_LU_BBWP,B_AER_CBS,
+bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOPE_DEGREE, B_LU_BBWP,B_AER_CBS,
                            M_DRAIN, D_SA_W,
                            S_BBWP_NGW, S_BBWP_NSW, S_BBWP_PSW, S_BBWP_NUE, S_BBWP_WB,
                            measures, sector, B_LS_HYDROCAT){
@@ -35,7 +36,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
   ngw_grassland = psw_bulbs = D_MEAS_NGW = D_MEAS_NSW = D_MEAS_NUE = effect_nue = D_MEAS_WB = effect_wb = diary = arable = tree_nursery = bulbs = NULL
   clay = sand= peat = loess = D_MEAS_TOT = effect_costs = id = D_MEAS_PSW = nodrains = NULL
   fsector = fdairy = dairy = farable = arable = ftree_nursery = tree_nursery = fbulbs = bulbs = NULL
-  bbwp_id = oid = level = NULL
+  bbwp_id = oid = level = psw_psg_low = NULL
   nc1 = nc2 = nc3 = nc4 = nc5 = nc6 = nc7 = nc8 = nc9 = nc10 = nc11 = nc12 = NULL
   code = value_min = value_max = choices = NULL
   hoge_gronden = flanken = beekdalen = lokale_laagtes = polders = NULL
@@ -46,7 +47,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
   # check length of the inputs
   arg.length <- max(length(S_BBWP_NGW), length(S_BBWP_NSW), length(S_BBWP_PSW), length(S_BBWP_NUE),
                     length(S_BBWP_WB), length(B_SOILTYPE_AGR), length(B_GWL_CLASS), length(M_DRAIN),
-                    length(A_P_SG), length(B_SLOPE_DEGREE), length(B_LU_BBWP),length(B_AER_CBS),
+                    length(A_P_CC),length(A_P_AL), length(B_SLOPE_DEGREE), length(B_LU_BBWP),length(B_AER_CBS),
                     length(D_SA_W))
   
   # reformat B_AER_CBS
@@ -57,7 +58,8 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
   checkmate::assert_subset(B_LU_BBWP, choices = unlist(bbwp_parms[code == "B_LU_BBWP", choices]))
   checkmate::assert_character(B_LU_BBWP, len = arg.length)
   checkmate::assert_logical(M_DRAIN)
-  checkmate::assert_numeric(A_P_SG, lower = bbwp_parms[code == "A_P_SG", value_min], upper = bbwp_parms[code == "A_P_SG", value_max],len = arg.length)
+  checkmate::assert_numeric(A_P_CC, lower = bbwp_parms[code == "A_P_CC", value_min], upper = bbwp_parms[code == "A_P_CC", value_max],len = arg.length)
+  checkmate::assert_numeric(A_P_AL, lower = bbwp_parms[code == "A_P_AL", value_min], upper = bbwp_parms[code == "A_P_AL", value_max],len = arg.length)
   checkmate::assert_numeric(B_SLOPE_DEGREE,lower = bbwp_parms[code == "B_SLOPE_DEGREE", value_min], upper = bbwp_parms[code == "B_SLOPE_DEGREE", value_max],len = arg.length)
   checkmate::assert_numeric(D_SA_W, lower = 0, upper = 100,len = arg.length)
   checkmate::assert_numeric(S_BBWP_NGW, lower = 0, upper = 100,len = arg.length)
@@ -75,7 +77,8 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     id = 1:arg.length,
     B_SOILTYPE_AGR = B_SOILTYPE_AGR,
     B_GWL_CLASS = B_GWL_CLASS,
-    A_P_SG = A_P_SG,
+    A_P_CC = A_P_CC,
+    A_P_AL = A_P_AL,
     B_SLOPE_DEGREE = B_SLOPE_DEGREE,
     B_LU_BBWP = B_LU_BBWP,
     B_AER_CBS = B_AER_CBS,
@@ -102,9 +105,12 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_SG, B_SLOPE_DEGREE,
     # only select measures at field level
     dt <- dt[level == 'field']
   
-    # Add bonus points for psw
-    dt[A_P_SG >= 50 & A_P_SG < 75, effect_psw := effect_psw + psw_psg_medium]
-    dt[A_P_SG >= 75, effect_psw := effect_psw + psw_psg_high]
+    # Add bonus points for measures on (slightly) P saturated soils
+    dt[(A_P_AL > 18 & A_P_AL <= 50 & A_P_CC > 1.5 & A_P_CC <= 3.4), effect_psw := effect_psw + psw_psg_medium]
+    dt[(A_P_AL > 50 | A_P_CC > 3.4), effect_psw := effect_psw + psw_psg_high]
+    dt[A_P_AL <= 18 | A_P_CC <= 1.5, effect_psw := effect_psw + psw_psg_low]
+    
+    # Add bonus points for all other measures
     dt[B_SLOPE_DEGREE <= 2, effect_psw := effect_psw + psw_noslope]
     dt[grepl('bollen',B_LU_BBWP), effect_psw := effect_psw + psw_bulbs]
     dt[M_DRAIN == TRUE, effect_psw := effect_psw + nsw_drains]
