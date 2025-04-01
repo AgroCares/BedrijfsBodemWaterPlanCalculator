@@ -108,6 +108,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOPE_D
     # Add bonus points for measures on (slightly) P saturated soils
     dt[(A_P_AL > 18 & A_P_AL <= 50 & A_P_CC > 1.5 & A_P_CC <= 3.4), effect_psw := effect_psw + psw_psg_medium]
     dt[(A_P_AL > 50 | A_P_CC > 3.4), effect_psw := effect_psw + psw_psg_high]
+    dt[A_P_AL <= 18 | A_P_CC <= 1.5, effect_psw := effect_psw + psw_psg_low]
     
     # Add bonus points for all other measures
     dt[B_SLOPE_DEGREE <= 2, effect_psw := effect_psw + psw_noslope]
