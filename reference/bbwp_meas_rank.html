@@ -9,7 +9,7 @@ And send an ordered list back of the most suitable measures."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">BBWPC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,8 @@ And send an ordered list back of the most suitable measures.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bbwp_meas_rank</span><span class="op">(</span></span>
 <span>  <span class="va">B_SOILTYPE_AGR</span>,</span>
 <span>  <span class="va">B_GWL_CLASS</span>,</span>
-<span>  <span class="va">A_P_SG</span>,</span>
+<span>  <span class="va">A_P_CC</span>,</span>
+<span>  <span class="va">A_P_AL</span>,</span>
 <span>  <span class="va">B_SLOPE_DEGREE</span>,</span>
 <span>  <span class="va">B_LU_BBWP</span>,</span>
 <span>  <span class="va">B_AER_CBS</span>,</span>
@@ -74,8 +75,12 @@ And send an ordered list back of the most suitable measures.</p>
 <dd><p>(character) The groundwater table class</p></dd>
 
 
-<dt id="arg-a-p-sg">A_P_SG<a class="anchor" aria-label="anchor" href="#arg-a-p-sg"></a></dt>
-<dd><p>(numeric)</p></dd>
+<dt id="arg-a-p-cc">A_P_CC<a class="anchor" aria-label="anchor" href="#arg-a-p-cc"></a></dt>
+<dd><p>(numeric) The plant available P content, measured via 0.01M CaCl2 extraction (mg / kg)</p></dd>
+
+
+<dt id="arg-a-p-al">A_P_AL<a class="anchor" aria-label="anchor" href="#arg-a-p-al"></a></dt>
+<dd><p>(numeric) The plant extractable P content, measured via ammonium lactate extraction (mg / kg)</p></dd>
 
 
 <dt id="arg-b-slope-degree">B_SLOPE_DEGREE<a class="anchor" aria-label="anchor" href="#arg-b-slope-degree"></a></dt>
