@@ -40,7 +40,8 @@ bbwp(
   sector,
   output = "scores",
   penalty = TRUE,
-  B_LS_HYDROCAT = NULL
+  B_LS_HYDROCAT = NULL,
+  M_GREEN = M_GREEN
 )
 }
 \arguments{
@@ -116,6 +117,8 @@ bbwp(
 
 \item{B_LS_HYDROCAT}{(character) Landscape category for differentiating effect of measures on water buffering.
 (options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")}
+
+\item{M_GREEN}{(boolean) A soil measure. Are catch crops sown after main crop (optional, option: yes or no)}
 }
 \description{
 Estimate the potential to contribute to agronomic and environmental challenges in a region for a farm and assess the impact of farm measures taken.

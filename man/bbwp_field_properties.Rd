@@ -26,7 +26,8 @@ bbwp_field_properties(
   D_SA_W,
   D_RO_R,
   B_LSW_ID,
-  LSW
+  LSW,
+  B_LU_BRP
 )
 }
 \arguments{
@@ -73,6 +74,12 @@ bbwp_field_properties(
 \item{B_LSW_ID}{(character) An unique identifier for each Local Surface Water per field}
 
 \item{LSW}{(data.table) The averaged soil properties (mean and sd) per Local Surface Water}
+
+\item{B_LU_BRP}{(numeric) The crop code (gewascode) from the BRP}
+
+\item{M_DRAIN}{(boolean) is there tube drainage present in the field}
+
+\item{M_GREEN}{(boolean) A soil measure. Are catch crops sown after main crop (optional, option: yes or no)}
 }
 \description{
 Estimate the relative ranking of field properties given their contribution to nutrient losses to aquatic ecosystems as well as nutrient and water efficiency.
