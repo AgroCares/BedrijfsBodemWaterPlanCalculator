@@ -463,7 +463,8 @@ require(BBWPC)
       sector = c('dairy'),
       output = 'scores',
       B_LSW_ID = 1,
-      LSW = NULL
+      LSW = NULL,
+      M_GREEN = FALSE
     ))
   })
   
@@ -501,7 +502,8 @@ require(BBWPC)
       sector = c('dairy'),
       output = 'scores',
       B_LSW_ID = 1,
-      LSW = LSW[1]
+      LSW = LSW[1],
+      M_GREEN = FALSE
     ))
   })
   

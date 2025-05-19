@@ -37,7 +37,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
                                   A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,
                                   A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
                                   D_SA_W, D_RO_R, B_LSW_ID,LSW,
-                                  B_LU_BRP) {
+                                  B_LU_BRP, M_DRAIN, M_GREEN) {
   
   ngw_scr = croptype.nleach = nf = ngw_lea = ngw_nlv = B_LU_BRP = NULL
   nsw_scr = nsw_gwt = nsw_ro = nsw_ws = nsw_nlv = nsw_slope = NULL 
