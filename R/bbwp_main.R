@@ -40,6 +40,7 @@
 #' @param penalty (boolean) the option to apply a penalty for high risk BBWP field indicators
 #' @param B_LS_HYDROCAT (character) Landscape category for differentiating effect of measures on water buffering.
 #' (options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")
+#' @param M_GREEN (boolean) A soil measure. Are catch crops sown after main crop (optional, option: yes or no)
 #'  
 #' @details 
 #' B_SLOPE_DEGREE should be used, for backwards compatibility B_SLOPE can still be used. At least one of the must be used, when both are supplied, B_SLOPE is ignored.
@@ -55,7 +56,8 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                  B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW,B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, 
                  D_SA_W, D_RO_R, B_AREA, 
                  M_DRAIN, B_LSW_ID, LSW = NULL,
-                 measures, sector,output = 'scores',penalty=TRUE, B_LS_HYDROCAT = NULL){
+                 measures, sector,output = 'scores',penalty=TRUE, B_LS_HYDROCAT = NULL,
+                 M_GREEN = M_GREEN){
   
   # add visual binding
   field_id = code = value_min = value_max = NULL
@@ -139,7 +141,9 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                               D_SA_W = D_SA_W, 
                               D_RO_R =  D_RO_R, 
                               B_LSW_ID = B_LSW_ID,
-                              LSW = LSW)
+                              LSW = LSW,
+                              M_DRAIN = M_DRAIN,
+                              M_GREEN = M_GREEN)
   
   # Aggregate BBWP risk indicators into five indicators
   dt.ind <- bbwp_field_indicators(D_NGW_SCR = dt$ngw_scr,

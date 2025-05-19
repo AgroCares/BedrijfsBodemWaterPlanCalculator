@@ -48,7 +48,9 @@ test <- bbwp_field_properties(B_SOILTYPE_AGR = c('dekzand', 'loess'),
                               D_SA_W = c(0.5, 1), 
                               D_RO_R = c(0.5, 0),
                               B_LSW_ID = 5,
-                              LSW = LSW
+                              LSW = LSW,
+                              M_DRAIN = c(FALSE, FALSE),
+                              M_GREEN = c(FALSE, TRUE)
                             )
 
 test_that("check bbwp_field_properties", {

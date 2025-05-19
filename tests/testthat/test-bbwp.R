@@ -97,7 +97,8 @@ require(BBWPC)
                    sector = c('dairy', 'arable'),
                    output = 'scores',
                    B_LSW_ID = 1:3,
-                   LSW = LSW
+                   LSW = LSW,
+                   M_GREEN = c(FALSE, TRUE, FALSE)
       )
       
       # checks on format and output values
@@ -155,7 +156,8 @@ require(BBWPC)
                    sector = c('dairy', 'arable'),
                    output = 'measures',
                    B_LSW_ID = 1:3,
-                   LSW = LSW
+                   LSW = LSW,
+                   M_GREEN = c(FALSE, TRUE, FALSE)
       )
       # run tests on format and output values
       
@@ -214,7 +216,8 @@ require(BBWPC)
                  sector = c('dairy', 'arable'),
                  output = 'scores',
                  B_LSW_ID = 1:3,
-                 LSW = LSW
+                 LSW = LSW,
+                 M_GREEN = c(FALSE, TRUE, FALSE)
     )
     
     
@@ -267,7 +270,8 @@ require(BBWPC)
                    sector = c('dairy', 'arable'),
                    output = 'scores',
                    B_LSW_ID = 1:3,
-                   LSW = NULL)
+                   LSW = NULL,
+                   M_GREEN = c(FALSE, TRUE, FALSE))
     )
     
     expect_equal(
@@ -324,7 +328,8 @@ require(BBWPC)
                sector = c('dairy', 'arable'),
                output = 'scores',
                B_LSW_ID = 1:3,
-               LSW = LSW
+               LSW = LSW,
+               M_GREEN = c(FALSE, TRUE, FALSE)
   )
   
   test_that("check bbwp", {
@@ -369,7 +374,8 @@ require(BBWPC)
                sector = c('dairy', 'arable'),
                output = 'scores',
                B_LSW_ID = 1:3,
-               LSW = LSW
+               LSW = LSW,
+               M_GREEN = c(FALSE, TRUE, FALSE)
   )
   
   test_that("check bbwp", {
@@ -412,7 +418,8 @@ require(BBWPC)
                sector = c('dairy', 'arable'),
                output = 'scores',
                B_LSW_ID = 1:3,
-               LSW = LSW
+               LSW = LSW,
+               M_GREEN = c(FALSE, TRUE, FALSE)
   )
   
   test_that("check bbwp", {
