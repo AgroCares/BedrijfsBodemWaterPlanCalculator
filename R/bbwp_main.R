@@ -170,6 +170,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                                   D_WUE_WWRI = dt$wue_wwri,
                                   D_WUE_WDRI = dt$wue_wdri,
                                   D_WUE_WHC = dt$wue_whc,
+                                  D_WUE_GWR = dt$wue_gwr,
                                   penalty = penalty
                                 )
   

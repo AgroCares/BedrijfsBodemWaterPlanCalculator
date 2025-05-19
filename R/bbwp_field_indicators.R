@@ -31,6 +31,7 @@
 #' @param D_WUE_WDRI (numeric) The relative score of drought stress for improved efficiency of water
 #' @param D_WUE_WHC (numeric) The relative score of drought stress for improved efficiency of water
 #' @param penalty (boolean) the option to apply a penalty for high risk BBWP field indicators
+#' @param D_WUE_GWR (numeric) The evaluated score for groundwater recharge
 #' 
 #' @import data.table
 #' @import OBIC
@@ -41,7 +42,8 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
                                   D_NSW_SCR,D_NSW_GWT,D_NSW_RO,D_NSW_SLOPE, D_NSW_WS,D_NSW_NLV,
                                   D_PSW_SCR,D_PSW_GWT,D_PSW_RO,D_PSW_SLOPE,D_PSW_WS,D_PSW_PCC,D_PSW_PSG,D_PSW_PRET,
                                   D_NUE_WRI,D_NUE_PBI,D_NUE_WDRI,D_NUE_NLV,
-                                  D_WUE_WWRI,D_WUE_WDRI,D_WUE_WHC, penalty = TRUE){
+                                  D_WUE_WWRI,D_WUE_WDRI,D_WUE_WHC, penalty = TRUE,
+                                  D_WUE_GWR){
   
   # add visual bindings
   D_RISK_NGW = D_RISK_NSW = D_RISK_PSW = D_RISK_NUE = D_RISK_WB = id = NULL
@@ -53,7 +55,7 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
     length(D_NSW_SCR),length(D_NSW_GWT),length(D_NSW_RO),length(D_NSW_WS),length(D_NSW_NLV),length(D_NSW_SLOPE),
     length(D_PSW_SCR),length(D_PSW_GWT),length(D_PSW_RO),length(D_PSW_SLOPE),length(D_PSW_WS),length(D_PSW_PCC),length(D_PSW_PSG),length(D_PSW_PRET),
     length(D_NUE_WRI),length(D_NUE_PBI),length(D_NUE_WDRI),length(D_NUE_NLV),
-    length(D_WUE_WWRI),length(D_WUE_WDRI),length(D_WUE_WHC)
+    length(D_WUE_WWRI),length(D_WUE_WDRI),length(D_WUE_WHC), length(D_WUE_GWR)
   )
   
   # copy input in one data.table
@@ -81,7 +83,8 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
                    D_NUE_NLV = D_NUE_NLV,
                    D_WUE_WWRI = D_WUE_WWRI,
                    D_WUE_WDRI = D_WUE_WDRI,
-                   D_WUE_WHC = D_WUE_WHC
+                   D_WUE_WHC = D_WUE_WHC,
+                   D_WUE_GWR = D_WUE_GWR
                   )
   
   # melt the data.table to simplify corrections
@@ -101,6 +104,7 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
   dt.melt[group=='PSW' & grepl('_SCR$|_RO$|_WS$',risk), mcf := 2]
   dt.melt[group=='NUE' & grepl('_PBI$',risk), mcf := 2]
   dt.melt[group=='WUE' & grepl('_WHC$',risk), mcf := 2]
+  dt.melt[group=='WUE' & grepl('_GWR$',risk), mcf := 5]
   
    
   # minimize risks when there are no ditches around the field (wet surrounding fraction < 0.2)

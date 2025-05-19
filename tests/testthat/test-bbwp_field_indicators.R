@@ -24,7 +24,8 @@ test_that("check bbwp_field_indicators", {
       D_NUE_NLV = seq(0, 1, by = 0.2),
       D_WUE_WWRI = seq(0, 1, by = 0.2),
       D_WUE_WDRI = seq(0, 1, by = 0.2),
-      D_WUE_WHC = seq(0, 1, by = 0.2)
+      D_WUE_WHC = seq(0, 1, by = 0.2),
+      D_WUE_GWR = seq(0, 1, by = 0.2)
     ),
     expected = data.table(
       D_RISK_NGW = c(0, 0.2, 0.4, 0.6, 0.8, 1),
