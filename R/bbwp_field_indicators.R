@@ -35,6 +35,46 @@
 #' 
 #' @import data.table
 #' @import OBIC
+#' 
+#' @details
+#' bbwp_field_indicators is typically called after \link{bbwp_field_properties} which
+#' calculates the inputs for bbwp_field_indicators
+#' 
+#' 
+#' @returns A data.table with five columns: D_RISK_NGW, D_RISK_NSW, D_RISK_PSW,
+#' D_RISK_NUE, and D_RISK_WB. The number of rows corresponds with the number of 
+#' fields given as input i.e. the length of the vector inputs
+#' 
+#' @examples
+#' # example with 6 fields
+#' bbwp_field_indicators(
+#' D_NGW_SCR = seq(0, 1, by = 0.2),
+#' D_NGW_LEA = seq(0, 1, by = 0.2),
+#' D_NGW_NLV = seq(0, 1, by = 0.2),
+#' D_NSW_SCR = seq(0, 1, by = 0.2),
+#' D_NSW_GWT = seq(0, 1, by = 0.2),
+#' D_NSW_RO = seq(0, 1, by = 0.2),
+#' D_NSW_WS = seq(0, 1, by = 0.2),
+#' D_NSW_NLV = seq(0, 1, by = 0.2),
+#' D_NSW_SLOPE = seq(0, 1, by = 0.2),
+#' D_PSW_SCR = seq(0, 1, by = 0.2),
+#' D_PSW_GWT = seq(0, 1, by = 0.2),
+#' D_PSW_RO = seq(0, 1, by = 0.2),
+#' D_PSW_WS = seq(0, 1, by = 0.2),
+#' D_PSW_PCC = seq(0, 1, by = 0.2),
+#' D_PSW_PSG = seq(0, 1, by = 0.2),
+#' D_PSW_PRET = seq(0, 1, by = 0.2),
+#' D_PSW_SLOPE = seq(0,1,by = 0.2),
+#' D_NUE_WRI = seq(0, 1, by = 0.2),
+#' D_NUE_PBI = seq(0, 1, by = 0.2),
+#' D_NUE_WDRI = seq(0, 1, by = 0.2),
+#' D_NUE_NLV = seq(0, 1, by = 0.2),
+#' D_WUE_WWRI = seq(0, 1, by = 0.2),
+#' D_WUE_WDRI = seq(0, 1, by = 0.2),
+#' D_WUE_WHC = seq(0, 1, by = 0.2),
+#' penalty = FALSE,
+#' D_WUE_GWR = seq(0, 1, by = 0.2)
+#' )
 #'
 #' @export
 # calculate the risk or opportunity indicators for a field

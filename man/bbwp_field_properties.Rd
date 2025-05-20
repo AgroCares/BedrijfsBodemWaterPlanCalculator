@@ -27,7 +27,9 @@ bbwp_field_properties(
   D_RO_R,
   B_LSW_ID,
   LSW,
-  B_LU_BRP
+  B_LU_BRP,
+  M_DRAIN,
+  M_GREEN
 )
 }
 \arguments{
