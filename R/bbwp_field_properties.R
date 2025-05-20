@@ -49,7 +49,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   B_FE_OX = B_AL_OX = B_SA_W = B_RO_R = B_SOM_LOI_SD = B_CLAY_MI_SD = B_SAND_MI_SD = B_SILT_MI_SD = B_N_RT_SD = B_P_AL_SD = B_P_CC_SD = NULL
   B_P_WA_SD = B_P_SG_SD = B_FE_OX_SD = B_AL_OX_SD = B_SA_W_SD = B_RO_R_SD = NULL
   id = code = value_min = value_max = choices = NULL
-  psw_psg = B_GT = crop_category = NULL
+  psw_psg = B_GT = crop_category = wue_gwr = NULL
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
