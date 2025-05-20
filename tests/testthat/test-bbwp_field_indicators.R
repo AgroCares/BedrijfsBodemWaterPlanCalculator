@@ -25,6 +25,7 @@ test_that("check bbwp_field_indicators", {
       D_WUE_WWRI = seq(0, 1, by = 0.2),
       D_WUE_WDRI = seq(0, 1, by = 0.2),
       D_WUE_WHC = seq(0, 1, by = 0.2),
+      penalty = FALSE,
       D_WUE_GWR = seq(0, 1, by = 0.2)
     ),
     expected = data.table(
