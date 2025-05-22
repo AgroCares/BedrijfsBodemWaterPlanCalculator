@@ -64,7 +64,7 @@ require(BBWPC)
   # B_LSW_ID <- LSW$B_LSW_ID
 
 # run example 1 without any measures taken
-    test_that("check bbwp", {
+    test_that("check bbwp without any measures", {
       test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                    B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
                    B_SC_WENR = c(4, 2,2),
@@ -112,18 +112,18 @@ require(BBWPC)
       
       expect_equal(
         object = test$fields$s_bbwp_tot,
-        expected = c(69,45,29),
+        expected = c(68, 37, 29),
         tolerance = 0.01)
       
       expect_equal(
         object = as.numeric(unlist(test$farm)),
-        expected = c(58,77,62,66,46,91),
+        expected = c(54 ,77 ,62 ,66 ,46 , 61),
         tolerance = 0.01)
     })
 
 
 # run example 2 without any measures taken
-    test_that("check bbwp", {
+    test_that("check bbwp without any measures", {
       test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                    B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
                    B_SC_WENR = c(4, 2,2),
@@ -167,13 +167,13 @@ require(BBWPC)
       
       expect_equal(
         object = test$measures[[1]]$top_bbwp_tot,
-        expected = c("G36","G53", "B132", "G25", "G37"))
+        expected = c("G36","B132", "G53", "G25", "G11aBWP4"))
     })
 
 
 
 # run example 3 without any measures taken
-  test_that("check bbwp", {
+  test_that("check bbwp with measures", {
     # get internal table with measures
     dt.measures <- as.data.table(BBWPC::bbwp_measures)
     dt.measures <- dt.measures[!is.na(eco_id)]
@@ -224,18 +224,18 @@ require(BBWPC)
     # run tests on format and output values
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(90,45,64),
+      expected = c(88, 37, 64),
       tolerance = 0.01)
     
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(70,85,63,67,72,92),
+      expected = c(65, 85 ,63 ,67 ,72 ,62),
       tolerance = 0.01)
   })
 
   
   # run tests on format and output values
-  test_that("check bbwp", {
+  test_that("check bbwp works without measures and no LSW supplied", {
     # run example 3 without any measures taken and LSW equal to NULL
     expect_warning( # warning is expected as LSW is not supplied and used Dutch average values
       test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
@@ -284,12 +284,12 @@ require(BBWPC)
     
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(69,45,29),
+      expected = c(68 , 37 , 29),
       tolerance = 0.01)
     
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(58,77,62,66,46,91),
+      expected = c(54 ,77 ,62 ,66 ,46 ,61),
       tolerance = 0.01)
   })
   
@@ -332,10 +332,10 @@ require(BBWPC)
                M_GREEN = c(FALSE, TRUE, FALSE)
   )
   
-  test_that("check bbwp", {
+  test_that("check bbwp with high PSW loss risk", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(24,86,8,6,32,84),
+      expected = c(20, 86, 8, 6, 32, 29),
       tolerance = 0.01)
   })
   
@@ -378,10 +378,10 @@ require(BBWPC)
                M_GREEN = c(FALSE, TRUE, FALSE)
   )
   
-  test_that("check bbwp", {
+  test_that("check bbwp with high nitrate leaching risk and no measures", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(52,24,55,49,82,88),
+      expected = c(33, 24, 55, 49, 82, 9),
       tolerance = 0.01)
   })
   
@@ -422,10 +422,10 @@ require(BBWPC)
                M_GREEN = c(FALSE, TRUE, FALSE)
   )
   
-  test_that("check bbwp", {
+  test_that("check bbwp with low regional targets", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(53,86,49,43,32,84),
+      expected = c(43, 86, 49, 43, 32, 29),
       tolerance = 0.01)
   })
   
