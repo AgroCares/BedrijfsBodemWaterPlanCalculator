@@ -1,3 +1,7 @@
+# BBWPC v3.0.999
+## Changed
+* groundwater scores are now determined by the groundwater recharge indicator and no longer affected by the soil water holding capacity, drougth stress risk, and wetness stress risk.
+
 # BBWPC v2.4.0 2025-03-17
 ## Changed
 * adjust effect of volvelds uitmijnen G68 as function of A_P_CC and A_P_AL rather than A_P_SG, #BBWP-143

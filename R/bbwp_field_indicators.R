@@ -143,8 +143,7 @@ bbwp_field_indicators <- function(D_NGW_SCR,D_NGW_LEA,D_NGW_NLV,
   dt.melt[group=='NSW' & grepl('_NLV$',risk), mcf := 3]
   dt.melt[group=='PSW' & grepl('_SCR$|_RO$|_WS$',risk), mcf := 2]
   dt.melt[group=='NUE' & grepl('_PBI$',risk), mcf := 2]
-  dt.melt[group=='WUE' & grepl('_WHC$',risk), mcf := 2]
-  dt.melt[group=='WUE' & grepl('_GWR$',risk), mcf := 5]
+  dt.melt[group=='WUE', mcf := fifelse(grepl('_GWR$',risk), 1 , 0)] # Use only deep groundwater indicator, not shallow groundwater indicators
   
    
   # minimize risks when there are no ditches around the field (wet surrounding fraction < 0.2)
