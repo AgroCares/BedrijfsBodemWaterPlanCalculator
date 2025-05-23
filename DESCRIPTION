@@ -24,6 +24,7 @@ Imports:
     data.table,
     OBIC (>= 1.0.4),
     BLN
+Remotes: AgroCares/BLN
 License: GPL-3 | file LICENSE
 URL: https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator, https://agrocares.github.io/BedrijfsBodemWaterPlanCalculator/
 BugReports: https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/issues
