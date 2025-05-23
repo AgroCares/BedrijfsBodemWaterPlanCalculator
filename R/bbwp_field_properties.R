@@ -39,7 +39,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
                                   D_SA_W, D_RO_R, B_LSW_ID,LSW,
                                   B_LU_BRP, M_DRAIN, M_GREEN) {
   
-  ngw_scr = croptype.nleach = nf = ngw_lea = ngw_nlv = B_LU_BRP = NULL
+  ngw_scr = croptype.nleach = nf = ngw_lea = ngw_nlv = NULL
   nsw_scr = nsw_gwt = nsw_ro = nsw_ws = nsw_nlv = nsw_slope = NULL 
   psw_scr = psw_gwt = psw_ro = psw_ws = psw_pcc = psw_pvg = psw_pret = psw_slope = NULL 
   npe_wri = npe_pbi = npe_wdri = npe_nlv = wue_wwri = wue_wdri = wue_whc = NULL
@@ -140,21 +140,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   dt[B_LU_BBWP %in% c('mais'), crop_category := 'mais']
   dt[B_LU_BBWP %in% c('rustgewas','rooivrucht','groenten','bollensierteelt','boomfruitteelt','vanggewas','eiwitgewas'), crop_category := 'akkerbouw']
   dt[B_LU_BBWP %in% c('natuur','randensloot'), crop_category := 'natuur']
-  
-  # set a  default crop for estimating water stress per B_LU_BBWP category
-  dt[B_LU_BBWP == 'gras_permanent', B_LU_BRP := 265] # permanent gras
-  dt[B_LU_BBWP == 'gras_tijdelijk', B_LU_BRP := 266] # tijdelijk grasland
-  dt[B_LU_BBWP == 'rustgewas', B_LU_BRP := 233] # wintertarwe
-  dt[B_LU_BBWP == 'rooivrucht', B_LU_BRP := 2014] # aardappel
-  dt[B_LU_BBWP == 'groenten', B_LU_BRP := 2759] # rode kool
-  dt[B_LU_BBWP == 'bollensierteelt', B_LU_BRP := 176] # bloembol 
-  dt[B_LU_BBWP == 'boomfruitteelt', B_LU_BRP := 1096] # appelboom 
-  dt[B_LU_BBWP == 'natuur', B_LU_BRP := 335] # natuur
-  dt[B_LU_BBWP == 'mais', B_LU_BRP := 259] # mais
-  dt[B_LU_BBWP == 'randensloot', B_LU_BRP := 372] # rand langs bouwland
-  dt[B_LU_BBWP == 'vanggewas', B_LU_BRP := 3504] # bladrammenas
-  dt[B_LU_BBWP == 'eiwitgewas', B_LU_BRP := 258] # luzerne
-  
+
   # estimate field properties that contribute to the risk to N losses to groundwater -------
   
   # reclassify soil compaction risk (scr) into a numeric value

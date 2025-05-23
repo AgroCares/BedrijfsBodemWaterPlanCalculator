@@ -82,7 +82,6 @@ require(BBWPC)
                    A_P_AL = c(65, 5,40),
                    A_P_WA = c(52, 5,45),
                    B_SLOPE_DEGREE = c(1.5,4,1.5),
-                   B_LU_BBWP =  c('gras_permanent','rooivrucht','gras_permanent'),
                    M_DRAIN = c(TRUE, FALSE, TRUE),
                    D_SA_W = c(0, 0.5, 1),
                    D_RO_R = c(0.5, 0,0.9),
@@ -94,11 +93,12 @@ require(BBWPC)
                    B_CT_PSW_MAX = 0.5,
                    B_CT_NSW_MAX = 5.0,
                    measures = NULL,
-                   sector = c('dairy', 'arable'),
+                   sector = c('dairy', 'arable', 'dairy'),
                    output = 'scores',
                    B_LSW_ID = 1:3,
                    LSW = LSW,
-                   M_GREEN = c(FALSE, TRUE, FALSE)
+                   M_GREEN = c(FALSE, TRUE, FALSE),
+                   B_LU_BRP = c(265, 2014, 265)
       )
       
       # checks on format and output values
@@ -114,6 +114,31 @@ require(BBWPC)
         object = test$fields$s_bbwp_tot,
         expected = c(68, 37, 29),
         tolerance = 0.01)
+      
+      expect_equal(
+        object = test$fields$s_bbwp_ngw,
+        expected = c(72, 83, 61),
+        tolerance = 0.01)
+      
+      expect_equal(
+        object = test$fields$s_bbwp_nsw,
+        expected = c(98 , 19, 18),
+        tolerance = 0.01)
+      
+      expect_equal(
+        object = test$fields$s_bbwp_psw,
+        expected = c(98, 28, 10),
+        tolerance = 0.01)
+      
+      expect_equal(
+        object = test$fields$s_bbwp_nue,
+        expected = c(31, 65, 30),
+        tolerance = 0.01)
+      
+       expect_equal(
+         object = test$fields$s_bbwp_wb,
+         expected = c(83, 32, 80),
+         tolerance = 0.01) 
       
       expect_equal(
         object = as.numeric(unlist(test$farm)),
@@ -141,7 +166,6 @@ require(BBWPC)
                    A_P_AL = c(65, 5,40),
                    A_P_WA = c(52, 5,45),
                    B_SLOPE_DEGREE = c(1.5,4,1.5),
-                   B_LU_BBWP =  c('gras_permanent','rooivrucht','gras_permanent'),
                    M_DRAIN = c(TRUE, FALSE, TRUE),
                    D_SA_W = c(0, 0.5, 1),
                    D_RO_R = c(0.5, 0,0.9),
@@ -157,7 +181,8 @@ require(BBWPC)
                    output = 'measures',
                    B_LSW_ID = 1:3,
                    LSW = LSW,
-                   M_GREEN = c(FALSE, TRUE, FALSE)
+                   M_GREEN = c(FALSE, TRUE, FALSE),
+                   B_LU_BRP = c(265, 2014, 265)
       )
       # run tests on format and output values
       
@@ -201,7 +226,6 @@ require(BBWPC)
                  A_P_AL = c(65, 5,40),
                  A_P_WA = c(52, 5,45),
                  B_SLOPE_DEGREE = c(1.5,4,1.5),
-                 B_LU_BBWP =  c('gras_permanent','rooivrucht','gras_permanent'),
                  M_DRAIN = c(TRUE, FALSE, TRUE),
                  D_SA_W = c(0, 0.5, 1),
                  D_RO_R = c(0.5, 0,0.9),
@@ -217,7 +241,8 @@ require(BBWPC)
                  output = 'scores',
                  B_LSW_ID = 1:3,
                  LSW = LSW,
-                 M_GREEN = c(FALSE, TRUE, FALSE)
+                 M_GREEN = c(FALSE, TRUE, FALSE),
+                 B_LU_BRP = c(265, 2014, 265)
     )
     
     
@@ -255,7 +280,6 @@ require(BBWPC)
                    A_P_AL = c(65, 5,40),
                    A_P_WA = c(52, 5,45),
                    B_SLOPE_DEGREE = c(1.5,4,1.5),
-                   B_LU_BBWP =  c('gras_permanent','rooivrucht','gras_permanent'),
                    M_DRAIN = c(TRUE, FALSE, TRUE),
                    D_SA_W = c(0, 0.5, 1),
                    D_RO_R = c(0.5, 0,0.9),
@@ -271,7 +295,8 @@ require(BBWPC)
                    output = 'scores',
                    B_LSW_ID = 1:3,
                    LSW = NULL,
-                   M_GREEN = c(FALSE, TRUE, FALSE))
+                   M_GREEN = c(FALSE, TRUE, FALSE),
+                   B_LU_BRP = c(265, 2014, 265))
     )
     
     expect_equal(
@@ -313,7 +338,6 @@ require(BBWPC)
                A_P_AL = c(165, 150,140),
                A_P_WA = c(100, 100,100),
                B_SLOPE_DEGREE = c(2,4,2),
-               B_LU_BBWP =  c('rooivrucht','rooivrucht','rooivrucht'),
                M_DRAIN = c(TRUE, FALSE, TRUE),
                D_SA_W = c(1.0, 1.0, 1),
                D_RO_R = c(.9, 0.9,0.9),
@@ -329,7 +353,8 @@ require(BBWPC)
                output = 'scores',
                B_LSW_ID = 1:3,
                LSW = LSW,
-               M_GREEN = c(FALSE, TRUE, FALSE)
+               M_GREEN = c(FALSE, TRUE, FALSE),
+               B_LU_BRP = c(256, 2014, 256)
   )
   
   test_that("check bbwp with high PSW loss risk", {
@@ -359,7 +384,6 @@ require(BBWPC)
                A_P_AL = c(16, 15,14),
                A_P_WA = c(10, 10,10),
                B_SLOPE_DEGREE = c(1.2,1.4,1.2),
-               B_LU_BBWP =  c('rooivrucht','rooivrucht','rooivrucht'),
                M_DRAIN = c(TRUE, FALSE, TRUE),
                D_SA_W = c(1.0, 1.0, 1),
                D_RO_R = c(.9, 0.9,0.9),
@@ -375,7 +399,8 @@ require(BBWPC)
                output = 'scores',
                B_LSW_ID = 1:3,
                LSW = LSW,
-               M_GREEN = c(FALSE, TRUE, FALSE)
+               M_GREEN = c(FALSE, TRUE, FALSE),
+               B_LU_BRP = c(2014, 2014, 2014)
   )
   
   test_that("check bbwp with high nitrate leaching risk and no measures", {
@@ -403,7 +428,6 @@ require(BBWPC)
                A_P_AL = c(165, 150,140),
                A_P_WA = c(100, 100,100),
                B_SLOPE_DEGREE = c(2,4,2),
-               B_LU_BBWP =  c('rooivrucht','rooivrucht','rooivrucht'),
                M_DRAIN = c(TRUE, FALSE, TRUE),
                D_SA_W = c(1.0, 1.0, 1),
                D_RO_R = c(.9, 0.9,0.9),
@@ -419,7 +443,8 @@ require(BBWPC)
                output = 'scores',
                B_LSW_ID = 1:3,
                LSW = LSW,
-               M_GREEN = c(FALSE, TRUE, FALSE)
+               M_GREEN = c(FALSE, TRUE, FALSE),
+               B_LU_BRP = c(2014, 2014, 2014)
   )
   
   test_that("check bbwp with low regional targets", {
@@ -448,7 +473,6 @@ require(BBWPC)
       A_P_CC = c(5),
       A_P_AL = c(65),
       A_P_WA = c(52),
-      B_LU_BBWP =  c('gras_permanent'),
       M_DRAIN = c(TRUE),
       D_SA_W = c(0),
       D_RO_R = c(0.5),
@@ -464,7 +488,8 @@ require(BBWPC)
       output = 'scores',
       B_LSW_ID = 1,
       LSW = NULL,
-      M_GREEN = FALSE
+      M_GREEN = FALSE,
+      B_LU_BRP = 265
     ))
   })
   
@@ -487,7 +512,6 @@ require(BBWPC)
       A_P_CC = c(5),
       A_P_AL = c(65),
       A_P_WA = c(52),
-      B_LU_BBWP =  c('gras_permanent'),
       M_DRAIN = c(TRUE),
       D_SA_W = c(0),
       D_RO_R = c(0.5),
@@ -503,7 +527,8 @@ require(BBWPC)
       output = 'scores',
       B_LSW_ID = 1,
       LSW = LSW[1],
-      M_GREEN = FALSE
+      M_GREEN = FALSE,
+      B_LU_BRP = 265
     ))
   })
   
