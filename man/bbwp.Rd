@@ -6,7 +6,7 @@
 \usage{
 bbwp(
   B_SOILTYPE_AGR,
-  B_LU_BBWP,
+  B_LU_BBWP = NA_character_,
   B_GWL_CLASS,
   B_SC_WENR,
   B_HELP_WENR,
@@ -41,13 +41,14 @@ bbwp(
   output = "scores",
   penalty = TRUE,
   B_LS_HYDROCAT = NULL,
-  M_GREEN = M_GREEN
+  M_GREEN = M_GREEN,
+  B_LU_BRP
 )
 }
 \arguments{
 \item{B_SOILTYPE_AGR}{(character) The type of soil, using agronomic classification}
 
-\item{B_LU_BBWP}{(character) The BBWP category used for allocation of measures to BBWP crop categories}
+\item{B_LU_BBWP}{(character) DEPRECATED The BBWP category used for allocation of measures to BBWP crop categories}
 
 \item{B_GWL_CLASS}{(character) The groundwater table class}
 
@@ -119,6 +120,8 @@ bbwp(
 (options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")}
 
 \item{M_GREEN}{(boolean) A soil measure. Are catch crops sown after main crop (optional, option: yes or no)}
+
+\item{B_LU_BRP}{(numeric) The crop code (gewascode) from the BRP}
 }
 \description{
 Estimate the potential to contribute to agronomic and environmental challenges in a region for a farm and assess the impact of farm measures taken.
