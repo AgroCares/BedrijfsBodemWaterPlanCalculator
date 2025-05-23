@@ -61,8 +61,9 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP = NA_character_, B_GWL_CLASS, B_SC_WE
                  M_GREEN = M_GREEN, B_LU_BRP){
   
   # add visual binding
-  field_id = code = value_min = value_max = NULL
+  field_id = code = value_min = value_max = choices = NULL
   bbwp_parms <- BBWPC::bbwp_parms
+  er_crops <- BBWPC::er_crops
   
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
@@ -125,7 +126,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP = NA_character_, B_GWL_CLASS, B_SC_WE
   # infer B_LU_BBWP from B_LU_BRP
   if(all(is.na(B_LU_BBWP))){
     temp <- data.table(B_LU_BRP = B_LU_BRP)
-    temp <- merge(temp, er_crops[,.(B_LU_BRP, B_LU_BBWP)],
+    temp <- merge(temp, er_crops[,c('B_LU_BRP', 'B_LU_BBWP')],
                   by = 'B_LU_BRP',
                   sort = FALSE,
                   all.x = TRUE)
