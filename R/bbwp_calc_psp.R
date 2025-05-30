@@ -7,6 +7,16 @@
 #' @param M_GREEN (boolean) A soil measure. Are catch crops sown after main crop (optional, options: TRUE, FALSE)
 #' @param M_GREEN_START (integer) Month in which the green manure is sown
 #' @param M_GREEN_TERMINATE (integer) Month in which the green manure is terminated
+#' 
+#' @details
+#' This function is calculates a precipitation surplus over 12 months taking green
+#' manures into account. The function does not take crop rotations or successive
+#' years into account. As such, including a winter cereal, which modifies
+#' evapotranspiration from January to August, does not alter the autumn 
+#' evapotranspiration. If for example, a crop rotation includes potato followed by
+#' winter wheat, the year with potato cultivation should have M_GREEN = TRUE.
+#' The winter wheat acts as a green manure/catch crop for the potato's year.
+#' 
 #'
 #' @examples
 #' bln_calc_psp(ID = 1,B_LU_BRP = 265, M_GREEN = TRUE)
