@@ -18,7 +18,7 @@
 #' The estimated precipitation surplus (in mm / ha) depending on averaged precipitation and evaporation. A numeric value.
 #'
 #' @export
-bln_calc_psp <- function(ID, B_LU_BRP, M_GREEN, M_GREEN_START = 10L, M_GREEN_TERMINATE = 3L){
+bln_calc_psp <- function(ID, B_LU_BRP, M_GREEN, M_GREEN_START = 10L, M_GREEN_TERMINATE = 1L){
   
   # set visual bindings
   crop_code = crop_name = crop_makkink = psp = A_PREC_MEAN = A_ET_MEAN = mcf = . = NULL
