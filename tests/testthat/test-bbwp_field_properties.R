@@ -48,7 +48,10 @@ test <- bbwp_field_properties(B_SOILTYPE_AGR = c('dekzand', 'loess'),
                               D_SA_W = c(0.5, 1), 
                               D_RO_R = c(0.5, 0),
                               B_LSW_ID = 5,
-                              LSW = LSW
+                              LSW = LSW,
+                              B_LU_BRP = c(265, 2014),
+                              M_DRAIN = c(FALSE, FALSE),
+                              M_GREEN = c(FALSE, TRUE)
                             )
 
 test_that("check bbwp_field_properties", {
@@ -78,7 +81,8 @@ test_that("check bbwp_field_properties", {
       npe_nlv = c(0.95, 0.83),
       wue_wwri = c(0.055, 0.03),
       wue_wdri = c(0, 0.23),
-      wue_whc = c(0.2338, 0.055)
+      wue_whc = c(0.2338, 0.055),
+      wue_gwr  = c(0.250, 0.846)
     ),
     tolerance = 0.01)
 })

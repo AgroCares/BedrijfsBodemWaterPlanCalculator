@@ -1,3 +1,13 @@
+# BBWPC v3.0.999
+## Added
+* function `bbwp_calc_psp()` which calculates a precipitation surplus for a single year and field given the fields cultivation and green manure.
+
+## Changed
+* groundwater scores are now determined by the groundwater recharge indicator and no longer affected by the soil water holding capacity, drought stress risk, and wetness stress risk.
+
+## Deprecated
+* `bbwp()` no longer needs B_LU_BBWP as input, instead, one should use B_LU_BRP from which BBWPC infers the correct B_LU_BBWP. If B_LU_BBWP is entered, this is used, however, there is no check that this correctly matches with the entered B_LU_BRP. Therefore, it is advised not to enter B_LU_BBWP any more.
+
 # BBWPC v2.4.0 2025-03-17
 ## Changed
 * adjust effect of volvelds uitmijnen G68 as function of A_P_CC and A_P_AL rather than A_P_SG, #BBWP-143
