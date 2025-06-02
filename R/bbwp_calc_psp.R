@@ -19,16 +19,16 @@
 #' 
 #'
 #' @examples
-#' bln_calc_psp(ID = 1,B_LU_BRP = 265, M_GREEN = TRUE)
-#' bln_calc_psp(ID = c(1,2,1,2),B_LU_BRP = c(265,1019,265,1019), M_GREEN = rep(TRUE,4))
-#' bln_calc_psp(ID = c(1,2),B_LU_BRP = c(2014, 2767), M_GREEN = rep(TRUE,2),
+#' bbwp_calc_psp(ID = 1,B_LU_BRP = 265, M_GREEN = TRUE)
+#' bbwp_calc_psp(ID = c(1,2,1,2),B_LU_BRP = c(265,1019,265,1019), M_GREEN = rep(TRUE,4))
+#' bbwp_calc_psp(ID = c(1,2),B_LU_BRP = c(2014, 2767), M_GREEN = rep(TRUE,2),
 #'              M_GREEN_START = c(10, 11), M_GREEN_TERMINATE = c(12, 3))
 #'
 #' @return
 #' The estimated precipitation surplus (in mm / ha) depending on averaged precipitation and evaporation. A numeric value.
 #'
 #' @export
-bln_calc_psp <- function(ID, B_LU_BRP, M_GREEN, M_GREEN_START = 10L, M_GREEN_TERMINATE = 1L){
+bbwp_calc_psp <- function(ID, B_LU_BRP, M_GREEN, M_GREEN_START = 10L, M_GREEN_TERMINATE = 1L){
   
   # set visual bindings
   crop_code = crop_name = crop_makkink = psp = A_PREC_MEAN = A_ET_MEAN = mcf = . = NULL
