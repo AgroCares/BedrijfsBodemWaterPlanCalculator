@@ -2,7 +2,6 @@
 #'
 #' This function calculates the precipitation surplus (in mm / ha) given the crop rotation plan. Is identical to OBIC function calc_psp but much faster to facilitate national and regional calculations
 #'
-#' @param ID (character) A field id
 #' @param B_LU_BRP (numeric) The crop code from the BRP
 #' @param M_GREEN (boolean) A soil measure. Are catch crops sown after main crop (optional, options: TRUE, FALSE)
 #' @param M_GREEN_START (integer) Month in which the green manure is sown
@@ -19,23 +18,23 @@
 #' 
 #'
 #' @examples
-#' bbwp_calc_psp(ID = 1,B_LU_BRP = 265, M_GREEN = TRUE)
-#' bbwp_calc_psp(ID = c(1,2,1,2),B_LU_BRP = c(265,1019,265,1019), M_GREEN = rep(TRUE,4))
-#' bbwp_calc_psp(ID = c(1,2),B_LU_BRP = c(2014, 2767), M_GREEN = rep(TRUE,2),
+#' bbwp_calc_psp(B_LU_BRP = 265, M_GREEN = TRUE)
+#' bbwp_calc_psp(B_LU_BRP = c(265,1019,265,1019), M_GREEN = rep(TRUE,4))
+#' bbwp_calc_psp(B_LU_BRP = c(2014, 2767), M_GREEN = rep(TRUE,2),
 #'              M_GREEN_START = c(10, 11), M_GREEN_TERMINATE = c(12, 3))
 #'
 #' @return
 #' The estimated precipitation surplus (in mm / ha) depending on averaged precipitation and evaporation. A numeric value.
 #'
 #' @export
-bbwp_calc_psp <- function(ID, B_LU_BRP, M_GREEN, M_GREEN_START = 10L, M_GREEN_TERMINATE = 1L){
+bbwp_calc_psp <- function(B_LU_BRP, M_GREEN, M_GREEN_START = 10L, M_GREEN_TERMINATE = 1L){
   
   # set visual bindings
   crop_code = crop_name = crop_makkink = psp = A_PREC_MEAN = A_ET_MEAN = mcf = . = NULL
   year_wc = year_wc2 = oid = NULL
   
   # Check input
-  arg.length <- max(length(B_LU_BRP), length(M_GREEN),length(ID),
+  arg.length <- max(length(B_LU_BRP), length(M_GREEN),
                     length(M_GREEN_START), length(M_GREEN_TERMINATE))
   
   # check inputs
@@ -53,7 +52,7 @@ bbwp_calc_psp <- function(ID, B_LU_BRP, M_GREEN, M_GREEN_START = 10L, M_GREEN_TE
   setnames(crops.makkink,old = c('crop_makkink',1:12),new=c('crop_makkink',paste0('m',1:12)))
   
   # Collect input data in a table
-  dt <- data.table(ID = ID,B_LU_BRP = B_LU_BRP,M_GREEN = M_GREEN,oid = 1:arg.length,
+  dt <- data.table(B_LU_BRP = B_LU_BRP,M_GREEN = M_GREEN,oid = 1:arg.length,
                    M_GREEN_START, M_GREEN_TERMINATE)
   
   # merge with obic crop
@@ -63,10 +62,10 @@ bbwp_calc_psp <- function(ID, B_LU_BRP, M_GREEN, M_GREEN_START = 10L, M_GREEN_TE
   dt <- merge(dt, crops.makkink, by = "crop_makkink")
   
   # add year
-  dt[,year:= 1:.N,by=ID]
+  dt[,year:= 1:.N]
   
   # Order by year
-  setorder(dt,ID,year)
+  setorder(dt, year)
   
   # reshape
   dtm <- melt(dt, measure.vars = paste0('m',1:12),
