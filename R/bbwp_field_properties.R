@@ -25,6 +25,9 @@
 #' @param D_RO_R (numeric) The risk that surface water runs off the parcel
 #' @param B_LSW_ID (character) An unique identifier for each Local Surface Water per field
 #' @param LSW (data.table) The averaged soil properties (mean and sd) per Local Surface Water
+#' @param B_LU_BRP (numeric) The crop code (gewascode) from the BRP
+#' @param M_DRAIN (boolean) is there tube drainage present in the field
+#' @param M_GREEN (boolean) A soil measure. Are catch crops sown after main crop (optional, option: yes or no)
 #'  
 #' @import data.table
 #' @import OBIC
@@ -33,9 +36,10 @@
 bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE_DEGREE,B_AER_CBS,
                                   A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,
                                   A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
-                                  D_SA_W, D_RO_R, B_LSW_ID,LSW) {
+                                  D_SA_W, D_RO_R, B_LSW_ID,LSW,
+                                  B_LU_BRP, M_DRAIN, M_GREEN) {
   
-  ngw_scr = croptype.nleach = nf = ngw_lea = ngw_nlv = B_LU_BRP = NULL
+  ngw_scr = croptype.nleach = nf = ngw_lea = ngw_nlv = NULL
   nsw_scr = nsw_gwt = nsw_ro = nsw_ws = nsw_nlv = nsw_slope = NULL 
   psw_scr = psw_gwt = psw_ro = psw_ws = psw_pcc = psw_pvg = psw_pret = psw_slope = NULL 
   npe_wri = npe_pbi = npe_wdri = npe_nlv = wue_wwri = wue_wdri = wue_whc = NULL
@@ -45,7 +49,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   B_FE_OX = B_AL_OX = B_SA_W = B_RO_R = B_SOM_LOI_SD = B_CLAY_MI_SD = B_SAND_MI_SD = B_SILT_MI_SD = B_N_RT_SD = B_P_AL_SD = B_P_CC_SD = NULL
   B_P_WA_SD = B_P_SG_SD = B_FE_OX_SD = B_AL_OX_SD = B_SA_W_SD = B_RO_R_SD = NULL
   id = code = value_min = value_max = choices = NULL
-  psw_psg = B_GT = crop_category = NULL
+  psw_psg = B_GT = crop_category = wue_gwr = NULL
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
@@ -68,6 +72,8 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   checkmate::assert_numeric(B_SLOPE_DEGREE, lower = bbwp_parms[code == "B_SLOPE_DEGREE", value_min], upper = bbwp_parms[code == "B_SLOPE_DEGREE", value_max],len = arg.length)
   checkmate::assert_subset(B_LU_BBWP, choices = unlist(bbwp_parms[code == "B_LU_BBWP", choices]))
   checkmate::assert_character(B_LU_BBWP, len = arg.length)
+  checkmate::assert_subset(B_LU_BRP, choices = unlist(bbwp_parms[code == 'B_LU_BRP', choices]))
+  
   # check inputs A parameters
   checkmate::assert_numeric(A_CLAY_MI, lower = bbwp_parms[code == "A_CLAY_MI", value_min], upper = bbwp_parms[code == "A_CLAY_MI", value_max],len = arg.length)
   checkmate::assert_numeric(A_SAND_MI, lower = bbwp_parms[code == "A_SAND_MI", value_min], upper = bbwp_parms[code == "A_SAND_MI", value_max],len = arg.length)
@@ -85,6 +91,10 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   checkmate::assert_numeric(D_SA_W, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_RO_R, lower = bbwp_parms[code == "D_RO_R", value_min], upper = bbwp_parms[code == "D_RO_R", value_max],len = arg.length)
 
+  # check inputs M parameters
+  checkmate::assert_logical(M_DRAIN, any.missing = FALSE)
+  checkmate::assert_logical(M_GREEN, any.missing = FALSE)
+  
   # load in the datasets for soil and crop types and N leaching fractions
   soils.obic <- as.data.table(OBIC::soils.obic)
   setkey(soils.obic, soiltype)
@@ -113,7 +123,10 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
                    A_P_SG = A_P_SG,
                    D_SA_W = D_SA_W, 
                    D_RO_R = D_RO_R,
-                   B_LSW_ID = B_LSW_ID)
+                   B_LSW_ID = B_LSW_ID,
+                   B_LU_BRP = B_LU_BRP,
+                   M_DRAIN = M_DRAIN,
+                   M_GREEN = M_GREEN)
          
   # do check op Gt
   dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS,B_AER_CBS = B_AER_CBS)]
@@ -127,21 +140,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   dt[B_LU_BBWP %in% c('mais'), crop_category := 'mais']
   dt[B_LU_BBWP %in% c('rustgewas','rooivrucht','groenten','bollensierteelt','boomfruitteelt','vanggewas','eiwitgewas'), crop_category := 'akkerbouw']
   dt[B_LU_BBWP %in% c('natuur','randensloot'), crop_category := 'natuur']
-  
-  # set a  default crop for estimating water stress per B_LU_BBWP category
-  dt[B_LU_BBWP == 'gras_permanent', B_LU_BRP := 265] # permanent gras
-  dt[B_LU_BBWP == 'gras_tijdelijk', B_LU_BRP := 266] # tijdelijk grasland
-  dt[B_LU_BBWP == 'rustgewas', B_LU_BRP := 233] # wintertarwe
-  dt[B_LU_BBWP == 'rooivrucht', B_LU_BRP := 2014] # aardappel
-  dt[B_LU_BBWP == 'groenten', B_LU_BRP := 2759] # rode kool
-  dt[B_LU_BBWP == 'bollensierteelt', B_LU_BRP := 176] # bloembol 
-  dt[B_LU_BBWP == 'boomfruitteelt', B_LU_BRP := 1096] # appelboom 
-  dt[B_LU_BBWP == 'natuur', B_LU_BRP := 335] # natuur
-  dt[B_LU_BBWP == 'mais', B_LU_BRP := 259] # mais
-  dt[B_LU_BBWP == 'randensloot', B_LU_BRP := 372] # rand langs bouwland
-  dt[B_LU_BBWP == 'vanggewas', B_LU_BRP := 3504] # bladrammenas
-  dt[B_LU_BBWP == 'eiwitgewas', B_LU_BRP := 258] # luzerne
-  
+
   # estimate field properties that contribute to the risk to N losses to groundwater -------
   
   # reclassify soil compaction risk (scr) into a numeric value
@@ -294,6 +293,19 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
     A_SILT_MI = A_SILT_MI,
     A_SOM_LOI = A_SOM_LOI,
     type = 'water holding capacity'
+  )]
+  
+  # calculate BLN groundwater recharge indicator
+  dt[, wue_gwr := bbwp_wat_groundwater_recharge(
+    B_LU_BRP = B_LU_BRP,
+    M_DRAIN = M_DRAIN,
+    B_GWL_CLASS = B_GWL_CLASS,
+    B_SC_WENR = B_SC_WENR,
+    A_CLAY_MI = A_CLAY_MI,
+    A_SAND_MI = A_SAND_MI,
+    A_SILT_MI = A_SILT_MI,
+    A_SOM_LOI = A_SOM_LOI,
+    M_GREEN = M_GREEN
   )]
   
   # transform wue_whc to an index between 0 and 1
