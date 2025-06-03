@@ -1,6 +1,7 @@
 # BBWPC v3.0.999
 ## Added
 * function `bbwp_calc_psp()` which calculates a precipitation surplus for a single year and field given the fields cultivation and green manure.
+* function `bbwp_wat_groundwater_recharge()` which evaluates the soils ability to recharge groundwater.
 
 ## Changed
 * groundwater scores are now determined by the groundwater recharge indicator and no longer affected by the soil water holding capacity, drought stress risk, and wetness stress risk.
