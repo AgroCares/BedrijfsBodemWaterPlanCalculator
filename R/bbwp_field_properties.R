@@ -296,10 +296,10 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   )]
   
   # calculate BLN groundwater recharge indicator
-  dt[, wue_gwr := BLN::bln_wat_groundwater_recharge(
-    ID = id, # An ID is perhaps not required within BBWP
+  dt[, wue_gwr := bbwp_wat_groundwater_recharge(
+    ID = id,
     B_LU_BRP = B_LU_BRP,
-    B_DRAIN = M_DRAIN,
+    M_DRAIN = M_DRAIN,
     B_GWL_CLASS = B_GWL_CLASS,
     B_SC_WENR = B_SC_WENR,
     A_CLAY_MI = A_CLAY_MI,
