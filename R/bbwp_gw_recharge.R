@@ -32,7 +32,7 @@ bbwp_wat_groundwater_recharge <- function(B_LU_BRP,B_SC_WENR,B_GWL_CLASS,M_DRAIN
                                          A_CLAY_MI,A_SAND_MI, A_SILT_MI, A_SOM_LOI,M_GREEN){
   
   # add visual bindings
-  bln_crops = code = choices = value_min = value_max = D_SE = D_PSP = D_WRI_K = I_P_CO = I_P_SE = NULL
+  code = choices = value_min = value_max = D_SE = D_PSP = D_WRI_K = I_P_CO = I_P_SE = NULL
   # make internal copy
   blnp <- BBWPC::bbwp_parms
   
@@ -42,7 +42,7 @@ bbwp_wat_groundwater_recharge <- function(B_LU_BRP,B_SC_WENR,B_GWL_CLASS,M_DRAIN
                     length(A_SOM_LOI),length(M_GREEN))
   
   checkmate::assert_integerish(B_LU_BRP, any.missing = FALSE, min.len = 1, len = arg.length)
-  checkmate::assert_subset(B_LU_BRP, choices = unique(BLN::bln_crops$crop_code), empty.ok = FALSE)
+  checkmate::assert_subset(B_LU_BRP, choices = unique(OBIC::crops.obic$crop_code), empty.ok = FALSE)
   checkmate::assert_subset(B_SC_WENR, choices = unlist(blnp[code == "B_SC_WENR", choices]))
   checkmate::assert_integerish(B_SC_WENR, len = arg.length)
   checkmate::assert_subset(B_GWL_CLASS, choices = unlist(blnp[code == "B_GWL_CLASS", choices]))
