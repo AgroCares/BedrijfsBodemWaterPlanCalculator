@@ -236,10 +236,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
                            sd =  sqrt(B_AL_OX_SD^2 + B_FE_OX_SD^2))]
   
   # estimate field properties that contribute to the N and P efficiency of P inputs -------
-  
-  # Replace '-' with 'unknown'
-  dt[! B_GWL_CLASS %in% c('GtI','GtII','GtIII','GtIV','GtV', 'GtVI','GtVII','GtVIII'), B_GWL_CLASS := '-']
-  
+
   # calculate the OBIC water risk index for combined drought and wetstress (% yield reduction)
   dt[, npe_wri := 1] # When B_HELP_WENR is `unknown`
   if (nrow(dt[B_HELP_WENR != 'unknown',]) > 0) {
