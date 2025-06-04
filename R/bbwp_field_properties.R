@@ -129,7 +129,13 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
                    M_GREEN = M_GREEN)
          
   # do check op Gt
-  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS,B_AER_CBS = B_AER_CBS)]
+  # The b suffix for GtIIIb must be maintained as this is relevant for 
+  # OBIC::ind_gw_recharge() called by bbwp_wat_groundwater_recharge() called later within this function
+  dt[!grepl('^IIIb$|^GtIIIb', B_GWL_CLASS), B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS,B_AER_CBS = B_AER_CBS)]
+  dt[!grepl('^Gt', B_GWL_CLASS), B_GWL_CLASS := paste0('Gt', B_GWL_CLASS)]
+  checkmate::assert_subset(dt$B_GWL_CLASS, 
+                           choices = c('-', 'GtI','GtII','GtII','GtIII', 'GtIIIb',
+                                       'GtIII','GtIV', 'GtV','GtVI','GtVII','GtVIII'))
   
   # add crop names and categories
   dt <- merge(dt, LSW, by = 'B_LSW_ID',all.x = TRUE)
