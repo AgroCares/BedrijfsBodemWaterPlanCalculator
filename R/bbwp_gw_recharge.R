@@ -18,7 +18,7 @@
 #' bbwp_wat_groundwater_recharge(
 #' B_LU_BRP = c(233,259,2014,308),
 #' B_SC_WENR = rep(11,4),
-#' B_GWL_CLASS = rep('GtVI',4),
+#' B_GWL_CLASS = rep('VI',4),
 #' M_DRAIN = rep(TRUE,4),
 #' A_CLAY_MI = rep(20,4),
 #' A_SAND_MI = rep(15,4),
@@ -70,7 +70,9 @@ bbwp_wat_groundwater_recharge <- function(B_LU_BRP,B_SC_WENR,B_GWL_CLASS,M_DRAIN
   
   ### format inputs for OBIC
   dt[, B_SC_WENR := OBIC::format_soilcompaction(B_SC_WENR)]
-  dt[, B_GWL_CLASS := fifelse(B_GWL_CLASS == 'GtIIIb', 'GtIIIb', OBIC::format_gwt(B_GWL_CLASS))]
+  
+  # do check op groundwater class
+  checkmate::assert_subset(B_GWL_CLASS, choices = unlist(bbwp_parms[code == 'B_GWL_CLASS', choices]))
   
   # estimate derivatives: sealing risk, precipitation surplus and saturated permeability
   dt[, D_SE := OBIC::calc_sealing_risk(A_SOM_LOI, A_CLAY_MI)]

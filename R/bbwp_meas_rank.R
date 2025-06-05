@@ -96,8 +96,8 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOPE_D
   # add sector for regional studies
   if(length(sector)==nrow(dt)){dt[,sector := sector]}
   
-  # do check op Gt
-  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS, B_AER_CBS = B_AER_CBS)]
+  # do check op groundwater class
+  checkmate::assert_subset(B_GWL_CLASS, choices = unlist(bbwp_parms[code == 'B_GWL_CLASS', choices]))
   
   # merge inputs with data.table measures
   dt <- as.data.table(merge.data.frame(dt, dt.measures, all = TRUE))
@@ -117,8 +117,8 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOPE_D
     
     # Add bonus points for nsw
     dt[M_DRAIN == TRUE, effect_nsw := effect_nsw + nsw_drains]
-    dt[B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_low]
-    dt[! B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_high]
+    dt[B_GWL_CLASS %in% c('VII','VIII'), effect_nsw := effect_nsw + nsw_gwl_low]
+    dt[! B_GWL_CLASS %in% c('VII','VIII'), effect_nsw := effect_nsw + nsw_gwl_high]
     
     # Add bonus points for grassland
     dt[B_LU_BBWP %in% c('gras_permanent','gras_tijdelijk'), effect_ngw := effect_ngw + ngw_grassland]

@@ -2,7 +2,7 @@ require(testthat)
 
   # # default input for testing
   # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei')
-  # B_GWL_CLASS = c('GtIII', 'GtI', 'GtV')
+  # B_GWL_CLASS = c('III', 'I', 'V')
   # B_AER_CBS = c('LG05','LG14','LG02')
   # A_P_SG = c(0.4, 0.8, 1)
   # B_SLOPE_DEGREE = c(1.5,4,1.5)
@@ -24,7 +24,7 @@ require(testthat)
 
 # run example 1 without any measures taken
 test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-                    B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
+                    B_GWL_CLASS = c('III', 'I', 'V'),
                     A_P_SG = c(0.4, 0.8, 1),
                     B_SLOPE_DEGREE = c(1.5,4,1.5),
                     B_AER_CBS = c('LG05','LG14','LG02'),
@@ -81,7 +81,7 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
   test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','duinzand',
                                          'zeeklei','maasklei','dalgrond','moerige_klei',
                                          'veen'),
-                      B_GWL_CLASS = c('GtIII', 'GtI', 'GtV','GtVI','GtV','GtV','GtVI','GtIII','GtI'),
+                      B_GWL_CLASS = c('III', 'I', 'V','VI','V','V','VI','III','I'),
                       A_P_SG = c(0.4, 0.8, 1,15,20,24,36,28,5),
                       B_SLOPE_DEGREE = c(1.5,4,1.5,1,rep(1.25,4)),
                       B_AER_CBS = c('LG05','LG14','LG02','LG03','LG05','LG07','LG11','LG06','LG12'),
@@ -128,7 +128,7 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
 
 # run example 2 with any measures taken
 test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-                    B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
+                    B_GWL_CLASS = c('III', 'I', 'V'),
                     A_P_SG = c(0.4, 0.8, 1),
                     B_SLOPE_DEGREE = c(1.5,4,1.5),
                     B_LU_BBWP = c('gras_permanent','rooivrucht','gras_permanent'),
@@ -164,7 +164,7 @@ test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
 
 # run example 3 with any measures taken
   test <- ecoregeling(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-                      B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
+                      B_GWL_CLASS = c('III', 'I', 'V'),
                       A_P_SG = c(0.4, 0.8, 1),
                       B_SLOPE_DEGREE = c(1.5,4,1.5),
                       B_LU_BBWP = c('gras_permanent','rooivrucht','gras_permanent'),

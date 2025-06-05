@@ -5,7 +5,7 @@ require(testthat)
   # B_LU_BRP = c(265,2005,256,259)
   # B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais')
   # B_AER_CBS = c('LG05','LG14','LG03','LG02')
-  # B_GWL_CLASS = 'GtIII'
+  # B_GWL_CLASS = 'III'
   # A_P_CC = rep(2.5,4)
   # A_P_AL = rep(45,4)
   # B_SLOPE_DEGREE = rep(2.5,4)
@@ -23,7 +23,7 @@ require(testthat)
 # run example 1 without any measures taken
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
-                       B_GWL_CLASS = 'GtIII', 
+                       B_GWL_CLASS = 'III', 
                        A_P_CC = rep(2.5,4),
                        A_P_AL = rep(45,4),
                        B_SLOPE_DEGREE = rep(2.5,4),
@@ -74,7 +74,7 @@ measures$bbwp_status <- 'given for ANLB'
 # run example 2 without any measures taken
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
-                       B_GWL_CLASS = c('GtIII', 'GtVII','GtII','GtIV'),
+                       B_GWL_CLASS = c('III', 'VII','II','IV'),
                        A_P_CC = rep(2.5,4),
                        A_P_AL = rep(45,4),
                        B_SLOPE_DEGREE = rep(2.5,4),
@@ -116,7 +116,7 @@ test_that("check bbwp_meas_rank", {
 # run example without any measures taken and a high risk for N and P loss to surface water
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
-                       B_GWL_CLASS = 'GtIII', 
+                       B_GWL_CLASS = 'III', 
                        A_P_CC = rep(2.5,4),
                        A_P_AL = rep(55,4),
                        B_SLOPE_DEGREE = rep(2.5,4),
@@ -144,7 +144,7 @@ test_that("check bbwp_meas_rank", {
 # run example without any measures taken and a high risk for N leaching
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
-                       B_GWL_CLASS = 'GtIII', 
+                       B_GWL_CLASS = 'III', 
                        A_P_CC = rep(5.5,4),
                        A_P_AL = rep(75,4),
                        B_SLOPE_DEGREE = rep(2.5,4),
@@ -173,7 +173,7 @@ test_that("check bbwp_meas_rank", {
 # run example without any measures taken and a high risk for water retention and supply
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
-                       B_GWL_CLASS = 'GtIII', 
+                       B_GWL_CLASS = 'III', 
                        A_P_CC = rep(2.5,4),
                        A_P_AL = rep(45,4),
                        B_SLOPE_DEGREE = rep(2.5,4),
@@ -202,7 +202,7 @@ test_that("check bbwp_meas_rank", {
 # run example without any measures taken and a high risk for low nutrient use efficiency
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                        B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
-                       B_GWL_CLASS = 'GtIII', 
+                       B_GWL_CLASS = 'III', 
                        A_P_CC = rep(2.5,4),
                        A_P_AL = rep(45,4),
                        B_SLOPE_DEGREE = rep(2.5,4),
@@ -235,7 +235,7 @@ test_that("check bbwp_meas_rank", {
 # run example without any measures taken and a high risk for water retention, for 5 different landscape category
 test <- bbwp_meas_rank(B_SOILTYPE_AGR = rep('dekzand', 6),
                        B_LU_BBWP = rep('gras_permanent', 6),
-                       B_GWL_CLASS = 'GtIII', 
+                       B_GWL_CLASS = 'III', 
                        A_P_CC = rep(2.5,6),
                        A_P_AL = rep(45,6),
                        B_SLOPE_DEGREE = rep(2.5, 6),

@@ -5,7 +5,7 @@ test_that("bbwp_wat_groundwater_recharge works", {
     bbwp_wat_groundwater_recharge(
       B_LU_BRP = c(233,259,2014,308),
       B_SC_WENR = rep(11,4),
-      B_GWL_CLASS = rep('GtVI',4),
+      B_GWL_CLASS = rep('VI',4),
       M_DRAIN = rep(TRUE,4),
       A_CLAY_MI = rep(20,4),
       A_SAND_MI = rep(15,4),
@@ -22,7 +22,7 @@ test_that("bbwp_wat_groundwater_recharge works", {
     bbwp_wat_groundwater_recharge(
       B_LU_BRP = c(233,259,2014,308),
       B_SC_WENR = rep(11,4),
-      B_GWL_CLASS = rep('GtII',4),
+      B_GWL_CLASS = rep('II',4),
       M_DRAIN = rep(TRUE,4),
       A_CLAY_MI = rep(20,4),
       A_SAND_MI = rep(15,4),
@@ -41,7 +41,7 @@ test_that("M_DRAIN affect GWL class IIIb and IV but not others", {
     all(bbwp_wat_groundwater_recharge(
       B_LU_BRP = c(233,259,2014,308),
       B_SC_WENR = rep(1,4),
-      B_GWL_CLASS = rep('GtIV',4),
+      B_GWL_CLASS = rep('IV',4),
       M_DRAIN = rep(TRUE,4),
       A_CLAY_MI = rep(20,4),
       A_SAND_MI = rep(15,4),
@@ -51,7 +51,7 @@ test_that("M_DRAIN affect GWL class IIIb and IV but not others", {
     ) == bbwp_wat_groundwater_recharge(
       B_LU_BRP = c(233,259,2014,308),
       B_SC_WENR = rep(1,4),
-      B_GWL_CLASS = rep('GtIV',4),
+      B_GWL_CLASS = rep('IV',4),
       M_DRAIN = rep(FALSE,4),
       A_CLAY_MI = rep(20,4),
       A_SAND_MI = rep(15,4),
@@ -65,7 +65,7 @@ test_that("M_DRAIN affect GWL class IIIb and IV but not others", {
     all(bbwp_wat_groundwater_recharge(
       B_LU_BRP = c(233,259,2014,308),
       B_SC_WENR = rep(11,4),
-      B_GWL_CLASS = rep('GtIIIb',4),
+      B_GWL_CLASS = rep('IIIb',4),
       M_DRAIN = rep(TRUE,4),
       A_CLAY_MI = rep(20,4),
       A_SAND_MI = rep(15,4),
@@ -75,7 +75,7 @@ test_that("M_DRAIN affect GWL class IIIb and IV but not others", {
     ) == bbwp_wat_groundwater_recharge(
       B_LU_BRP = c(233,259,2014,308),
       B_SC_WENR = rep(11,4),
-      B_GWL_CLASS = rep('GtIIIb',4),
+      B_GWL_CLASS = rep('IIIb',4),
       M_DRAIN = rep(FALSE,4),
       A_CLAY_MI = rep(20,4),
       A_SAND_MI = rep(15,4),
@@ -89,7 +89,7 @@ test_that("M_DRAIN affect GWL class IIIb and IV but not others", {
     object = bbwp_wat_groundwater_recharge(
       B_LU_BRP = rep(233, 11),
       B_SC_WENR = rep(11, 11),
-      B_GWL_CLASS = c(paste0('Gt', c('I', 'II', 'IIb', 'III', 'IIIa','V', 'Va', 'Vb',
+      B_GWL_CLASS = c(paste0('', c('I', 'II', 'IIb', 'III', 'IIIa','V', 'Va', 'Vb',
                                      'VI', 'VII', 'VIII'))),
       M_DRAIN = rep(FALSE, 11),
       A_CLAY_MI = rep(20, 11),
@@ -101,7 +101,7 @@ test_that("M_DRAIN affect GWL class IIIb and IV but not others", {
     expected = bbwp_wat_groundwater_recharge(
       B_LU_BRP = rep(233, 11),
       B_SC_WENR = rep(11, 11),
-      B_GWL_CLASS = c(paste0('Gt', c('I', 'II', 'IIb', 'III', 'IIIa','V', 'Va', 'Vb',
+      B_GWL_CLASS = c(paste0('', c('I', 'II', 'IIb', 'III', 'IIIa','V', 'Va', 'Vb',
                                      'VI', 'VII', 'VIII'))),
       M_DRAIN = rep(TRUE, 11),
       A_CLAY_MI = rep(20, 11),
@@ -142,7 +142,7 @@ test_that("M_DRAIN affect GWL class IIIb and IV but not others", {
                    B_RO_R_SD = 0.3)
   expect_false(
     bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess'),
-         B_GWL_CLASS = c('GtIIIb', 'GtIV'),
+         B_GWL_CLASS = c('IIIb', 'IV'),
          B_SC_WENR = c(4, 2),
          B_HELP_WENR = c('AZW1AwF', 'AZW1AwF'),
          B_AER_CBS = c("Bouwhoek en Hogeland","LG14"),
@@ -177,7 +177,7 @@ test_that("M_DRAIN affect GWL class IIIb and IV but not others", {
          B_LU_BRP = c(265, 2014)
     ) ==
       bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess'),
-           B_GWL_CLASS = c('GtIIIb', 'GtIV'),
+           B_GWL_CLASS = c('IIIb', 'IV'),
            B_SC_WENR = c(4, 2),
            B_HELP_WENR = c('AZW1AwF', 'AZW1AwF'),
            B_AER_CBS = c("Bouwhoek en Hogeland","LG14"),
