@@ -128,14 +128,8 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
                    M_DRAIN = M_DRAIN,
                    M_GREEN = M_GREEN)
          
-  # do check op Gt
-  # The b suffix for GtIIIb must be maintained as this is relevant for 
-  # OBIC::ind_gw_recharge() called by bbwp_wat_groundwater_recharge() called later within this function
-  dt[!grepl('^IIIb$|^GtIIIb', B_GWL_CLASS), B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS,B_AER_CBS = B_AER_CBS)]
-  dt[!grepl('^Gt', B_GWL_CLASS), B_GWL_CLASS := paste0('Gt', B_GWL_CLASS)]
-  checkmate::assert_subset(dt$B_GWL_CLASS, 
-                           choices = c('-', 'GtI','GtII','GtII','GtIII', 'GtIIIb',
-                                       'GtIII','GtIV', 'GtV','GtVI','GtVII','GtVIII'))
+  # do check op groundwater class
+  checkmate::assert_subset(B_GWL_CLASS, choices = unlist(bbwp_parms[code == 'B_GWL_CLASS', choices]))
   
   # add crop names and categories
   dt <- merge(dt, LSW, by = 'B_LSW_ID',all.x = TRUE)
@@ -184,13 +178,13 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   dt[,nsw_scr := 1 - ngw_scr]
   
   # reclassify the groundwater table (gwt) into a numeric value
-  dt[B_GWL_CLASS %in% c('GtI', '-'), nsw_gwt := 1]
-  dt[B_GWL_CLASS %in% c('GtIIb','GtIIIb','GtVb'), nsw_gwt := 0.9]
-  dt[B_GWL_CLASS %in% c('GtII','GtIII','GtV'), nsw_gwt := 0.8]
-  dt[B_GWL_CLASS %in% c('GtIV'), nsw_gwt := 0.7]
-  dt[B_GWL_CLASS %in% c('GtVI'), nsw_gwt := 0.6]
-  dt[B_GWL_CLASS %in% c('GtVII'), nsw_gwt := 0.5]
-  dt[B_GWL_CLASS %in% c('GtVIII'), nsw_gwt := 0.4]
+  dt[B_GWL_CLASS %in% c('I', '-'), nsw_gwt := 1]
+  dt[B_GWL_CLASS %in% c('IIb','IIIb','Vb'), nsw_gwt := 0.9]
+  dt[B_GWL_CLASS %in% c('II','III','V'), nsw_gwt := 0.8]
+  dt[B_GWL_CLASS %in% c('IV'), nsw_gwt := 0.7]
+  dt[B_GWL_CLASS %in% c('VI'), nsw_gwt := 0.6]
+  dt[B_GWL_CLASS %in% c('VII'), nsw_gwt := 0.5]
+  dt[B_GWL_CLASS %in% c('VIII'), nsw_gwt := 0.4]
   
   # rank the risk for surface runoff (van Hattum, 2011)
   # higher risk is associated to increased risks for N runoff
