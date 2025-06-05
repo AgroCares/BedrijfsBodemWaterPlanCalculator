@@ -233,7 +233,7 @@ bbwp_format_aer <- function(B_AER_CBS) {
   # all input options
   aer.all <- c(aer.text,aer.code)
   
-  # Check if B_GT values are appropriate
+  # Check if B_AER_CBS values are appropriate
   checkmate::assert_subset(B_AER_CBS, empty.ok = FALSE, choices = aer.all)
   
   # which of the input values are database codes
@@ -277,7 +277,7 @@ bbwp_format_sc_wenr <- function(B_SC_WENR) {
   # all input options
   bsc.all <- c(bsc.text,bsc.code)
   
-  # Check if B_GT values are appropriate
+  # Check if B_SC_WENR values are appropriate
   checkmate::assert_subset(B_SC_WENR, empty.ok = FALSE, choices = bsc.all)
   
   # which of the input values are database codes

@@ -29,7 +29,7 @@ LSW = data.table(B_LSW_ID = 5,
                 
 test <- bbwp_field_properties(B_SOILTYPE_AGR = c('dekzand', 'loess'),
                               B_LU_BBWP = c('gras_permanent','rooivrucht'),
-                              B_GWL_CLASS = c('III', '-'),
+                              B_GWL_CLASS = c('III', 'II'),
                               B_SC_WENR = c(4, 2), 
                               B_HELP_WENR = c('AZW1AwF', 'AZW1AwF'),
                               B_AER_CBS = c('LG05','LG14'),
