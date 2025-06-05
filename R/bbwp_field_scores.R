@@ -103,7 +103,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOP
                     B_CT_NSW_MAX = B_CT_NSW_MAX
                   )
   
-  # do check op Gt
+  # do check op groundwater class
   checkmate::assert_subset(B_GWL_CLASS, choices = unlist(bbwp_parms[code == 'B_GWL_CLASS', choices]))
   
   # calculate correction factors, depending on regional targets
@@ -112,7 +112,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOP
     dt[,cfngw := fifelse(B_GWP, 1, 0.5)]
 
     # lower the regional target for nitrate leaching (compared to the general target 1)
-    dt[B_GWL_CLASS %in% c('GtI','GtII','GtIII'), cfngw := cfngw * 0.5]
+    dt[B_GWL_CLASS %in% c('I','II','III'), cfngw := cfngw * 0.5]
     dt[B_SOILTYPE_AGR == 'veen', cfngw := cfngw * 0.1]
     
     # correction when field is in a region with high water deficiency risks
