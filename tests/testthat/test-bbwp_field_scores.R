@@ -1,7 +1,7 @@
 
   ## default inputs for testing
   # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei')
-  # B_GWL_CLASS = c('II', 'I', 'V')
+  # B_GWL_CLASS = c('-', 'GtI', 'GtV')
   # A_P_SG = c(0.4, 0.8, 1)
   # B_SLOPE_DEGREE = c(1.5,4,1.5)
   # B_LU_BRP = c(265, 1932, 266)
