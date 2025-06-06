@@ -5,7 +5,7 @@ require(testthat)
   # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen')
   # B_LU_BRP = c(265,2005,256,259)
   # B_LU_BBWP = c(1,4,4,9)
-  # B_GWL_CLASS = 'GtIII' 
+  # B_GWL_CLASS = 'III' 
   # A_P_SG = rep(25,4) 
   # B_SLOPE_DEGREE = rep(2.5,4)
   # M_DRAIN = rep(TRUE,4)
@@ -21,7 +21,7 @@ require(testthat)
 # run example 1 without any measures taken
 test <- bbwp_meas_score(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                         B_LU_BBWP = c('gras_permanent','rooivrucht','rooivrucht','mais'),
-                        B_GWL_CLASS = 'GtIII', 
+                        B_GWL_CLASS = 'III', 
                         B_AER_CBS = c('LG05','LG14','LG03','LG02'),
                         A_P_CC = rep(2.5,4),
                         A_P_AL = rep(45,4),
@@ -66,7 +66,7 @@ measures$bbwp_status <- 'given for ANLB'
 # run example 2 without any measures taken
 test <- bbwp_meas_score(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen'),
                       B_LU_BBWP =c('gras_permanent','rooivrucht','rooivrucht','mais'),
-                      B_GWL_CLASS = 'GtIII', 
+                      B_GWL_CLASS = 'III', 
                       A_P_CC = rep(2.5,4),
                       A_P_AL = rep(45,4),
                       B_SLOPE_DEGREE = rep(2.5,4),

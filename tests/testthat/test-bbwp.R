@@ -3,7 +3,7 @@ require(testthat)
 require(BBWPC)
   # # default input for testing
   # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei')
-  # B_GWL_CLASS = c('GtIII', 'GtI', 'GtV')
+  # B_GWL_CLASS = c('III', 'I', 'V')
   # B_SC_WENR = c(4, 2,2)
   # B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF')
   # B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12")
@@ -66,7 +66,7 @@ require(BBWPC)
 # run example 1 without any measures taken
     test_that("check bbwp without any measures", {
       test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-                   B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
+                   B_GWL_CLASS = c('III', 'I', 'V'),
                    B_SC_WENR = c(4, 2,2),
                    B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
                    B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
@@ -112,7 +112,7 @@ require(BBWPC)
       
       expect_equal(
         object = test$fields$s_bbwp_tot,
-        expected = c(68, 37, 29),
+        expected = c(68, 37, 28),
         tolerance = 0.01)
       
       expect_equal(
@@ -122,12 +122,12 @@ require(BBWPC)
       
       expect_equal(
         object = test$fields$s_bbwp_nsw,
-        expected = c(98 , 19, 18),
+        expected = c(98 , 19, 16),
         tolerance = 0.01)
       
       expect_equal(
         object = test$fields$s_bbwp_psw,
-        expected = c(98, 28, 10),
+        expected = c(98, 28, 9),
         tolerance = 0.01)
       
       expect_equal(
@@ -150,7 +150,7 @@ require(BBWPC)
 # run example 2 without any measures taken
     test_that("check bbwp without any measures", {
       test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-                   B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
+                   B_GWL_CLASS = c('III', 'I', 'V'),
                    B_SC_WENR = c(4, 2,2),
                    B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
                    B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
@@ -210,7 +210,7 @@ require(BBWPC)
     
     
     test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-                 B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
+                 B_GWL_CLASS = c('III', 'I', 'V'),
                  B_SC_WENR = c(4, 2,2),
                  B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
                  B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
@@ -249,7 +249,7 @@ require(BBWPC)
     # run tests on format and output values
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(88, 37, 64),
+      expected = c(88, 37, 63),
       tolerance = 0.01)
     
     expect_equal(
@@ -264,7 +264,7 @@ require(BBWPC)
     # run example 3 without any measures taken and LSW equal to NULL
     expect_warning( # warning is expected as LSW is not supplied and used Dutch average values
       test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-                   B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
+                   B_GWL_CLASS = c('III', 'I', 'V'),
                    B_SC_WENR = c(4, 2,2),
                    B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
                    B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
@@ -309,7 +309,7 @@ require(BBWPC)
     
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(68 , 37 , 29),
+      expected = c(68 , 37 , 28),
       tolerance = 0.01)
     
     expect_equal(
@@ -322,7 +322,7 @@ require(BBWPC)
 # example with high PSW loss risk
   # run example 1 without any measures taken
   test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-               B_GWL_CLASS = c('GtI', 'GtI', 'GtI'),
+               B_GWL_CLASS = c('I', 'I', 'I'),
                B_SC_WENR = c(4, 4,4),
                B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
                B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
@@ -368,7 +368,7 @@ require(BBWPC)
   # example with high nitrate leaching risk
   # run example 1 without any measures taken
   test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-               B_GWL_CLASS = c('GtVI', 'GtVI', 'GtVI'),
+               B_GWL_CLASS = c('VI', 'VI', 'VI'),
                B_SC_WENR = c(1, 1,1),
                B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
                B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
@@ -412,7 +412,7 @@ require(BBWPC)
   
   # run example with low regional targets for region
   test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-               B_GWL_CLASS = c('GtI', 'GtI', 'GtI'),
+               B_GWL_CLASS = c('I', 'I', 'I'),
                B_SC_WENR = c(4, 4,4),
                B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
                B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
@@ -458,7 +458,7 @@ require(BBWPC)
     # missing both degree parameters
     expect_error(bbwp(
       B_SOILTYPE_AGR = c('dekzand'),
-      B_GWL_CLASS = c('GtIII'),
+      B_GWL_CLASS = c('III'),
       B_SC_WENR = c(4),
       B_HELP_WENR = c('AZW1AwF'),
       B_AER_CBS = c("LG12"),
@@ -497,7 +497,7 @@ require(BBWPC)
     expect_warning(bbwp(
       B_SLOPE = c(TRUE),
       B_SOILTYPE_AGR = c('dekzand'),
-      B_GWL_CLASS = c('GtIII'),
+      B_GWL_CLASS = c('III'),
       B_SC_WENR = c(4),
       B_HELP_WENR = c('AZW1AwF'),
       B_AER_CBS = c("LG12"),
