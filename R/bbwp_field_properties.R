@@ -179,8 +179,8 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   
   # reclassify the groundwater table (gwt) into a numeric value
   dt[B_GWL_CLASS %in% c('I', 'Ib'), nsw_gwt := 1]
-  dt[B_GWL_CLASS %in% c('IIb','IIIb','Vb', 'Vbo', 'Vbd'), nsw_gwt := 0.9] # GHG 25-40
-  dt[B_GWL_CLASS %in% c('II','III','V', 'IIa', 'IIIa', 'Va', 'Vao', 'Vad'), nsw_gwt := 0.8] # GHG <25
+  dt[B_GWL_CLASS %in% c('II','III','V', 'IIa', 'IIIa', 'Va', 'Vao', 'Vad'), nsw_gwt := 0.9] # GHG <25
+  dt[B_GWL_CLASS %in% c('IIb','IIIb','Vb', 'Vbo', 'Vbd'), nsw_gwt := 0.8] # GHG 25-40
   dt[B_GWL_CLASS %in% c('IV', 'IVu'), nsw_gwt := 0.7] # GHG 40-80
   dt[B_GWL_CLASS %in% c('VI', 'VIo', 'VId'), nsw_gwt := 0.6] # GHG 40-80
   dt[B_GWL_CLASS %in% c('VII', 'VIIo', 'VIId'), nsw_gwt := 0.5] # GHG 80-140

@@ -112,7 +112,7 @@ require(BBWPC)
       
       expect_equal(
         object = test$fields$s_bbwp_tot,
-        expected = c(68, 37, 29),
+        expected = c(68, 37, 28),
         tolerance = 0.01)
       
       expect_equal(
@@ -122,12 +122,12 @@ require(BBWPC)
       
       expect_equal(
         object = test$fields$s_bbwp_nsw,
-        expected = c(98 , 19, 18),
+        expected = c(98 , 19, 16),
         tolerance = 0.01)
       
       expect_equal(
         object = test$fields$s_bbwp_psw,
-        expected = c(98, 28, 10),
+        expected = c(98, 28, 9),
         tolerance = 0.01)
       
       expect_equal(
@@ -249,7 +249,7 @@ require(BBWPC)
     # run tests on format and output values
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(88, 37, 64),
+      expected = c(88, 37, 63),
       tolerance = 0.01)
     
     expect_equal(
@@ -309,7 +309,7 @@ require(BBWPC)
     
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(68 , 37 , 29),
+      expected = c(68 , 37 , 28),
       tolerance = 0.01)
     
     expect_equal(
