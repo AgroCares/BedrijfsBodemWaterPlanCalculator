@@ -21,7 +21,7 @@
 #' bbwp_calc_psp(B_LU_BRP = 265, M_GREEN = TRUE)
 #' bbwp_calc_psp(B_LU_BRP = c(265,1019,265,1019), M_GREEN = rep(TRUE,4))
 #' bbwp_calc_psp(B_LU_BRP = c(2014, 2767), M_GREEN = rep(TRUE,2),
-#'              M_GREEN_START = c(10, 11), M_GREEN_TERMINATE = c(12, 3))
+#'              M_GREEN_START = c(10L, 11L), M_GREEN_TERMINATE = c(12L, 3L))
 #'
 #' @return
 #' The estimated precipitation surplus (in mm / ha) depending on averaged precipitation and evaporation. A numeric value.
@@ -43,7 +43,7 @@ bbwp_calc_psp <- function(B_LU_BRP, M_GREEN, M_GREEN_START = 10L, M_GREEN_TERMIN
   checkmate::assert_logical(M_GREEN,any.missing = FALSE, len = arg.length)
   checkmate::assert_integer(M_GREEN_START, lower = 8, upper = 12)
   checkmate::assert_integer(M_GREEN_TERMINATE)
-  checkmate::assert_subset(M_GREEN_TERMINATE, choices = c(10, 11, 12, 1, 2, 3, 4))
+  checkmate::assert_subset(M_GREEN_TERMINATE, choices = c(10L, 11L, 12L, 1L, 2L, 3L, 4L))
   
   # Load in the datasets
   dt.weather <- OBIC::weather.obic
