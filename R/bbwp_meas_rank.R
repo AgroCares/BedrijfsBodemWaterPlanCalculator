@@ -117,8 +117,8 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOPE_D
     
     # Add bonus points for nsw
     dt[M_DRAIN == TRUE, effect_nsw := effect_nsw + nsw_drains]
-    dt[B_GWL_CLASS %in% c('VII','VIII'), effect_nsw := effect_nsw + nsw_gwl_low]
-    dt[! B_GWL_CLASS %in% c('VII','VIII'), effect_nsw := effect_nsw + nsw_gwl_high]
+    dt[B_GWL_CLASS %in% c('VII', 'VIIo', 'VIId','VIII', 'VIIIo', 'VIIId'), effect_nsw := effect_nsw + nsw_gwl_low]
+    dt[! B_GWL_CLASS %in% c('VII', 'VIIo', 'VIId','VIII', 'VIIIo', 'VIIId'), effect_nsw := effect_nsw + nsw_gwl_high]
     
     # Add bonus points for grassland
     dt[B_LU_BBWP %in% c('gras_permanent','gras_tijdelijk'), effect_ngw := effect_ngw + ngw_grassland]
