@@ -49,7 +49,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   B_FE_OX = B_AL_OX = B_SA_W = B_RO_R = B_SOM_LOI_SD = B_CLAY_MI_SD = B_SAND_MI_SD = B_SILT_MI_SD = B_N_RT_SD = B_P_AL_SD = B_P_CC_SD = NULL
   B_P_WA_SD = B_P_SG_SD = B_FE_OX_SD = B_AL_OX_SD = B_SA_W_SD = B_RO_R_SD = NULL
   id = code = value_min = value_max = choices = NULL
-  psw_psg = crop_category = wue_gwr = NULL
+  psw_psg = crop_category = wue_gwr = I_H_GWR = NULL
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
@@ -294,7 +294,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   )]
   
   # calculate groundwater recharge indicator
-  dt[, wue_gwr := bbwp_wat_groundwater_recharge(
+  dt[, I_H_GWR := bbwp_wat_groundwater_recharge(
     B_LU_BRP = B_LU_BRP,
     M_DRAIN = M_DRAIN,
     B_GWL_CLASS = B_GWL_CLASS,
@@ -305,6 +305,9 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
     A_SOM_LOI = A_SOM_LOI,
     M_GREEN = M_GREEN
   )]
+  
+  # invert indicator to obtain risk
+  dt[, wue_gwr := 1 - I_H_GWR]
   
   # transform wue_whc to an index between 0 and 1
   dt[,wue_whc := 1 - evaluate_logistic(wue_whc, b = 25, x0 = 0.4,v = 0.35)]
