@@ -44,7 +44,7 @@ soils' function to retain water
 bbwp_wat_groundwater_recharge(
 B_LU_BRP = c(233,259,2014,308),
 B_SC_WENR = rep(11,4),
-B_GWL_CLASS = rep('GtVI',4),
+B_GWL_CLASS = rep('VI',4),
 M_DRAIN = rep(TRUE,4),
 A_CLAY_MI = rep(20,4),
 A_SAND_MI = rep(15,4),

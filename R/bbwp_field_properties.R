@@ -49,7 +49,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   B_FE_OX = B_AL_OX = B_SA_W = B_RO_R = B_SOM_LOI_SD = B_CLAY_MI_SD = B_SAND_MI_SD = B_SILT_MI_SD = B_N_RT_SD = B_P_AL_SD = B_P_CC_SD = NULL
   B_P_WA_SD = B_P_SG_SD = B_FE_OX_SD = B_AL_OX_SD = B_SA_W_SD = B_RO_R_SD = NULL
   id = code = value_min = value_max = choices = NULL
-  psw_psg = B_GT = crop_category = wue_gwr = NULL
+  psw_psg = crop_category = wue_gwr = I_H_GWR = NULL
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
@@ -128,8 +128,9 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
                    M_DRAIN = M_DRAIN,
                    M_GREEN = M_GREEN)
          
-  # do check op Gt
-  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS,B_AER_CBS = B_AER_CBS)]
+  # do check op groundwater class
+  checkmate::assert_subset(B_GWL_CLASS, choices = c(unlist(bbwp_parms[code == 'B_GWL_CLASS', choices]),
+                                                    c("Ia", "Ib", "IIa", "IIc", "IVc", "Vao", "Vad", "Vbo", "Vbd", "VIo", "VId", "VIIo", "VIId", "VIIIo", "VIIId")))
   
   # add crop names and categories
   dt <- merge(dt, LSW, by = 'B_LSW_ID',all.x = TRUE)
@@ -158,9 +159,9 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   dt[crop_category == "grasland" , croptype.nleach := "gras"]
   
   # merge fraction of N leaching into 'dt', based on soil type x crop type x grondwatertrap
-  dt <- merge(dt, nleach_table[, list(bodem, gewas, B_GT, nf)], 
+  dt <- merge(dt, nleach_table[, list(bodem, gewas, B_GWL_CLASS, nf)], 
               by.x = c("soiltype.n", "croptype.nleach", "B_GWL_CLASS"), 
-              by.y = c("bodem", "gewas", "B_GT"), sort = FALSE, all.x = TRUE)
+              by.y = c("bodem", "gewas", "B_GWL_CLASS"), sort = FALSE, all.x = TRUE)
   
   # for situations that nf is unknown
   dt[is.na(nf), nf := 0.5]
@@ -178,13 +179,13 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
   dt[,nsw_scr := 1 - ngw_scr]
   
   # reclassify the groundwater table (gwt) into a numeric value
-  dt[B_GWL_CLASS %in% c('GtI', '-'), nsw_gwt := 1]
-  dt[B_GWL_CLASS %in% c('GtIIb','GtIIIb','GtVb'), nsw_gwt := 0.9]
-  dt[B_GWL_CLASS %in% c('GtII','GtIII','GtV'), nsw_gwt := 0.8]
-  dt[B_GWL_CLASS %in% c('GtIV'), nsw_gwt := 0.7]
-  dt[B_GWL_CLASS %in% c('GtVI'), nsw_gwt := 0.6]
-  dt[B_GWL_CLASS %in% c('GtVII'), nsw_gwt := 0.5]
-  dt[B_GWL_CLASS %in% c('GtVIII'), nsw_gwt := 0.4]
+  dt[B_GWL_CLASS %in% c('I', 'Ia', 'Ib'), nsw_gwt := 1]
+  dt[B_GWL_CLASS %in% c('II','III','V', 'IIa', 'IIIa', 'Va', 'Vao', 'Vad'), nsw_gwt := 0.9] # GHG <25
+  dt[B_GWL_CLASS %in% c('IIb','IIIb','Vb', 'Vbo', 'Vbd'), nsw_gwt := 0.8] # GHG 25-40
+  dt[B_GWL_CLASS %in% c('IIc','IV', 'IVu'), nsw_gwt := 0.7] # GHG 40-80
+  dt[B_GWL_CLASS %in% c('VI', 'VIo', 'VId'), nsw_gwt := 0.6] # GHG 40-80
+  dt[B_GWL_CLASS %in% c('VIc', 'VII', 'VIIo', 'VIId'), nsw_gwt := 0.5] # GHG 80-140
+  dt[B_GWL_CLASS %in% c('VIII', 'VIIIo', 'VIIId'), nsw_gwt := 0.4] # GHG >140
   
   # rank the risk for surface runoff (van Hattum, 2011)
   # higher risk is associated to increased risks for N runoff
@@ -230,10 +231,7 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
                            sd =  sqrt(B_AL_OX_SD^2 + B_FE_OX_SD^2))]
   
   # estimate field properties that contribute to the N and P efficiency of P inputs -------
-  
-  # Replace '-' with 'unknown'
-  dt[! B_GWL_CLASS %in% c('GtI','GtII','GtIII','GtIV','GtV', 'GtVI','GtVII','GtVIII'), B_GWL_CLASS := '-']
-  
+
   # calculate the OBIC water risk index for combined drought and wetstress (% yield reduction)
   dt[, npe_wri := 1] # When B_HELP_WENR is `unknown`
   if (nrow(dt[B_HELP_WENR != 'unknown',]) > 0) {
@@ -295,8 +293,8 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
     type = 'water holding capacity'
   )]
   
-  # calculate BLN groundwater recharge indicator
-  dt[, wue_gwr := bbwp_wat_groundwater_recharge(
+  # calculate groundwater recharge indicator
+  dt[, I_H_GWR := bbwp_wat_groundwater_recharge(
     B_LU_BRP = B_LU_BRP,
     M_DRAIN = M_DRAIN,
     B_GWL_CLASS = B_GWL_CLASS,
@@ -307,6 +305,9 @@ bbwp_field_properties <- function(B_SOILTYPE_AGR, B_LU_BBWP, B_GWL_CLASS, B_SC_W
     A_SOM_LOI = A_SOM_LOI,
     M_GREEN = M_GREEN
   )]
+  
+  # invert indicator to obtain risk
+  dt[, wue_gwr := 1 - I_H_GWR]
   
   # transform wue_whc to an index between 0 and 1
   dt[,wue_whc := 1 - evaluate_logistic(wue_whc, b = 25, x0 = 0.4,v = 0.35)]

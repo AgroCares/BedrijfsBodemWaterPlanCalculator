@@ -25,7 +25,7 @@
 
 # test 1 with no measures applied
 test <- bbwp_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'), 
-                          B_GWL_CLASS = c('-', 'GtI', 'GtV'), 
+                          B_GWL_CLASS = c('II', 'I', 'V'), 
                           A_P_CC = c(0.4, 0.8, 1), 
                           A_P_AL = c(40,80,100),
                           B_SLOPE_DEGREE =  c(1.5,4,1.5),
@@ -77,7 +77,7 @@ measures$bbwp_status <- 'given for ANLB'
 
 # test 2 with  measures applied
 test <- bbwp_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'), 
-                          B_GWL_CLASS = c('-', 'GtI', 'GtV'), 
+                          B_GWL_CLASS = c('II', 'I', 'V'), 
                           A_P_CC = c(0.4, 0.8, 1), 
                           A_P_AL = c(40,80,100),
                           B_SLOPE_DEGREE =  c(1.5,4,1.5),

@@ -44,8 +44,15 @@
 #' @param B_LU_BRP (numeric) The crop code (gewascode) from the BRP
 #'  
 #' @details 
-#' B_SLOPE_DEGREE should be used, for backwards compatibility B_SLOPE can still be used. At least one of the must be used, when both are supplied, B_SLOPE is ignored.
-#' LSW is by default a data.table with LSW properties, being calculated from bbwp_lsw_properties. Note that all B_LSW_IDs should be preset in the LSW data.table.
+#' B_SLOPE_DEGREE should be used, for backwards compatibility B_SLOPE can still be used.
+#'  At least one of the must be used, when both are supplied, B_SLOPE is ignored.
+#' 
+#' LSW is by default a data.table with LSW properties, being calculated from 
+#' bbwp_lsw_properties. Note that all B_LSW_IDs should be pre-set in the LSW data.table.
+#' 
+#' \code{bbwp()} no longer supports '-' as valid input for B_GWL_CLASS. Users should use 
+#' their best judgement to decide on the most suitable valid value for such fields.
+#' Valid values can be found in \code{bbwp_parms[code == 'B_GWL_CLASS', choices]}
 #' 
 #' @import data.table
 #' @import OBIC
