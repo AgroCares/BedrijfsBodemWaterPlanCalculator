@@ -18,7 +18,7 @@
 #' bbwp_wat_groundwater_recharge(
 #' B_LU_BRP = c(233,259,2014,308),
 #' B_SC_WENR = rep(11,4),
-#' B_GWL_CLASS = rep('GtVI',4),
+#' B_GWL_CLASS = rep('VI',4),
 #' M_DRAIN = rep(TRUE,4),
 #' A_CLAY_MI = rep(20,4),
 #' A_SAND_MI = rep(15,4),
@@ -32,7 +32,7 @@ bbwp_wat_groundwater_recharge <- function(B_LU_BRP,B_SC_WENR,B_GWL_CLASS,M_DRAIN
                                          A_CLAY_MI,A_SAND_MI, A_SILT_MI, A_SOM_LOI,M_GREEN){
   
   # add visual bindings
-  bln_crops = code = choices = value_min = value_max = D_SE = D_PSP = D_WRI_K = I_P_CO = I_P_SE = NULL
+  code = choices = value_min = value_max = D_SE = D_PSP = D_WRI_K = I_P_CO = I_P_SE = NULL
   # make internal copy
   blnp <- BBWPC::bbwp_parms
   
@@ -42,10 +42,11 @@ bbwp_wat_groundwater_recharge <- function(B_LU_BRP,B_SC_WENR,B_GWL_CLASS,M_DRAIN
                     length(A_SOM_LOI),length(M_GREEN))
   
   checkmate::assert_integerish(B_LU_BRP, any.missing = FALSE, min.len = 1, len = arg.length)
-  checkmate::assert_subset(B_LU_BRP, choices = unique(BLN::bln_crops$crop_code), empty.ok = FALSE)
+  checkmate::assert_subset(B_LU_BRP, choices = unique(OBIC::crops.obic$crop_code), empty.ok = FALSE)
   checkmate::assert_subset(B_SC_WENR, choices = unlist(blnp[code == "B_SC_WENR", choices]))
   checkmate::assert_integerish(B_SC_WENR, len = arg.length)
-  checkmate::assert_subset(B_GWL_CLASS, choices = unlist(blnp[code == "B_GWL_CLASS", choices]))
+  checkmate::assert_subset(B_GWL_CLASS, choices = c(unlist(blnp[code == 'B_GWL_CLASS', choices]),
+                                                    c("Ia", "Ib", "IIa", "IIc", "IVc", "Vao", "Vad", "Vbo", "Vbd", "VIo", "VId", "VIIo", "VIId", "VIIIo", "VIIId")))
   checkmate::assert_character(B_GWL_CLASS, len = arg.length)
   checkmate::assert_logical(M_DRAIN,len = arg.length)
   
@@ -70,7 +71,6 @@ bbwp_wat_groundwater_recharge <- function(B_LU_BRP,B_SC_WENR,B_GWL_CLASS,M_DRAIN
   
   ### format inputs for OBIC
   dt[, B_SC_WENR := OBIC::format_soilcompaction(B_SC_WENR)]
-  dt[, B_GWL_CLASS := fifelse(B_GWL_CLASS == 'GtIIIb', 'GtIIIb', OBIC::format_gwt(B_GWL_CLASS))]
   
   # estimate derivatives: sealing risk, precipitation surplus and saturated permeability
   dt[, D_SE := OBIC::calc_sealing_risk(A_SOM_LOI, A_CLAY_MI)]

@@ -34,6 +34,6 @@ The winter wheat acts as a green manure/catch crop for the potato's year.
 bbwp_calc_psp(B_LU_BRP = 265, M_GREEN = TRUE)
 bbwp_calc_psp(B_LU_BRP = c(265,1019,265,1019), M_GREEN = rep(TRUE,4))
 bbwp_calc_psp(B_LU_BRP = c(2014, 2767), M_GREEN = rep(TRUE,2),
-             M_GREEN_START = c(10, 11), M_GREEN_TERMINATE = c(12, 3))
+             M_GREEN_START = c(10L, 11L), M_GREEN_TERMINATE = c(12L, 3L))
 
 }

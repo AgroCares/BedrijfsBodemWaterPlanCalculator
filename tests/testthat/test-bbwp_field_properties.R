@@ -29,7 +29,7 @@ LSW = data.table(B_LSW_ID = 5,
                 
 test <- bbwp_field_properties(B_SOILTYPE_AGR = c('dekzand', 'loess'),
                               B_LU_BBWP = c('gras_permanent','rooivrucht'),
-                              B_GWL_CLASS = c('GtIII', '-'),
+                              B_GWL_CLASS = c('III', 'VIII'),
                               B_SC_WENR = c(4, 2), 
                               B_HELP_WENR = c('AZW1AwF', 'AZW1AwF'),
                               B_AER_CBS = c('LG05','LG14'),
@@ -62,13 +62,13 @@ test_that("check bbwp_field_properties", {
       ngw_lea = c(0.2649, 0.487),
       ngw_nlv = c(0.55,0.16),
       nsw_scr = c(0.6, 0.2),
-      nsw_gwt = c(0.8, 0.4),
+      nsw_gwt = c(0.9, 0.4),
       nsw_ro = c(0.5, 0.048),
       nsw_slope = c(0.75,0.4),
       nsw_ws = c(0.5, 1.0),
       nsw_nlv = c(0.0497, 0.1665),
       psw_scr = c(0.6, 0.2),
-      psw_gwt = c(0.8, 0.4),
+      psw_gwt = c(0.9, 0.4),
       psw_ro = c(0.5, 0.048),
       psw_slope = c(0.75,0.4),
       psw_ws = c(0.5, 1.0),
@@ -82,7 +82,7 @@ test_that("check bbwp_field_properties", {
       wue_wwri = c(0.055, 0.03),
       wue_wdri = c(0, 0.23),
       wue_whc = c(0.2338, 0.055),
-      wue_gwr  = c(0.250, 0.846)
+      wue_gwr  = c(0.749, 0.153)
     ),
     tolerance = 0.01)
 })
