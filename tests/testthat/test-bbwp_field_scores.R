@@ -38,6 +38,7 @@ test <- bbwp_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                           D_RISK_PSW = c(0, 0.5, 1), 
                           D_RISK_NUE = c(0, 0.5, 1), 
                           D_RISK_WB= c(0, 0.5, 1),
+                          D_RISK_GWR= c(0, 0.5, 1),
                           B_GWP = c(TRUE, FALSE, TRUE), 
                           B_AREA_DROUGHT = c(TRUE, FALSE, TRUE),
                           B_CT_PSW = c(0, 25, 50),
@@ -59,7 +60,8 @@ test_that("check bbwp_field_scores", {
       S_BBWP_PSW = c(99,46,4),
       S_BBWP_NUE = c(98,60,28),
       S_BBWP_WB = c(97,60,4),
-      S_BBWP_TOT = c(98,55,6)
+      S_BBWP_GW = c(97,60,4),
+      S_BBWP_TOT = c(98,56,6)
     ),
     tolerance = 0.01)
 })
@@ -90,6 +92,7 @@ test <- bbwp_field_scores(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
                           D_RISK_PSW = c(0, 0.5, 1), 
                           D_RISK_NUE = c(0, 0.5, 1), 
                           D_RISK_WB= c(0, 0.5, 1),
+                          D_RISK_GWR = c(0, 0.5, 1),
                           B_GWP = c(TRUE, FALSE, TRUE), 
                           B_AREA_DROUGHT = c(TRUE, FALSE, TRUE),
                           B_CT_PSW = c(0, 25, 50),
@@ -110,8 +113,9 @@ test_that("check bbwp_field_scores", {
       S_BBWP_NSW = c(99,46,40),
       S_BBWP_PSW = c(99,46,34),
       S_BBWP_NUE = c(99,60,100),
-      S_BBWP_WB = c(97,60,16),
-      S_BBWP_TOT = c(99,55,39)
+      S_BBWP_WB = c(98,60,26),
+      S_BBWP_GW = c(97,60,16),
+      S_BBWP_TOT = c(99,56,37)
     ),
     tolerance = 0.01)
 })

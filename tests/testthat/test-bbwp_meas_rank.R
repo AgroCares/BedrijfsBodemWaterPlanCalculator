@@ -59,7 +59,7 @@ test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_tot[c(1,2,7,12,15)],
     #expected = c('G53',"G27",'G21','G27','G17'),
-    expected = c("G11aBWP4", "G6BWP6", "G18H1", "G6BWP6", "B112"),
+    expected = c("G11aBWP4", "G6BWP6", "G6BWP6", "G6BWP6", "BWP7"),
     tolerance = 0.01)
 })
 
@@ -88,6 +88,7 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen
                        S_BBWP_PSW = c(0.9,0.1, 0.5, 1)*100, 
                        S_BBWP_NUE = c(0.1,0.1, 0.5, 1)*100,  
                        S_BBWP_WB = c(0.22, 0.1,0.5, 1)*100, 
+                       S_BBWP_GW = c(0.22, 0.1,0.5, 1)*100, 
                        measures = measures,
                        sector = 'dairy',
                        B_LS_HYDROCAT = 'flanken'
@@ -112,7 +113,7 @@ test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_tot[c(1,2,5,9,16)],
     #expected = c("G53" , "G8BWP4",  "G11aBWP3", "G54" , "B137"),
-    expected = c("G11aBWP4","G6BWP6", "B132", "BWP13", "B101"),
+    expected = c("G11aBWP4","G6BWP6", "B132", "G18H1", "B137"),
     tolerance = 0.01)
 })
 
@@ -199,7 +200,7 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test[id==1,top_bbwp_tot],
-    expected = c("BWP13", "G11aBWP4", "G6BWP6", "B110H1","B112"),
+    expected = c("G6BWP6", "G11aBWP4", "BWP13", "B112","B110H1"),
     tolerance = 0.01)
 })
 
@@ -263,13 +264,13 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = rep('dekzand', 6),
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_wb[c(1,6,11,16,21,26)], # top 1 WB measures for each field
-    expected = c("BWP13", "BWP13", "BWP13", "BWP13", "BWP13", "BWP13"),
+    expected = c("G6BWP6", "G6BWP6", "G6BWP6", "G6BWP6", "G6BWP6", "G6BWP6"),
     tolerance = 0.01)
 })
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_wb[c(1,6,11,16,21,26) + 1], # top 2 WB measures for each field
-    expected = c( "G11aBWP4", "G11aBWP4", "G6BWP6", "G6BWP6", "G6BWP6", "G11aBWP4"),
+    expected = c( "G12BWP10", "G12BWP10", "G12BWP10", "G12BWP10", "G12BWP10", "G8BWP4"),
     tolerance = 0.01)
 })
 
