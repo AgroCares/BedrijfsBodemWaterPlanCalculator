@@ -205,10 +205,10 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_CC,A_P_AL, B_SLOPE
   dt[, D_MEAS_GW := D_OPI_GW * effect_gw]
   
   # columns to be adapted given applicability
-  scols <- c('D_MEAS_NGW','D_MEAS_NSW','D_MEAS_PSW','D_MEAS_NUE','D_MEAS_WB','D_MEAS_TOT')
+  scols <- c('D_MEAS_NGW','D_MEAS_NSW','D_MEAS_PSW','D_MEAS_NUE','D_MEAS_WB', 'D_MEAS_GW', 'D_MEAS_TOT')
   
   # Calculate total measure score
-  dt[, D_MEAS_TOT := (D_MEAS_NGW + D_MEAS_NSW + D_MEAS_PSW + D_MEAS_NUE + D_MEAS_WB ) /  5]
+  dt[, D_MEAS_TOT := (D_MEAS_NGW + D_MEAS_NSW + D_MEAS_PSW + D_MEAS_NUE + D_MEAS_WB + D_MEAS_GW) /  6]
   
   # set impact of conflict measures to the highest score of those that are selected
   
