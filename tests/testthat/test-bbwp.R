@@ -136,8 +136,13 @@ require(BBWPC)
         tolerance = 0.01)
       
        expect_equal(
-         object = test$fields$s_bbwp_wb,
+         object = test$fields$s_bbwp_gw,
          expected = c(15, 93, 17),
+         tolerance = 0.01) 
+       
+       expect_equal(
+         object = test$fields$s_bbwp_wb,
+         expected = c(92, 90, 81),
          tolerance = 0.01) 
       
       expect_equal(
