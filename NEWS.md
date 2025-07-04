@@ -2,10 +2,9 @@
 ## Added
 * function `bbwp_calc_psp()` which calculates a precipitation surplus for a single year and field given the fields cultivation and green manure.
 * function `bbwp_wat_groundwater_recharge()` which evaluates the soils ability to recharge groundwater.
+* A new score `S_BBWP_GW` to score groundwater(recharge)
 
 ## Changed
-* groundwater scores `S_BBWP_WB` are now determined by the groundwater recharge
-indicator and no longer affected by the soil water holding capacity, drought stress risk, and wetness stress risk.
 * BBWP now supports groundwater classes with suffixes and should be ready to use
 data from BRO Grondwaterspiegelmodel, 2024-01. https://www.broloket.nl/ondergrondmodellen/kaart
 * BBWP no longer supports B_GWL_CLASS value "-". For fields with groundwater class "-", the user is advised to use expert judgment on
