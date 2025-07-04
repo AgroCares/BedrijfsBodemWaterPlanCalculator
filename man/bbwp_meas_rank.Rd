@@ -21,7 +21,8 @@ bbwp_meas_rank(
   S_BBWP_WB,
   measures,
   sector,
-  B_LS_HYDROCAT
+  B_LS_HYDROCAT,
+  S_BBWP_GW
 )
 }
 \arguments{
@@ -59,6 +60,8 @@ bbwp_meas_rank(
 
 \item{B_LS_HYDROCAT}{(character) Landscape category for differentiating effect of measures on water buffering.
 (options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")}
+
+\item{S_BBWP_GW}{(numeric)the BBWP score for ground water recharge}
 }
 \description{
 Estimate the score for agronomic measures to improve soil and water management on agricultural farms. 
