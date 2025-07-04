@@ -181,7 +181,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOP
     } else {
       
       # set impact of management to zero when no measures are applied
-      dt[,c(mcols) := list(0,0,0,0,0,0)]
+      dt[,c(mcols) := list(0,0,0,0,0,0,0)]
     }
     
   # update the field score with measures
