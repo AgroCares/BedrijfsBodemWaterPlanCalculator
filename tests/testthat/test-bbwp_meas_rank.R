@@ -35,6 +35,7 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen
                        S_BBWP_PSW = c(0,0.1, 0.5, 1)*100, 
                        S_BBWP_NUE = c(0,0.1, 0.5, 1)*100,  
                        S_BBWP_WB = c(0, 0.1,0.5, 1)*100, 
+                       S_BBWP_GW = c(0, 0.1,0.5, 1)*100, 
                        measures = NULL,
                        sector = 'dairy',
                        B_LS_HYDROCAT = 'flanken')
@@ -42,14 +43,15 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = dim(test),
-    expected = c(20,7),
+    expected = c(20,8),
     tolerance = 0.01)
 })
 
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = colnames(test),
-    expected = c('id',"top_bbwp_tot","top_bbwp_ngw","top_bbwp_nsw","top_bbwp_psw","top_bbwp_wb","top_bbwp_nue"),
+    expected = c('id',"top_bbwp_tot","top_bbwp_ngw","top_bbwp_nsw","top_bbwp_psw",
+                 "top_bbwp_wb", "top_bbwp_gw", "top_bbwp_nue"),
     tolerance = 0.01)
 })
 
@@ -57,7 +59,7 @@ test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_tot[c(1,2,7,12,15)],
     #expected = c('G53',"G27",'G21','G27','G17'),
-    expected = c("G11aBWP4", "B132", "G18H1", "G18H1", "G20"),
+    expected = c("G11aBWP4", "G6BWP6", "G18H1", "G6BWP6", "B112"),
     tolerance = 0.01)
 })
 
@@ -94,14 +96,15 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = dim(test),
-    expected = c(20,7),
+    expected = c(20,8),
     tolerance = 0.01)
 })
 
 test_that("check bbwp_meas_rank", {
   expect_equal(
     object = colnames(test),
-    expected = c('id',"top_bbwp_tot","top_bbwp_ngw","top_bbwp_nsw","top_bbwp_psw","top_bbwp_wb","top_bbwp_nue"),
+    expected = c('id',"top_bbwp_tot","top_bbwp_ngw","top_bbwp_nsw","top_bbwp_psw",
+                 "top_bbwp_wb", 'top_bbwp_gw', "top_bbwp_nue"),
     tolerance = 0.01)
 })
 
@@ -109,7 +112,7 @@ test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test$top_bbwp_tot[c(1,2,5,9,16)],
     #expected = c("G53" , "G8BWP4",  "G11aBWP3", "G54" , "B137"),
-    expected = c("G11aBWP4","G6BWP6", "G25", "G17", "B137"),
+    expected = c("G11aBWP4","G6BWP6", "B132", "BWP13", "B101"),
     tolerance = 0.01)
 })
 
@@ -128,6 +131,7 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen
                        S_BBWP_PSW = c(10,10,10,10),  
                        S_BBWP_NUE = c(99,99,99,99),   
                        S_BBWP_WB = c(99,99,99,99), 
+                       S_BBWP_GW = c(99,99,99,99), 
                        measures = NULL,
                        sector = 'dairy',
                        B_LS_HYDROCAT = 'flanken'
@@ -156,6 +160,7 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen
                        S_BBWP_PSW = c(99,99,99,99),  
                        S_BBWP_NUE = c(99,99,99,99),   
                        S_BBWP_WB = c(99,99,99,99), 
+                       S_BBWP_GW = c(99,99,99,99), 
                        measures = NULL,
                        sector = 'dairy',
                        B_LS_HYDROCAT = 'flanken'
@@ -165,7 +170,7 @@ test_that("check bbwp_meas_rank", {
   expect_equal(
     object = test[id==1,top_bbwp_tot],
     #expected = c('B131','G65','G27','G25','G12BWP10'),
-    expected = c( "B132", "G65",  "G27",  "G25",  "G31"),
+    expected = c( "B132", "G65",  "G27",  "G25",  "G12BWP10"),
     tolerance = 0.01)
 })
 
@@ -185,6 +190,7 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen
                        S_BBWP_PSW = c(99,99,99,99),  
                        S_BBWP_NUE = c(99,99,99,99),   
                        S_BBWP_WB = c(10,10,10,10), 
+                       S_BBWP_GW = c(10,10,10,10), 
                        measures = NULL,
                        sector = 'dairy',
                        B_LS_HYDROCAT = 'flanken'
@@ -214,6 +220,7 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','veen
                        S_BBWP_PSW = c(99,99,99,99),  
                        S_BBWP_NUE = c(10,10,10,10),   
                        S_BBWP_WB = c(99,99,99,99), 
+                       S_BBWP_GW = c(99,99,99,99), 
                        measures = NULL,
                        sector = 'dairy',
                        B_LS_HYDROCAT = 'flanken'
@@ -247,6 +254,7 @@ test <- bbwp_meas_rank(B_SOILTYPE_AGR = rep('dekzand', 6),
                        S_BBWP_PSW = c(99,99,99,99, 99, 99),  
                        S_BBWP_NUE = c(99,99,99,99, 99, 99),   
                        S_BBWP_WB = c(10,10,10,10, 10, 10), 
+                       S_BBWP_GW = c(10,10,10,10, 10, 10), 
                        measures = NULL,
                        sector = 'dairy',
                        B_LS_HYDROCAT = c("hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders", NA)
