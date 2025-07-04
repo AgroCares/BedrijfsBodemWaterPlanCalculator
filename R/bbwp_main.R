@@ -228,7 +228,8 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP = NA_character_, B_GWL_CLASS, B_SC_WE
                                     measures = measures,
                                     sector = sector,
                                     penalty = penalty,
-                                    B_LS_HYDROCAT = B_LS_HYDROCAT
+                                    B_LS_HYDROCAT = B_LS_HYDROCAT,
+                                    D_RISK_GWR = dt.ind$D_RISK_GWR
                                   )
   
   # Calculate the BBWP farm score
@@ -238,6 +239,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP = NA_character_, B_GWL_CLASS, B_SC_WE
                              S_BBWP_PSW = dt.fields$S_BBWP_PSW,
                              S_BBWP_NUE = dt.fields$S_BBWP_NUE,
                              S_BBWP_WB = dt.fields$S_BBWP_WB,
+                             S_BBWP_GW = dt.fields$S_BBWP_GW,
                              B_AREA = B_AREA)
                               
   # return output when preferred measures are requested
@@ -260,7 +262,8 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP = NA_character_, B_GWL_CLASS, B_SC_WE
                               S_BBWP_WB = dt.fields$S_BBWP_WB,
                               measures = NULL,
                               sector = sector,
-                              B_LS_HYDROCAT = B_LS_HYDROCAT
+                              B_LS_HYDROCAT = B_LS_HYDROCAT,
+                              S_BBWP_GW = dt.fields$S_BBWP_GW
                               )
     
     # convert dt.meas to a splitted list

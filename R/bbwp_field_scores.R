@@ -27,6 +27,7 @@
 #' @param penalty (boolean) the option to apply a penalty for high risk BBWP field indicators 
 #' @param B_LS_HYDROCAT (character) Landscape category for differentiating effect of measures on water buffering.
 #' (options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")
+#' @param D_RISK_GWR (numeric) the risk for a negative groundwater recharge
 #'   
 #' @import data.table
 #'
@@ -36,7 +37,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOP
                               M_DRAIN, D_SA_W, D_RISK_NGW, D_RISK_NSW, D_RISK_PSW, D_RISK_NUE, D_RISK_WB,
                               B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW, 
                               B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, measures, sector,penalty = TRUE, 
-                              B_LS_HYDROCAT){
+                              B_LS_HYDROCAT, D_RISK_GWR){
   
   # add visual bindings
   cfngw = cfwb = cfnsw = cfpsw = cfnue = NULL
@@ -55,7 +56,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOP
                     length(B_SLOPE_DEGREE), length(B_LU_BBWP),length(M_DRAIN),length(D_SA_W),
                     length(D_RISK_NGW),length(D_RISK_NSW),length(D_RISK_PSW),length(D_RISK_NUE),
                     length(D_RISK_WB),length(B_GWP),length(B_AREA_DROUGHT),length(B_CT_PSW),
-                    length(B_CT_NSW))
+                    length(B_CT_NSW), length(D_RISK_GWR))
   
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
@@ -71,6 +72,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOP
   checkmate::assert_numeric(D_RISK_PSW, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_RISK_NUE, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_RISK_WB, lower = 0, upper = 1, len = arg.length)
+  checkmate::assert_numeric(D_RISK_GWR, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_logical(B_GWP,len = arg.length)
   checkmate::assert_logical(B_AREA_DROUGHT,len = arg.length)
   checkmate::assert_numeric(B_CT_PSW, lower = 0, upper = 50, len = arg.length)
@@ -95,6 +97,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOP
                     D_RISK_PSW = D_RISK_PSW,
                     D_RISK_NUE = D_RISK_NUE,
                     D_RISK_WB = D_RISK_WB,
+                    D_RISK_GWR = D_RISK_GWR,
                     B_GWP = B_GWP,
                     B_AREA_DROUGHT = B_AREA_DROUGHT,
                     B_CT_PSW = B_CT_PSW,
@@ -140,9 +143,10 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOP
     dt[,D_OPI_PSW := (0.5 + cfpsw/2) * OBIC::evaluate_logistic(D_RISK_PSW, b=6, x0=0.4, v=.7)]
     dt[,D_OPI_NUE := (0.5 + cfnue/2) * OBIC::evaluate_logistic(D_RISK_NUE, b=6, x0=0.4, v=.7)]
     dt[,D_OPI_WB := (0.5 + cfwb/2) * OBIC::evaluate_logistic(D_RISK_WB, b=6, x0=0.4, v=.7)]
+    dt[,D_OPI_GW := (0.5 + cfwb/2) * OBIC::evaluate_logistic(D_RISK_GWR, b=6, x0=0.4, v=.7)]
     
     # column names for impact of measures on the five indexes (do not change order)
-    mcols <- c('D_MEAS_NGW', 'D_MEAS_NSW', 'D_MEAS_PSW', 'D_MEAS_NUE', 'D_MEAS_WB', 'D_MEAS_TOT')
+    mcols <- c('D_MEAS_NGW', 'D_MEAS_NSW', 'D_MEAS_PSW', 'D_MEAS_NUE', 'D_MEAS_WB', 'D_MEAS_GW', 'D_MEAS_TOT') # not clear why the order shouldnt be changed and whether it is okay to place D_MEAS_GW between WB and TOT
     
     # calculate the total score per indicator 
     if(nrow(dt.measures) > 0){
@@ -165,7 +169,8 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOP
                                         D_OPI_WB = dt$D_OPI_WB,
                                         measures = measures, 
                                         sector = sector,
-                                        B_LS_HYDROCAT = B_LS_HYDROCAT)
+                                        B_LS_HYDROCAT = B_LS_HYDROCAT,
+                                        D_OPI_GW = dt$D_OPI_GW)
       
       # merge with dt
       dt <- merge(dt,dt.meas.impact,by='id')
@@ -185,6 +190,8 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOP
   dt[,D_OPI_PSW := pmax(0,1 - pmax(0, D_OPI_PSW - D_MEAS_PSW))]
   dt[,D_OPI_NUE := pmax(0,1 - pmax(0, D_OPI_NUE - D_MEAS_NUE))]
   dt[,D_OPI_WB :=  pmax(0,1 - pmax(0, D_OPI_WB - D_MEAS_WB))]
+  dt[,D_OPI_GW :=  pmax(0,1 - pmax(0, D_OPI_GW - D_MEAS_GW))]
+  
   
   # Convert form 0-1 to 0-100 
   dt[,S_BBWP_NGW := 100 * D_OPI_NGW]
@@ -192,20 +199,26 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOP
   dt[,S_BBWP_PSW := 100 * D_OPI_PSW]
   dt[,S_BBWP_NUE := 100 * D_OPI_NUE]
   dt[,S_BBWP_WB := 100 * D_OPI_WB]
+  dt[,S_BBWP_GW := 100 * D_OPI_GW]
   
   dt[,S_BBWP_TOT := (S_BBWP_NGW * wf(S_BBWP_NGW, type="score",penalty = penalty) + 
                       S_BBWP_NSW * wf(S_BBWP_NSW, type="score",penalty = penalty) + 
                       S_BBWP_PSW * wf(S_BBWP_PSW, type="score",penalty = penalty) + 
                       S_BBWP_NUE * wf(S_BBWP_NUE, type="score",penalty = penalty) + 
-                      S_BBWP_WB * wf(S_BBWP_WB, type="score",penalty)) /
-       (wf(S_BBWP_NGW, type="score",penalty = penalty) + wf(S_BBWP_NSW, type="score",penalty = penalty) +  wf(S_BBWP_PSW, type="score",penalty = penalty) +  
-          wf(S_BBWP_NUE, type="score",penalty = penalty) +  wf(S_BBWP_WB, type="score",penalty = penalty))]
+                      S_BBWP_WB * wf(S_BBWP_WB, type="score",penalty = penalty) +
+                      S_BBWP_GW * wf(S_BBWP_GW, type="score",penalty = penalty)) /
+        (wf(S_BBWP_NGW, type="score",penalty = penalty) + 
+          wf(S_BBWP_NSW, type="score",penalty = penalty) +
+          wf(S_BBWP_PSW, type="score",penalty = penalty) +  
+          wf(S_BBWP_NUE, type="score",penalty = penalty) +
+          wf(S_BBWP_WB, type="score",penalty = penalty) +
+          wf(S_BBWP_GW, type="score",penalty = penalty))]
   
   # order the fields
   setorder(dt, id)
   
   # extract value
-  value <- dt[,mget(c('S_BBWP_NGW','S_BBWP_NSW','S_BBWP_PSW','S_BBWP_NUE','S_BBWP_WB','S_BBWP_TOT'))]
+  value <- dt[,mget(c('S_BBWP_NGW','S_BBWP_NSW','S_BBWP_PSW','S_BBWP_NUE','S_BBWP_WB', 'S_BBWP_GW','S_BBWP_TOT'))]
   
   # Round the values
   value <- value[, lapply(.SD, round, digits = 0)]

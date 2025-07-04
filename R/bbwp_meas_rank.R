@@ -21,6 +21,7 @@
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'diary', 'arable', 'tree_nursery', 'bulbs')
 #' @param B_LS_HYDROCAT (character) Landscape category for differentiating effect of measures on water buffering.
 #' (options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")
+#' @param S_BBWP_GW (numeric)the BBWP score for ground water recharge
 #'   
 #' @import data.table
 #'
@@ -29,7 +30,7 @@
 bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOPE_DEGREE, B_LU_BBWP,B_AER_CBS,
                            M_DRAIN, D_SA_W,
                            S_BBWP_NGW, S_BBWP_NSW, S_BBWP_PSW, S_BBWP_NUE, S_BBWP_WB,
-                           measures, sector, B_LS_HYDROCAT){
+                           measures, sector, B_LS_HYDROCAT, S_BBWP_GW){
   
   # add visual bindings
   effect_psw = psw_psg_medium = psw_psg_high = effect_nsw = nsw_drains = nsw_gwl_low = nsw_gwl_high = psw_noslope = effect_ngw = NULL
@@ -48,7 +49,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOPE_D
   arg.length <- max(length(S_BBWP_NGW), length(S_BBWP_NSW), length(S_BBWP_PSW), length(S_BBWP_NUE),
                     length(S_BBWP_WB), length(B_SOILTYPE_AGR), length(B_GWL_CLASS), length(M_DRAIN),
                     length(A_P_CC),length(A_P_AL), length(B_SLOPE_DEGREE), length(B_LU_BBWP),length(B_AER_CBS),
-                    length(D_SA_W))
+                    length(D_SA_W), length(S_BBWP_GW))
   
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
@@ -67,6 +68,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOPE_D
   checkmate::assert_numeric(S_BBWP_PSW, lower = 0, upper = 100,len = arg.length)
   checkmate::assert_numeric(S_BBWP_NUE, lower = 0, upper = 100,len = arg.length)
   checkmate::assert_numeric(S_BBWP_WB, lower = 0, upper = 100,len = arg.length)
+  checkmate::assert_numeric(S_BBWP_GW, lower = 0, upper = 100,len = arg.length)
   checkmate::assert_subset(sector, choices = c('dairy', 'arable', 'tree_nursery', 'bulbs'))
   
   # load, check and update the measures database
@@ -89,6 +91,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOPE_D
     S_BBWP_PSW = S_BBWP_PSW,
     S_BBWP_NUE = S_BBWP_NUE,
     S_BBWP_WB = S_BBWP_WB,
+    S_BBWP_GW = S_BBWP_GW,
     B_LS_HYDROCAT = B_LS_HYDROCAT,
     value = NA_real_
   )
@@ -134,7 +137,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOPE_D
   # set scores to zero when measures are not applicable given the crop type
   
     # columns with the Ecoregelingen ranks
-    cols <- c('effect_psw','effect_nsw', 'effect_ngw','effect_wb','effect_nue')
+    cols <- c('effect_psw','effect_nsw', 'effect_ngw','effect_wb','effect_nue', 'effect_gw')
     
     # set first all missing data impacts to 0
     dt[,c(cols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = cols]
@@ -196,10 +199,11 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOPE_D
     dt[, D_MEAS_PSW := (100-S_BBWP_PSW) * effect_psw]
     dt[, D_MEAS_NUE := (100-S_BBWP_NUE) * effect_nue]
     dt[, D_MEAS_WB := (100-S_BBWP_WB) * effect_wb]
+    dt[, D_MEAS_GW := (100-S_BBWP_GW) * effect_gw]
   
   
   # Calculate total measure score
-  dt[, D_MEAS_TOT := (D_MEAS_NGW + D_MEAS_NSW + D_MEAS_PSW + D_MEAS_NUE + D_MEAS_WB ) /  5 - effect_costs * 0.01]
+  dt[, D_MEAS_TOT := (D_MEAS_NGW + D_MEAS_NSW + D_MEAS_PSW + D_MEAS_NUE + D_MEAS_WB + D_MEAS_GW) /  6 - effect_costs * 0.01]
   
   # set impact of conflict measures to the highest score of those that are selected
   
@@ -231,6 +235,9 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOPE_D
     # Get the top measures for nutrient use efficiency
     top_bbwp_nue <- dt[id == i & D_MEAS_NUE >= 0, ][order(oid,-D_MEAS_NUE)][1:5,bbwp_id]
     
+    # Get the top measures for ground water recharge
+    top_bbwp_gw <- dt[id == i & D_MEAS_GW >= 0, ][order(oid,-D_MEAS_GW)][1:5,bbwp_id]
+    
     # add them to list
     list.meas[[i]] <- data.table(id = i,
                                  top_bbwp_tot = top_bbwp_tot,
@@ -238,6 +245,7 @@ bbwp_meas_rank <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOPE_D
                                  top_bbwp_nsw = top_bbwp_nsw,
                                  top_bbwp_psw = top_bbwp_psw,
                                  top_bbwp_wb = top_bbwp_wb,
+                                 top_bbwp_gw = top_bbwp_gw,
                                  top_bbwp_nue = top_bbwp_nue)
   }
   
