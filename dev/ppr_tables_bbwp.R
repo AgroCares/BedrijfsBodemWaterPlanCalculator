@@ -6,7 +6,7 @@ require(data.table);library(usethis)
 # load measures table
 # Table was made in Github Repo 'NMI-DATA_script/bbwp/ppr_bbwp_measures.R'
 # This is the table used for < version 2.3.0  
-bbwp_measures <- fread('dev/bbwp_measures.csv', encoding = 'UTF-8')
+bbwp_measures <- fread('dev/measures.csv', encoding = 'UTF-8')
 
 # save measures as bbwp table
 # use_data(bbwp_measures, overwrite = TRUE)
@@ -19,7 +19,7 @@ bbwp_measures <- fread('dev/bbwp_measures.csv', encoding = 'UTF-8')
 # The table was made in Github Repository "NMI-DATA_scripts"
 # (https://github.com/AgroCares/NMI-DATA_scripts/blob/main/watersysteem/bbwp_hydrologische_module/bbwp_hydro_meas.R)
 # This is the table userd for >= version 2.3.0
-bbwp_measures2 <- fread('dev/bbwp_measures2.csv', encoding = 'UTF-8')
+bbwp_measures2 <- fread('dev/bbwp_measures.csv', encoding = 'UTF-8')
 
 # add groundwater effect
 setnames(bbwp_measures2, 'effect_wb', 'effect_gw')
