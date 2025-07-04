@@ -33,6 +33,7 @@ test <- bbwp_meas_score(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','vee
                         D_OPI_PSW = c(0,0.1, 0.5, 1),
                         D_OPI_NUE = c(0,0.1, 0.5, 1),  
                         D_OPI_WB = c(0, 0.1,0.5, 1), 
+                        D_OPI_GW = c(0, 0.1,0.5, 1), 
                         measures = NULL,
                         sector = 'dairy',
                         B_LS_HYDROCAT = 'flanken'
@@ -48,6 +49,7 @@ test_that("check bbwp_meas_scores", {
       D_MEAS_PSW = rep(0,4),
       D_MEAS_NUE = rep(0,4),
       D_MEAS_WB = rep(0,4),
+      D_MEAS_GW = rep(0,4),
       D_MEAS_TOT = rep(0,4)
     ),
     tolerance = 0.01,
@@ -78,6 +80,7 @@ test <- bbwp_meas_score(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei','vee
                       D_OPI_PSW = c(0.8,0.1, 0.5, 1),
                       D_OPI_NUE = c(0.33,0.1, 0.5, 1),  
                       D_OPI_WB = c(0.9, 0.1,0.5, 1), 
+                      D_OPI_GW = c(0.9, 0.1,0.5, 1), 
                       measures = measures,
                       sector = c('dairy','arable'),
                       B_LS_HYDROCAT = 'flanken'
@@ -94,15 +97,10 @@ test_that("check bbwp_meas_scores", {
       D_MEAS_PSW = c(3.75,0,0,0),
       D_MEAS_NUE = c(96250001,0,2,0),
       D_MEAS_WB = c(1,0,10,0),
+      D_MEAS_GW = c(1,0,10,0),
       D_MEAS_TOT = c(19250001,0,4,0)
     ),
     tolerance = 1,
     ignore_attr = TRUE)
 })
-
-
-
-
-
-
 
