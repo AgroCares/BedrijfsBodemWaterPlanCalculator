@@ -82,7 +82,7 @@ test_that("check bbwp_field_properties", {
       wue_wwri = c(0.055, 0.03),
       wue_wdri = c(0, 0.23),
       wue_whc = c(0.2338, 0.055),
-      wue_gwr  = c(0.749, 0.153)
+      gw_gwr  = c(0.749, 0.153)
     ),
     tolerance = 0.01)
 })

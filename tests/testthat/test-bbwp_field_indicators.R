@@ -26,14 +26,15 @@ test_that("check bbwp_field_indicators", {
       D_WUE_WDRI = seq(0, 1, by = 0.2),
       D_WUE_WHC = seq(0, 1, by = 0.2),
       penalty = FALSE,
-      D_WUE_GWR = seq(0, 1, by = 0.2)
+      D_GW_GWR = seq(0, 1, by = 0.2)
     ),
     expected = data.table(
       D_RISK_NGW = c(0, 0.2, 0.4, 0.6, 0.8, 1),
       D_RISK_NSW = c(0.01,0.1,0.4,0.6,0.8,1),
       D_RISK_PSW = c(0.01,0.1,0.4,0.6,0.8,1),
       D_RISK_NUE = c(0, 0.2, 0.4, 0.6, 0.8, 1),
-      D_RISK_WB = c(0, 0.2, 0.4, 0.6, 0.8, 1)
+      D_RISK_WB = c(0, 0.2, 0.4, 0.6, 0.8, 1),
+      D_RISK_GWR = c(0, 0.2, 0.4, 0.6, 0.8, 1)
     ),
     tolerance = 0.01)
 })

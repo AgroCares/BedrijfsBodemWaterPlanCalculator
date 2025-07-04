@@ -195,7 +195,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP = NA_character_, B_GWL_CLASS, B_SC_WE
                                   D_WUE_WWRI = dt$wue_wwri,
                                   D_WUE_WDRI = dt$wue_wdri,
                                   D_WUE_WHC = dt$wue_whc,
-                                  D_WUE_GWR = dt$wue_gwr,
+                                  D_GW_GWR = dt$gw_gwr,
                                   penalty = penalty
                                 )
   

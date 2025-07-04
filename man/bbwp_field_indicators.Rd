@@ -30,7 +30,7 @@ bbwp_field_indicators(
   D_WUE_WDRI,
   D_WUE_WHC,
   penalty = TRUE,
-  D_WUE_GWR
+  D_GW_GWR
 )
 }
 \arguments{
@@ -84,7 +84,7 @@ bbwp_field_indicators(
 
 \item{penalty}{(boolean) the option to apply a penalty for high risk BBWP field indicators}
 
-\item{D_WUE_GWR}{(numeric) The evaluated score for groundwater recharge}
+\item{D_GW_GWR}{(numeric) The evaluated score for groundwater recharge}
 }
 \value{
 A data.table with five columns: D_RISK_NGW, D_RISK_NSW, D_RISK_PSW,
@@ -130,7 +130,7 @@ D_WUE_WWRI = seq(0, 1, by = 0.2),
 D_WUE_WDRI = seq(0, 1, by = 0.2),
 D_WUE_WHC = seq(0, 1, by = 0.2),
 penalty = FALSE,
-D_WUE_GWR = seq(0, 1, by = 0.2)
+D_GW_GWR = seq(0, 1, by = 0.2)
 )
 
 }
