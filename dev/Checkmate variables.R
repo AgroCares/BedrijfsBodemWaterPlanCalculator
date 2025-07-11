@@ -21,4 +21,6 @@ library(pandex);library(data.table);library(stringr)
   
   # Save data
   usethis::use_data(bbwp_parms,overwrite = TRUE)
+  bbwp_parms[, choices := paste(choices, sep = ';')]
+  fwrite(bbwp_parms, 'data-raw/bbwp_parms.csv')
   
