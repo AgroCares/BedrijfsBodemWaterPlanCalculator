@@ -40,11 +40,11 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOP
                               B_LS_HYDROCAT, D_RISK_GWR){
   
   # add visual bindings
-  cfngw = cfwb = cfnsw = cfpsw = cfnue = NULL
-  D_OPI_NGW = D_OPI_NSW = D_OPI_PSW = D_OPI_NUE = D_OPI_WB = NULL
-  D_MEAS_NGW = D_MEAS_NSW = D_MEAS_PSW = D_MEAS_NUE = D_OPI_TOT = NULL 
+  cfngw = cfwb = cfnsw = cfpsw = cfnue = cfgw = NULL
+  D_OPI_NGW = D_OPI_NSW = D_OPI_PSW = D_OPI_NUE = D_OPI_WB = D_OPI_GW = NULL
+  D_MEAS_NGW = D_MEAS_NSW = D_MEAS_PSW = D_MEAS_NUE = D_OPI_TOT = D_MEAS_GW = NULL 
   D_MEAS_WB = D_MES_PSW = D_MEAS_NGW = D_MEAS_PSW = effect_Wb = id = NULL
-  S_BBWP_NGW = S_BBWP_NSW = S_BBWP_PSW = S_BBWP_NUE = S_BBWP_WB = S_BBWP_TOT = NULL
+  S_BBWP_NGW = S_BBWP_NSW = S_BBWP_PSW = S_BBWP_NUE = S_BBWP_WB = S_BBWP_GW = S_BBWP_TOT = NULL
   code = value_min = value_max = choices = NULL
   
   # Load bbwp_parms
@@ -136,14 +136,30 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOP
     
     # correction for need for increased nutrient use efficiency
     dt[,cfnue := 0.5]
-  
+    
+    # correction for area's with no real risk of low groundwater recharge
+    dt[B_SOILTYPE_AGR == 'veen' & B_GWL_CLASS %in% 
+         c('I', 'Ia', 'Ib',
+           'II', 'IIa', 'IIb', 'IIc',
+           'III', 'IIIa', 'IIIb'), cfgw := 0]
+    dt[is.na(cfgw) & B_GWL_CLASS %in% 
+         c('I', 'Ia', 'Ib',
+           'II', 'IIa', 'IIb', 'IIc',
+           'III', 'IIIa', 'IIIb'), cfgw := 0.25]
+    dt[is.na(cfgw) & B_GWL_CLASS %in% 
+         c('Va', 'Vao', 'Vad'), cfgw := 0.5] # very high GWL in winter, low in summer
+    dt[is.na(cfgw) & B_GWL_CLASS %in% 
+         c('Vb', 'Vbo', 'Vbd'), cfgw := 0.75] # high GWL in winter, low in summer
+    dt[B_AREA_DROUGHT == TRUE, cfgw := pmax(pmin(cfgw*2, 1), 1)] # double cf if in drought area
+    dt[is.na(cfgw), cfgw := 1]
+    
     # calculate the individual opportunity indexes
     dt[,D_OPI_NGW := (0.5 + cfngw/2) * OBIC::evaluate_logistic(D_RISK_NGW, b=6, x0=0.4, v=.7)]
     dt[,D_OPI_NSW := (0.5 + cfnsw/2) * OBIC::evaluate_logistic(D_RISK_NSW, b=6, x0=0.4, v=.7)]
     dt[,D_OPI_PSW := (0.5 + cfpsw/2) * OBIC::evaluate_logistic(D_RISK_PSW, b=6, x0=0.4, v=.7)]
     dt[,D_OPI_NUE := (0.5 + cfnue/2) * OBIC::evaluate_logistic(D_RISK_NUE, b=6, x0=0.4, v=.7)]
     dt[,D_OPI_WB := (0.5 + cfwb/2) * OBIC::evaluate_logistic(D_RISK_WB, b=6, x0=0.4, v=.7)]
-    dt[,D_OPI_GW := (0.5 + cfwb/2) * OBIC::evaluate_logistic(D_RISK_GWR, b=6, x0=0.4, v=.7)]
+    dt[,D_OPI_GW := (0.1 + cfgw/(1/0.9)) * OBIC::evaluate_logistic(D_RISK_GWR, b=6, x0=0.4, v=.7)]
     
     # column names for impact of measures on the five indexes (do not change order)
     mcols <- c('D_MEAS_NGW', 'D_MEAS_NSW', 'D_MEAS_PSW', 'D_MEAS_NUE', 'D_MEAS_WB', 'D_MEAS_GW', 'D_MEAS_TOT') # not clear why the order shouldnt be changed and whether it is okay to place D_MEAS_GW between WB and TOT
