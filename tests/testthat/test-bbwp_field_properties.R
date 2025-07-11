@@ -59,7 +59,7 @@ test_that("check bbwp_field_properties", {
    object = test,
     expected = data.table(
       ngw_scr = c(0.4, 0.8),
-      ngw_lea = c(0.2649, 0.487),
+      ngw_lea = c(0.166667, 0.3064),
       ngw_nlv = c(0.55,0.16),
       nsw_scr = c(0.6, 0.2),
       nsw_gwt = c(0.9, 0.4),

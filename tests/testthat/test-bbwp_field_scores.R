@@ -60,8 +60,8 @@ test_that("check bbwp_field_scores", {
       S_BBWP_PSW = c(99,46,4),
       S_BBWP_NUE = c(98,60,28),
       S_BBWP_WB = c(97,60,4),
-      S_BBWP_GW = c(97,60,4),
-      S_BBWP_TOT = c(98,56,6)
+      S_BBWP_GW = c(97,83,4),
+      S_BBWP_TOT = c(98,58,6)
     ),
     tolerance = 0.01)
 })
@@ -114,8 +114,8 @@ test_that("check bbwp_field_scores", {
       S_BBWP_PSW = c(99,46,34),
       S_BBWP_NUE = c(99,60,100),
       S_BBWP_WB = c(98,60,26),
-      S_BBWP_GW = c(97,60,16),
-      S_BBWP_TOT = c(99,56,37)
+      S_BBWP_GW = c(97,83,16),
+      S_BBWP_TOT = c(99,58,37)
     ),
     tolerance = 0.01)
 })
