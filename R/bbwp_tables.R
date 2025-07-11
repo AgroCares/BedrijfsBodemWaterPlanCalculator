@@ -39,7 +39,7 @@
 #'   \item{effect_psw}{Effectiveness of the measure for P losses to surface water}
 #'   \item{effect_nsw}{Effectiveness of the measure for N losses to surface water}
 #'   \item{effect_nue}{Effectiveness of the measure for improving nutrient use efficiency}
-#'   \item{effect_wb}{Effectiveness of the measure to improve water holding capacity of soil}
+#'   \item{effect_gw}{Effectiveness of the measure to improve groundwater recharge}
 #'   \item{effect_costs}{Index representing the costs for implementing the measure}
 #'   \item{b_lu_arable_er}{Boolean indicating whether the crop falls within the ER category "arable"}
 #'   \item{b_lu_productive_er}{Boolean indicating whether the crop falls within the ER category "productive"}
@@ -78,6 +78,7 @@
 #'   \item{beekdalen}{weighing factor of effect_wb for the landscape category beekdalen}
 #'   \item{lokale_laagtes}{weighing factor of effect_wb for the landscape category lokale laagtes}
 #'   \item{polders}{weighing factor of effect_wb for the landscape category polders}
+#'   \item{effect_wb}{Effectiveness of the measure to improve water holding capacity of soil}
 #' }
 "bbwp_measures"
 

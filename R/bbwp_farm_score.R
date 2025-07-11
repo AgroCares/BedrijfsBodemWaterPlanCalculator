@@ -9,12 +9,13 @@
 #' @param S_BBWP_NUE (numeric) the scoring index to use N and P inputs efficiently for each field
 #' @param S_BBWP_WB (numeric) the scoring index to buffer and store water and efficiently use water for plant growth for each field
 #' @param B_AREA (numeric) the area of the field (m2) 
+#' @param S_BBWP_GW (numeric) the scoring index to maintain ample groundwater
 #'   
 #' @import data.table
 #'
 #' @export
 # calculate the opportunities for a set of fields
-bbwp_farm_score <- function(S_BBWP_TOT,S_BBWP_NGW,S_BBWP_NSW,S_BBWP_PSW,S_BBWP_NUE,S_BBWP_WB, B_AREA){
+bbwp_farm_score <- function(S_BBWP_TOT,S_BBWP_NGW,S_BBWP_NSW,S_BBWP_PSW,S_BBWP_NUE,S_BBWP_WB, B_AREA, S_BBWP_GW){
 
   code = value_min = value_max = NULL
   
@@ -23,7 +24,7 @@ bbwp_farm_score <- function(S_BBWP_TOT,S_BBWP_NGW,S_BBWP_NSW,S_BBWP_PSW,S_BBWP_N
   
   # check length of the inputs
   arg.length <- max(length(S_BBWP_TOT),length(S_BBWP_NGW),length(S_BBWP_NSW),length(S_BBWP_PSW),
-                    length(S_BBWP_NUE),length(S_BBWP_WB),length(B_AREA))
+                    length(S_BBWP_NUE),length(S_BBWP_WB),length(B_AREA), length(S_BBWP_GW))
   
   # check inputs
   checkmate::assert_numeric(S_BBWP_TOT, lower = 0, upper = 100, len = arg.length)
@@ -32,6 +33,7 @@ bbwp_farm_score <- function(S_BBWP_TOT,S_BBWP_NGW,S_BBWP_NSW,S_BBWP_PSW,S_BBWP_N
   checkmate::assert_numeric(S_BBWP_PSW, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(S_BBWP_NUE, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(S_BBWP_WB, lower = 0, upper = 100, len = arg.length)
+  checkmate::assert_numeric(S_BBWP_GW, lower = 0, upper = 100, len = arg.length)
   checkmate::assert_numeric(B_AREA, lower = bbwp_parms[code == "B_AREA", value_min], upper = bbwp_parms[code == "B_AREA", value_max], len = arg.length)
   
   
@@ -42,12 +44,13 @@ bbwp_farm_score <- function(S_BBWP_TOT,S_BBWP_NGW,S_BBWP_NSW,S_BBWP_PSW,S_BBWP_N
                    S_BBWP_PSW = S_BBWP_PSW,
                    S_BBWP_NUE = S_BBWP_NUE,
                    S_BBWP_WB = S_BBWP_WB,
+                   S_BBWP_GW = S_BBWP_GW,
                    S_BBWP_TOT = S_BBWP_TOT,
                    B_AREA = B_AREA
                   )
   
   # columns with the score of the opportunity indexes
-  cols <- c('S_BBWP_TOT','S_BBWP_NGW','S_BBWP_NSW','S_BBWP_PSW','S_BBWP_NUE','S_BBWP_WB')
+  cols <- c('S_BBWP_TOT','S_BBWP_NGW','S_BBWP_NSW','S_BBWP_PSW','S_BBWP_NUE','S_BBWP_WB', 'S_BBWP_GW')
   
   # calculate area weigthed sum of the field indices
   dt <- dt[,lapply(.SD, stats::weighted.mean, w = B_AREA), .SDcols = cols]

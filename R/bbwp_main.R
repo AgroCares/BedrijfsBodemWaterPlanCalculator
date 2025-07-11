@@ -4,7 +4,7 @@
 #' A high BBWP score is indicative for the number of opportunities to improve soil quality and land use.
 #'
 #' @param B_SOILTYPE_AGR (character) The type of soil, using agronomic classification
-#' @param B_LU_BBWP (character) The BBWP category used for allocation of measures to BBWP crop categories
+#' @param B_LU_BBWP (character) DEPRECATED The BBWP category used for allocation of measures to BBWP crop categories
 #' @param B_GWL_CLASS (character) The groundwater table class
 #' @param B_SC_WENR (integer) The risk for subsoil compaction as derived from risk assessment study of Van den Akker (2006). Options include: 1,2,3,4,5,10,11,401,901 and 902.
 #' @param B_HELP_WENR (character) The soil type abbreviation, derived from 1:50.000 soil map
@@ -40,30 +40,43 @@
 #' @param penalty (boolean) the option to apply a penalty for high risk BBWP field indicators
 #' @param B_LS_HYDROCAT (character) Landscape category for differentiating effect of measures on water buffering.
 #' (options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")
+#' @param M_GREEN (boolean) A soil measure. Are catch crops sown after main crop (optional, option: yes or no)
+#' @param B_LU_BRP (numeric) The crop code (gewascode) from the BRP
 #'  
 #' @details 
-#' B_SLOPE_DEGREE should be used, for backwards compatibility B_SLOPE can still be used. At least one of the must be used, when both are supplied, B_SLOPE is ignored.
-#' LSW is by default a data.table with LSW properties, being calculated from bbwp_lsw_properties. Note that all B_LSW_IDs should be preset in the LSW data.table.
+#' B_SLOPE_DEGREE should be used, for backwards compatibility B_SLOPE can still be used.
+#'  At least one of the must be used, when both are supplied, B_SLOPE is ignored.
+#' 
+#' LSW is by default a data.table with LSW properties, being calculated from 
+#' bbwp_lsw_properties. Note that all B_LSW_IDs should be pre-set in the LSW data.table.
+#' 
+#' \code{bbwp()} no longer supports '-' as valid input for B_GWL_CLASS. Users should use 
+#' their best judgement to decide on the most suitable valid value for such fields.
+#' Valid values can be found in \code{bbwp_parms[code == 'B_GWL_CLASS', choices]}
 #' 
 #' @import data.table
 #' @import OBIC
 #'  
 #' @export
-bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE = NULL,B_SLOPE_DEGREE = NULL,
+bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP = NA_character_, B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B_SLOPE = NULL,B_SLOPE_DEGREE = NULL,
                  B_AER_CBS,
                  A_CLAY_MI, A_SAND_MI, A_SILT_MI, A_SOM_LOI, A_N_RT,A_FE_OX, A_AL_OX, A_P_CC, A_P_AL, A_P_WA, A_P_SG,
                  B_GWP, B_AREA_DROUGHT, B_CT_PSW, B_CT_NSW,B_CT_PSW_MAX = 0.5, B_CT_NSW_MAX = 5.0, 
                  D_SA_W, D_RO_R, B_AREA, 
                  M_DRAIN, B_LSW_ID, LSW = NULL,
-                 measures, sector,output = 'scores',penalty=TRUE, B_LS_HYDROCAT = NULL){
+                 measures, sector,output = 'scores',penalty=TRUE, B_LS_HYDROCAT = NULL,
+                 M_GREEN = M_GREEN, B_LU_BRP){
   
   # add visual binding
-  field_id = code = value_min = value_max = NULL
+  field_id = code = value_min = value_max = choices = NULL
   bbwp_parms <- BBWPC::bbwp_parms
+  er_crops <- BBWPC::er_crops
   
   # check wrapper inputs that are not checked in the bbwp functions
   checkmate::assert_character(output)
   checkmate::assert_subset(output,choices = c('scores','measures'))
+  checkmate::assert_integerish(B_LU_BRP, any.missing = FALSE, min.len = 1)
+  checkmate::assert_subset(B_LU_BRP, choices = unlist(bbwp_parms[code == 'B_LU_BRP', choices]))
   
   # check that either B_SLOPE_DEGREE or B_SLOPE is present
   checkmate::assert_false(all(
@@ -117,6 +130,19 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
     
     }
   
+  # infer B_LU_BBWP from B_LU_BRP
+  if(all(is.na(B_LU_BBWP))){
+    temp <- data.table(B_LU_BRP = B_LU_BRP)
+    temp <- merge(temp, er_crops[,c('B_LU_BRP', 'B_LU_BBWP')],
+                  by = 'B_LU_BRP',
+                  sort = FALSE,
+                  all.x = TRUE)
+    B_LU_BBWP <- temp$B_LU_BBWP
+    rm(temp)
+  } else{
+    warning('B_LU_BBWP is deprecated as input argument. It can be infered from B_LU_BRP, please refrain from using B_LU_BBWP. Using your filled in B_LU_BBWP')
+  }
+  
   # convert soil properties to a BBWP risk indicator
   dt <- bbwp_field_properties(B_SOILTYPE_AGR = B_SOILTYPE_AGR, 
                               B_LU_BBWP = B_LU_BBWP,
@@ -139,7 +165,10 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                               D_SA_W = D_SA_W, 
                               D_RO_R =  D_RO_R, 
                               B_LSW_ID = B_LSW_ID,
-                              LSW = LSW)
+                              LSW = LSW,
+                              B_LU_BRP = B_LU_BRP,
+                              M_DRAIN = M_DRAIN,
+                              M_GREEN = M_GREEN)
   
   # Aggregate BBWP risk indicators into five indicators
   dt.ind <- bbwp_field_indicators(D_NGW_SCR = dt$ngw_scr,
@@ -166,6 +195,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                                   D_WUE_WWRI = dt$wue_wwri,
                                   D_WUE_WDRI = dt$wue_wdri,
                                   D_WUE_WHC = dt$wue_whc,
+                                  D_GW_GWR = dt$gw_gwr,
                                   penalty = penalty
                                 )
   
@@ -198,7 +228,8 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                                     measures = measures,
                                     sector = sector,
                                     penalty = penalty,
-                                    B_LS_HYDROCAT = B_LS_HYDROCAT
+                                    B_LS_HYDROCAT = B_LS_HYDROCAT,
+                                    D_RISK_GWR = dt.ind$D_RISK_GWR
                                   )
   
   # Calculate the BBWP farm score
@@ -208,6 +239,7 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                              S_BBWP_PSW = dt.fields$S_BBWP_PSW,
                              S_BBWP_NUE = dt.fields$S_BBWP_NUE,
                              S_BBWP_WB = dt.fields$S_BBWP_WB,
+                             S_BBWP_GW = dt.fields$S_BBWP_GW,
                              B_AREA = B_AREA)
                               
   # return output when preferred measures are requested
@@ -230,7 +262,8 @@ bbwp <- function(B_SOILTYPE_AGR, B_LU_BBWP,B_GWL_CLASS, B_SC_WENR, B_HELP_WENR,B
                               S_BBWP_WB = dt.fields$S_BBWP_WB,
                               measures = NULL,
                               sector = sector,
-                              B_LS_HYDROCAT = B_LS_HYDROCAT
+                              B_LS_HYDROCAT = B_LS_HYDROCAT,
+                              S_BBWP_GW = dt.fields$S_BBWP_GW
                               )
     
     # convert dt.meas to a splitted list

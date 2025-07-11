@@ -6,7 +6,7 @@
 \usage{
 bbwp(
   B_SOILTYPE_AGR,
-  B_LU_BBWP,
+  B_LU_BBWP = NA_character_,
   B_GWL_CLASS,
   B_SC_WENR,
   B_HELP_WENR,
@@ -40,13 +40,15 @@ bbwp(
   sector,
   output = "scores",
   penalty = TRUE,
-  B_LS_HYDROCAT = NULL
+  B_LS_HYDROCAT = NULL,
+  M_GREEN = M_GREEN,
+  B_LU_BRP
 )
 }
 \arguments{
 \item{B_SOILTYPE_AGR}{(character) The type of soil, using agronomic classification}
 
-\item{B_LU_BBWP}{(character) The BBWP category used for allocation of measures to BBWP crop categories}
+\item{B_LU_BBWP}{(character) DEPRECATED The BBWP category used for allocation of measures to BBWP crop categories}
 
 \item{B_GWL_CLASS}{(character) The groundwater table class}
 
@@ -116,12 +118,23 @@ bbwp(
 
 \item{B_LS_HYDROCAT}{(character) Landscape category for differentiating effect of measures on water buffering.
 (options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")}
+
+\item{M_GREEN}{(boolean) A soil measure. Are catch crops sown after main crop (optional, option: yes or no)}
+
+\item{B_LU_BRP}{(numeric) The crop code (gewascode) from the BRP}
 }
 \description{
 Estimate the potential to contribute to agronomic and environmental challenges in a region for a farm and assess the impact of farm measures taken.
 A high BBWP score is indicative for the number of opportunities to improve soil quality and land use.
 }
 \details{
-B_SLOPE_DEGREE should be used, for backwards compatibility B_SLOPE can still be used. At least one of the must be used, when both are supplied, B_SLOPE is ignored.
-LSW is by default a data.table with LSW properties, being calculated from bbwp_lsw_properties. Note that all B_LSW_IDs should be preset in the LSW data.table.
+B_SLOPE_DEGREE should be used, for backwards compatibility B_SLOPE can still be used.
+ At least one of the must be used, when both are supplied, B_SLOPE is ignored.
+
+LSW is by default a data.table with LSW properties, being calculated from 
+bbwp_lsw_properties. Note that all B_LSW_IDs should be pre-set in the LSW data.table.
+
+\code{bbwp()} no longer supports '-' as valid input for B_GWL_CLASS. Users should use 
+their best judgement to decide on the most suitable valid value for such fields.
+Valid values can be found in \code{bbwp_parms[code == 'B_GWL_CLASS', choices]}
 }
