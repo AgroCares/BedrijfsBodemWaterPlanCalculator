@@ -43,6 +43,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_CC,A_P_AL, B_SLOPE
   oid = bbwp_id = psw_psg_low = NULL
   code = value_min = value_max =  choices = NULL
   hoge_gronden = flanken = beekdalen = lokale_laagtes = polders = NULL
+  D_MEAS_GW = effect_gw = NULL
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
