@@ -150,7 +150,7 @@ bbwp_field_scores <- function(B_SOILTYPE_AGR, B_GWL_CLASS, A_P_CC,A_P_AL, B_SLOP
          c('Va', 'Vao', 'Vad'), cfgw := 0.5] # very high GWL in winter, low in summer
     dt[is.na(cfgw) & B_GWL_CLASS %in% 
          c('Vb', 'Vbo', 'Vbd'), cfgw := 0.75] # high GWL in winter, low in summer
-    dt[B_AREA_DROUGHT == TRUE, cfgw := pmax(pmin(cfgw*2, 1), 1)] # double cf if in drought area
+    dt[B_AREA_DROUGHT == TRUE, cfgw := pmin(cfgw*2, 1)] # double cf if in drought area
     dt[is.na(cfgw), cfgw := 1]
     
     # calculate the individual opportunity indexes
