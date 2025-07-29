@@ -22,7 +22,7 @@ Depends:
 Imports: 
     checkmate,
     data.table,
-    OBIC (>= 3.0.3)
+    OBIC (>= 4.0.0)
 Remotes: AgroCares/BLN
 License: GPL-3 | file LICENSE
 URL: https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator, https://agrocares.github.io/BedrijfsBodemWaterPlanCalculator/
