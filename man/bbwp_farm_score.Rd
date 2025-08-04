@@ -11,7 +11,8 @@ bbwp_farm_score(
   S_BBWP_PSW,
   S_BBWP_NUE,
   S_BBWP_WB,
-  B_AREA
+  B_AREA,
+  S_BBWP_GW
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ bbwp_farm_score(
 \item{S_BBWP_WB}{(numeric) the scoring index to buffer and store water and efficiently use water for plant growth for each field}
 
 \item{B_AREA}{(numeric) the area of the field (m2)}
+
+\item{S_BBWP_GW}{(numeric) the scoring index to maintain ample groundwater}
 }
 \description{
 Estimate the potential to contribute to agronomic and environmental challenges in a region for a farm

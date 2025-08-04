@@ -29,7 +29,8 @@ bbwp_field_indicators(
   D_WUE_WWRI,
   D_WUE_WDRI,
   D_WUE_WHC,
-  penalty = TRUE
+  penalty = TRUE,
+  D_GW_GWR
 )
 }
 \arguments{
@@ -82,6 +83,13 @@ bbwp_field_indicators(
 \item{D_WUE_WHC}{(numeric) The relative score of drought stress for improved efficiency of water}
 
 \item{penalty}{(boolean) the option to apply a penalty for high risk BBWP field indicators}
+
+\item{D_GW_GWR}{(numeric) The evaluated score for groundwater recharge}
+}
+\value{
+A data.table with five columns: D_RISK_NGW, D_RISK_NSW, D_RISK_PSW,
+D_RISK_NUE, and D_RISK_WB. The number of rows corresponds with the number of 
+fields given as input i.e. the length of the vector inputs
 }
 \description{
 These include indicators: 
@@ -89,4 +97,40 @@ for limited efficiency of nitrogen and phosphorus; a high risk is also indicativ
 for the potential to buffer and store water and efficiently use water for plant growth.
 for the risk for nitrogen and phosphorus leaching and runoff to surface water.
 for the risk for nitrate leaching to groundwater.
+}
+\details{
+bbwp_field_indicators is typically called after \link{bbwp_field_properties} which
+calculates the inputs for bbwp_field_indicators
+}
+\examples{
+# example with 6 fields
+bbwp_field_indicators(
+D_NGW_SCR = seq(0, 1, by = 0.2),
+D_NGW_LEA = seq(0, 1, by = 0.2),
+D_NGW_NLV = seq(0, 1, by = 0.2),
+D_NSW_SCR = seq(0, 1, by = 0.2),
+D_NSW_GWT = seq(0, 1, by = 0.2),
+D_NSW_RO = seq(0, 1, by = 0.2),
+D_NSW_WS = seq(0, 1, by = 0.2),
+D_NSW_NLV = seq(0, 1, by = 0.2),
+D_NSW_SLOPE = seq(0, 1, by = 0.2),
+D_PSW_SCR = seq(0, 1, by = 0.2),
+D_PSW_GWT = seq(0, 1, by = 0.2),
+D_PSW_RO = seq(0, 1, by = 0.2),
+D_PSW_WS = seq(0, 1, by = 0.2),
+D_PSW_PCC = seq(0, 1, by = 0.2),
+D_PSW_PSG = seq(0, 1, by = 0.2),
+D_PSW_PRET = seq(0, 1, by = 0.2),
+D_PSW_SLOPE = seq(0,1,by = 0.2),
+D_NUE_WRI = seq(0, 1, by = 0.2),
+D_NUE_PBI = seq(0, 1, by = 0.2),
+D_NUE_WDRI = seq(0, 1, by = 0.2),
+D_NUE_NLV = seq(0, 1, by = 0.2),
+D_WUE_WWRI = seq(0, 1, by = 0.2),
+D_WUE_WDRI = seq(0, 1, by = 0.2),
+D_WUE_WHC = seq(0, 1, by = 0.2),
+penalty = FALSE,
+D_GW_GWR = seq(0, 1, by = 0.2)
+)
+
 }

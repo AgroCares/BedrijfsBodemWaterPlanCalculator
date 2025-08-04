@@ -29,7 +29,7 @@ LSW = data.table(B_LSW_ID = 5,
                 
 test <- bbwp_field_properties(B_SOILTYPE_AGR = c('dekzand', 'loess'),
                               B_LU_BBWP = c('gras_permanent','rooivrucht'),
-                              B_GWL_CLASS = c('GtIII', '-'),
+                              B_GWL_CLASS = c('III', 'VIII'),
                               B_SC_WENR = c(4, 2), 
                               B_HELP_WENR = c('AZW1AwF', 'AZW1AwF'),
                               B_AER_CBS = c('LG05','LG14'),
@@ -48,7 +48,10 @@ test <- bbwp_field_properties(B_SOILTYPE_AGR = c('dekzand', 'loess'),
                               D_SA_W = c(0.5, 1), 
                               D_RO_R = c(0.5, 0),
                               B_LSW_ID = 5,
-                              LSW = LSW
+                              LSW = LSW,
+                              B_LU_BRP = c(265, 2014),
+                              M_DRAIN = c(FALSE, FALSE),
+                              M_GREEN = c(FALSE, TRUE)
                             )
 
 test_that("check bbwp_field_properties", {
@@ -56,16 +59,16 @@ test_that("check bbwp_field_properties", {
    object = test,
     expected = data.table(
       ngw_scr = c(0.4, 0.8),
-      ngw_lea = c(0.2649, 0.487),
+      ngw_lea = c(0.166667, 0.3064),
       ngw_nlv = c(0.55,0.16),
       nsw_scr = c(0.6, 0.2),
-      nsw_gwt = c(0.8, 0.4),
+      nsw_gwt = c(0.9, 0.4),
       nsw_ro = c(0.5, 0.048),
       nsw_slope = c(0.75,0.4),
       nsw_ws = c(0.5, 1.0),
       nsw_nlv = c(0.0497, 0.1665),
       psw_scr = c(0.6, 0.2),
-      psw_gwt = c(0.8, 0.4),
+      psw_gwt = c(0.9, 0.4),
       psw_ro = c(0.5, 0.048),
       psw_slope = c(0.75,0.4),
       psw_ws = c(0.5, 1.0),
@@ -78,7 +81,8 @@ test_that("check bbwp_field_properties", {
       npe_nlv = c(0.95, 0.83),
       wue_wwri = c(0.055, 0.03),
       wue_wdri = c(0, 0.23),
-      wue_whc = c(0.2338, 0.055)
+      wue_whc = c(0.2338, 0.055),
+      gw_gwr  = c(0.749, 0.153)
     ),
     tolerance = 0.01)
 })

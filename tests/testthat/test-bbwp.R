@@ -3,7 +3,7 @@ require(testthat)
 require(BBWPC)
   # # default input for testing
   # B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei')
-  # B_GWL_CLASS = c('GtIII', 'GtI', 'GtV')
+  # B_GWL_CLASS = c('III', 'I', 'V')
   # B_SC_WENR = c(4, 2,2)
   # B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF')
   # B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12")
@@ -64,9 +64,9 @@ require(BBWPC)
   # B_LSW_ID <- LSW$B_LSW_ID
 
 # run example 1 without any measures taken
-    test_that("check bbwp", {
+    test_that("check bbwp without any measures", {
       test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-                   B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
+                   B_GWL_CLASS = c('III', 'I', 'V'),
                    B_SC_WENR = c(4, 2,2),
                    B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
                    B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
@@ -82,7 +82,6 @@ require(BBWPC)
                    A_P_AL = c(65, 5,40),
                    A_P_WA = c(52, 5,45),
                    B_SLOPE_DEGREE = c(1.5,4,1.5),
-                   B_LU_BBWP =  c('gras_permanent','rooivrucht','gras_permanent'),
                    M_DRAIN = c(TRUE, FALSE, TRUE),
                    D_SA_W = c(0, 0.5, 1),
                    D_RO_R = c(0.5, 0,0.9),
@@ -94,10 +93,12 @@ require(BBWPC)
                    B_CT_PSW_MAX = 0.5,
                    B_CT_NSW_MAX = 5.0,
                    measures = NULL,
-                   sector = c('dairy', 'arable'),
+                   sector = c('dairy', 'arable', 'dairy'),
                    output = 'scores',
                    B_LSW_ID = 1:3,
-                   LSW = LSW
+                   LSW = LSW,
+                   M_GREEN = c(FALSE, TRUE, FALSE),
+                   B_LU_BRP = c(265, 2014, 265)
       )
       
       # checks on format and output values
@@ -107,24 +108,55 @@ require(BBWPC)
       
       expect_equal(
         object = colnames(test$fields),
-        expected = c("s_bbwp_ngw", "s_bbwp_nsw", "s_bbwp_psw", "s_bbwp_nue", "s_bbwp_wb" , "s_bbwp_tot", "field_id"))
+        expected = c("s_bbwp_ngw", "s_bbwp_nsw", "s_bbwp_psw", "s_bbwp_nue",
+                     "s_bbwp_wb" , "s_bbwp_gw", "s_bbwp_tot", "field_id"))
       
       expect_equal(
         object = test$fields$s_bbwp_tot,
-        expected = c(69,45,29),
+        expected = c(66, 50, 26),
         tolerance = 0.01)
       
       expect_equal(
+        object = test$fields$s_bbwp_ngw,
+        expected = c(76, 83, 62),
+        tolerance = 0.01)
+      
+      expect_equal(
+        object = test$fields$s_bbwp_nsw,
+        expected = c(98 , 19, 16),
+        tolerance = 0.01)
+      
+      expect_equal(
+        object = test$fields$s_bbwp_psw,
+        expected = c(98, 28, 9),
+        tolerance = 0.01)
+      
+      expect_equal(
+        object = test$fields$s_bbwp_nue,
+        expected = c(31, 65, 30),
+        tolerance = 0.01)
+      
+       expect_equal(
+         object = test$fields$s_bbwp_gw,
+         expected = c(53, 97, 17),
+         tolerance = 0.01) 
+       
+       expect_equal(
+         object = test$fields$s_bbwp_wb,
+         expected = c(92, 90, 81),
+         tolerance = 0.01) 
+      
+      expect_equal(
         object = as.numeric(unlist(test$farm)),
-        expected = c(58,77,62,66,46,91),
+        expected = c(58 ,79 ,62 ,66 , 46, 91, 72),
         tolerance = 0.01)
     })
 
 
 # run example 2 without any measures taken
-    test_that("check bbwp", {
+    test_that("check bbwp without any measures", {
       test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-                   B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
+                   B_GWL_CLASS = c('III', 'I', 'V'),
                    B_SC_WENR = c(4, 2,2),
                    B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
                    B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
@@ -140,7 +172,6 @@ require(BBWPC)
                    A_P_AL = c(65, 5,40),
                    A_P_WA = c(52, 5,45),
                    B_SLOPE_DEGREE = c(1.5,4,1.5),
-                   B_LU_BBWP =  c('gras_permanent','rooivrucht','gras_permanent'),
                    M_DRAIN = c(TRUE, FALSE, TRUE),
                    D_SA_W = c(0, 0.5, 1),
                    D_RO_R = c(0.5, 0,0.9),
@@ -155,23 +186,26 @@ require(BBWPC)
                    sector = c('dairy', 'arable'),
                    output = 'measures',
                    B_LSW_ID = 1:3,
-                   LSW = LSW
+                   LSW = LSW,
+                   M_GREEN = c(FALSE, TRUE, FALSE),
+                   B_LU_BRP = c(265, 2014, 265)
       )
       # run tests on format and output values
       
       expect_equal(
         object = names(test$measures[[1]]),
-        expected = c("top_bbwp_tot","top_bbwp_ngw","top_bbwp_nsw","top_bbwp_psw","top_bbwp_wb", "top_bbwp_nue"))
+        expected = c("top_bbwp_tot","top_bbwp_ngw","top_bbwp_nsw","top_bbwp_psw",
+                     "top_bbwp_wb", "top_bbwp_gw","top_bbwp_nue"))
       
       expect_equal(
         object = test$measures[[1]]$top_bbwp_tot,
-        expected = c("G36","G53", "B132", "G25", "G37"))
+        expected = c("G11aBWP4","G6BWP6", "BWP13", "G36", "B132"))
     })
 
 
 
 # run example 3 without any measures taken
-  test_that("check bbwp", {
+  test_that("check bbwp with measures", {
     # get internal table with measures
     dt.measures <- as.data.table(BBWPC::bbwp_measures)
     dt.measures <- dt.measures[!is.na(eco_id)]
@@ -183,7 +217,7 @@ require(BBWPC)
     
     
     test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-                 B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
+                 B_GWL_CLASS = c('III', 'I', 'V'),
                  B_SC_WENR = c(4, 2,2),
                  B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
                  B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
@@ -199,7 +233,6 @@ require(BBWPC)
                  A_P_AL = c(65, 5,40),
                  A_P_WA = c(52, 5,45),
                  B_SLOPE_DEGREE = c(1.5,4,1.5),
-                 B_LU_BBWP =  c('gras_permanent','rooivrucht','gras_permanent'),
                  M_DRAIN = c(TRUE, FALSE, TRUE),
                  D_SA_W = c(0, 0.5, 1),
                  D_RO_R = c(0.5, 0,0.9),
@@ -214,29 +247,31 @@ require(BBWPC)
                  sector = c('dairy', 'arable'),
                  output = 'scores',
                  B_LSW_ID = 1:3,
-                 LSW = LSW
+                 LSW = LSW,
+                 M_GREEN = c(FALSE, TRUE, FALSE),
+                 B_LU_BRP = c(265, 2014, 265)
     )
     
     
     # run tests on format and output values
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(90,45,64),
+      expected = c(83, 50, 54),
       tolerance = 0.01)
     
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(70,85,63,67,72,92),
+      expected = c(68, 86 ,63 ,67 ,72, 92, 75),
       tolerance = 0.01)
   })
 
   
   # run tests on format and output values
-  test_that("check bbwp", {
+  test_that("check bbwp works without measures and no LSW supplied", {
     # run example 3 without any measures taken and LSW equal to NULL
     expect_warning( # warning is expected as LSW is not supplied and used Dutch average values
       test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-                   B_GWL_CLASS = c('GtIII', 'GtI', 'GtV'),
+                   B_GWL_CLASS = c('III', 'I', 'V'),
                    B_SC_WENR = c(4, 2,2),
                    B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
                    B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
@@ -252,7 +287,6 @@ require(BBWPC)
                    A_P_AL = c(65, 5,40),
                    A_P_WA = c(52, 5,45),
                    B_SLOPE_DEGREE = c(1.5,4,1.5),
-                   B_LU_BBWP =  c('gras_permanent','rooivrucht','gras_permanent'),
                    M_DRAIN = c(TRUE, FALSE, TRUE),
                    D_SA_W = c(0, 0.5, 1),
                    D_RO_R = c(0.5, 0,0.9),
@@ -267,7 +301,9 @@ require(BBWPC)
                    sector = c('dairy', 'arable'),
                    output = 'scores',
                    B_LSW_ID = 1:3,
-                   LSW = NULL)
+                   LSW = NULL,
+                   M_GREEN = c(FALSE, TRUE, FALSE),
+                   B_LU_BRP = c(265, 2014, 265))
     )
     
     expect_equal(
@@ -276,16 +312,17 @@ require(BBWPC)
     
     expect_equal(
       object = colnames(test$fields),
-      expected =c("s_bbwp_ngw", "s_bbwp_nsw", "s_bbwp_psw", "s_bbwp_nue", "s_bbwp_wb" , "s_bbwp_tot", "field_id"))
+      expected =c("s_bbwp_ngw", "s_bbwp_nsw", "s_bbwp_psw", "s_bbwp_nue",
+                  "s_bbwp_wb" , "s_bbwp_gw","s_bbwp_tot", "field_id"))
     
     expect_equal(
       object = test$fields$s_bbwp_tot,
-      expected = c(69,45,29),
+      expected = c(66 , 50 , 26),
       tolerance = 0.01)
     
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(58,77,62,66,46,91),
+      expected = c(58 ,79 ,62 ,66 , 46, 91, 72),
       tolerance = 0.01)
   })
   
@@ -293,7 +330,7 @@ require(BBWPC)
 # example with high PSW loss risk
   # run example 1 without any measures taken
   test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-               B_GWL_CLASS = c('GtI', 'GtI', 'GtI'),
+               B_GWL_CLASS = c('I', 'I', 'I'),
                B_SC_WENR = c(4, 4,4),
                B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
                B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
@@ -309,7 +346,6 @@ require(BBWPC)
                A_P_AL = c(165, 150,140),
                A_P_WA = c(100, 100,100),
                B_SLOPE_DEGREE = c(2,4,2),
-               B_LU_BBWP =  c('rooivrucht','rooivrucht','rooivrucht'),
                M_DRAIN = c(TRUE, FALSE, TRUE),
                D_SA_W = c(1.0, 1.0, 1),
                D_RO_R = c(.9, 0.9,0.9),
@@ -324,13 +360,15 @@ require(BBWPC)
                sector = c('dairy', 'arable'),
                output = 'scores',
                B_LSW_ID = 1:3,
-               LSW = LSW
+               LSW = LSW,
+               M_GREEN = c(FALSE, TRUE, FALSE),
+               B_LU_BRP = c(256, 2014, 256)
   )
   
-  test_that("check bbwp", {
+  test_that("check bbwp with high PSW loss risk", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(24,86,8,6,32,84),
+      expected = c(29 , 87, 8, 6, 32, 91, 90),
       tolerance = 0.01)
   })
   
@@ -338,7 +376,7 @@ require(BBWPC)
   # example with high nitrate leaching risk
   # run example 1 without any measures taken
   test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-               B_GWL_CLASS = c('GtVI', 'GtVI', 'GtVI'),
+               B_GWL_CLASS = c('VI', 'VI', 'VI'),
                B_SC_WENR = c(1, 1,1),
                B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
                B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
@@ -354,7 +392,6 @@ require(BBWPC)
                A_P_AL = c(16, 15,14),
                A_P_WA = c(10, 10,10),
                B_SLOPE_DEGREE = c(1.2,1.4,1.2),
-               B_LU_BBWP =  c('rooivrucht','rooivrucht','rooivrucht'),
                M_DRAIN = c(TRUE, FALSE, TRUE),
                D_SA_W = c(1.0, 1.0, 1),
                D_RO_R = c(.9, 0.9,0.9),
@@ -369,19 +406,21 @@ require(BBWPC)
                sector = c('dairy', 'arable'),
                output = 'scores',
                B_LSW_ID = 1:3,
-               LSW = LSW
+               LSW = LSW,
+               M_GREEN = c(FALSE, TRUE, FALSE),
+               B_LU_BRP = c(2014, 2014, 2014)
   )
   
-  test_that("check bbwp", {
+  test_that("check bbwp with high nitrate leaching risk and no measures", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(52,24,55,49,82,88),
+      expected = c(58, 27, 55, 49, 82, 88, 91),
       tolerance = 0.01)
   })
   
   # run example with low regional targets for region
   test <- bbwp(B_SOILTYPE_AGR = c('dekzand', 'loess', 'rivierklei'),
-               B_GWL_CLASS = c('GtI', 'GtI', 'GtI'),
+               B_GWL_CLASS = c('I', 'I', 'I'),
                B_SC_WENR = c(4, 4,4),
                B_HELP_WENR = c('AZW1AwF', 'AZW1AwF','AZW1AwF'),
                B_AER_CBS = c("Bouwhoek en Hogeland","LG14","LG12"),
@@ -397,7 +436,6 @@ require(BBWPC)
                A_P_AL = c(165, 150,140),
                A_P_WA = c(100, 100,100),
                B_SLOPE_DEGREE = c(2,4,2),
-               B_LU_BBWP =  c('rooivrucht','rooivrucht','rooivrucht'),
                M_DRAIN = c(TRUE, FALSE, TRUE),
                D_SA_W = c(1.0, 1.0, 1),
                D_RO_R = c(.9, 0.9,0.9),
@@ -412,13 +450,15 @@ require(BBWPC)
                sector = c('dairy', 'arable'),
                output = 'scores',
                B_LSW_ID = 1:3,
-               LSW = LSW
+               LSW = LSW,
+               M_GREEN = c(FALSE, TRUE, FALSE),
+               B_LU_BRP = c(2014, 2014, 2014)
   )
   
-  test_that("check bbwp", {
+  test_that("check bbwp with low regional targets", {
     expect_equal(
       object = as.numeric(unlist(test$farm)),
-      expected = c(53,86,49,43,32,84),
+      expected = c(57, 87, 49, 43, 32, 84, 90),
       tolerance = 0.01)
   })
   
@@ -426,7 +466,7 @@ require(BBWPC)
     # missing both degree parameters
     expect_error(bbwp(
       B_SOILTYPE_AGR = c('dekzand'),
-      B_GWL_CLASS = c('GtIII'),
+      B_GWL_CLASS = c('III'),
       B_SC_WENR = c(4),
       B_HELP_WENR = c('AZW1AwF'),
       B_AER_CBS = c("LG12"),
@@ -441,7 +481,6 @@ require(BBWPC)
       A_P_CC = c(5),
       A_P_AL = c(65),
       A_P_WA = c(52),
-      B_LU_BBWP =  c('gras_permanent'),
       M_DRAIN = c(TRUE),
       D_SA_W = c(0),
       D_RO_R = c(0.5),
@@ -456,7 +495,9 @@ require(BBWPC)
       sector = c('dairy'),
       output = 'scores',
       B_LSW_ID = 1,
-      LSW = NULL
+      LSW = NULL,
+      M_GREEN = FALSE,
+      B_LU_BRP = 265
     ))
   })
   
@@ -464,7 +505,7 @@ require(BBWPC)
     expect_warning(bbwp(
       B_SLOPE = c(TRUE),
       B_SOILTYPE_AGR = c('dekzand'),
-      B_GWL_CLASS = c('GtIII'),
+      B_GWL_CLASS = c('III'),
       B_SC_WENR = c(4),
       B_HELP_WENR = c('AZW1AwF'),
       B_AER_CBS = c("LG12"),
@@ -479,7 +520,6 @@ require(BBWPC)
       A_P_CC = c(5),
       A_P_AL = c(65),
       A_P_WA = c(52),
-      B_LU_BBWP =  c('gras_permanent'),
       M_DRAIN = c(TRUE),
       D_SA_W = c(0),
       D_RO_R = c(0.5),
@@ -494,7 +534,9 @@ require(BBWPC)
       sector = c('dairy'),
       output = 'scores',
       B_LSW_ID = 1,
-      LSW = LSW[1]
+      LSW = LSW[1],
+      M_GREEN = FALSE,
+      B_LU_BRP = 265
     ))
   })
   

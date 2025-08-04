@@ -21,6 +21,7 @@
 #' @param sector (string) a vector with the farm type given the agricultural sector (options: 'dairy', 'arable', 'tree_nursery', 'bulbs')
 #' @param B_LS_HYDROCAT (character) Landscape category for differentiating effect of measures on water buffering.
 #' (options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")
+#' @param D_OPI_GW (numeric) the opportunity index (risk x impact) to improve the potential recharge groundwater
 #' 
 #'   
 #' @import data.table
@@ -30,7 +31,7 @@
 bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_CC,A_P_AL, B_SLOPE_DEGREE, B_LU_BBWP, B_AER_CBS,
                             M_DRAIN, D_SA_W,
                             D_OPI_NGW, D_OPI_NSW, D_OPI_PSW, D_OPI_NUE, D_OPI_WB,
-                            measures = NULL, sector, B_LS_HYDROCAT){
+                            measures = NULL, sector, B_LS_HYDROCAT, D_OPI_GW){
   
   # add visual bindings
   effect_psw = psw_psg_medium = psw_psg_high = effect_nsw = nsw_drains = nsw_gwl_low = nsw_gwl_high = psw_noslope = NULL
@@ -42,6 +43,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_CC,A_P_AL, B_SLOPE
   oid = bbwp_id = psw_psg_low = NULL
   code = value_min = value_max =  choices = NULL
   hoge_gronden = flanken = beekdalen = lokale_laagtes = polders = NULL
+  D_MEAS_GW = effect_gw = NULL
   
   # Load bbwp_parms
   bbwp_parms <- BBWPC::bbwp_parms
@@ -50,14 +52,15 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_CC,A_P_AL, B_SLOPE
   arg.length <- max(length(D_OPI_NGW), length(D_OPI_NSW), length(D_OPI_PSW), length(D_OPI_NUE),
                     length(D_OPI_WB),length(B_SOILTYPE_AGR), length(B_GWL_CLASS), length(B_AER_CBS),length(M_DRAIN),
                     length(A_P_CC),length(A_P_AL), length(B_SLOPE_DEGREE), length(B_LU_BBWP),
-                    length(D_SA_W))
+                    length(D_SA_W), length(D_OPI_GW))
   
   # reformat B_AER_CBS
   B_AER_CBS <- bbwp_format_aer(B_AER_CBS)
   
   # check inputs
   checkmate::assert_subset(B_SOILTYPE_AGR, choices = unlist(bbwp_parms[code == "B_SOILTYPE_AGR", choices]))
-  checkmate::assert_subset(B_GWL_CLASS, choices = unlist(bbwp_parms[code == "B_GWL_CLASS", choices]))
+  checkmate::assert_subset(B_GWL_CLASS, choices = c(unlist(bbwp_parms[code == 'B_GWL_CLASS', choices]),
+                                                    c("Ia", "Ib", "IIa", "IIc", "IVc", "Vao", "Vad", "Vbo", "Vbd", "VIo", "VId", "VIIo", "VIId", "VIIIo", "VIIId")))
   checkmate::assert_subset(B_LU_BBWP, choices = unlist(bbwp_parms[code == "B_LU_BBWP", choices]))
   checkmate::assert_character(B_LU_BBWP, len = arg.length)
   checkmate::assert_logical(M_DRAIN,len = arg.length)
@@ -70,6 +73,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_CC,A_P_AL, B_SLOPE
   checkmate::assert_numeric(D_OPI_PSW, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_OPI_NUE, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_numeric(D_OPI_WB, lower = 0, upper = 1, len = arg.length)
+  checkmate::assert_numeric(D_OPI_GW, lower = 0, upper = 1, len = arg.length)
   checkmate::assert_subset(sector, choices = c('dairy', 'arable', 'tree_nursery', 'bulbs'))
 
   # collect data in one data.table
@@ -88,6 +92,7 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_CC,A_P_AL, B_SLOPE
                    D_OPI_PSW = D_OPI_PSW,
                    D_OPI_NUE = D_OPI_NUE,
                    D_OPI_WB = D_OPI_WB,
+                   D_OPI_GW = D_OPI_GW,
                    B_LS_HYDROCAT = B_LS_HYDROCAT,
                    D_MEAS_NGW = NA_real_,
                    D_MEAS_NSW = NA_real_,
@@ -99,9 +104,6 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_CC,A_P_AL, B_SLOPE
   
   # add sector for regional studies
   if(length(sector)==nrow(dt)){dt[,sector := sector]}
-  
-  # do check op Gt
-  dt[,B_GWL_CLASS := bbwp_check_gt(B_GWL_CLASS,B_AER_CBS=B_AER_CBS)]
   
   # load, check and update the measures database
   dt.measures <- bbwp_check_meas(measures,eco = FALSE,score = TRUE)
@@ -123,23 +125,23 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_CC,A_P_AL, B_SLOPE
     
     # Add bonus points for nsw
     dt[M_DRAIN == TRUE, effect_nsw := effect_nsw + nsw_drains]
-    dt[B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_low]
-    dt[! B_GWL_CLASS %in% c('GtVII','GtVIII'), effect_nsw := effect_nsw + nsw_gwl_high]
+    dt[B_GWL_CLASS %in% c('VII', 'VIIo', 'VIId','VIII', 'VIIIo', 'VIIId'), effect_nsw := effect_nsw + nsw_gwl_low]
+    dt[! B_GWL_CLASS %in% c('VII', 'VIIo', 'VIId','VIII', 'VIIIo', 'VIIId'), effect_nsw := effect_nsw + nsw_gwl_high]
     
     # Add bonus points for grassland for ngw
     dt[B_LU_BBWP %in% c('gras_permanent','gras_tijdelijk'), effect_ngw := effect_ngw + ngw_grassland]
     
-    # adjust effect scores for water buffering with landscape-category-specific weighing factor
-    dt[B_LS_HYDROCAT == "hoge_gronden", effect_wb := effect_wb * hoge_gronden]
-    dt[B_LS_HYDROCAT == "flanken", effect_wb := effect_wb * flanken]
-    dt[B_LS_HYDROCAT == "beekdalen", effect_wb := effect_wb * beekdalen]
-    dt[B_LS_HYDROCAT == "lokale_laagtes", effect_wb := effect_wb * lokale_laagtes]
-    dt[B_LS_HYDROCAT == "polders", effect_wb := effect_wb * polders]
+    # adjust effect scores for ground water recharge with landscape-category-specific weighing factor
+    dt[B_LS_HYDROCAT == "hoge_gronden", effect_gw := effect_gw * hoge_gronden]
+    dt[B_LS_HYDROCAT == "flanken", effect_gw := effect_gw * flanken]
+    dt[B_LS_HYDROCAT == "beekdalen", effect_gw := effect_gw * beekdalen]
+    dt[B_LS_HYDROCAT == "lokale_laagtes", effect_gw := effect_gw * lokale_laagtes]
+    dt[B_LS_HYDROCAT == "polders", effect_gw := effect_gw * polders]
  
   # set scores to zero when measures are not applicable given the crop type
   
     # columns with the Ecoregelingen ranks
-    cols <- c('effect_psw','effect_nsw', 'effect_ngw','effect_wb','effect_nue')
+    cols <- c('effect_psw','effect_nsw', 'effect_ngw','effect_wb','effect_nue', 'effect_gw')
   
     # set first all missing data impacts to 0
     dt[,c(cols) := lapply(.SD, function(x) fifelse(is.na(x),0,x)), .SDcols = cols]
@@ -201,12 +203,13 @@ bbwp_meas_score <- function(B_SOILTYPE_AGR, B_GWL_CLASS,  A_P_CC,A_P_AL, B_SLOPE
   dt[, D_MEAS_PSW := D_OPI_PSW * effect_psw]
   dt[, D_MEAS_NUE := D_OPI_NUE * effect_nue]
   dt[, D_MEAS_WB := D_OPI_WB * effect_wb]
+  dt[, D_MEAS_GW := D_OPI_GW * effect_gw]
   
   # columns to be adapted given applicability
-  scols <- c('D_MEAS_NGW','D_MEAS_NSW','D_MEAS_PSW','D_MEAS_NUE','D_MEAS_WB','D_MEAS_TOT')
+  scols <- c('D_MEAS_NGW','D_MEAS_NSW','D_MEAS_PSW','D_MEAS_NUE','D_MEAS_WB', 'D_MEAS_GW', 'D_MEAS_TOT')
   
   # Calculate total measure score
-  dt[, D_MEAS_TOT := (D_MEAS_NGW + D_MEAS_NSW + D_MEAS_PSW + D_MEAS_NUE + D_MEAS_WB ) /  5]
+  dt[, D_MEAS_TOT := (D_MEAS_NGW + D_MEAS_NSW + D_MEAS_PSW + D_MEAS_NUE + D_MEAS_WB + D_MEAS_GW) /  6]
   
   # set impact of conflict measures to the highest score of those that are selected
   

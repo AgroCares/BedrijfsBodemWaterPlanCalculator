@@ -1,3 +1,23 @@
+# BBWPC v3.0.0 2025-06-20
+## Added
+* function `bbwp_calc_psp()` which calculates a precipitation surplus for a single year and field given the fields cultivation and green manure.
+* function `bbwp_wat_groundwater_recharge()` which evaluates the soils ability to recharge groundwater.
+* A new score `S_BBWP_GW` to score groundwater(recharge)
+
+## Changed
+* BBWP now supports groundwater classes with suffixes and should be ready to use
+data from BRO Grondwaterspiegelmodel, 2024-01. https://www.broloket.nl/ondergrondmodellen/kaart
+* BBWP no longer supports B_GWL_CLASS value "-". For fields with groundwater class "-", the user is advised to use expert judgment on
+what the most suitable groundwater class is. Fields with "-" are typically found 
+in locations with very variable or very deep groundwater levels such as flood plains
+or hills.
+
+## Deprecated
+* `bbwp()` no longer needs B_LU_BBWP as input, instead, one should use B_LU_BRP from which BBWPC infers the correct B_LU_BBWP. If B_LU_BBWP is entered, this is used, however, there is no check that this correctly matches with the entered B_LU_BRP. Therefore, it is advised not to enter B_LU_BBWP any more.
+
+## Removed
+* function `format_gwt()`
+
 # BBWPC v2.4.0 2025-03-17
 ## Changed
 * adjust effect of volvelds uitmijnen G68 as function of A_P_CC and A_P_AL rather than A_P_SG, #BBWP-143

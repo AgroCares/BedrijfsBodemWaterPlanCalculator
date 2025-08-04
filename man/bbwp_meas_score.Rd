@@ -21,7 +21,8 @@ bbwp_meas_score(
   D_OPI_WB,
   measures = NULL,
   sector,
-  B_LS_HYDROCAT
+  B_LS_HYDROCAT,
+  D_OPI_GW
 )
 }
 \arguments{
@@ -59,6 +60,8 @@ bbwp_meas_score(
 
 \item{B_LS_HYDROCAT}{(character) Landscape category for differentiating effect of measures on water buffering.
 (options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")}
+
+\item{D_OPI_GW}{(numeric) the opportunity index (risk x impact) to improve the potential recharge groundwater}
 }
 \description{
 Estimate the score for agronomic measures taken to improve soil and water management on agricultural farms.
