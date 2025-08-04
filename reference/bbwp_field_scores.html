@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">BBWPC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,7 +29,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Calculate the total score of five opportunity indicators for all fields in the Netherlands</h1>
-      <small class="dont-index">Source: <a href="https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/blob/v2.4.0/R/bbwp_field_scores.R" class="external-link"><code>R/bbwp_field_scores.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/blob/main/R/bbwp_field_scores.R" class="external-link"><code>R/bbwp_field_scores.R</code></a></small>
       <div class="d-none name"><code>bbwp_field_scores.Rd</code></div>
     </div>
 
@@ -63,7 +63,8 @@
 <span>  <span class="va">measures</span>,</span>
 <span>  <span class="va">sector</span>,</span>
 <span>  penalty <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  <span class="va">B_LS_HYDROCAT</span></span>
+<span>  <span class="va">B_LS_HYDROCAT</span>,</span>
+<span>  <span class="va">D_RISK_GWR</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -167,6 +168,10 @@
 <dd><p>(character) Landscape category for differentiating effect of measures on water buffering.
 (options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")</p></dd>
 
+
+<dt id="arg-d-risk-gwr">D_RISK_GWR<a class="anchor" aria-label="anchor" href="#arg-d-risk-gwr"></a></dt>
+<dd><p>(numeric) the risk for a negative groundwater recharge</p></dd>
+
 </dl></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -178,7 +183,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

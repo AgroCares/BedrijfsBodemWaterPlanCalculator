@@ -9,7 +9,7 @@ A high BBWP score is indicative for the number of opportunities to improve soil 
 
     <a class="navbar-brand me-2" href="../index.html">BBWPC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,7 +31,7 @@ A high BBWP score is indicative for the number of opportunities to improve soil 
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Calculate the BBWP scores on field and farm level</h1>
-      <small class="dont-index">Source: <a href="https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/blob/v2.4.0/R/bbwp_main.R" class="external-link"><code>R/bbwp_main.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/blob/main/R/bbwp_main.R" class="external-link"><code>R/bbwp_main.R</code></a></small>
       <div class="d-none name"><code>bbwp.Rd</code></div>
     </div>
 
@@ -44,7 +44,7 @@ A high BBWP score is indicative for the number of opportunities to improve soil 
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bbwp</span><span class="op">(</span></span>
 <span>  <span class="va">B_SOILTYPE_AGR</span>,</span>
-<span>  <span class="va">B_LU_BBWP</span>,</span>
+<span>  B_LU_BBWP <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
 <span>  <span class="va">B_GWL_CLASS</span>,</span>
 <span>  <span class="va">B_SC_WENR</span>,</span>
 <span>  <span class="va">B_HELP_WENR</span>,</span>
@@ -78,7 +78,9 @@ A high BBWP score is indicative for the number of opportunities to improve soil 
 <span>  <span class="va">sector</span>,</span>
 <span>  output <span class="op">=</span> <span class="st">"scores"</span>,</span>
 <span>  penalty <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  B_LS_HYDROCAT <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  B_LS_HYDROCAT <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  M_GREEN <span class="op">=</span> <span class="va">M_GREEN</span>,</span>
+<span>  <span class="va">B_LU_BRP</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -91,7 +93,7 @@ A high BBWP score is indicative for the number of opportunities to improve soil 
 
 
 <dt id="arg-b-lu-bbwp">B_LU_BBWP<a class="anchor" aria-label="anchor" href="#arg-b-lu-bbwp"></a></dt>
-<dd><p>(character) The BBWP category used for allocation of measures to BBWP crop categories</p></dd>
+<dd><p>(character) DEPRECATED The BBWP category used for allocation of measures to BBWP crop categories</p></dd>
 
 
 <dt id="arg-b-gwl-class">B_GWL_CLASS<a class="anchor" aria-label="anchor" href="#arg-b-gwl-class"></a></dt>
@@ -230,11 +232,24 @@ A high BBWP score is indicative for the number of opportunities to improve soil 
 <dd><p>(character) Landscape category for differentiating effect of measures on water buffering.
 (options: "hoge_gronden", "flanken", "beekdalen", "lokale_laagtes", "polders")</p></dd>
 
+
+<dt id="arg-m-green">M_GREEN<a class="anchor" aria-label="anchor" href="#arg-m-green"></a></dt>
+<dd><p>(boolean) A soil measure. Are catch crops sown after main crop (optional, option: yes or no)</p></dd>
+
+
+<dt id="arg-b-lu-brp">B_LU_BRP<a class="anchor" aria-label="anchor" href="#arg-b-lu-brp"></a></dt>
+<dd><p>(numeric) The crop code (gewascode) from the BRP</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>B_SLOPE_DEGREE should be used, for backwards compatibility B_SLOPE can still be used. At least one of the must be used, when both are supplied, B_SLOPE is ignored.
-LSW is by default a data.table with LSW properties, being calculated from bbwp_lsw_properties. Note that all B_LSW_IDs should be preset in the LSW data.table.</p>
+    <p>B_SLOPE_DEGREE should be used, for backwards compatibility B_SLOPE can still be used.
+ At least one of the must be used, when both are supplied, B_SLOPE is ignored.</p>
+<p>LSW is by default a data.table with LSW properties, being calculated from
+bbwp_lsw_properties. Note that all B_LSW_IDs should be pre-set in the LSW data.table.</p>
+<p><code>bbwp()</code> no longer supports '-' as valid input for B_GWL_CLASS. Users should use
+their best judgement to decide on the most suitable valid value for such fields.
+Valid values can be found in <code>bbwp_parms[code == 'B_GWL_CLASS', choices]</code></p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -246,7 +261,7 @@ LSW is by default a data.table with LSW properties, being calculated from bbwp_l
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

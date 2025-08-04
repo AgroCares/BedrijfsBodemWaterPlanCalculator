@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">BBWPC</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,9 +29,34 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/blob/v2.4.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/AgroCares/BedrijfsBodemWaterPlanCalculator/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.0.0" id="bbwpc-v300-2025-06-20">BBWPC v3.0.0 2025-06-20<a class="anchor" aria-label="anchor" href="#bbwpc-v300-2025-06-20"></a></h2>
+<div class="section level3">
+<h3 id="added-3-0-0">Added<a class="anchor" aria-label="anchor" href="#added-3-0-0"></a></h3>
+<ul><li>function <code><a href="../reference/bbwp_calc_psp.html">bbwp_calc_psp()</a></code> which calculates a precipitation surplus for a single year and field given the fields cultivation and green manure.</li>
+<li>function <code><a href="../reference/bbwp_wat_groundwater_recharge.html">bbwp_wat_groundwater_recharge()</a></code> which evaluates the soils ability to recharge groundwater.</li>
+<li>A new score <code>S_BBWP_GW</code> to score groundwater(recharge)</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changed-3-0-0">Changed<a class="anchor" aria-label="anchor" href="#changed-3-0-0"></a></h3>
+<ul><li>BBWP now supports groundwater classes with suffixes and should be ready to use data from BRO Grondwaterspiegelmodel, 2024-01. <a href="https://www.broloket.nl/ondergrondmodellen/kaart" class="external-link uri">https://www.broloket.nl/ondergrondmodellen/kaart</a>
+</li>
+<li>BBWP no longer supports B_GWL_CLASS value “-”. For fields with groundwater class “-”, the user is advised to use expert judgment on what the most suitable groundwater class is. Fields with “-” are typically found in locations with very variable or very deep groundwater levels such as flood plains or hills.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="deprecated-3-0-0">Deprecated<a class="anchor" aria-label="anchor" href="#deprecated-3-0-0"></a></h3>
+<ul><li>
+<code><a href="../reference/bbwp.html">bbwp()</a></code> no longer needs B_LU_BBWP as input, instead, one should use B_LU_BRP from which BBWPC infers the correct B_LU_BBWP. If B_LU_BBWP is entered, this is used, however, there is no check that this correctly matches with the entered B_LU_BRP. Therefore, it is advised not to enter B_LU_BBWP any more.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="removed-3-0-0">Removed<a class="anchor" aria-label="anchor" href="#removed-3-0-0"></a></h3>
+<ul><li>function <code>format_gwt()</code>
+</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.4.0" id="bbwpc-v240-2025-03-17">BBWPC v2.4.0 2025-03-17<a class="anchor" aria-label="anchor" href="#bbwpc-v240-2025-03-17"></a></h2>
 <div class="section level3">
@@ -763,7 +788,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>
