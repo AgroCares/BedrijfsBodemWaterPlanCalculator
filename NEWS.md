@@ -1,4 +1,8 @@
-# BBWPC v3.0.0 2025-06-20
+# BBWPC v3.1.0 2025-08-04
+## Added
+* BRP crop codes for 2025: 7137, 7138, 7135, 7134 [PL-40]
+
+# BBWPC v3.0.0 2025-08-04
 ## Added
 * function `bbwp_calc_psp()` which calculates a precipitation surplus for a single year and field given the fields cultivation and green manure.
 * function `bbwp_wat_groundwater_recharge()` which evaluates the soils ability to recharge groundwater.

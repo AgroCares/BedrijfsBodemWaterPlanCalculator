@@ -5,7 +5,7 @@
 \alias{er_crops}
 \title{An overview of crop lists used in Ecoregelingen}
 \format{
-An object of class \code{data.table} (inherits from \code{data.frame}) with 521 rows and 6 columns.
+An object of class \code{data.table} (inherits from \code{data.frame}) with 525 rows and 6 columns.
 }
 \usage{
 er_crops
