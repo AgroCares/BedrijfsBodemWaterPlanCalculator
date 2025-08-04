@@ -520,3 +520,7 @@
 7129,"rogge, groenvoedergewas","rustgewas",TRUE,TRUE,TRUE
 7130,"rogge, korrelgewas","rustgewas",TRUE,TRUE,TRUE
 7131,"rogge, groenbemesting, vanggewas","vanggewas",TRUE,TRUE,TRUE
+7134,"riet in water, anders dan een subsidiabele sloot","natuur",TRUE,FALSE,FALSE
+7135,"riet in een subsidiabele sloot","natuur",TRUE,FALSE,FALSE
+7137,"bonen, overig","eiwitgewas",FALSE,TRUE,TRUE
+7138,"palmkool","groenten",TRUE,TRUE,TRUE
